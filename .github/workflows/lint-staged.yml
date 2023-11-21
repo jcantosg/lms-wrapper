@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: ['*']
+
+jobs:
+  lint-staged:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Print versions
+        run: |
+          git --version
+          node --version
+          npm --version
+          npx lint-staged --version
+      - name: Install dependencies
+        run: npm ci
+      - name: Validate PR with lint-staged
+        run: npx lint-staged
