@@ -12,7 +12,7 @@ export class EnvironmentHeaderMiddleware implements NestMiddleware {
   }
 
   use(req: Request, res: Response, next: NextFunction) {
-    if ('prod' !== this.environment) {
+    if ('production' !== this.environment) {
       res.set(this.headerName, this.environment);
     }
     next();

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Print versions
+        run: |
+          git --version
+          node --version
+          npm --version
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$STAGING_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          echo "$STAGING_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          STAGING_SSH_PRIVATE_KEY: ${{secrets.STAGING_SSH_PRIVATE_KEY}}
+          STAGING_SSH_KNOWN_HOSTS: ${{secrets.STAGING_SSH_KNOWN_HOSTS}}
+      - name: Deploy staging
+        run: npm run deploy:staging

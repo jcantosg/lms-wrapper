@@ -8,20 +8,23 @@ help: ## This help.
 
 .DEFAULT_GOAL := help
 
+clean: ## Remove generated directories
+	@rm -rf dist node_modules
+
+build: ## Build docker image
+	@docker build -t universae-api-sga .
+
 up: ## Start infrastructure
-	@docker-compose up -d
+	@docker compose up -d
 
 down: ## Stop infrastructure
-	@docker-compose down
+	@docker compose down
 
-start: ## Start project
-	@npm run start
+start-prod: ## Start project in production mode
+	@docker run -d --rm  --env-file=".env" -p3000:3000 --name universae-api-sga universae-api-sga
 
 start-dev: ## Start project in dev mode
 	@npm run start:dev
-
-clean: ## Remove generated directories
-	@rm -rf dist node_modules
 
 deps: ## Install project dependencies
 	@npm install

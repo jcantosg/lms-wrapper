@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from 'nestjs-pino';
 import {
   CORRELATION_ID_HEADER,
-  CorrelatioIdMiddleware,
+  CorrelationIdMiddleware,
 } from './shared/infrastructure/middleware/correlation-id.middleware';
 import { Request } from 'express';
 import { APP_FILTER } from '@nestjs/core';
@@ -52,7 +52,7 @@ const loggerModule = LoggerModule.forRootAsync({
   useFactory: (configService: ConfigService) => ({
     pinoHttp: {
       transport:
-        'dev' === configService.get<string>('NODE_ENV')
+        'develop' === configService.get<string>('NODE_ENV')
           ? {
               target: 'pino-pretty',
               options: {
@@ -89,6 +89,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
     consumer.apply(EnvironmentHeaderMiddleware).forRoutes('*');
     consumer.apply(VersionHeaderMiddleware).forRoutes('*');
-    consumer.apply(CorrelatioIdMiddleware).forRoutes('*');
+    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
   }
 }
