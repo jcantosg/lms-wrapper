@@ -1,10 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EnvironmentHeaderMiddleware implements NestMiddleware {
-  private readonly headerName = 'X-API-Environmnet';
+  private readonly headerName = 'X-API-Environment';
   private readonly environment;
 
   constructor(configService: ConfigService) {
