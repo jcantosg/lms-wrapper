@@ -16,6 +16,7 @@ import { VersionHeaderMiddleware } from './shared/infrastructure/middleware/vers
 import { apiDbConfig } from '../config/database.config';
 import { DataSourceOptions } from 'typeorm';
 import { SharedModule } from './shared/shared.module';
+import { BusinessUnitModule } from './business-unit/business-unit.module';
 
 const env = process.env.NODE_ENV;
 const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
@@ -78,7 +79,13 @@ const loggerModule = LoggerModule.forRootAsync({
 });
 
 @Module({
-  imports: [configModule, typeOrmModule, loggerModule, SharedModule],
+  imports: [
+    configModule,
+    typeOrmModule,
+    loggerModule,
+    SharedModule,
+    BusinessUnitModule,
+  ],
   providers: [
     {
       provide: APP_FILTER,
