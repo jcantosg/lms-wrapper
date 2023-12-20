@@ -7,7 +7,12 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@shared/(.*)$": "<rootDir>/../src/shared/$1",
-    "^@/(.*)$": "<rootDir>/../src/$1"
+    "^#admin-user/(.*)$": "<rootDir>/sga/admin-user/$1",
+    "^#shared/(.*)$": "<rootDir>/shared/shared/$1",
+    "^#business-unit/(.*)$": "<rootDir>/sga/business-unit/$1",
+    "^#commands/(.*)$": "<rootDir>/commands/$1",
+    "^#config/(.*)$": "<rootDir>/../config/$1",
+    "^#test/(.*)$": "<rootDir>/../test/$1",
+    "^#/(.*)$": "<rootDir>/$1"
   }
 }

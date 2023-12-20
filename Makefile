@@ -38,3 +38,11 @@ format-lint: ## Analyze and fix code
 
 test-unit: ## Run unit tests
 	@npm run test -- --passWithNoTests
+
+database-drop: ## Remove all database collections
+	@npm run sga:db:drop -- -f
+
+database-reload: ## drop, runs migrations, seed
+	@npm run sga:db:drop -- -f
+	@npm run typeorm:migrations:up
+	@npm run sga:db:seed:country

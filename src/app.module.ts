@@ -4,19 +4,21 @@ import * as fs from 'fs';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from 'nestjs-pino';
+import { DataSourceOptions } from 'typeorm';
+import { Request } from 'express';
+import { APP_FILTER } from '@nestjs/core';
+import { apiDbConfig } from '#config/database.config';
 import {
   CORRELATION_ID_HEADER,
   CorrelationIdMiddleware,
-} from './shared/infrastructure/middleware/correlation-id.middleware';
-import { Request } from 'express';
-import { APP_FILTER } from '@nestjs/core';
-import { ApplicationExceptionFilter } from './shared/infrastructure/filter/exception.filter';
-import { EnvironmentHeaderMiddleware } from './shared/infrastructure/middleware/environment-header.middleware';
-import { VersionHeaderMiddleware } from './shared/infrastructure/middleware/version-header.middleware';
-import { apiDbConfig } from '../config/database.config';
-import { DataSourceOptions } from 'typeorm';
-import { SharedModule } from './shared/shared.module';
-import { BusinessUnitModule } from './business-unit/business-unit.module';
+} from '#shared/infrastructure/middleware/correlation-id.middleware';
+import { SharedModule } from '#shared/shared.module';
+import { ApplicationExceptionFilter } from '#shared/infrastructure/filter/exception.filter';
+import { EnvironmentHeaderMiddleware } from '#shared/infrastructure/middleware/environment-header.middleware';
+import { VersionHeaderMiddleware } from '#shared/infrastructure/middleware/version-header.middleware';
+import { SGAModule } from '#/sga/sga.module';
+import { StudentModule } from '#/student/student.module';
+import { TeacherModule } from '#/teacher/Teacher.module';
 
 const env = process.env.NODE_ENV;
 const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
@@ -32,6 +34,9 @@ const configModule = ConfigModule.forRoot({
     DATABASE_PASSWORD: Joi.string().required(),
     VERBOSE_MODE: Joi.boolean().required(),
     APP_STABLE_VERSION: Joi.string().required(),
+    REFRESH_TOKEN_TTL: Joi.number().required(),
+    JWT_SECRET: Joi.string().required(),
+    JWT_TTL: Joi.string().required(),
   }),
 });
 
@@ -84,7 +89,9 @@ const loggerModule = LoggerModule.forRootAsync({
     typeOrmModule,
     loggerModule,
     SharedModule,
-    BusinessUnitModule,
+    SGAModule,
+    StudentModule,
+    TeacherModule,
   ],
   providers: [
     {

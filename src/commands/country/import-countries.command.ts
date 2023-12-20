@@ -1,17 +1,15 @@
 import { v4 as uuid } from 'uuid';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../../app.module';
-import { Connection } from 'typeorm';
-import { INestApplicationContext, Logger } from '@nestjs/common';
-import { countries as countriesRaw } from './countries';
-import { Country } from '../../business-unit/domain/entity/country.entity';
+import { Logger } from '@nestjs/common';
+import { countries as countriesRaw } from '#commands/country/countries';
 import datasource from '../../../ormconfig';
+import { Country } from '#shared/domain/entity/country.entity';
+import { AppModule } from '#/app.module';
 
-async function importCountries(app: INestApplicationContext, logger: Logger) {
-  const connection = app.get(Connection);
+async function importCountries(logger: Logger) {
   const countries: Country[] = [];
 
-  if (!(await connection.createQueryRunner().hasTable('countries'))) {
+  if (!(await datasource.createQueryRunner().hasTable('countries'))) {
     logger.error('Table countries does not exists');
 
     return;
@@ -42,7 +40,7 @@ async function importCountries(app: INestApplicationContext, logger: Logger) {
     ),
   );
 
-  await connection
+  await datasource
     .createQueryBuilder()
     .insert()
     .into(Country)
@@ -50,6 +48,8 @@ async function importCountries(app: INestApplicationContext, logger: Logger) {
     .execute();
 
   logger.log('Countries inserted');
+
+  return;
 }
 
 async function bootstrap() {
@@ -57,8 +57,9 @@ async function bootstrap() {
   const logger = new Logger('Import Countries command');
   app.useLogger(logger);
 
-  await importCountries(app, logger);
+  await importCountries(logger);
 
+  datasource.destroy();
   await app.close();
 }
 

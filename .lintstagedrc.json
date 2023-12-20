@@ -2,6 +2,6 @@
   "**/*.{js,jsx,ts,tsx}": [
     "npx prettier --check",
     "npx eslint",
-    "jest --bail --findRelatedTests --passWithNoTests"
+    "jest --bail --findRelatedTests"
   ]
 }
