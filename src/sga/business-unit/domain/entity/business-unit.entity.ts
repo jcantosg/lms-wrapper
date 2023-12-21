@@ -90,11 +90,13 @@ export class BusinessUnit extends BaseEntity {
     code: string,
     country: Country,
     user: AdminUser,
+    isActive: boolean,
   ): void {
     this._name = name;
     this._code = code;
     this._country = country;
     this._updatedBy = user;
     this.updatedAt = new Date();
+    this._isActive = isActive;
   }
 }

@@ -56,6 +56,7 @@ describe('/business-unit/:id (PUT)', () => {
         name: 'TestBusinessUnit',
         code: 'TestBusinessCode',
         countryId: EditBusinessUnitE2eSeed.countryId,
+        isActive: false,
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
@@ -63,6 +64,7 @@ describe('/business-unit/:id (PUT)', () => {
       'dda38bd6-5d7e-4d85-a8c2-6d130dac9f4b',
     );
     expect(businessUnit?.name).toEqual('TestBusinessUnit');
+    expect(businessUnit?.isActive).toBeFalsy();
   });
   it('should return bad request when empty body', async () => {
     await supertest(httpServer)

@@ -37,6 +37,7 @@ const command = new EditBusinessUnitCommand(
   'code',
   uuid(),
   uuid(),
+  true,
 );
 
 const user = getAnAdminUser();

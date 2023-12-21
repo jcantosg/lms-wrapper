@@ -7,5 +7,6 @@ export class EditBusinessUnitCommand implements Command {
     public readonly code: string,
     public readonly countryId: string,
     public readonly userId: string,
+    public readonly isActive: boolean,
   ) {}
 }

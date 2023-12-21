@@ -17,7 +17,13 @@ export class EditBusinessUnitHandler implements CommandHandler {
     const businessUnit = await this.businessUnitGetter.get(command.id);
     const country = await this.countryGetter.get(command.countryId);
     const user = await this.adminUserGetter.get(command.userId);
-    businessUnit.update(command.name, command.code, country, user);
+    businessUnit.update(
+      command.name,
+      command.code,
+      country,
+      user,
+      command.isActive,
+    );
     await this.businessUnitRepository.update(businessUnit);
   }
 }

@@ -23,6 +23,7 @@ type EditBusinessUnitEndpointBody = {
   name: string;
   code: string;
   countryId: string;
+  isActive: boolean;
 };
 
 @Controller('business-unit')
@@ -47,6 +48,7 @@ export class EditBusinessUnitController {
       body.code,
       body.countryId,
       req.user.id,
+      body.isActive,
     );
     await this.handler.handle(command);
   }
