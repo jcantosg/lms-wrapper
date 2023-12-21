@@ -17,26 +17,6 @@ export class BusinessUnit extends BaseEntity {
     super(id, createdAt, updatedAt);
   }
 
-  static create(
-    id: string,
-    name: string,
-    code: string,
-    country: Country,
-    user: AdminUser,
-  ) {
-    return new this(
-      id,
-      new Date(),
-      new Date(),
-      name,
-      code,
-      true,
-      country,
-      user,
-      user,
-    );
-  }
-
   public get name(): string {
     return this._name;
   }
@@ -83,5 +63,38 @@ export class BusinessUnit extends BaseEntity {
 
   public set updatedBy(value: AdminUser) {
     this._updatedBy = value;
+  }
+
+  static create(
+    id: string,
+    name: string,
+    code: string,
+    country: Country,
+    user: AdminUser,
+  ) {
+    return new this(
+      id,
+      new Date(),
+      new Date(),
+      name,
+      code,
+      true,
+      country,
+      user,
+      user,
+    );
+  }
+
+  public update(
+    name: string,
+    code: string,
+    country: Country,
+    user: AdminUser,
+  ): void {
+    this._name = name;
+    this._code = code;
+    this._country = country;
+    this._updatedBy = user;
+    this.updatedAt = new Date();
   }
 }

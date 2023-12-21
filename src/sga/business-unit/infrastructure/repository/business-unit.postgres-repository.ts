@@ -37,4 +37,14 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
 
     return !!result;
   }
+
+  async update(businessUnit: BusinessUnit): Promise<void> {
+    await this.repository.update(businessUnit.id, {
+      name: businessUnit.name,
+      code: businessUnit.code,
+      isActive: businessUnit.isActive,
+      updatedAt: businessUnit.updatedAt,
+      updatedBy: businessUnit.updatedBy,
+    });
+  }
 }

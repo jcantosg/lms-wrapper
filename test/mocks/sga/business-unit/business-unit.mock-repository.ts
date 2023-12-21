@@ -6,4 +6,5 @@ export class BusinessUnitMockRepository implements BusinessUnitRepository {
   existsById = jest.fn();
   existsByName = jest.fn();
   existsByCode = jest.fn();
+  update = jest.fn();
 }

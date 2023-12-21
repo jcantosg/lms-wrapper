@@ -4,6 +4,8 @@ import { BusinessUnitRepository } from '#business-unit/domain/repository/busines
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
+import { EditBusinessUnitHandler } from '#business-unit/application/edit-business-unit/edit-business-unit.handler';
+import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -30,5 +32,27 @@ const createBusinessUnitHandler = {
     ExaminationCenterRepository,
   ],
 };
+const editBusinessUnitHandler = {
+  provide: EditBusinessUnitHandler,
+  useFactory: (
+    businessUnitRepository: BusinessUnitRepository,
+    businessGetter: BusinessUnitGetter,
+    adminUserGetter: AdminUserGetter,
+    countryGetter: CountryGetter,
+  ) => {
+    return new EditBusinessUnitHandler(
+      businessUnitRepository,
+      businessGetter,
+      adminUserGetter,
+      countryGetter,
+    );
+  },
+  inject: [
+    BusinessUnitRepository,
+    BusinessUnitGetter,
+    AdminUserGetter,
+    CountryGetter,
+  ],
+};
 
-export const handlers = [createBusinessUnitHandler];
+export const handlers = [createBusinessUnitHandler, editBusinessUnitHandler];
