@@ -12,3 +12,9 @@ services:
       - ${PWD}/etc/infrastructure/db-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    networks:
+      - universae-network
+
+networks:
+  universae-network:
+    external: true

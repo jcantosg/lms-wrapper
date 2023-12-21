@@ -14,6 +14,8 @@ COPY --chown=node:node package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
+# Build bcrypt from source
+RUN npm rebuild bcrypt
 
 # Bundle app source
 COPY --chown=node:node . .
@@ -44,6 +46,8 @@ ENV NODE_ENV production
 
 # Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+# Build bcrypt from source
+RUN npm rebuild bcrypt
 
 USER node
 
