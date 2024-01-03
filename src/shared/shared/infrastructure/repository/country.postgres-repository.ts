@@ -17,7 +17,9 @@ export class CountryPostgresRepository implements CountryRepository {
   }
 
   async getAll(): Promise<Country[]> {
-    return await this.repository.find();
+    return await this.repository.find({
+      order: { name: { direction: 'ASC' } },
+    });
   }
 
   async get(id: string): Promise<Country | null> {
