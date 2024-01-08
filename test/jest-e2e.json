@@ -1,5 +1,9 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
@@ -7,12 +11,12 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^#admin-user/(.*)$": "<rootDir>/sga/admin-user/$1",
-    "^#shared/(.*)$": "<rootDir>/shared/shared/$1",
-    "^#business-unit/(.*)$": "<rootDir>/sga/business-unit/$1",
-    "^#commands/(.*)$": "<rootDir>/commands/$1",
+    "^#admin-user/(.*)$": "<rootDir>/../src/sga/admin-user/$1",
+    "^#shared/(.*)$": "<rootDir>/../src/shared/shared/$1",
+    "^#business-unit/(.*)$": "<rootDir>/../src/sga/business-unit/$1",
+    "^#commands/(.*)$": "<rootDir>/../src/commands/$1",
     "^#config/(.*)$": "<rootDir>/../config/$1",
     "^#test/(.*)$": "<rootDir>/../test/$1",
-    "^#/(.*)$": "<rootDir>/$1"
+    "^#/(.*)$": "<rootDir>/../src/$1"
   }
 }

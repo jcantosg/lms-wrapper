@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '#/app.module';
-import { CountryResponse } from '#shared/infrastructure/controller/country/get-countries.response';
+import { CountryResponse } from '#shared/infrastructure/controller/country/get-country.response';
 import { countries as countriesExpected } from '#commands/country/countries';
 
 describe('Get Countries', () => {

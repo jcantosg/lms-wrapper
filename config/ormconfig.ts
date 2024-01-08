@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
-import { migrationDbConfig } from './config/database.config';
+import { migrationDbConfig } from '#config/database.config';
 
 config();
 

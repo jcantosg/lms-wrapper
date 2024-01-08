@@ -37,5 +37,10 @@ export const businessUnitSchema = new EntitySchema<BusinessUnit>({
         name: 'country_id',
       },
     },
+    virtualCampuses: {
+      type: 'one-to-many',
+      target: 'VirtualCampus',
+      inverseSide: 'businessUnit',
+    },
   },
 });

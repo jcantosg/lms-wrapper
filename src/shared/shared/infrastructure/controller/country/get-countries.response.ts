@@ -1,19 +1,13 @@
 import { Country } from '#shared/domain/entity/country.entity';
-
-export interface CountryResponse {
-  id: string;
-  name: string;
-  emoji: string;
-}
+import {
+  CountryResponse,
+  GetCountryResponse,
+} from '#shared/infrastructure/controller/country/get-country.response';
 
 export class GetCountriesResponse {
   static create(countries: Country[]): CountryResponse[] {
     return countries.map((country) => {
-      return {
-        id: country.id,
-        name: country.name,
-        emoji: country.emoji,
-      };
+      return GetCountryResponse.create(country);
     });
   }
 }

@@ -1,9 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { GetCountriesHandler } from '#shared/application/get-countries/get-countries.handler';
-import {
-  CountryResponse,
-  GetCountriesResponse,
-} from '#shared/infrastructure/controller/country/get-countries.response';
+import { GetCountriesResponse } from '#shared/infrastructure/controller/country/get-countries.response';
+import { CountryResponse } from '#shared/infrastructure/controller/country/get-country.response';
 
 @Controller('country')
 export class GetCountryController {

@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { startApp } from '#test/e2e/e2e-helper';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { CreateBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/create-business-unit.e2e-seeds';
-import datasource from '../../../../ormconfig';
+import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/business-unit`;
@@ -87,7 +87,7 @@ describe('/business-unit (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    datasource.destroy();
+    await datasource.destroy();
     await app.close();
   });
 });

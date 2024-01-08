@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { countries as countriesRaw } from '#commands/country/countries';
-import datasource from '../../../ormconfig';
+import datasource from '#config/ormconfig';
 import { Country } from '#shared/domain/entity/country.entity';
 import { AppModule } from '#/app.module';
 

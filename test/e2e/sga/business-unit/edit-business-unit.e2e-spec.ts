@@ -2,7 +2,7 @@ import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
 import { EditBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/edit-business-unit.e2e-seeds';
-import datasource from '../../../../ormconfig';
+import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';

@@ -12,17 +12,19 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 
-export class EditBusinessUnitE2eSeed implements E2eSeed {
-  public static superAdminUserEmail = 'super-edit-business-unit@email.com';
+export class GetBusinessUnitE2eSeed implements E2eSeed {
+  public static superAdminUserEmail = 'get-edit-business-unit@email.com';
   public static superAdminUserPassword = 'pass123';
   public static superAdminUserId = uuid();
-  public static adminUserEmail = 'edit-business-unit@email.com';
+  public static adminUserEmail = 'get-business-unit@email.com';
   public static adminUserPassword = 'pass123';
   public static adminUserId = uuid();
-  public static businessUnitId = 'dda38bd6-5d7e-4d85-a8c2-6d130dac9f4b';
-  public static businessUnitName = 'Madrid';
-  public static duplicatedBusinessUnitCode1 = 'MAD';
+  public static businessUnitId = '35637f98-af93-456d-bde4-811ec48d4814';
+  public static businessUnitName = 'Valencia';
+  public static businessUnitCode = 'VAL';
   public static countryId = uuid();
+  public static countryEmoji = '🏳️Get';
+  public static countryName = 'TestGet';
 
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
@@ -40,33 +42,33 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
   async arrange(): Promise<void> {
     this.adminUser = await createAdminUser(
       this.datasource,
-      EditBusinessUnitE2eSeed.adminUserId,
-      EditBusinessUnitE2eSeed.adminUserEmail,
-      EditBusinessUnitE2eSeed.adminUserPassword,
+      GetBusinessUnitE2eSeed.adminUserId,
+      GetBusinessUnitE2eSeed.adminUserEmail,
+      GetBusinessUnitE2eSeed.adminUserPassword,
       [],
     );
     this.superAdminUser = await createAdminUser(
       this.datasource,
-      EditBusinessUnitE2eSeed.superAdminUserId,
-      EditBusinessUnitE2eSeed.superAdminUserEmail,
-      EditBusinessUnitE2eSeed.superAdminUserPassword,
+      GetBusinessUnitE2eSeed.superAdminUserId,
+      GetBusinessUnitE2eSeed.superAdminUserEmail,
+      GetBusinessUnitE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
     );
 
     this.country = Country.create(
-      EditBusinessUnitE2eSeed.countryId,
-      'TESE',
-      'TESTEdit',
-      'TestEdit',
+      GetBusinessUnitE2eSeed.countryId,
+      'TESG',
+      'TESTGET',
+      GetBusinessUnitE2eSeed.countryName,
       '+999',
-      '🏳️Edit',
+      GetBusinessUnitE2eSeed.countryEmoji,
     );
     await this.countryRepository.save(this.country);
 
     this.businessUnit = BusinessUnit.create(
-      EditBusinessUnitE2eSeed.businessUnitId,
-      EditBusinessUnitE2eSeed.businessUnitName,
-      EditBusinessUnitE2eSeed.duplicatedBusinessUnitCode1,
+      GetBusinessUnitE2eSeed.businessUnitId,
+      GetBusinessUnitE2eSeed.businessUnitName,
+      GetBusinessUnitE2eSeed.businessUnitCode,
       this.country,
       this.superAdminUser,
     );

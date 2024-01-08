@@ -17,7 +17,10 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
   }
 
   async get(id: string): Promise<BusinessUnit | null> {
-    return await this.repository.findOne({ where: { id } });
+    return await this.repository.findOne({
+      where: { id },
+      relations: { country: true, virtualCampuses: true },
+    });
   }
 
   async existsById(id: string): Promise<boolean> {

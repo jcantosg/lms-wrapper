@@ -41,6 +41,6 @@ export async function removeAdminUser(
   const userRepository = datasource.getRepository(adminUserSchema);
   const user = await userRepository.findOne({ where: { id: adminUser.id } });
   if (user) {
-    await userRepository.delete({ id: user.id });
+    await userRepository.delete(user.id);
   }
 }

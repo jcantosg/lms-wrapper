@@ -2,7 +2,7 @@ import * as readline from 'readline';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from '#/app.module';
-import datasource from '../../../ormconfig';
+import datasource from '#config/ormconfig';
 
 async function dropDatabase(logger: Logger) {
   await datasource.createQueryRunner().clearDatabase('universae');
