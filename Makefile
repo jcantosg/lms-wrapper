@@ -39,6 +39,10 @@ format-lint: ## Analyze and fix code
 test-unit: ## Run unit tests
 	@npm run test -- --passWithNoTests
 
+test-e2e: ## Run e2e tests
+	@npm run sga:db:seed:country
+	@npm run test:e2e
+
 database-drop: ## Remove all database collections
 	@npm run sga:db:drop -- -f
 

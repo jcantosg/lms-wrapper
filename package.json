@@ -112,7 +112,8 @@
       "^#commands/(.*)$": "<rootDir>/commands/$1",
       "^#config/(.*)$": "<rootDir>/../config/$1",
       "^#test/(.*)$": "<rootDir>/../test/$1",
-      "^#/(.*)$": "<rootDir>/$1"
+      "^#/(.*)$": "<rootDir>/$1",
+      "^&/(.*)$": "<rootDir>/../$1"
     }
   }
 }

@@ -1,4 +1,5 @@
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 
 export abstract class BusinessUnitRepository {
   abstract save(businessUnit: BusinessUnit): Promise<void>;
@@ -10,6 +11,10 @@ export abstract class BusinessUnitRepository {
   abstract existsByName(name: string): Promise<boolean>;
 
   abstract existsByCode(code: string): Promise<boolean>;
+
+  abstract matching(criteria: Criteria): Promise<BusinessUnit[]>;
+
+  abstract count(criteria: Criteria): Promise<number>;
 
   abstract update(businessUnit: BusinessUnit): Promise<void>;
 }

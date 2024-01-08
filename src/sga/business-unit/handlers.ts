@@ -4,6 +4,7 @@ import { BusinessUnitRepository } from '#business-unit/domain/repository/busines
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
+import { GetAllBusinessUnitsHandler } from '#business-unit/application/get-all-business-units/get-all-business-units.handler';
 import { EditBusinessUnitHandler } from '#business-unit/application/edit-business-unit/edit-business-unit.handler';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { GetBusinessUnitHandler } from '#business-unit/application/get-business-unit/get-business-unit.handler';
@@ -63,7 +64,18 @@ const getBusinessUnitHandler = {
   inject: [BusinessUnitGetter],
 };
 
+const getAllBusinessUnitsHandler = {
+  provide: GetAllBusinessUnitsHandler,
+  useFactory: (businessUnitRepository: BusinessUnitRepository) => {
+    return new GetAllBusinessUnitsHandler(businessUnitRepository);
+  },
+  inject: [BusinessUnitRepository],
+};
+
 export const handlers = [
+  createBusinessUnitHandler,
+  editBusinessUnitHandler,
+  getAllBusinessUnitsHandler,
   createBusinessUnitHandler,
   editBusinessUnitHandler,
   getBusinessUnitHandler,
