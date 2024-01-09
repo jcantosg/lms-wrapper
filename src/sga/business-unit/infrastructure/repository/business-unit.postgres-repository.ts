@@ -64,7 +64,7 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.country`, 'country');
 
     return this.applyFilters(criteria, queryBuilder, aliasQuery)
-      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyOrder(criteria, queryBuilder)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
   }
@@ -87,11 +87,14 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
   private applyOrder(
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<BusinessUnit>,
-    aliasQuery: string,
   ) {
     if (criteria.order.hasOrderType() && criteria.order.hasOrderBy()) {
+      const orderBy =
+        criteria.order.orderBy === 'country'
+          ? 'country.name'
+          : criteria.order.orderBy;
       queryBuilder.addOrderBy(
-        `${aliasQuery}.${criteria.order.orderBy}`,
+        orderBy,
         criteria.order.orderType === OrderTypes.NONE
           ? undefined
           : criteria.order.orderType,
