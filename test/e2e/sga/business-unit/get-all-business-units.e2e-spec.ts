@@ -2,13 +2,13 @@ import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '&/ormconfig';
+import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { GetAllBusinessUnitsE2eSeed } from '#test/e2e/sga/business-unit/get-all-business-units.e2e-seed';
 import { GetAllBusinessUnitsE2eSeedDataConfig } from './seed-data-config/get-all-business-units.e2e-seed-data-config';
 import {
-  FIRST_PAGE,
   DEFAULT_LIMIT,
+  FIRST_PAGE,
 } from '#/sga/shared/application/collection.query';
 
 const path = '/business-unit';
@@ -79,7 +79,6 @@ describe('/business-unit', () => {
           country: expectCountryResponse(),
         }),
       );
-
     expect(response.body.items).toEqual(expect.arrayContaining(expectedItems));
   });
 
@@ -207,7 +206,7 @@ describe('/business-unit', () => {
   });
 
   it('should return business units with query param code', async () => {
-    const code = 'bar';
+    const code = 'val';
     const response = await supertest(httpServer)
       .get(path)
       .query({

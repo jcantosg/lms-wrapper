@@ -20,8 +20,8 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
   public static adminUserPassword = 'pass123';
   public static adminUserId = uuid();
   public static businessUnitId = 'dda38bd6-5d7e-4d85-a8c2-6d130dac9f4b';
-  public static businessUnitName = 'Madrid';
-  public static duplicatedBusinessUnitCode1 = 'MAD';
+  public static businessUnitName = 'Sevilla';
+  public static duplicatedBusinessUnitCode1 = 'SEV';
   public static countryId = uuid();
 
   private adminUser: AdminUser;

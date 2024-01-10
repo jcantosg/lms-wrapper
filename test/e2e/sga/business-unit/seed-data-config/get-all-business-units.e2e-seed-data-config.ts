@@ -34,8 +34,8 @@ export class GetAllBusinessUnitsE2eSeedDataConfig {
     },
     {
       id: uuid(),
-      name: 'Barcelona',
-      code: 'BAR',
+      name: 'Alicante',
+      code: 'ALC',
     },
   ];
 }

@@ -20,11 +20,11 @@ export class GetBusinessUnitE2eSeed implements E2eSeed {
   public static adminUserPassword = 'pass123';
   public static adminUserId = uuid();
   public static businessUnitId = '35637f98-af93-456d-bde4-811ec48d4814';
-  public static businessUnitName = 'Valencia';
-  public static businessUnitCode = 'VAL';
+  public static businessUnitName = 'Murcia';
+  public static businessUnitCode = 'MUR';
   public static countryId = uuid();
-  public static countryEmoji = '🏳️Get';
-  public static countryName = 'TestGet';
+  public static countryEmoji = '🏳️GetId';
+  public static countryName = 'TestGetId';
 
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
@@ -57,8 +57,8 @@ export class GetBusinessUnitE2eSeed implements E2eSeed {
 
     this.country = Country.create(
       GetBusinessUnitE2eSeed.countryId,
-      'TESG',
-      'TESTGET',
+      'TESGID',
+      'TESTGETID',
       GetBusinessUnitE2eSeed.countryName,
       '+999',
       GetBusinessUnitE2eSeed.countryEmoji,

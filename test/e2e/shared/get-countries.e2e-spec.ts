@@ -1,30 +1,26 @@
-import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { HttpServer, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { AppModule } from '#/app.module';
 import { CountryResponse } from '#shared/infrastructure/controller/country/get-country.response';
 import { countries as countriesExpected } from '#commands/country/countries';
+import { startApp } from '#test/e2e/e2e-helper';
+import datasource from '#config/ormconfig';
 
 describe('Get Countries', () => {
   let app: INestApplication;
+  let httpServer: HttpServer;
 
   beforeAll(async () => {
-    const moduleFixture = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    app = await startApp();
+    httpServer = app.getHttpServer();
   });
 
   afterAll(async () => {
     await app.close();
+    await datasource.destroy();
   });
 
   it('should return countries', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/country')
-      .expect(200);
+    const response = await request(httpServer).get('/country').expect(200);
 
     const receivedCountries: CountryResponse[] = response.body;
 
