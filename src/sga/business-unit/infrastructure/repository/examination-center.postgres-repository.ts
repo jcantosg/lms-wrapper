@@ -17,4 +17,22 @@ export class ExaminationCenterPostgresRepository
   async save(examinationCenter: ExaminationCenter): Promise<void> {
     await this.repository.save(examinationCenter);
   }
+
+  async existsByCode(code: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { code } });
+
+    return !!result;
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { id } });
+
+    return !!result;
+  }
+
+  async existsByName(name: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { name } });
+
+    return !!result;
+  }
 }

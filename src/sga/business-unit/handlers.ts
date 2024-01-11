@@ -10,6 +10,7 @@ import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-
 import { GetBusinessUnitHandler } from '#business-unit/application/get-business-unit/get-business-unit.handler';
 import { CreateVirtualCampusHandler } from '#business-unit/application/create-virtual-campus/create-virtual-campus.handler';
 import { SearchBusinessUnitsHandler } from '#business-unit/application/search-business-units/search-business-units.handler';
+import { CreateExaminationCenterHandler } from '#business-unit/application/create-examination-center/create-examination-center.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -98,6 +99,22 @@ const createVirtualCampusHandler = {
   inject: [VirtualCampusRepository, BusinessUnitGetter, AdminUserGetter],
 };
 
+const createExaminationServiceHandler = {
+  provide: CreateExaminationCenterHandler,
+  useFactory: (
+    examinationCenterRepository: ExaminationCenterRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    adminUserGetter: AdminUserGetter,
+  ) => {
+    return new CreateExaminationCenterHandler(
+      examinationCenterRepository,
+      businessUnitGetter,
+      adminUserGetter,
+    );
+  },
+  inject: [ExaminationCenterRepository, BusinessUnitGetter, AdminUserGetter],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -107,4 +124,5 @@ export const handlers = [
   getBusinessUnitHandler,
   createVirtualCampusHandler,
   searchBusinessUnitsHandler,
+  createExaminationServiceHandler,
 ];

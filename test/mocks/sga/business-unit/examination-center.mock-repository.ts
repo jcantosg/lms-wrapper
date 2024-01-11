@@ -4,4 +4,7 @@ export class ExaminationCenterMockRepository
   implements ExaminationCenterRepository
 {
   save = jest.fn();
+  existsById = jest.fn();
+  existsByName = jest.fn();
+  existsByCode = jest.fn();
 }
