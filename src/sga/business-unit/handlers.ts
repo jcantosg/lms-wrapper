@@ -8,6 +8,7 @@ import { GetAllBusinessUnitsHandler } from '#business-unit/application/get-all-b
 import { EditBusinessUnitHandler } from '#business-unit/application/edit-business-unit/edit-business-unit.handler';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { GetBusinessUnitHandler } from '#business-unit/application/get-business-unit/get-business-unit.handler';
+import { SearchBusinessUnitsHandler } from '#business-unit/application/search-business-units/search-business-units.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -72,6 +73,14 @@ const getAllBusinessUnitsHandler = {
   inject: [BusinessUnitRepository],
 };
 
+const searchBusinessUnitsHandler = {
+  provide: SearchBusinessUnitsHandler,
+  useFactory: (businessUnitRepository: BusinessUnitRepository) => {
+    return new SearchBusinessUnitsHandler(businessUnitRepository);
+  },
+  inject: [BusinessUnitRepository],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -79,4 +88,5 @@ export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
   getBusinessUnitHandler,
+  searchBusinessUnitsHandler,
 ];

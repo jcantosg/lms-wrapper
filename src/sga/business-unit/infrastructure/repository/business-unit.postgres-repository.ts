@@ -4,7 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { FilterOperators } from '#/sga/shared/domain/criteria/filter';
 
@@ -47,6 +47,8 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
   async count(criteria: Criteria): Promise<number> {
     const aliasQuery = 'businessUnit';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.country`, 'country');
 
     return this.applyFilters(criteria, queryBuilder, aliasQuery).getCount(
       queryBuilder,
@@ -114,21 +116,25 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
       return this;
     }
 
+    const whereMethod =
+      criteria.groupOperator === GroupOperator.AND ? 'andWhere' : 'orWhere';
+
     criteria.filters.forEach((filter) => {
-      if (filter.operator === FilterOperators.EQUALS) {
-        queryBuilder.andWhere(
-          `${aliasQuery}.${filter.field} = :${filter.field}`,
-          {
-            [filter.field]: filter.value,
-          },
-        );
-      } else {
-        queryBuilder.andWhere(
-          `LOWER(${aliasQuery}.${filter.field}) LIKE LOWER(:${filter.field})`,
-          {
-            [filter.field]: `%${filter.value}%`,
-          },
-        );
+      const fieldPath = filter.relationPath
+        ? `${filter.relationPath}.${filter.field}`
+        : `${aliasQuery}.${filter.field}`;
+
+      switch (filter.operator) {
+        case FilterOperators.EQUALS:
+          queryBuilder[whereMethod](`${fieldPath} = :value`, {
+            value: filter.value,
+          });
+          break;
+        case FilterOperators.LIKE:
+          queryBuilder[whereMethod](`LOWER(${fieldPath}) LIKE LOWER(:value)`, {
+            value: `%${filter.value}%`,
+          });
+          break;
       }
     });
 

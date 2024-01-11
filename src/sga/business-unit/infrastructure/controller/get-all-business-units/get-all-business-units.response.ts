@@ -7,7 +7,7 @@ export class GetAllBusinessUnitResponse {
   static create(
     businessUnits: BusinessUnit[],
     page: number,
-    count: number,
+    limit: number,
     total: number,
   ): CollectionResponse<BusinessUnitResponse> {
     return {
@@ -16,7 +16,7 @@ export class GetAllBusinessUnitResponse {
       ),
       pagination: {
         page,
-        count,
+        limit,
         total,
       },
     };

@@ -1,4 +1,4 @@
-import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
 import { Filter, FilterOperators } from '#/sga/shared/domain/criteria/filter';
 import { Order } from '#/sga/shared/domain/criteria/order';
 import { GetAllBusinessUnitsQuery } from '#business-unit/application/get-all-business-units/get-all-business-units.query';
@@ -8,6 +8,7 @@ export class GetAllBusinessUnitsCriteria extends Criteria {
     super(
       GetAllBusinessUnitsCriteria.createFilters(query),
       new Order(query.orderBy, query.orderType),
+      GroupOperator.AND,
       query.page,
       query.limit,
     );
