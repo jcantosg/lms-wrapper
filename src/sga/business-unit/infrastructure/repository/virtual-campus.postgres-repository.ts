@@ -17,4 +17,10 @@ export class VirtualCampusPostgresRepository
   async save(virtualCampus: VirtualCampus): Promise<void> {
     await this.repository.save(virtualCampus);
   }
+
+  async existsById(id: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { id } });
+
+    return !!result;
+  }
 }

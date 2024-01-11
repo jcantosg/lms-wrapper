@@ -62,10 +62,8 @@ export class CreateBusinessUnitHandler implements CommandHandler {
     businessUnit: BusinessUnit,
     user: AdminUser,
   ): Promise<VirtualCampus> {
-    const virtualCampus = VirtualCampus.create(
+    const virtualCampus = VirtualCampus.createFromBusinessUnit(
       uuid(),
-      businessUnit.name,
-      businessUnit.name,
       businessUnit,
       user,
     );

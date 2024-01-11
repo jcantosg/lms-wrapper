@@ -8,6 +8,7 @@ import { GetAllBusinessUnitsHandler } from '#business-unit/application/get-all-b
 import { EditBusinessUnitHandler } from '#business-unit/application/edit-business-unit/edit-business-unit.handler';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { GetBusinessUnitHandler } from '#business-unit/application/get-business-unit/get-business-unit.handler';
+import { CreateVirtualCampusHandler } from '#business-unit/application/create-virtual-campus/create-virtual-campus.handler';
 import { SearchBusinessUnitsHandler } from '#business-unit/application/search-business-units/search-business-units.handler';
 
 const createBusinessUnitHandler = {
@@ -81,6 +82,22 @@ const searchBusinessUnitsHandler = {
   inject: [BusinessUnitRepository],
 };
 
+const createVirtualCampusHandler = {
+  provide: CreateVirtualCampusHandler,
+  useFactory: (
+    virtualCampusRepository: VirtualCampusRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    adminUserGetter: AdminUserGetter,
+  ) => {
+    return new CreateVirtualCampusHandler(
+      virtualCampusRepository,
+      businessUnitGetter,
+      adminUserGetter,
+    );
+  },
+  inject: [VirtualCampusRepository, BusinessUnitGetter, AdminUserGetter],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -88,5 +105,6 @@ export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
   getBusinessUnitHandler,
+  createVirtualCampusHandler,
   searchBusinessUnitsHandler,
 ];

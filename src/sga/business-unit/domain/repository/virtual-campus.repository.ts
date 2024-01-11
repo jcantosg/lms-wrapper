@@ -2,4 +2,6 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 
 export abstract class VirtualCampusRepository {
   abstract save(virtualCampus: VirtualCampus): Promise<void>;
+
+  abstract existsById(id: string): Promise<boolean>;
 }

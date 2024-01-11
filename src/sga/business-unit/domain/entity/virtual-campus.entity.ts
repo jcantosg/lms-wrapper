@@ -65,6 +65,24 @@ export class VirtualCampus extends BaseEntity {
     this._isActive = value;
   }
 
+  static createFromBusinessUnit(
+    id: string,
+    businessUnit: BusinessUnit,
+    user: AdminUser,
+  ): VirtualCampus {
+    return new VirtualCampus(
+      id,
+      new Date(),
+      new Date(),
+      businessUnit.name,
+      businessUnit.code,
+      businessUnit,
+      true,
+      user,
+      user,
+    );
+  }
+
   static create(
     id: string,
     name: string,
