@@ -5,6 +5,7 @@ import { GetBusinessUnitController } from '#business-unit/infrastructure/control
 import { SearchBusinessUnitsController } from '#business-unit/infrastructure/controller/search-business-units.controller';
 import { CreateVirtualCampusController } from '#business-unit/infrastructure/controller/create-virtual-campus.controller';
 import { CreateExaminationCenterController } from '#business-unit/infrastructure/controller/create-examination-center.controller';
+import { GetExaminationCenterController } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.controller';
 
 export const controllers = [
   SearchBusinessUnitsController,
@@ -14,4 +15,5 @@ export const controllers = [
   GetBusinessUnitController,
   CreateVirtualCampusController,
   CreateExaminationCenterController,
+  GetExaminationCenterController,
 ];

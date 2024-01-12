@@ -35,4 +35,11 @@ export class ExaminationCenterPostgresRepository
 
     return !!result;
   }
+
+  async get(id: string): Promise<ExaminationCenter | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnits: true },
+    });
+  }
 }

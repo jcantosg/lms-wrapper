@@ -3,6 +3,7 @@ import { PasswordChecker } from '#admin-user/domain/service/password-checker.ser
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
+import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -23,4 +24,10 @@ export class PasswordCheckerMock implements PasswordChecker {
 export function getBusinessUnitGetterMock(): BusinessUnitGetter {
   return (BusinessUnitGetter as jest.Mocked<typeof BusinessUnitGetter>)
     .prototype;
+}
+
+export function getAnExaminationCenterGetterMock(): ExaminationCenterGetter {
+  return (
+    ExaminationCenterGetter as jest.Mocked<typeof ExaminationCenterGetter>
+  ).prototype;
 }

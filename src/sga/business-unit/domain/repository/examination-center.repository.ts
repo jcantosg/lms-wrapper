@@ -8,4 +8,6 @@ export abstract class ExaminationCenterRepository {
   public abstract existsByName(name: string): Promise<boolean>;
 
   public abstract existsByCode(code: string): Promise<boolean>;
+
+  public abstract get(id: string): Promise<ExaminationCenter | null>;
 }

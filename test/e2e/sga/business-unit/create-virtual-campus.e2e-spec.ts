@@ -18,7 +18,7 @@ describe('/virtual-campus (POST)', () => {
     app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateVirtualCampusE2eSeeds(datasource);
-
+    await seeder.arrange();
     superAdminAccessToken = await login(
       httpServer,
       CreateVirtualCampusE2eSeeds.superAdminUserEmail,

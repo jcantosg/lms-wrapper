@@ -7,4 +7,5 @@ export class ExaminationCenterMockRepository
   existsById = jest.fn();
   existsByName = jest.fn();
   existsByCode = jest.fn();
+  get = jest.fn();
 }
