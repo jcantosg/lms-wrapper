@@ -65,7 +65,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: GetAllBusinessUnitsE2eSeedDataConfig.businessUnits.length,
     });
 
@@ -93,7 +93,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: 2,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: GetAllBusinessUnitsE2eSeedDataConfig.businessUnits.length,
     });
 
@@ -121,7 +121,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: 0,
     });
 
@@ -145,7 +145,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: businessUnitsFilter.length,
     });
 
@@ -166,7 +166,7 @@ describe('/business-unit', () => {
 
   it('should return business units with query param name and query param code', async () => {
     const name = 'val';
-    const code = 'bar';
+    const code = 'xar';
 
     const response = await supertest(httpServer)
       .get(path)
@@ -181,12 +181,12 @@ describe('/business-unit', () => {
       GetAllBusinessUnitsE2eSeedDataConfig.businessUnits.filter(
         (businessUnit) =>
           businessUnit.name.toLowerCase().includes(name) &&
-          businessUnit.name.toLowerCase().includes(code),
+          businessUnit.code.toLowerCase().includes(code),
       );
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: businessUnitsFilter.length,
     });
 
@@ -206,7 +206,7 @@ describe('/business-unit', () => {
   });
 
   it('should return business units with query param code', async () => {
-    const code = 'val';
+    const code = 'xar';
     const response = await supertest(httpServer)
       .get(path)
       .query({
@@ -222,7 +222,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: 1,
     });
 
@@ -252,7 +252,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: GetAllBusinessUnitsE2eSeedDataConfig.businessUnits.length,
     });
 
@@ -297,7 +297,7 @@ describe('/business-unit', () => {
 
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
-      count: DEFAULT_LIMIT,
+      limit: DEFAULT_LIMIT,
       total: businessUnitsExpected.length,
     });
 

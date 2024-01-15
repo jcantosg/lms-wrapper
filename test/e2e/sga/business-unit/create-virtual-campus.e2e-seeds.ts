@@ -30,7 +30,7 @@ export class CreateVirtualCampusE2eSeeds implements E2eSeed {
 
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
-  private duplicatedBusinessUnit: BusinessUnit;
+  private businessUnit: BusinessUnit;
   private country: Country;
 
   private readonly businessUnitRepository;
@@ -75,11 +75,11 @@ export class CreateVirtualCampusE2eSeeds implements E2eSeed {
       ),
     );
 
-    this.duplicatedBusinessUnit = await this.businessUnitRepository.save(
+    this.businessUnit = await this.businessUnitRepository.save(
       BusinessUnit.create(
-        CreateVirtualCampusE2eSeeds.duplicatedBusinessUnitId,
-        CreateVirtualCampusE2eSeeds.duplicatedBusinessUnitName,
-        CreateVirtualCampusE2eSeeds.duplicatedBusinessUnitCode,
+        CreateVirtualCampusE2eSeeds.newBusinessUnitId,
+        'TestBusinessUnit',
+        'TestBusinessCode',
         this.country,
         this.superAdminUser,
       ),
@@ -92,9 +92,6 @@ export class CreateVirtualCampusE2eSeeds implements E2eSeed {
     });
     await this.businessUnitRepository.delete({
       id: CreateVirtualCampusE2eSeeds.newBusinessUnitId,
-    });
-    await this.businessUnitRepository.delete({
-      id: this.duplicatedBusinessUnit.id,
     });
     await this.countryRepository.delete({ id: this.country.id });
     await removeAdminUser(this.datasource, this.adminUser);

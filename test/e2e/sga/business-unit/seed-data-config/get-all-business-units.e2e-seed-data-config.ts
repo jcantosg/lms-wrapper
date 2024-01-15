@@ -30,7 +30,7 @@ export class GetAllBusinessUnitsE2eSeedDataConfig {
     {
       id: uuid(),
       name: 'Valencia',
-      code: 'VAL',
+      code: 'XAR',
     },
     {
       id: uuid(),

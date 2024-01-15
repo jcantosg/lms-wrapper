@@ -34,8 +34,8 @@ export class EditBusinessUnitController {
   @Roles(AdminUserRoles.SUPERADMIN)
   @Put(':id')
   @UsePipes(
-    new JoiRequestBodyValidationPipe(editBusinessUnitSchema),
     new JoiRequestParamIdValidationPipeService(uuidSchema),
+    new JoiRequestBodyValidationPipe(editBusinessUnitSchema),
   )
   async editBusinessUnit(
     @Request() req: AuthRequest,

@@ -37,7 +37,7 @@ describe('/virtual-campus (POST)', () => {
         id: 'dc87e917-ea81-40de-b887-e6b3a1db23fd',
         name: 'New virtual campus name',
         code: 'New virtual campus code',
-        businessUnitId: '6d24da25-0a3c-48cd-8ec0-b8c8d9bfeda3',
+        businessUnitId: '09eccb0f-acd5-4ecb-8b9f-1a71d2485061',
       })
       .expect(404);
   });

@@ -3,4 +3,6 @@ import { VirtualCampusRepository } from '#business-unit/domain/repository/virtua
 export class VirtualCampusMockRepository implements VirtualCampusRepository {
   save = jest.fn();
   existsById = jest.fn();
+  get = jest.fn();
+  update = jest.fn();
 }

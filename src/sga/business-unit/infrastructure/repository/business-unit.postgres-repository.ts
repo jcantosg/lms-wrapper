@@ -124,16 +124,21 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
         ? `${filter.relationPath}.${filter.field}`
         : `${aliasQuery}.${filter.field}`;
 
+      const paramName = filter.field;
+
       switch (filter.operator) {
         case FilterOperators.EQUALS:
-          queryBuilder[whereMethod](`${fieldPath} = :value`, {
-            value: filter.value,
+          queryBuilder[whereMethod](`${fieldPath} = :${paramName}`, {
+            [paramName]: filter.value,
           });
           break;
         case FilterOperators.LIKE:
-          queryBuilder[whereMethod](`LOWER(${fieldPath}) LIKE LOWER(:value)`, {
-            value: `%${filter.value}%`,
-          });
+          queryBuilder[whereMethod](
+            `LOWER(${fieldPath}) LIKE LOWER(:${paramName})`,
+            {
+              [paramName]: `%${filter.value}%`,
+            },
+          );
           break;
       }
     });

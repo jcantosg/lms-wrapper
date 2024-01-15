@@ -23,4 +23,21 @@ export class VirtualCampusPostgresRepository
 
     return !!result;
   }
+
+  async get(id: string): Promise<VirtualCampus | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnit: true },
+    });
+  }
+
+  async update(virtualCampus: VirtualCampus): Promise<void> {
+    await this.repository.update(virtualCampus.id, {
+      name: virtualCampus.name,
+      code: virtualCampus.code,
+      updatedAt: virtualCampus.updatedAt,
+      updatedBy: virtualCampus.updatedBy,
+      isActive: virtualCampus.isActive,
+    });
+  }
 }

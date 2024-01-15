@@ -20,7 +20,7 @@ type CreateVirtualCampusBody = {
   id: string;
   name: string;
   code: string;
-  businessId: string;
+  businessUnitId: string;
 };
 
 @Controller('virtual-campus')
@@ -39,7 +39,7 @@ export class CreateVirtualCampusController {
       body.id,
       body.name,
       body.code,
-      body.businessId,
+      body.businessUnitId,
       req.user.id,
     );
     await this.handler.handle(command);

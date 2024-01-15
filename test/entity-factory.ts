@@ -3,6 +3,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 
 export const getACountry = (id = uuid()): Country => {
@@ -21,6 +22,16 @@ export const getABusinessUnit = (id = uuid()): BusinessUnit => {
     'name',
     'code',
     getACountry(),
+    getAnAdminUser(),
+  );
+};
+
+export const getAVirtualCampus = (id = uuid()): VirtualCampus => {
+  return VirtualCampus.create(
+    id,
+    'name',
+    'code',
+    getABusinessUnit(),
     getAnAdminUser(),
   );
 };

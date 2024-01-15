@@ -102,4 +102,17 @@ export class VirtualCampus extends BaseEntity {
       user,
     );
   }
+
+  public update(
+    name: string,
+    code: string,
+    user: AdminUser,
+    isActive: boolean,
+  ) {
+    this._name = name;
+    this._code = code;
+    this.updatedAt = new Date();
+    this._updatedBy = user;
+    this._isActive = isActive;
+  }
 }
