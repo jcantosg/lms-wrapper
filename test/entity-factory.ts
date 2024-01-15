@@ -11,9 +11,14 @@ export const getACountry = (id = uuid()): Country => {
 };
 
 export const getAnAdminUser = (id = uuid()): AdminUser => {
-  return AdminUser.create(id, 'test@email.com', 'password', [
-    AdminUserRoles.SUPERADMIN,
-  ]);
+  return AdminUser.create(
+    id,
+    'test@email.com',
+    'password',
+    [AdminUserRoles.SUPERADMIN],
+    'name',
+    'avatar',
+  );
 };
 
 export const getABusinessUnit = (id = uuid()): BusinessUnit => {

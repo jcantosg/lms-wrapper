@@ -18,6 +18,8 @@ export class RegisterAdminUserController {
       body.email,
       body.password,
       body.roles,
+      body.name,
+      body.avatar,
     );
 
     return await this.registerAdminUserHandler.handle(command);

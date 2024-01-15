@@ -37,6 +37,7 @@ const configModule = ConfigModule.forRoot({
     REFRESH_TOKEN_TTL: Joi.number().required(),
     JWT_SECRET: Joi.string().required(),
     JWT_TTL: Joi.string().required(),
+    DEFAULT_AVATAR: Joi.string().required(),
   }),
 });
 

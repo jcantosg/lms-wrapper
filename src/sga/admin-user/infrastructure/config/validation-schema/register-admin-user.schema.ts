@@ -11,4 +11,6 @@ export const registerAdminUserSchema: Joi.ObjectSchema = Joi.object({
   roles: Joi.array()
     .items(Joi.string().valid(...Object.values(AdminUserRoles)))
     .required(),
+  name: Joi.string().required(),
+  avatar: Joi.string(),
 });

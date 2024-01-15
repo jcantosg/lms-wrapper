@@ -26,7 +26,7 @@ export class RefreshTokenPostgresRepository implements RefreshTokenRepository {
       .createQueryBuilder()
       .update()
       .set({ isRevoked: true })
-      .where('userId = :userId', { userId })
+      .where('user_id = :userId', { userId })
       .execute();
   }
 }

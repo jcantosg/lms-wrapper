@@ -7,5 +7,7 @@ export class RegisterAdminUserCommand implements Command {
     readonly email: string,
     readonly password: string,
     readonly roles: AdminUserRoles[],
+    readonly name: string,
+    readonly avatar?: string,
   ) {}
 }

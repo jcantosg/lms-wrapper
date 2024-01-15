@@ -9,6 +9,7 @@ export class RegisterAdminUserHandler implements CommandHandler {
   constructor(
     private readonly adminUserRepository: AdminUserRepository,
     private readonly passwordEncoder: PasswordEncoder,
+    private readonly defaultAvatar: string,
   ) {}
 
   async handle(command: RegisterAdminUserCommand): Promise<void> {
@@ -24,6 +25,8 @@ export class RegisterAdminUserHandler implements CommandHandler {
       command.email,
       await this.passwordEncoder.encodePassword(command.password),
       command.roles,
+      command.name,
+      command.avatar ?? this.defaultAvatar,
     );
     await this.adminUserRepository.save(adminUser);
   }

@@ -11,6 +11,8 @@ export class AdminUser extends BaseEntity {
     private _email: string,
     private _password: string,
     private _roles: AdminUserRoles[],
+    private _name: string,
+    private _avatar: string,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -20,8 +22,19 @@ export class AdminUser extends BaseEntity {
     email: string,
     password: string,
     roles: AdminUserRoles[],
+    name: string,
+    avatar: string,
   ) {
-    return new this(id, new Date(), new Date(), email, password, roles);
+    return new this(
+      id,
+      new Date(),
+      new Date(),
+      email,
+      password,
+      roles,
+      name,
+      avatar,
+    );
   }
 
   public get email(): string {
@@ -38,6 +51,22 @@ export class AdminUser extends BaseEntity {
 
   public set password(value: string) {
     this._password = value;
+  }
+
+  public get name(): string {
+    return this._name;
+  }
+
+  public set name(value: string) {
+    this._name = value;
+  }
+
+  public get avatar(): string {
+    return this._avatar;
+  }
+
+  public set avatar(value: string) {
+    this._avatar = value;
   }
 
   public get roles(): AdminUserRoles[] {

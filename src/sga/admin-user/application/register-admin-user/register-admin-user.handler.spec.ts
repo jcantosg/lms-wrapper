@@ -19,6 +19,8 @@ const command = new RegisterAdminUserCommand(
   'adminUsername@example.org',
   'password',
   [AdminUserRoles.SUPERADMIN],
+  'name',
+  'avatar',
 );
 
 describe('Register adminUser handler', () => {
@@ -31,6 +33,7 @@ describe('Register adminUser handler', () => {
     handler = new RegisterAdminUserHandler(
       adminUserRepository,
       passwordEncoder,
+      'defaultAvatar',
     );
   });
 

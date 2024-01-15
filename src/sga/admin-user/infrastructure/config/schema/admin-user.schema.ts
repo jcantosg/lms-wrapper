@@ -23,5 +23,14 @@ export const adminUserSchema = new EntitySchema<AdminUser>({
       enum: AdminUserRoles,
       type: String,
     },
+    name: {
+      type: String,
+      nullable: false,
+      default: '',
+    },
+    avatar: {
+      type: String,
+      nullable: true,
+    },
   },
 });

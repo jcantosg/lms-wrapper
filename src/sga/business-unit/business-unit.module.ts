@@ -11,5 +11,6 @@ import { controllers } from '#business-unit/controllers';
   imports: [TypeOrmModule.forFeature(businessUnitSchemas), AdminUserModule],
   providers: [...repositories, ...handlers, ...services],
   controllers: [...controllers],
+  exports: [...services],
 })
 export class BusinessUnitModule {}

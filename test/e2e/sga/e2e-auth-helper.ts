@@ -30,6 +30,8 @@ export async function createAdminUser(
       email,
       await passwordEncoder.encodePassword(password),
       roles,
+      'name',
+      'avatar',
     ),
   );
 }
