@@ -2,8 +2,11 @@ import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { migrationDbConfig } from '#config/database.config';
+import fs from 'fs';
 
-config();
+const env = process.env.NODE_ENV;
+const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
+config({ path: envFile });
 
 const configService = new ConfigService();
 

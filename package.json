@@ -20,7 +20,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e": "NODE_ENV=test && jest --config ./test/jest-e2e.json --runInBand",
     "commitlint": "commitlint --edit",
     "commit": "cz",
     "deploy:staging": "pm2 deploy staging --force",
@@ -28,7 +28,11 @@
     "typeorm:migrations:down": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:revert -d config/ormconfig.ts",
     "typeorm:migrations:generate": "ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:generate -d config/ormconfig.ts ./migrations/$npm_config_name",
     "sga:db:drop": "ts-node -r tsconfig-paths/register src/commands/db/drop-database.command.ts",
-    "sga:db:seed:country": "ts-node -r tsconfig-paths/register src/commands/country/import-countries.command.ts"
+    "sga:db:seed:country": "ts-node -r tsconfig-paths/register src/commands/country/import-countries.command.ts",
+    "sga:test:db:create": "ts-node -r tsconfig-paths/register src/commands/db/create-e2e-database.command.ts",
+    "sga:test:db:drop": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/db/drop-database.command.ts",
+    "typeorm:test:migrations:up": "NODE_ENV=test ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:run -d config/ormconfig.ts",
+    "sga:test:db:seed:country": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/country/import-countries.command.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.1",

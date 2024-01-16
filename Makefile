@@ -40,8 +40,9 @@ test-unit: ## Run unit tests
 	@npm run test -- --passWithNoTests
 
 test-e2e: ## Run e2e tests
-	@npm run sga:db:seed:country
+	make test-database-setup
 	@npm run test:e2e
+	make test-database-drop
 
 database-drop: ## Remove all database collections
 	@npm run sga:db:drop -- -f
@@ -50,3 +51,11 @@ database-reload: ## drop, runs migrations, seed
 	@npm run sga:db:drop -- -f
 	@npm run typeorm:migrations:up
 	@npm run sga:db:seed:country
+
+test-database-setup:
+	@npm run sga:test:db:create
+	@npm run typeorm:test:migrations:up
+	@npm run sga:test:db:seed:country
+
+test-database-drop:
+	@npm run sga:test:db:drop -f
