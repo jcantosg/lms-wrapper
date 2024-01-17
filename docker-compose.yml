@@ -1,20 +1,21 @@
 services:
-  db:
-    container_name: universae_db
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: easrevinu
-      POSTGRES_USER: universae
-      POSTGRES_DB: universae
-      PGDATA: /var/lib/postgresql/data/universae
-    volumes:
-      - ${PWD}/etc/infrastructure/db-data:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
-    networks:
-      - universae-network
+ db:
+  container_name: universae_db
+  image: postgres
+  user: '1001'
+  restart: always
+  environment:
+   POSTGRES_PASSWORD: easrevinu
+   POSTGRES_USER: universae
+   POSTGRES_DB: universae
+   PGDATA: /var/lib/postgresql/data/universae
+  volumes:
+   - ${PWD}/etc/infrastructure/db-data:/var/lib/postgresql/data
+  ports:
+   - '5432:5432'
+  networks:
+   - universae-network
 
 networks:
-  universae-network:
-    external: true
+ universae-network:
+  external: true

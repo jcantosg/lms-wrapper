@@ -1,29 +1,48 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, dev ]
-  pull_request:
-    branches: ['*']
+ push:
+  branches: [ main, dev ]
+ pull_request:
+  branches: [ '*' ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: npm
-      - name: Print versions
-        run: |
-          git --version
-          node --version
-          npm --version
-      - name: Install dependencies
-        run: npm ci
-      - name: Run unit test
-        run: make test-unit
+ test:
+  runs-on: ubuntu-latest
+  env:
+   DATABASE_HOST: localhost
+   DATABASE_PORT: 5432
+   DATABASE_NAME: universae
+   DATABASE_USER: universae
+   DATABASE_PASSWORD: easrevinu
+   VERBOSE_MODE: false
+   APP_STABLE_VERSION: 20.9.0
+   NODE_ENV: test
+   REFRESH_TOKEN_TTL: 100000
+   JWT_SECRET: ejemplo
+   JWT_TTL: 100000
+   DEFAULT_AVATAR: false
+  steps:
+   - uses: actions/checkout@v3
+     with:
+      fetch-depth: 0
+   - name: Setup node
+     uses: actions/setup-node@v4
+     with:
+      node-version: lts/*
+      cache: npm
+   - name: Print versions
+     run: |
+      git --version
+      node --version
+      npm --version
+   - name: Install dependencies
+     run: npm ci
+   - name: Run unit test
+     run: make test-unit
+   - name: Create Docker Network
+     run: docker network create universae-network
+   - name: Start Database
+     run: make up
+   - name: Run E2E test
+     run: make test-e2e
