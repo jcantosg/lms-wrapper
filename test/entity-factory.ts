@@ -51,6 +51,7 @@ export const getAnExaminationCenter = (
     [],
     'address',
     getAnAdminUser(),
+    getACountry(),
   );
 };
 export const getAMainExaminationCenter = (
@@ -63,6 +64,7 @@ export const getAMainExaminationCenter = (
     [],
     'address',
     getAnAdminUser(),
+    getACountry(),
   );
   examinationCenter.isMain = true;
 

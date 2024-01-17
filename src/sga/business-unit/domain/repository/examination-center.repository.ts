@@ -1,3 +1,4 @@
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 
 export abstract class ExaminationCenterRepository {
@@ -8,6 +9,10 @@ export abstract class ExaminationCenterRepository {
   public abstract existsByName(name: string): Promise<boolean>;
 
   public abstract existsByCode(code: string): Promise<boolean>;
+
+  abstract matching(criteria: Criteria): Promise<ExaminationCenter[]>;
+
+  abstract count(criteria: Criteria): Promise<number>;
 
   public abstract get(id: string): Promise<ExaminationCenter | null>;
 

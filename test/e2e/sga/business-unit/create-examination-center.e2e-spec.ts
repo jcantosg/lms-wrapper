@@ -51,6 +51,7 @@ describe('/examination-center (POST)', () => {
         code: 'New Examination Center code',
         businessUnits: [],
         address: 'New Examination Center address',
+        countryId: CreateExaminationCenterE2eSeeds.countryId,
       })
       .expect(201);
   });
@@ -64,6 +65,7 @@ describe('/examination-center (POST)', () => {
         code: 'New Examination Center code business',
         businessUnits: ['9b498d9b-62e9-4558-9ec1-5be5b650279e'],
         address: 'New Examination Center address',
+        countryId: CreateExaminationCenterE2eSeeds.countryId,
       })
       .expect(404);
   });

@@ -6,4 +6,5 @@ export const createExaminationCenterSchema: Joi.ObjectSchema = Joi.object({
   code: Joi.string().required(),
   businessUnits: Joi.array().items(Joi.string().guid()).required(),
   address: Joi.string().required(),
+  countryId: Joi.string().guid().required(),
 });

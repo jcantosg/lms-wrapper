@@ -39,6 +39,13 @@ export const examinationCenterSchema = new EntitySchema<ExaminationCenter>({
   },
   relations: {
     ...BaseSchemaRelations,
+    country: {
+      type: 'many-to-one',
+      target: 'Country',
+      joinColumn: {
+        name: 'country_id',
+      },
+    },
     businessUnits: {
       type: 'many-to-many',
       target: 'BusinessUnit',

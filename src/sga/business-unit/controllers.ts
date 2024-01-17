@@ -7,6 +7,8 @@ import { CreateVirtualCampusController } from '#business-unit/infrastructure/con
 import { CreateExaminationCenterController } from '#business-unit/infrastructure/controller/create-examination-center.controller';
 import { EditVirtualCampusController } from '#business-unit/infrastructure/controller/edit-virtual-campus.controller';
 import { GetExaminationCenterController } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.controller';
+import { GetAllExaminationCentersController } from '#business-unit/infrastructure/controller/get-all-examination-centers/get-all-examination-centers.controller';
+import { SearchExaminationCentersController } from '#business-unit/infrastructure/controller/search-examination-centers.controller';
 import { DeleteExaminationCenterController } from '#business-unit/infrastructure/controller/delete-examination-center.controller';
 
 export const controllers = [
@@ -18,6 +20,8 @@ export const controllers = [
   CreateVirtualCampusController,
   CreateExaminationCenterController,
   EditVirtualCampusController,
+  SearchExaminationCentersController,
   GetExaminationCenterController,
+  GetAllExaminationCentersController,
   DeleteExaminationCenterController,
 ];

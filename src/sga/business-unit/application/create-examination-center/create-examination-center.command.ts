@@ -8,5 +8,6 @@ export class CreateExaminationCenterCommand implements Command {
     public readonly businessUnits: string[],
     public readonly address: string,
     public readonly userId: string,
+    public readonly countryId: string,
   ) {}
 }

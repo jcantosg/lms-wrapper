@@ -7,6 +7,8 @@ export class ExaminationCenterMockRepository
   existsById = jest.fn();
   existsByName = jest.fn();
   existsByCode = jest.fn();
+  count = jest.fn();
+  matching = jest.fn();
   get = jest.fn();
   delete = jest.fn();
 }

@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { DataSource, Repository } from 'typeorm';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
@@ -9,6 +10,7 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { GetAllBusinessUnitsE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-business-units.e2e-seed-data-config';
+import { Country } from '#shared/domain/entity/country.entity';
 
 export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
   public static examinationCenterId = '1c63d7a9-c0f4-4a5e-9e76-c6ce6f904dd1';
@@ -24,15 +26,18 @@ export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
   public static mainExaminationCenterAddress = 'main address';
 
   private superAdminUser: AdminUser;
+  private country: Country;
 
   private examinationCenterRepository: Repository<ExaminationCenter>;
   private examinationCenter: ExaminationCenter;
   private mainExaminationCenter: ExaminationCenter;
+  private readonly countryRepository: Repository<Country>;
 
   constructor(private readonly datasource: DataSource) {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
+    this.countryRepository = datasource.getRepository(Country);
   }
 
   async arrange(): Promise<void> {
@@ -43,6 +48,17 @@ export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
       GetAllBusinessUnitsE2eSeedDataConfig.superAdmin.password,
       [AdminUserRoles.SUPERADMIN],
     );
+
+    this.country = Country.create(
+      uuid(),
+      'TestGet',
+      'TESTGET',
+      'TESTGET',
+      '+999',
+      '🏳️',
+    );
+    await this.countryRepository.save(this.country);
+
     this.examinationCenter = ExaminationCenter.create(
       DeleteExaminationCenterE2eSeeds.examinationCenterId,
       DeleteExaminationCenterE2eSeeds.examinationCenterName,
@@ -50,6 +66,7 @@ export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
       [],
       DeleteExaminationCenterE2eSeeds.examinationCenterAddress,
       this.superAdminUser,
+      this.country,
     );
     this.mainExaminationCenter = ExaminationCenter.create(
       DeleteExaminationCenterE2eSeeds.mainExaminationCenterId,
@@ -58,6 +75,7 @@ export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
       [],
       DeleteExaminationCenterE2eSeeds.mainExaminationCenterAddress,
       this.superAdminUser,
+      this.country,
     );
     this.mainExaminationCenter.isMain = true;
     await this.examinationCenterRepository.save(this.examinationCenter);
@@ -71,6 +89,7 @@ export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
     await this.examinationCenterRepository.delete({
       id: DeleteExaminationCenterE2eSeeds.mainExaminationCenterId,
     });
+    await this.countryRepository.delete(this.country.id);
     await removeAdminUser(this.datasource, this.superAdminUser);
   }
 }

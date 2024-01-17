@@ -22,6 +22,7 @@ type CreateExaminationCenterBody = {
   code: string;
   businessUnits: string[];
   address: string;
+  countryId: string;
 };
 
 @Controller('examination-center')
@@ -43,6 +44,7 @@ export class CreateExaminationCenterController {
       body.businessUnits,
       body.address,
       req.user.id,
+      body.countryId,
     );
     await this.handler.handle(command);
   }

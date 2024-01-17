@@ -1,0 +1,91 @@
+import { Repository, DataSource } from 'typeorm';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { Country } from '#shared/domain/entity/country.entity';
+import { createAdminUser, removeAdminUser } from '../e2e-auth-helper';
+import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
+import { GetAllExaminationCentersE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-examination-centers.e2e-seed-data-config';
+
+export class GetAllExaminationCentersE2eSeed implements E2eSeed {
+  private superAdminUser: AdminUser;
+  private adminUser: AdminUser;
+  private businessUnit: BusinessUnit;
+  private examinationCenters: ExaminationCenter[];
+  private country: Country;
+
+  private readonly businessUnitRepository: Repository<BusinessUnit>;
+  private readonly countryRepository: Repository<Country>;
+  private readonly examinationCenterRepository: Repository<ExaminationCenter>;
+
+  constructor(private readonly datasource: DataSource) {
+    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
+    this.countryRepository = datasource.getRepository(Country);
+    this.examinationCenterRepository =
+      datasource.getRepository(ExaminationCenter);
+  }
+
+  async arrange(): Promise<void> {
+    this.adminUser = await createAdminUser(
+      this.datasource,
+      GetAllExaminationCentersE2eSeedDataConfig.admin.userId,
+      GetAllExaminationCentersE2eSeedDataConfig.admin.email,
+      GetAllExaminationCentersE2eSeedDataConfig.admin.password,
+      [],
+    );
+    this.superAdminUser = await createAdminUser(
+      this.datasource,
+      GetAllExaminationCentersE2eSeedDataConfig.superAdmin.userId,
+      GetAllExaminationCentersE2eSeedDataConfig.superAdmin.email,
+      GetAllExaminationCentersE2eSeedDataConfig.superAdmin.password,
+      [AdminUserRoles.SUPERADMIN],
+    );
+
+    this.country = Country.create(
+      GetAllExaminationCentersE2eSeedDataConfig.country.id,
+      GetAllExaminationCentersE2eSeedDataConfig.country.iso,
+      GetAllExaminationCentersE2eSeedDataConfig.country.iso3,
+      GetAllExaminationCentersE2eSeedDataConfig.country.name,
+      GetAllExaminationCentersE2eSeedDataConfig.country.phoneCode,
+      GetAllExaminationCentersE2eSeedDataConfig.country.emoji,
+    );
+
+    await this.countryRepository.save(this.country);
+
+    this.businessUnit = BusinessUnit.create(
+      GetAllExaminationCentersE2eSeedDataConfig.businessUnit.id,
+      GetAllExaminationCentersE2eSeedDataConfig.businessUnit.name,
+      GetAllExaminationCentersE2eSeedDataConfig.businessUnit.code,
+      this.country,
+      this.superAdminUser,
+    );
+
+    await this.businessUnitRepository.save(this.businessUnit);
+
+    this.examinationCenters =
+      GetAllExaminationCentersE2eSeedDataConfig.examinationCenters.map(
+        (examinationCenter) =>
+          ExaminationCenter.create(
+            examinationCenter.id,
+            examinationCenter.name,
+            examinationCenter.code,
+            [this.businessUnit],
+            examinationCenter.address,
+            this.superAdminUser,
+            this.country,
+          ),
+      );
+
+    await this.examinationCenterRepository.save(this.examinationCenters);
+  }
+
+  async clear(): Promise<void> {
+    const examinationCentersIds = this.examinationCenters.map((ec) => ec.id);
+    await this.examinationCenterRepository.delete(examinationCentersIds);
+    await this.businessUnitRepository.delete(this.businessUnit.id);
+    await this.countryRepository.delete(this.country.id);
+    await removeAdminUser(this.datasource, this.superAdminUser);
+    await removeAdminUser(this.datasource, this.adminUser);
+  }
+}

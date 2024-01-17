@@ -9,6 +9,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { Country } from '#shared/domain/entity/country.entity';
 
 export class GetExaminationCenterE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-get-examination-center@email.com';
@@ -24,12 +25,15 @@ export class GetExaminationCenterE2eSeed implements E2eSeed {
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
   private examinationCenter: ExaminationCenter;
+  private country: Country;
   private readonly examinationCenterRepository: Repository<ExaminationCenter>;
+  private readonly countryRepository: Repository<Country>;
 
   constructor(private datasource: DataSource) {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
+    this.countryRepository = datasource.getRepository(Country);
   }
 
   async arrange(): Promise<void> {
@@ -47,6 +51,17 @@ export class GetExaminationCenterE2eSeed implements E2eSeed {
       GetExaminationCenterE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
     );
+
+    this.country = Country.create(
+      uuid(),
+      'TestGet',
+      'TESTGET',
+      'TESTGET',
+      '+999',
+      '🏳️',
+    );
+    await this.countryRepository.save(this.country);
+
     this.examinationCenter = ExaminationCenter.create(
       GetExaminationCenterE2eSeed.examinationCenterId,
       GetExaminationCenterE2eSeed.examinationCenterName,
@@ -54,12 +69,14 @@ export class GetExaminationCenterE2eSeed implements E2eSeed {
       [],
       GetExaminationCenterE2eSeed.examinationCenterAddress,
       this.superAdminUser,
+      this.country,
     );
     this.examinationCenterRepository.save(this.examinationCenter);
   }
 
   async clear(): Promise<void> {
     await this.examinationCenterRepository.delete(this.examinationCenter.id);
+    await this.countryRepository.delete(this.country.id);
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.adminUser);
   }

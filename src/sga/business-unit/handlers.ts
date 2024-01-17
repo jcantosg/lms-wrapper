@@ -15,6 +15,8 @@ import { EditVirtualCampusHandler } from './application/edit-virtual-campus/edit
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { GetExaminationCenterHandler } from '#business-unit/application/get-examination-center/get-examination-center.handler';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
+import { GetAllExaminationCentersHandler } from '#business-unit/application/get-all-examination-centers/get-all-examination-centers.handler';
+import { SearchExaminationCentersHandler } from '#business-unit/application/search-examination-centers/search-examination-centers.handler';
 import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
 
 const createBusinessUnitHandler = {
@@ -110,14 +112,21 @@ const createExaminationServiceHandler = {
     examinationCenterRepository: ExaminationCenterRepository,
     businessUnitGetter: BusinessUnitGetter,
     adminUserGetter: AdminUserGetter,
+    countryGetter: CountryGetter,
   ) => {
     return new CreateExaminationCenterHandler(
       examinationCenterRepository,
       businessUnitGetter,
       adminUserGetter,
+      countryGetter,
     );
   },
-  inject: [ExaminationCenterRepository, BusinessUnitGetter, AdminUserGetter],
+  inject: [
+    ExaminationCenterRepository,
+    BusinessUnitGetter,
+    AdminUserGetter,
+    CountryGetter,
+  ],
 };
 
 const editVirtualCampusHandler = {
@@ -149,6 +158,22 @@ const getExaminationCenterHandler = {
   inject: [ExaminationCenterGetter],
 };
 
+const getAllExaminationCentersHandler = {
+  provide: GetAllExaminationCentersHandler,
+  useFactory: (examinationCenterRepository: ExaminationCenterRepository) => {
+    return new GetAllExaminationCentersHandler(examinationCenterRepository);
+  },
+  inject: [ExaminationCenterRepository],
+};
+
+const searchExaminationCentersHandler = {
+  provide: SearchExaminationCentersHandler,
+  useFactory: (examinationCenterRepository: ExaminationCenterRepository) => {
+    return new SearchExaminationCentersHandler(examinationCenterRepository);
+  },
+  inject: [ExaminationCenterRepository],
+};
+
 const deleteExaminationCenterHandler = {
   provide: DeleteExaminationCenterHandler,
   useFactory: (
@@ -175,5 +200,7 @@ export const handlers = [
   createExaminationServiceHandler,
   editVirtualCampusHandler,
   getExaminationCenterHandler,
+  getAllExaminationCentersHandler,
+  searchExaminationCentersHandler,
   deleteExaminationCenterHandler,
 ];

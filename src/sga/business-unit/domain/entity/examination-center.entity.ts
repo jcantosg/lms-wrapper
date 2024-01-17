@@ -2,6 +2,7 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BusinessUnitWrongNameLengthException } from '#shared/domain/exception/business-unit/business-unit-wrong-name-length.exception';
+import { Country } from '#shared/domain/entity/country.entity';
 
 const START_POSITION = 0;
 const END_POSITION = 3;
@@ -18,6 +19,7 @@ export class ExaminationCenter extends BaseEntity {
     private _address: string,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _country: Country,
     private _isMain: boolean,
   ) {
     super(id, createdAt, updatedAt);
@@ -79,6 +81,14 @@ export class ExaminationCenter extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get country(): Country {
+    return this._country;
+  }
+
+  public set country(value: Country) {
+    this._country = value;
+  }
+
   public get isMain(): boolean {
     return this._isMain;
   }
@@ -94,6 +104,7 @@ export class ExaminationCenter extends BaseEntity {
     businessUnits: BusinessUnit[],
     address: string,
     user: AdminUser,
+    country: Country,
   ): ExaminationCenter {
     return new ExaminationCenter(
       id,
@@ -106,6 +117,7 @@ export class ExaminationCenter extends BaseEntity {
       address,
       user,
       user,
+      country,
       false,
     );
   }
@@ -134,6 +146,7 @@ export class ExaminationCenter extends BaseEntity {
       '',
       user,
       user,
+      businessUnit.country,
       true,
     );
   }
