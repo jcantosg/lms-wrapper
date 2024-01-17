@@ -53,3 +53,18 @@ export const getAnExaminationCenter = (
     getAnAdminUser(),
   );
 };
+export const getAMainExaminationCenter = (
+  id: string = uuid(),
+): ExaminationCenter => {
+  const examinationCenter = ExaminationCenter.create(
+    id,
+    'name',
+    'code',
+    [],
+    'address',
+    getAnAdminUser(),
+  );
+  examinationCenter.isMain = true;
+
+  return examinationCenter;
+};

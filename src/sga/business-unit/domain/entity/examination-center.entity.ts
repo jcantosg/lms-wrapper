@@ -18,6 +18,7 @@ export class ExaminationCenter extends BaseEntity {
     private _address: string,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _isMain: boolean,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -78,6 +79,14 @@ export class ExaminationCenter extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get isMain(): boolean {
+    return this._isMain;
+  }
+
+  public set isMain(value: boolean) {
+    this._isMain = value;
+  }
+
   static create(
     id: string,
     name: string,
@@ -97,6 +106,7 @@ export class ExaminationCenter extends BaseEntity {
       address,
       user,
       user,
+      false,
     );
   }
 
@@ -124,6 +134,7 @@ export class ExaminationCenter extends BaseEntity {
       '',
       user,
       user,
+      true,
     );
   }
 }

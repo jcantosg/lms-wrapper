@@ -15,6 +15,7 @@ import { EditVirtualCampusHandler } from './application/edit-virtual-campus/edit
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { GetExaminationCenterHandler } from '#business-unit/application/get-examination-center/get-examination-center.handler';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
+import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -148,6 +149,20 @@ const getExaminationCenterHandler = {
   inject: [ExaminationCenterGetter],
 };
 
+const deleteExaminationCenterHandler = {
+  provide: DeleteExaminationCenterHandler,
+  useFactory: (
+    examinationCenterRepository: ExaminationCenterRepository,
+    examinationCenterGetter: ExaminationCenterGetter,
+  ) => {
+    return new DeleteExaminationCenterHandler(
+      examinationCenterRepository,
+      examinationCenterGetter,
+    );
+  },
+  inject: [ExaminationCenterRepository, ExaminationCenterGetter],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -160,4 +175,5 @@ export const handlers = [
   createExaminationServiceHandler,
   editVirtualCampusHandler,
   getExaminationCenterHandler,
+  deleteExaminationCenterHandler,
 ];

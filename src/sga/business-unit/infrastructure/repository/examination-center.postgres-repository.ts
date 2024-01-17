@@ -42,4 +42,8 @@ export class ExaminationCenterPostgresRepository
       relations: { businessUnits: true },
     });
   }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete({ id });
+  }
 }

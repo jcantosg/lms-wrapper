@@ -8,4 +8,5 @@ export class ExaminationCenterMockRepository
   existsByName = jest.fn();
   existsByCode = jest.fn();
   get = jest.fn();
+  delete = jest.fn();
 }

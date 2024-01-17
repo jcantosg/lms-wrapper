@@ -30,6 +30,12 @@ export const examinationCenterSchema = new EntitySchema<ExaminationCenter>({
       type: String,
       nullable: false,
     },
+    isMain: {
+      name: 'is_main',
+      type: Boolean,
+      nullable: false,
+      default: false,
+    },
   },
   relations: {
     ...BaseSchemaRelations,
