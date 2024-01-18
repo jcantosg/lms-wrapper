@@ -55,7 +55,7 @@ describe('/business-unit/:id (PUT)', () => {
       .send({
         name: 'TestBusinessUnit',
         code: 'TestBusinessCode',
-        countryId: EditBusinessUnitE2eSeed.countryId,
+        countryId: EditBusinessUnitE2eSeed.secondCountryId,
         isActive: false,
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
@@ -65,6 +65,9 @@ describe('/business-unit/:id (PUT)', () => {
     );
     expect(businessUnit?.name).toEqual('TestBusinessUnit');
     expect(businessUnit?.isActive).toBeFalsy();
+    expect(businessUnit?.country.id).toEqual(
+      EditBusinessUnitE2eSeed.secondCountryId,
+    );
   });
   it('should return bad request when empty body', async () => {
     await supertest(httpServer)
@@ -72,6 +75,18 @@ describe('/business-unit/:id (PUT)', () => {
       .send({})
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(400);
+  });
+  it('should throw a BusinessUnitDuplicatedException (409)', async () => {
+    await supertest(httpServer)
+      .put(path)
+      .send({
+        name: EditBusinessUnitE2eSeed.secondBusinessUnitName,
+        code: EditBusinessUnitE2eSeed.secondBusinessUnitCode,
+        countryId: EditBusinessUnitE2eSeed.countryId,
+        isActive: true,
+      })
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .expect(409);
   });
 
   afterAll(async () => {

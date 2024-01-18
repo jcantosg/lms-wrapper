@@ -29,8 +29,11 @@ export class CreateBusinessUnitHandler implements CommandHandler {
   async handle(command: CreateBusinessUnitCommand): Promise<void> {
     if (
       (await this.businessUnitRepository.existsById(command.id)) ||
-      (await this.businessUnitRepository.existsByName(command.name)) ||
-      (await this.businessUnitRepository.existsByCode(command.code))
+      (await this.businessUnitRepository.existsByName(
+        command.id,
+        command.name,
+      )) ||
+      (await this.businessUnitRepository.existsByCode(command.id, command.code))
     ) {
       throw new BusinessUnitDuplicatedException();
     }

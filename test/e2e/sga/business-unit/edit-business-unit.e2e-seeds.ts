@@ -21,13 +21,20 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
   public static adminUserId = uuid();
   public static businessUnitId = 'dda38bd6-5d7e-4d85-a8c2-6d130dac9f4b';
   public static businessUnitName = 'Sevilla';
-  public static duplicatedBusinessUnitCode1 = 'SEV';
+  public static businessUnitCode = 'SEV';
   public static countryId = uuid();
+  public static secondCountryId = uuid();
+
+  public static secondBusinessUnitId = '209efe84-a44d-4d3d-9cd1-27d46a5938c2';
+  public static secondBusinessUnitName = 'Madrid';
+  public static secondBusinessUnitCode = 'MAD01';
 
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
   private businessUnit: BusinessUnit;
+  private secondBusinessUnit: BusinessUnit;
   private country: Country;
+  private secondCountry: Country;
 
   private readonly businessUnitRepository: Repository<BusinessUnit>;
   private readonly countryRepository: Repository<Country>;
@@ -61,22 +68,42 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
       '+999',
       '🏳️Edit',
     );
+    this.secondCountry = Country.create(
+      EditBusinessUnitE2eSeed.secondCountryId,
+      'SEC',
+      'SECO',
+      'SecondCountry',
+      '+1212',
+      '🏳Second',
+    );
     await this.countryRepository.save(this.country);
+    await this.countryRepository.save(this.secondCountry);
 
     this.businessUnit = BusinessUnit.create(
       EditBusinessUnitE2eSeed.businessUnitId,
       EditBusinessUnitE2eSeed.businessUnitName,
-      EditBusinessUnitE2eSeed.duplicatedBusinessUnitCode1,
+      EditBusinessUnitE2eSeed.businessUnitCode,
       this.country,
       this.superAdminUser,
     );
 
     await this.businessUnitRepository.save(this.businessUnit);
+
+    this.secondBusinessUnit = BusinessUnit.create(
+      EditBusinessUnitE2eSeed.secondBusinessUnitId,
+      EditBusinessUnitE2eSeed.secondBusinessUnitName,
+      EditBusinessUnitE2eSeed.secondBusinessUnitCode,
+      this.country,
+      this.superAdminUser,
+    );
+    await this.businessUnitRepository.save(this.secondBusinessUnit);
   }
 
   async clear() {
     await this.businessUnitRepository.delete(this.businessUnit.id);
+    await this.businessUnitRepository.delete(this.secondBusinessUnit.id);
     await this.countryRepository.delete(this.country.id);
+    await this.countryRepository.delete(this.secondCountry.id);
     await removeAdminUser(this.datasource, this.adminUser);
     await removeAdminUser(this.datasource, this.superAdminUser);
   }

@@ -32,16 +32,16 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
     return !!result;
   }
 
-  async existsByName(name: string): Promise<boolean> {
+  async existsByName(id: string, name: string): Promise<boolean> {
     const result = await this.repository.findOne({ where: { name } });
 
-    return !!result;
+    return result === null ? false : result.id !== id;
   }
 
-  async existsByCode(code: string): Promise<boolean> {
+  async existsByCode(id: string, code: string): Promise<boolean> {
     const result = await this.repository.findOne({ where: { code } });
 
-    return !!result;
+    return result === null ? false : result.id !== id;
   }
 
   async count(criteria: Criteria): Promise<number> {
@@ -153,6 +153,7 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
       isActive: businessUnit.isActive,
       updatedAt: businessUnit.updatedAt,
       updatedBy: businessUnit.updatedBy,
+      country: businessUnit.country,
     });
   }
 }
