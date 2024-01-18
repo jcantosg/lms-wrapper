@@ -30,13 +30,16 @@ export class EditVirtualCampusE2eSeed implements E2eSeed {
   public static businessUnitName = 'Sevilla';
 
   public static virtualCampusId = '1847be5e-693f-4a7d-9f66-00faed159c0c';
-  public static virtualCampusName = 'Sevilla';
-  public static virtualCampusCode = 'SEV';
+  public static existingVirtualCampusId =
+    '77111c4d-1ea6-4bb0-bc97-99836e809f15';
+  public static virtualCampusName = 'Madrid';
+  public static virtualCampusCode = 'MAD';
 
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
   private businessUnit: BusinessUnit;
   private virtualCampus: VirtualCampus;
+  private existingVirtualCampus: VirtualCampus;
   private country: Country;
 
   private readonly businessUnitRepository: Repository<BusinessUnit>;
@@ -91,12 +94,21 @@ export class EditVirtualCampusE2eSeed implements E2eSeed {
       this.businessUnit,
       this.superAdminUser,
     );
+    this.existingVirtualCampus = VirtualCampus.create(
+      EditVirtualCampusE2eSeed.existingVirtualCampusId,
+      EditVirtualCampusE2eSeed.virtualCampusName,
+      EditVirtualCampusE2eSeed.virtualCampusCode,
+      this.businessUnit,
+      this.superAdminUser,
+    );
 
     await this.virtualCampusRepository.save(this.virtualCampus);
+    await this.virtualCampusRepository.save(this.existingVirtualCampus);
   }
 
   async clear() {
     await this.virtualCampusRepository.delete(this.virtualCampus.id);
+    await this.virtualCampusRepository.delete(this.existingVirtualCampus.id);
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await this.countryRepository.delete(this.country.id);
     await removeAdminUser(this.datasource, this.adminUser);

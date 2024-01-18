@@ -90,6 +90,17 @@ describe('/virtual-campus/:id (PUT)', () => {
     expect(virtualCampus?.code).toEqual('TestVirtualCampusCode');
     expect(virtualCampus?.isActive).toEqual(false);
   });
+  it('should throw a virtual campus duplicated error (409)', async () => {
+    await supertest(httpServer)
+      .put(path)
+      .send({
+        name: EditVirtualCampusE2eSeed.virtualCampusName,
+        code: EditVirtualCampusE2eSeed.virtualCampusCode,
+        isActive: true,
+      })
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .expect(409);
+  });
 
   afterAll(async () => {
     await seeder.clear();

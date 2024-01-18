@@ -14,10 +14,12 @@ export const virtualCampusSchema = new EntitySchema<VirtualCampus>({
     name: {
       type: String,
       nullable: false,
+      unique: true,
     },
     code: {
       type: String,
       nullable: false,
+      unique: true,
     },
     isActive: {
       type: Boolean,

@@ -38,6 +38,19 @@ export class VirtualCampusPostgresRepository
       updatedAt: virtualCampus.updatedAt,
       updatedBy: virtualCampus.updatedBy,
       isActive: virtualCampus.isActive,
+      businessUnit: virtualCampus.businessUnit,
     });
+  }
+
+  async existsByCode(id: string, code: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { code } });
+
+    return result === null ? false : result.id !== id;
+  }
+
+  async existsByName(id: string, name: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { name } });
+
+    return result === null ? false : result.id !== id;
   }
 }

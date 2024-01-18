@@ -50,9 +50,21 @@ describe('/virtual-campus (POST)', () => {
         id: CreateVirtualCampusE2eSeeds.newVirtualCampusId,
         name: 'New virtual campus name',
         code: 'New virtual campus code code',
-        businessUnitId: CreateVirtualCampusE2eSeeds.newBusinessUnitId,
+        businessUnitId: CreateVirtualCampusE2eSeeds.businessUnitId,
       })
       .expect(201);
+  });
+  it('should throw a virtual campus duplicated error (409)', async () => {
+    await supertest(httpServer)
+      .post(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        id: CreateVirtualCampusE2eSeeds.virtualCampusId,
+        name: CreateVirtualCampusE2eSeeds.virtualCampusName,
+        code: CreateVirtualCampusE2eSeeds.virtualCampusCode,
+        businessUnitId: CreateVirtualCampusE2eSeeds.businessUnitId,
+      })
+      .expect(409);
   });
 
   afterAll(async () => {

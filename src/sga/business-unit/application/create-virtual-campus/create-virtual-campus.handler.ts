@@ -17,7 +17,17 @@ export class CreateVirtualCampusHandler implements CommandHandler {
     const businessUnit = await this.businessGetter.get(command.businessUnitId);
     const adminUser = await this.adminUserGetter.get(command.userId);
 
-    if (await this.virtualCampusRepository.existsById(command.id)) {
+    if (
+      (await this.virtualCampusRepository.existsById(command.id)) ||
+      (await this.virtualCampusRepository.existsByName(
+        command.id,
+        command.name,
+      )) ||
+      (await this.virtualCampusRepository.existsByCode(
+        command.id,
+        command.code,
+      ))
+    ) {
       throw new VirtualCampusDuplicatedException();
     }
     const virtualCampus = VirtualCampus.create(
