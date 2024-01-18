@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Like, Repository, SelectQueryBuilder } from 'typeorm';
 import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
 import { FilterOperators } from '#/sga/shared/domain/criteria/filter';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
@@ -25,6 +25,16 @@ export class ExaminationCenterPostgresRepository
     const result = await this.repository.findOne({ where: { code } });
 
     return !!result;
+  }
+
+  async getNextAvailableCode(codePart: string): Promise<string> {
+    const results = await this.repository.find({
+      where: { code: Like(`${codePart}%`) },
+    });
+
+    const count = results.length;
+
+    return `${codePart}${count > 9 ? '' + count : '0' + count}`;
   }
 
   async existsById(id: string): Promise<boolean> {

@@ -17,4 +17,6 @@ export abstract class ExaminationCenterRepository {
   public abstract get(id: string): Promise<ExaminationCenter | null>;
 
   public abstract delete(id: string): Promise<void>;
+
+  public abstract getNextAvailableCode(codePart: string): Promise<string>;
 }

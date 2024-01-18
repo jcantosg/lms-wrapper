@@ -12,6 +12,10 @@ import { Country } from '#shared/domain/entity/country.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
+import { BusinessUnitWrongNameLengthException } from '#shared/domain/exception/business-unit/business-unit-wrong-name-length.exception';
+
+const START_POSITION = 0;
+const END_POSITION = 3;
 
 export class CreateBusinessUnitHandler implements CommandHandler {
   constructor(
@@ -29,6 +33,10 @@ export class CreateBusinessUnitHandler implements CommandHandler {
       (await this.businessUnitRepository.existsByCode(command.code))
     ) {
       throw new BusinessUnitDuplicatedException();
+    }
+
+    if (command.name.length <= END_POSITION) {
+      throw new BusinessUnitWrongNameLengthException();
     }
 
     const user = await this.adminUserGetter.get(command.userId);
@@ -76,10 +84,17 @@ export class CreateBusinessUnitHandler implements CommandHandler {
     businessUnit: BusinessUnit,
     user: AdminUser,
   ): Promise<void> {
+    let code = businessUnit.name
+      .substring(START_POSITION, END_POSITION)
+      .toUpperCase();
+
+    code = await this.examinationCenterRepository.getNextAvailableCode(code);
+
     const examinationCenter = ExaminationCenter.createFromBusinessUnit(
       uuid(),
       businessUnit,
       user,
+      code,
     );
     await this.examinationCenterRepository.save(examinationCenter);
   }

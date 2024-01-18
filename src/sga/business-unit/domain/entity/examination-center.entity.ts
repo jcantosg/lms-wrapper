@@ -1,11 +1,7 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { BusinessUnitWrongNameLengthException } from '#shared/domain/exception/business-unit/business-unit-wrong-name-length.exception';
 import { Country } from '#shared/domain/entity/country.entity';
-
-const START_POSITION = 0;
-const END_POSITION = 3;
 
 export class ExaminationCenter extends BaseEntity {
   private constructor(
@@ -126,15 +122,8 @@ export class ExaminationCenter extends BaseEntity {
     id: string,
     businessUnit: BusinessUnit,
     user: AdminUser,
+    code: string,
   ): ExaminationCenter {
-    if (businessUnit.name.length <= END_POSITION) {
-      throw new BusinessUnitWrongNameLengthException();
-    }
-    let code = businessUnit.name
-      .substring(START_POSITION, END_POSITION)
-      .toUpperCase();
-    code = `${code}01`;
-
     return new ExaminationCenter(
       id,
       new Date(),

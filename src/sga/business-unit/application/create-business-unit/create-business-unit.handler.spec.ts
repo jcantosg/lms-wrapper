@@ -31,6 +31,7 @@ let existsBusinessUnitByIdSpy: any;
 let saveSpy: any;
 let saveVirtualCampusSpy: any;
 let saveExaminationCenterSpy: any;
+let getNextAvailableCodeSpy: any;
 
 const command = new CreateBusinessUnitCommand(
   uuid(),
@@ -61,6 +62,10 @@ describe('Create Business Unit Handler', () => {
     saveSpy = jest.spyOn(businessUnitRepository, 'save');
     saveVirtualCampusSpy = jest.spyOn(virtualCampusRepository, 'save');
     saveExaminationCenterSpy = jest.spyOn(examinationCenterRepository, 'save');
+    getNextAvailableCodeSpy = jest.spyOn(
+      examinationCenterRepository,
+      'getNextAvailableCode',
+    );
 
     handler = new CreateBusinessUnitHandler(
       businessUnitRepository,
@@ -82,6 +87,10 @@ describe('Create Business Unit Handler', () => {
 
     getCountrySpy.mockImplementation((): Promise<Country | null> => {
       return Promise.resolve(country);
+    });
+
+    getNextAvailableCodeSpy.mockImplementation((): Promise<string> => {
+      return Promise.resolve('NAM01');
     });
 
     await handler.handle(command);
