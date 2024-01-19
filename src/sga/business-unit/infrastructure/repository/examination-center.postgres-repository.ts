@@ -21,10 +21,10 @@ export class ExaminationCenterPostgresRepository
     await this.repository.save(examinationCenter);
   }
 
-  async existsByCode(code: string): Promise<boolean> {
+  async existsByCode(id: string, code: string): Promise<boolean> {
     const result = await this.repository.findOne({ where: { code } });
 
-    return !!result;
+    return result === null ? false : result.id !== id;
   }
 
   async getNextAvailableCode(codePart: string): Promise<string> {
@@ -168,5 +168,18 @@ export class ExaminationCenterPostgresRepository
 
   async delete(id: string): Promise<void> {
     await this.repository.delete({ id });
+  }
+
+  async update(examinationCenter: ExaminationCenter): Promise<void> {
+    await this.repository.save({
+      id: examinationCenter.id,
+      name: examinationCenter.name,
+      code: examinationCenter.code,
+      address: examinationCenter.address,
+      businessUnits: examinationCenter.businessUnits,
+      isActive: examinationCenter.isActive,
+      updatedBy: examinationCenter.updatedBy,
+      updatedAt: examinationCenter.updatedAt,
+    });
   }
 }

@@ -18,6 +18,7 @@ import { ExaminationCenterGetter } from '#business-unit/domain/service/examinati
 import { GetAllExaminationCentersHandler } from '#business-unit/application/get-all-examination-centers/get-all-examination-centers.handler';
 import { SearchExaminationCentersHandler } from '#business-unit/application/search-examination-centers/search-examination-centers.handler';
 import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
+import { EditExaminationCenterHandler } from '#business-unit/application/edit-examination-center/edit-examination-center.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -188,6 +189,29 @@ const deleteExaminationCenterHandler = {
   inject: [ExaminationCenterRepository, ExaminationCenterGetter],
 };
 
+const editExaminationCenterHandler = {
+  provide: EditExaminationCenterHandler,
+  useFactory: (
+    examinationCenterRepository: ExaminationCenterRepository,
+    examinationCenterGetter: ExaminationCenterGetter,
+    businessUnitGetter: BusinessUnitGetter,
+    adminUserGetter: AdminUserGetter,
+  ) => {
+    return new EditExaminationCenterHandler(
+      examinationCenterRepository,
+      examinationCenterGetter,
+      businessUnitGetter,
+      adminUserGetter,
+    );
+  },
+  inject: [
+    ExaminationCenterRepository,
+    ExaminationCenterGetter,
+    BusinessUnitGetter,
+    AdminUserGetter,
+  ],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -203,4 +227,5 @@ export const handlers = [
   getAllExaminationCentersHandler,
   searchExaminationCentersHandler,
   deleteExaminationCenterHandler,
+  editExaminationCenterHandler,
 ];

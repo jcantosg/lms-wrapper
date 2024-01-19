@@ -8,7 +8,7 @@ export abstract class ExaminationCenterRepository {
 
   public abstract existsByName(name: string): Promise<boolean>;
 
-  public abstract existsByCode(code: string): Promise<boolean>;
+  public abstract existsByCode(id: string, code: string): Promise<boolean>;
 
   abstract matching(criteria: Criteria): Promise<ExaminationCenter[]>;
 
@@ -17,6 +17,8 @@ export abstract class ExaminationCenterRepository {
   public abstract get(id: string): Promise<ExaminationCenter | null>;
 
   public abstract delete(id: string): Promise<void>;
+
+  public abstract update(examinationCenter: ExaminationCenter): Promise<void>;
 
   public abstract getNextAvailableCode(codePart: string): Promise<string>;
 }

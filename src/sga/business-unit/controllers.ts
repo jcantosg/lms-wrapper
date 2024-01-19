@@ -10,6 +10,7 @@ import { GetExaminationCenterController } from '#business-unit/infrastructure/co
 import { GetAllExaminationCentersController } from '#business-unit/infrastructure/controller/get-all-examination-centers/get-all-examination-centers.controller';
 import { SearchExaminationCentersController } from '#business-unit/infrastructure/controller/search-examination-centers.controller';
 import { DeleteExaminationCenterController } from '#business-unit/infrastructure/controller/delete-examination-center.controller';
+import { EditExaminationCenterController } from '#business-unit/infrastructure/controller/edit-examination-center.controller';
 
 export const controllers = [
   SearchBusinessUnitsController,
@@ -24,4 +25,5 @@ export const controllers = [
   GetExaminationCenterController,
   GetAllExaminationCentersController,
   DeleteExaminationCenterController,
+  EditExaminationCenterController,
 ];

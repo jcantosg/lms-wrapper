@@ -11,5 +11,6 @@ export class ExaminationCenterMockRepository
   matching = jest.fn();
   get = jest.fn();
   delete = jest.fn();
+  update = jest.fn();
   getNextAvailableCode = jest.fn();
 }

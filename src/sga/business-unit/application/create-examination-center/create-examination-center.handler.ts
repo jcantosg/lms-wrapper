@@ -21,7 +21,12 @@ export class CreateExaminationCenterHandler implements CommandHandler {
     if (await this.examinationCenterRepository.existsByName(command.name)) {
       throw new ExaminationCenterDuplicatedNameException();
     }
-    if (await this.examinationCenterRepository.existsByCode(command.code)) {
+    if (
+      await this.examinationCenterRepository.existsByCode(
+        command.id,
+        command.code,
+      )
+    ) {
       throw new ExaminationCenterDuplicatedCodeException();
     }
     if (await this.examinationCenterRepository.existsById(command.id)) {
