@@ -13,4 +13,5 @@ export class ExaminationCenterMockRepository
   delete = jest.fn();
   update = jest.fn();
   getNextAvailableCode = jest.fn();
+  getByBusinessUnit = jest.fn();
 }

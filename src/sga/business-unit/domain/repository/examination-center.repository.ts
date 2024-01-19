@@ -21,4 +21,8 @@ export abstract class ExaminationCenterRepository {
   public abstract update(examinationCenter: ExaminationCenter): Promise<void>;
 
   public abstract getNextAvailableCode(codePart: string): Promise<string>;
+
+  public abstract getByBusinessUnit(
+    businessUnitId: string,
+  ): Promise<ExaminationCenter[]>;
 }

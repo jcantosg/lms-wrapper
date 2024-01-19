@@ -182,4 +182,17 @@ export class ExaminationCenterPostgresRepository
       updatedAt: examinationCenter.updatedAt,
     });
   }
+
+  async getByBusinessUnit(
+    businessUnitId: string,
+  ): Promise<ExaminationCenter[]> {
+    return await this.repository.find({
+      relations: { businessUnits: true },
+      where: {
+        businessUnits: {
+          id: businessUnitId,
+        },
+      },
+    });
+  }
 }

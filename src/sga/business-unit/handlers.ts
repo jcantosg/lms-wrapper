@@ -19,6 +19,7 @@ import { GetAllExaminationCentersHandler } from '#business-unit/application/get-
 import { SearchExaminationCentersHandler } from '#business-unit/application/search-examination-centers/search-examination-centers.handler';
 import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
 import { EditExaminationCenterHandler } from '#business-unit/application/edit-examination-center/edit-examination-center.handler';
+import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -212,6 +213,16 @@ const editExaminationCenterHandler = {
   ],
 };
 
+const getBusinessUnitExaminationCentersHandler = {
+  provide: GetBusinessUnitExaminationCentersHandler,
+  useFactory: (examinationCenterRepository: ExaminationCenterRepository) => {
+    return new GetBusinessUnitExaminationCentersHandler(
+      examinationCenterRepository,
+    );
+  },
+  inject: [ExaminationCenterRepository],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -228,4 +239,5 @@ export const handlers = [
   searchExaminationCentersHandler,
   deleteExaminationCenterHandler,
   editExaminationCenterHandler,
+  getBusinessUnitExaminationCentersHandler,
 ];
