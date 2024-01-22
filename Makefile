@@ -41,8 +41,7 @@ test-unit: ## Run unit tests
 
 test-e2e: ## Run e2e tests
 	make test-database-setup
-	@npm run test:e2e
-	make test-database-drop
+	@npm run test:e2e ; make test-database-drop
 
 database-drop: ## Remove all database collections
 	@npm run sga:db:drop -- -f
