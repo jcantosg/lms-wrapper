@@ -15,11 +15,11 @@ export class JoiRequestBodyValidationPipe implements PipeTransform {
       return value;
     }
 
-    const { error } = this.schema.validate(value, { abortEarly: false });
-    if (error) {
-      throw new BadRequestException(error);
+    const validation = this.schema.validate(value, { abortEarly: false });
+    if (validation.error) {
+      throw new BadRequestException(validation.error.message);
     }
 
-    return value;
+    return validation.value;
   }
 }

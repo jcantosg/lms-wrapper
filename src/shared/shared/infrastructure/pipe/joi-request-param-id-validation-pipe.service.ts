@@ -16,7 +16,7 @@ export class JoiRequestParamIdValidationPipeService implements PipeTransform {
     }
     const validation = this.schema.validate(value);
     if (validation.error) {
-      throw new BadRequestException(validation.error);
+      throw new BadRequestException(validation.error.message);
     }
 
     return validation.value;
