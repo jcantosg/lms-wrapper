@@ -6,10 +6,9 @@ import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 
-const path = `/examination-center/${CreateClassroomE2eSeed.examinationCenterId}/classroom`;
-const wrongPath = `/examination-center/${CreateClassroomE2eSeed.missingExaminationCenterId}/classroom`;
+const path = `/classroom`;
 
-describe('/examination-center/:id/classroom (POST)', () => {
+describe('/classroom (POST)', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
@@ -50,18 +49,20 @@ describe('/examination-center/:id/classroom (POST)', () => {
         name: CreateClassroomE2eSeed.classroomName,
         code: CreateClassroomE2eSeed.classroomCode,
         capacity: CreateClassroomE2eSeed.classroomCapacity,
+        examinationCenterId: CreateClassroomE2eSeed.examinationCenterId,
       })
       .expect(201);
   });
   it('should return an ExaminationCenterNotFoundException', async () => {
     const result = await supertest(httpServer)
-      .post(wrongPath)
+      .post(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
         id: CreateClassroomE2eSeed.classroomId,
         name: CreateClassroomE2eSeed.classroomName,
         code: CreateClassroomE2eSeed.classroomCode,
         capacity: CreateClassroomE2eSeed.classroomCapacity,
+        examinationCenterId: CreateClassroomE2eSeed.missingExaminationCenterId,
       })
       .expect(404);
     expect(result.body).toMatchObject(
@@ -79,6 +80,7 @@ describe('/examination-center/:id/classroom (POST)', () => {
         name: CreateClassroomE2eSeed.classroomName,
         code: CreateClassroomE2eSeed.classroomCode,
         capacity: CreateClassroomE2eSeed.classroomCapacity,
+        examinationCenterId: CreateClassroomE2eSeed.examinationCenterId,
       })
       .expect(409);
     expect(result.body).toMatchObject(

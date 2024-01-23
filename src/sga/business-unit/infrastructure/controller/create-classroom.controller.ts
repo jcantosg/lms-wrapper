@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Param,
   Post,
   Request,
   UseGuards,
@@ -24,13 +23,14 @@ type CreateClassroomBody = {
   name: string;
   code: string;
   capacity: number;
+  examinationCenterId: string;
 };
 
-@Controller('examination-center')
+@Controller('classroom')
 export class CreateClassroomController {
   constructor(private handler: CreateClassroomHandler) {}
 
-  @Post(':id/classroom')
+  @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UsePipes(
     new JoiRequestBodyValidationPipe(createClassroomSchema),
@@ -40,7 +40,6 @@ export class CreateClassroomController {
   async createClassroom(
     @Request() req: AuthRequest,
     @Body() body: CreateClassroomBody,
-    @Param('id') examinationCenterId: string,
   ): Promise<void> {
     const userId = req.user.id;
     const command = new CreateClassroomCommand(
@@ -48,7 +47,7 @@ export class CreateClassroomController {
       body.name,
       body.code,
       body.capacity,
-      examinationCenterId,
+      body.examinationCenterId,
       userId,
     );
     await this.handler.handle(command);
