@@ -5,6 +5,7 @@ import { Country } from '#shared/domain/entity/country.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
+import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -69,4 +70,15 @@ export const getAMainExaminationCenter = (
   examinationCenter.isMain = true;
 
   return examinationCenter;
+};
+
+export const getAClassroom = (id: string = uuid()): Classroom => {
+  return Classroom.create(
+    id,
+    'code',
+    'name',
+    4,
+    getAnAdminUser(),
+    getAnExaminationCenter(),
+  );
 };

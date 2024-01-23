@@ -162,7 +162,7 @@ export class ExaminationCenterPostgresRepository
   async get(id: string): Promise<ExaminationCenter | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnits: true },
+      relations: { businessUnits: true, classrooms: true },
     });
   }
 

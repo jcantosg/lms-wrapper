@@ -3,9 +3,9 @@ import {
   Controller,
   Param,
   Put,
+  Request,
   UseGuards,
   UsePipes,
-  Request,
 } from '@nestjs/common';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
@@ -25,6 +25,7 @@ type EditExaminationCenterEndpointBody = {
   address: string;
   businessUnits: string[];
   isActive: boolean;
+  classrooms: string[];
 };
 
 @Controller('examination-center')
@@ -52,6 +53,7 @@ export class EditExaminationCenterController {
         body.businessUnits,
         req.user.id,
         body.isActive,
+        body.classrooms,
       );
 
     await this.handler.handle(command);

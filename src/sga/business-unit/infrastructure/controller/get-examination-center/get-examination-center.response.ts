@@ -1,5 +1,6 @@
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 
 export interface ExaminationCenterResponse {
   id: string;
@@ -8,11 +9,19 @@ export interface ExaminationCenterResponse {
   address: string;
   businessUnits: ExaminationCenterBusinessUnitResponse[];
   isActive: boolean;
+  classrooms: ClassroomResponse[];
 }
 
 export interface ExaminationCenterBusinessUnitResponse {
   id: string;
   name: string;
+}
+
+export interface ClassroomResponse {
+  id: string;
+  name: string;
+  code: string;
+  capacity: number;
 }
 
 export class GetExaminationCenterResponse {
@@ -33,6 +42,16 @@ export class GetExaminationCenterResponse {
         },
       ),
       isActive: examinationCenter.isActive,
+      classrooms: examinationCenter.classrooms?.map(
+        (classroom: Classroom): ClassroomResponse => {
+          return {
+            id: classroom.id,
+            name: classroom.name,
+            code: classroom.code,
+            capacity: classroom.capacity,
+          };
+        },
+      ),
     };
   }
 }

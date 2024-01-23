@@ -59,5 +59,10 @@ export const examinationCenterSchema = new EntitySchema<ExaminationCenter>({
         },
       },
     },
+    classrooms: {
+      type: 'one-to-many',
+      target: 'Classroom',
+      inverseSide: 'examinationCenter',
+    },
   },
 });

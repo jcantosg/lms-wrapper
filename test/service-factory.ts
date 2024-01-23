@@ -5,6 +5,7 @@ import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
+import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -36,4 +37,8 @@ export function getAnExaminationCenterGetterMock(): ExaminationCenterGetter {
   return (
     ExaminationCenterGetter as jest.Mocked<typeof ExaminationCenterGetter>
   ).prototype;
+}
+
+export function getAClassroomGetterMock(): ClassroomGetter {
+  return (ClassroomGetter as jest.Mocked<typeof ClassroomGetter>).prototype;
 }

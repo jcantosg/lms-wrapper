@@ -2,6 +2,7 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
+import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 
 export class ExaminationCenter extends BaseEntity {
   private constructor(
@@ -17,6 +18,7 @@ export class ExaminationCenter extends BaseEntity {
     private _updatedBy: AdminUser,
     private _country: Country,
     private _isMain: boolean,
+    private _classrooms: Classroom[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -93,6 +95,14 @@ export class ExaminationCenter extends BaseEntity {
     this._isMain = value;
   }
 
+  public get classrooms(): Classroom[] {
+    return this._classrooms;
+  }
+
+  public set classrooms(value: Classroom[]) {
+    this._classrooms = value;
+  }
+
   static create(
     id: string,
     name: string,
@@ -115,6 +125,7 @@ export class ExaminationCenter extends BaseEntity {
       user,
       country,
       false,
+      [],
     );
   }
 
@@ -137,6 +148,7 @@ export class ExaminationCenter extends BaseEntity {
       user,
       businessUnit.country,
       true,
+      [],
     );
   }
 
@@ -147,6 +159,7 @@ export class ExaminationCenter extends BaseEntity {
     businessUnits: BusinessUnit[],
     user: AdminUser,
     isActive: boolean,
+    classrooms: Classroom[],
   ): void {
     this._name = name;
     this._code = code;
@@ -155,5 +168,6 @@ export class ExaminationCenter extends BaseEntity {
     this._updatedBy = user;
     this.updatedAt = new Date();
     this._isActive = isActive;
+    this._classrooms = classrooms;
   }
 }

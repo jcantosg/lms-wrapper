@@ -1,6 +1,7 @@
 import { getAnAdminUser, getAnExaminationCenter } from '#test/entity-factory';
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import {
+  getAClassroomGetterMock,
   getAdminUserGetterMock,
   getAnExaminationCenterGetterMock,
   getBusinessUnitGetterMock,
@@ -14,12 +15,14 @@ import { ExaminationCenterGetter } from '#business-unit/domain/service/examinati
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { EditExaminationCenterCommand } from './edit-examination-center.command';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
+import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 
 let handler: EditExaminationCenterHandler;
 let examinationCenterRepository: ExaminationCenterRepository;
 let examinationCenterGetter: ExaminationCenterGetter;
 let businessUnitGetter: BusinessUnitGetter;
 let adminUserGetter: AdminUserGetter;
+let classroomGetter: ClassroomGetter;
 
 let getUserSpy: any;
 let updateSpy: any;
@@ -34,6 +37,7 @@ const command = new EditExaminationCenterCommand(
   [uuid()],
   uuid(),
   true,
+  [],
 );
 
 const user = getAnAdminUser();
@@ -45,6 +49,7 @@ describe('Edit Examination Center Handler', () => {
     examinationCenterRepository = new ExaminationCenterMockRepository();
     examinationCenterGetter = getAnExaminationCenterGetterMock();
     businessUnitGetter = getBusinessUnitGetterMock();
+    classroomGetter = getAClassroomGetterMock();
 
     getUserSpy = jest.spyOn(adminUserGetter, 'get');
     getExaminationCenterSpy = jest.spyOn(examinationCenterGetter, 'get');
@@ -56,6 +61,7 @@ describe('Edit Examination Center Handler', () => {
       examinationCenterGetter,
       businessUnitGetter,
       adminUserGetter,
+      classroomGetter,
     );
   });
 

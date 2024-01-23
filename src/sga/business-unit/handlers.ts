@@ -20,6 +20,9 @@ import { SearchExaminationCentersHandler } from '#business-unit/application/sear
 import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
 import { EditExaminationCenterHandler } from '#business-unit/application/edit-examination-center/edit-examination-center.handler';
 import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
+import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
+import { CreateClassroomHandler } from '#business-unit/application/create-classroom/create-classroom.handler';
+import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -197,12 +200,14 @@ const editExaminationCenterHandler = {
     examinationCenterGetter: ExaminationCenterGetter,
     businessUnitGetter: BusinessUnitGetter,
     adminUserGetter: AdminUserGetter,
+    classroomGetter: ClassroomGetter,
   ) => {
     return new EditExaminationCenterHandler(
       examinationCenterRepository,
       examinationCenterGetter,
       businessUnitGetter,
       adminUserGetter,
+      classroomGetter,
     );
   },
   inject: [
@@ -210,6 +215,7 @@ const editExaminationCenterHandler = {
     ExaminationCenterGetter,
     BusinessUnitGetter,
     AdminUserGetter,
+    ClassroomGetter,
   ],
 };
 
@@ -221,6 +227,22 @@ const getBusinessUnitExaminationCentersHandler = {
     );
   },
   inject: [ExaminationCenterRepository],
+};
+
+const createClassRoomHandler = {
+  provide: CreateClassroomHandler,
+  useFactory: (
+    classroomRepository: ClassroomRepository,
+    examinationCenterGetter: ExaminationCenterGetter,
+    adminUserGetter: AdminUserGetter,
+  ) => {
+    return new CreateClassroomHandler(
+      classroomRepository,
+      examinationCenterGetter,
+      adminUserGetter,
+    );
+  },
+  inject: [ClassroomRepository, ExaminationCenterGetter, AdminUserGetter],
 };
 
 export const handlers = [
@@ -240,4 +262,5 @@ export const handlers = [
   deleteExaminationCenterHandler,
   editExaminationCenterHandler,
   getBusinessUnitExaminationCentersHandler,
+  createClassRoomHandler,
 ];

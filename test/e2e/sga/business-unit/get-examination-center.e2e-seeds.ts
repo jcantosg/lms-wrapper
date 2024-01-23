@@ -10,6 +10,7 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Country } from '#shared/domain/entity/country.entity';
+import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 
 export class GetExaminationCenterE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-get-examination-center@email.com';
@@ -22,18 +23,25 @@ export class GetExaminationCenterE2eSeed implements E2eSeed {
   public static examinationCenterName = 'Murcia';
   public static examinationCenterCode = 'MUR';
   public static examinationCenterAddress = 'Avenida Principal Parcela 26';
+  public static classroomId = '6fe5450c-4830-41cb-9e86-1c0ef1bdd5e5';
+  public static classroomName = 'Aula Miguel Hernandez';
+  public static classroomCode = 'MIG-MUR';
+  public static classroomCapacity = 5;
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
   private examinationCenter: ExaminationCenter;
   private country: Country;
+  private classroom: Classroom;
   private readonly examinationCenterRepository: Repository<ExaminationCenter>;
   private readonly countryRepository: Repository<Country>;
+  private readonly classroomRepository: Repository<Classroom>;
 
   constructor(private datasource: DataSource) {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
     this.countryRepository = datasource.getRepository(Country);
+    this.classroomRepository = datasource.getRepository(Classroom);
   }
 
   async arrange(): Promise<void> {
@@ -71,10 +79,20 @@ export class GetExaminationCenterE2eSeed implements E2eSeed {
       this.superAdminUser,
       this.country,
     );
-    this.examinationCenterRepository.save(this.examinationCenter);
+    this.classroom = Classroom.create(
+      GetExaminationCenterE2eSeed.classroomId,
+      GetExaminationCenterE2eSeed.classroomCode,
+      GetExaminationCenterE2eSeed.classroomName,
+      GetExaminationCenterE2eSeed.classroomCapacity,
+      this.superAdminUser,
+      this.examinationCenter,
+    );
+    await this.examinationCenterRepository.save(this.examinationCenter);
+    await this.classroomRepository.save(this.classroom);
   }
 
   async clear(): Promise<void> {
+    await this.classroomRepository.delete(this.classroom.id);
     await this.examinationCenterRepository.delete(this.examinationCenter.id);
     await this.countryRepository.delete(this.country.id);
     await removeAdminUser(this.datasource, this.superAdminUser);

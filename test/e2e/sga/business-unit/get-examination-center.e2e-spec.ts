@@ -57,6 +57,14 @@ describe('/examination-center (GET)', () => {
         businessUnits: [],
         address: GetExaminationCenterE2eSeed.examinationCenterAddress,
         isActive: true,
+        classrooms: [
+          {
+            id: GetExaminationCenterE2eSeed.classroomId,
+            code: GetExaminationCenterE2eSeed.classroomCode,
+            name: GetExaminationCenterE2eSeed.classroomName,
+            capacity: GetExaminationCenterE2eSeed.classroomCapacity,
+          },
+        ],
       }),
     );
   });

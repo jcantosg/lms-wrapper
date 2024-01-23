@@ -10,6 +10,7 @@ import { examinationCenterSchema } from '#business-unit/infrastructure/config/sc
 import { ExaminationCenterPostgresRepository } from '#business-unit/infrastructure/repository/examination-center.postgres-repository';
 
 const path = '/examination-center/7baf9fc5-8976-4780-aa07-c0dfb420e230';
+const wrongPath = '/examination-center/6fe5450c-4830-41cb-9e86-1c0ef1bdd5e5';
 
 describe('/examination-center/:id (PUT)', () => {
   let app: INestApplication;
@@ -49,13 +50,14 @@ describe('/examination-center/:id (PUT)', () => {
 
   it('should return 404 when examination center does not exist', async () => {
     await supertest(httpServer)
-      .put('/examination-center/ce3e994a-0bd0-4911-a0ec-48429a709284')
+      .put(wrongPath)
       .send({
         name: 'TestBusinessUnit',
         code: 'TestBusinessCode',
         businessUnits: [],
         address: 'test address',
         isActive: false,
+        classrooms: [],
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(404);
@@ -78,6 +80,7 @@ describe('/examination-center/:id (PUT)', () => {
         businessUnits: ['ce3e994a-0bd0-4911-a0ec-48429a709284'],
         address: 'test address',
         isActive: false,
+        classrooms: [],
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(404);
@@ -92,6 +95,7 @@ describe('/examination-center/:id (PUT)', () => {
         businessUnits: [EditExaminationCenterE2eSeed.businessUnitId],
         address: 'test address',
         isActive: false,
+        classrooms: [],
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(409);
@@ -110,6 +114,7 @@ describe('/examination-center/:id (PUT)', () => {
         businessUnits: [EditExaminationCenterE2eSeed.businessUnitId],
         address: 'test address',
         isActive: false,
+        classrooms: [],
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);

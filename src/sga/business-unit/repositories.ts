@@ -4,6 +4,8 @@ import { VirtualCampusRepository } from '#business-unit/domain/repository/virtua
 import { VirtualCampusPostgresRepository } from '#business-unit/infrastructure/repository/virtual-campus.postgres-repository';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenterPostgresRepository } from '#business-unit/infrastructure/repository/examination-center.postgres-repository';
+import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
+import { ClassroomPostgresRepository } from '#business-unit/infrastructure/repository/classroom.postgres-repository';
 
 export const repositories = [
   {
@@ -17,5 +19,9 @@ export const repositories = [
   {
     provide: ExaminationCenterRepository,
     useClass: ExaminationCenterPostgresRepository,
+  },
+  {
+    provide: ClassroomRepository,
+    useClass: ClassroomPostgresRepository,
   },
 ];

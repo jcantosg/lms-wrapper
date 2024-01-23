@@ -5,6 +5,7 @@ import { ExaminationCenterGetter } from '#business-unit/domain/service/examinati
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
+import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 
 export class EditExaminationCenterHandler implements CommandHandler {
   constructor(
@@ -12,6 +13,7 @@ export class EditExaminationCenterHandler implements CommandHandler {
     private readonly examinationCenterGetter: ExaminationCenterGetter,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly adminUserGetter: AdminUserGetter,
+    private readonly classroomGetter: ClassroomGetter,
   ) {}
 
   async handle(command: EditExaminationCenterCommand): Promise<void> {
@@ -33,6 +35,11 @@ export class EditExaminationCenterHandler implements CommandHandler {
         return await this.businessUnitGetter.get(businessUnitId);
       }),
     );
+    const classrooms = await Promise.all(
+      command.classrooms.map(async (classroomId: string) => {
+        return await this.classroomGetter.get(classroomId);
+      }),
+    );
 
     examinationCenter.update(
       command.name,
@@ -41,6 +48,7 @@ export class EditExaminationCenterHandler implements CommandHandler {
       businessUnits,
       user,
       command.isActive,
+      classrooms,
     );
 
     await this.examinationCenterRepository.update(examinationCenter);
