@@ -15,6 +15,9 @@ export class CreateClassroomHandler implements CommandHandler {
   ) {}
 
   async handle(command: CreateClassroomCommand): Promise<void> {
+    if (await this.classroomRepository.existsById(command.id)) {
+      throw new ClassroomDuplicatedException();
+    }
     if (
       await this.classroomRepository.existsByNameAndExaminationCenter(
         command.id,

@@ -42,4 +42,10 @@ export class ClassroomPostgresRepository implements ClassroomRepository {
 
     return !classroom ? false : classroom.id !== id;
   }
+
+  async existsById(id: string): Promise<boolean> {
+    const classroom = await this.repository.findOne({ where: { id } });
+
+    return !!classroom;
+  }
 }

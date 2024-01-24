@@ -12,4 +12,6 @@ export abstract class ClassroomRepository {
   ): Promise<boolean>;
 
   public abstract existsByCode(id: string, code: string): Promise<boolean>;
+
+  public abstract existsById(id: string): Promise<boolean>;
 }

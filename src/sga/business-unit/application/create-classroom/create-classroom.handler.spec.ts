@@ -22,6 +22,7 @@ let adminUserGetter: AdminUserGetter;
 let saveSpy: any;
 let existsByNameAndExaminationCenterSpy: any;
 let existByCodeSpy: any;
+let existsByIdSpy: any;
 let getExaminationCenterSpy: any;
 let getAdminUserSpy: any;
 
@@ -55,8 +56,12 @@ describe('Create Classroom Handler', () => {
     existByCodeSpy = jest.spyOn(repository, 'existsByCode');
     getExaminationCenterSpy = jest.spyOn(examinationGetter, 'get');
     getAdminUserSpy = jest.spyOn(adminUserGetter, 'get');
+    existsByIdSpy = jest.spyOn(repository, 'existsById');
   });
   it('should create a classroom', async () => {
+    existsByIdSpy.mockImplementation((): Promise<boolean> => {
+      return Promise.resolve(false);
+    });
     existsByNameAndExaminationCenterSpy.mockImplementation(
       (): Promise<boolean> => {
         return Promise.resolve(false);
@@ -110,6 +115,14 @@ describe('Create Classroom Handler', () => {
     });
     await expect(handler.handle(command)).rejects.toThrow(
       ClassroomDuplicatedCodeException,
+    );
+  });
+  it('should throw a Classroom duplicated error (id)', async () => {
+    existsByIdSpy.mockImplementation((): Promise<boolean> => {
+      return Promise.resolve(true);
+    });
+    await expect(handler.handle(command)).rejects.toThrow(
+      ClassroomDuplicatedException,
     );
   });
 });
