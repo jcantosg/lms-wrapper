@@ -17,4 +17,6 @@ export abstract class BusinessUnitRepository {
   abstract count(criteria: Criteria): Promise<number>;
 
   abstract update(businessUnit: BusinessUnit): Promise<void>;
+
+  abstract getAll(): Promise<BusinessUnit[]>;
 }

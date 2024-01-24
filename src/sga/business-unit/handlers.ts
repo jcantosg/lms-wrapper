@@ -20,6 +20,7 @@ import { SearchExaminationCentersHandler } from '#business-unit/application/sear
 import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
 import { EditExaminationCenterHandler } from '#business-unit/application/edit-examination-center/edit-examination-center.handler';
 import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
+import { GetAllBusinessUnitsPlainHandler } from '#business-unit/application/get-all-business-units-plain/get-all-business-units-plain.handler';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 import { CreateClassroomHandler } from '#business-unit/application/create-classroom/create-classroom.handler';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
@@ -229,6 +230,14 @@ const getBusinessUnitExaminationCentersHandler = {
   inject: [ExaminationCenterRepository],
 };
 
+const getAllBusinessUnitsPlainHandler = {
+  provide: GetAllBusinessUnitsPlainHandler,
+  useFactory: (businessUnitRepository: BusinessUnitRepository) => {
+    return new GetAllBusinessUnitsPlainHandler(businessUnitRepository);
+  },
+  inject: [BusinessUnitRepository],
+};
+
 const createClassRoomHandler = {
   provide: CreateClassroomHandler,
   useFactory: (
@@ -262,5 +271,6 @@ export const handlers = [
   deleteExaminationCenterHandler,
   editExaminationCenterHandler,
   getBusinessUnitExaminationCentersHandler,
+  getAllBusinessUnitsPlainHandler,
   createClassRoomHandler,
 ];

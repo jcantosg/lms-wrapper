@@ -4,6 +4,11 @@ import {
   GetCountryResponse,
 } from '#shared/infrastructure/controller/country/get-country.response';
 
+export interface BusinessUnitResponseBasic {
+  id: string;
+  name: string;
+}
+
 export interface BusinessUnitResponse {
   id: string;
   name: string;

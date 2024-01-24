@@ -156,4 +156,8 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
       country: businessUnit.country,
     });
   }
+
+  async getAll(): Promise<BusinessUnit[]> {
+    return await this.repository.find();
+  }
 }

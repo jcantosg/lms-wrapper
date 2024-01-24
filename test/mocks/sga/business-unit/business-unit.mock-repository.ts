@@ -10,4 +10,5 @@ export class BusinessUnitMockRepository implements BusinessUnitRepository {
   count = jest.fn();
   update = jest.fn();
   getByAdminUser = jest.fn();
+  getAll = jest.fn();
 }
