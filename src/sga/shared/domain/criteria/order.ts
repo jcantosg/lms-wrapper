@@ -4,6 +4,8 @@ export enum OrderTypes {
   NONE = 'NONE',
 }
 
+export const OrderByDefault = 'created_at';
+
 export class Order {
   constructor(
     public readonly orderBy: string,
