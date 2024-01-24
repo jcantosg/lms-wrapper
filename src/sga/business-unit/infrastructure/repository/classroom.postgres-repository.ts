@@ -48,4 +48,8 @@ export class ClassroomPostgresRepository implements ClassroomRepository {
 
     return !!classroom;
   }
+
+  async delete(classroom: Classroom): Promise<void> {
+    await this.repository.delete(classroom.id);
+  }
 }

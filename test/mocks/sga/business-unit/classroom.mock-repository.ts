@@ -6,4 +6,5 @@ export class ClassroomMockRepository implements ClassroomRepository {
   existsByNameAndExaminationCenter = jest.fn();
   existsByCode = jest.fn();
   existsById = jest.fn();
+  delete = jest.fn();
 }

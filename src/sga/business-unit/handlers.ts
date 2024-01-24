@@ -24,6 +24,7 @@ import { GetAllBusinessUnitsPlainHandler } from '#business-unit/application/get-
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 import { CreateClassroomHandler } from '#business-unit/application/create-classroom/create-classroom.handler';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
+import { DeleteClassroomHandler } from '#business-unit/application/delete-classroom/delete-classroom.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -254,6 +255,17 @@ const createClassRoomHandler = {
   inject: [ClassroomRepository, ExaminationCenterGetter, AdminUserGetter],
 };
 
+const deleteClassroomHandler = {
+  provide: DeleteClassroomHandler,
+  useFactory: (
+    classroomRepository: ClassroomRepository,
+    classroomGetter: ClassroomGetter,
+  ) => {
+    return new DeleteClassroomHandler(classroomRepository, classroomGetter);
+  },
+  inject: [ClassroomRepository, ClassroomGetter],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -273,4 +285,5 @@ export const handlers = [
   getBusinessUnitExaminationCentersHandler,
   getAllBusinessUnitsPlainHandler,
   createClassRoomHandler,
+  deleteClassroomHandler,
 ];
