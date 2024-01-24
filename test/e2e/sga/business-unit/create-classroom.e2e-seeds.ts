@@ -33,6 +33,8 @@ export class CreateClassroomE2eSeed implements E2eSeed {
   public static classroomCode = 'A01';
   public static classroomCapacity = 65;
   public static secondClassroomId = '24cb1eea-2ee6-46dc-aee6-e8e02928b384';
+  public static secondClassroomName = 'Aula 02';
+  public static secondClassRoomCode = 'A02';
 
   private classroomRepository: Repository<Classroom>;
   private examinationCenterRepository: Repository<ExaminationCenter>;

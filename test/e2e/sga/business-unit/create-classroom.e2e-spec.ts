@@ -58,9 +58,9 @@ describe('/classroom (POST)', () => {
       .post(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        id: CreateClassroomE2eSeed.classroomId,
-        name: CreateClassroomE2eSeed.classroomName,
-        code: CreateClassroomE2eSeed.classroomCode,
+        id: CreateClassroomE2eSeed.secondClassroomId,
+        name: CreateClassroomE2eSeed.secondClassroomName,
+        code: CreateClassroomE2eSeed.secondClassRoomCode,
         capacity: CreateClassroomE2eSeed.classroomCapacity,
         examinationCenterId: CreateClassroomE2eSeed.missingExaminationCenterId,
       })
