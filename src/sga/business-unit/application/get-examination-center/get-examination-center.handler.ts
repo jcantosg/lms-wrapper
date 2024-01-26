@@ -9,6 +9,9 @@ export class GetExaminationCenterHandler implements QueryHandler {
   ) {}
 
   async handle(query: GetExaminationCenterQuery): Promise<ExaminationCenter> {
-    return await this.examinationGetterService.get(query.id);
+    return await this.examinationGetterService.getByAdminUser(
+      query.id,
+      query.adminUserBusinessUnits,
+    );
   }
 }

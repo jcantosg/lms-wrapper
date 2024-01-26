@@ -36,12 +36,14 @@ export class CreateVirtualCampusE2eSeeds implements E2eSeed {
   private readonly businessUnitRepository;
   private readonly countryRepository;
   private readonly virtualCampusRepository;
+  private readonly adminUserRepository;
 
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
     this.countryRepository = datasource.getRepository(CountrySchema);
     this.virtualCampusRepository =
       datasource.getRepository(virtualCampusSchema);
+    this.adminUserRepository = datasource.getRepository(AdminUser);
   }
 
   async arrange(): Promise<void> {
@@ -77,7 +79,15 @@ export class CreateVirtualCampusE2eSeeds implements E2eSeed {
       this.country,
       this.superAdminUser,
     );
-    await this.businessUnitRepository.save(this.businessUnit);
+    const savedBusinessUnit = await this.businessUnitRepository.save(
+      this.businessUnit,
+    );
+    this.superAdminUser.addBusinessUnit(savedBusinessUnit);
+
+    await this.adminUserRepository.save({
+      id: this.superAdminUser.id,
+      businessUnits: this.superAdminUser.businessUnits,
+    });
 
     this.virtualCampus = VirtualCampus.create(
       CreateVirtualCampusE2eSeeds.virtualCampusId,

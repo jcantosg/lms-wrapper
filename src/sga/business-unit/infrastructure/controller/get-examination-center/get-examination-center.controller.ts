@@ -1,4 +1,11 @@
-import { Controller, Get, Param, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { GetExaminationCenterHandler } from '#business-unit/application/get-examination-center/get-examination-center.handler';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
@@ -8,6 +15,7 @@ import { GetExaminationCenterQuery } from '#business-unit/application/get-examin
 import { GetExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.response';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
+import { AuthRequest } from '#shared/infrastructure/http/request';
 
 @Controller('examination-center')
 export class GetExaminationCenterController {
@@ -17,8 +25,8 @@ export class GetExaminationCenterController {
   @UsePipes(new JoiRequestParamIdValidationPipeService(uuidSchema))
   @Roles(AdminUserRoles.SUPERADMIN)
   @Get(':id')
-  async getExaminationCenter(@Param('id') id: string) {
-    const query = new GetExaminationCenterQuery(id);
+  async getExaminationCenter(@Param('id') id: string, @Req() req: AuthRequest) {
+    const query = new GetExaminationCenterQuery(id, req.user.businessUnits);
     const examinationCenter = await this.handler.handle(query);
 
     return GetExaminationCenterResponse.create(examinationCenter);

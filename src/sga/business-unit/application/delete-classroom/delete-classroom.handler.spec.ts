@@ -15,7 +15,7 @@ let deleteSpy: any;
 let getClassroomSpy: any;
 
 const classroom = getAClassroom();
-const command = new DeleteClassroomCommand(classroom.id);
+const command = new DeleteClassroomCommand(classroom.id, ['businessUnitId']);
 
 describe('Delete classroom handler', () => {
   beforeAll(() => {

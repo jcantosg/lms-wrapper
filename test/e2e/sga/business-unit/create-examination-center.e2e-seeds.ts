@@ -36,6 +36,7 @@ export class CreateExaminationCenterE2eSeeds implements E2eSeed {
   private readonly businessUnitRepository;
   private readonly countryRepository;
   private readonly examinationCenterRepository;
+  private readonly adminUserRepository;
 
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
@@ -43,6 +44,7 @@ export class CreateExaminationCenterE2eSeeds implements E2eSeed {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
+    this.adminUserRepository = datasource.getRepository(AdminUser);
   }
 
   async arrange(): Promise<void> {
@@ -81,6 +83,13 @@ export class CreateExaminationCenterE2eSeeds implements E2eSeed {
         this.superAdminUser,
       ),
     );
+
+    this.superAdminUser.addBusinessUnit(this.businessUnit);
+
+    await this.adminUserRepository.save({
+      id: this.superAdminUser.id,
+      businessUnits: this.superAdminUser.businessUnits,
+    });
   }
 
   async clear() {

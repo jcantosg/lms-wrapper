@@ -15,10 +15,12 @@ export class GetAllBusinessUnitsE2eSeed implements E2eSeed {
 
   private readonly businessUnitRepository: Repository<BusinessUnit>;
   private readonly countryRepository: Repository<Country>;
+  private readonly adminUserRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(BusinessUnit);
     this.countryRepository = datasource.getRepository(Country);
+    this.adminUserRepository = datasource.getRepository(AdminUser);
   }
 
   async arrange(): Promise<void> {
@@ -59,7 +61,18 @@ export class GetAllBusinessUnitsE2eSeed implements E2eSeed {
         ),
     );
 
-    await this.businessUnitRepository.save(this.businessUnits);
+    const savedBusinessUnits = await this.businessUnitRepository.save(
+      this.businessUnits,
+    );
+
+    for (const bu of savedBusinessUnits) {
+      this.superAdminUser.addBusinessUnit(bu);
+    }
+
+    await this.adminUserRepository.save({
+      id: this.superAdminUser.id,
+      businessUnits: this.superAdminUser.businessUnits,
+    });
   }
 
   async clear(): Promise<void> {

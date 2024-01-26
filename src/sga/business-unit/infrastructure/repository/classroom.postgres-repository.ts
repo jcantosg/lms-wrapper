@@ -13,7 +13,12 @@ export class ClassroomPostgresRepository implements ClassroomRepository {
   ) {}
 
   async get(id: string): Promise<Classroom | null> {
-    return await this.repository.findOne({ where: { id } });
+    return await this.repository.findOne({
+      where: { id },
+      relations: {
+        examinationCenter: { businessUnits: true },
+      },
+    });
   }
 
   async save(classroom: Classroom): Promise<void> {

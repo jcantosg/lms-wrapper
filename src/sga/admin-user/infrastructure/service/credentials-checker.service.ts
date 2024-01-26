@@ -24,6 +24,7 @@ export class CredentialsChecker {
         id: adminUser.id,
         email: adminUser.email,
         roles: adminUser.roles,
+        businessUnits: adminUser.businessUnits.map((bu) => bu.id),
       };
     }
   }

@@ -18,7 +18,9 @@ const examinationCenter = getAnExaminationCenter();
 const mainExaminationCenter = getAMainExaminationCenter();
 let getSpy: any;
 let deleteSpy: any;
-const command = new DeleteExaminationCenterCommand(examinationCenter.id);
+const command = new DeleteExaminationCenterCommand(examinationCenter.id, [
+  'businessUnitID',
+]);
 
 describe('Delete Examination Center Handler', () => {
   beforeAll(() => {

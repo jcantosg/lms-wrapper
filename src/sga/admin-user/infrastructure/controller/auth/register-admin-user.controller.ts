@@ -19,6 +19,7 @@ export class RegisterAdminUserController {
       body.password,
       body.roles,
       body.name,
+      body.businessUnits,
       body.avatar,
     );
 

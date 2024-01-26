@@ -32,6 +32,7 @@ export async function createAdminUser(
       roles,
       'name',
       'avatar',
+      [],
     ),
   );
 }

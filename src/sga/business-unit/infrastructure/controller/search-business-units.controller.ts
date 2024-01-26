@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
@@ -11,6 +18,7 @@ import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructur
 import { SearchBusinessUnitsHandler } from '#business-unit/application/search-business-units/search-business-units.handler';
 import { SearchBusinessUnitsQuery } from '#business-unit/application/search-business-units/search-business-units.query';
 import { GetAllBusinessUnitResponse } from './get-all-business-units/get-all-business-units.response';
+import { AuthRequest } from '#shared/infrastructure/http/request';
 
 type SearchBusinessUnitsQueryParams = {
   page: number;
@@ -32,6 +40,7 @@ export class SearchBusinessUnitsController {
   )
   async searchBusinessUnits(
     @Query() queryParams: SearchBusinessUnitsQueryParams,
+    @Req() req: AuthRequest,
   ): Promise<CollectionResponse<BusinessUnitResponse>> {
     const query = new SearchBusinessUnitsQuery(
       queryParams.page,
@@ -39,6 +48,7 @@ export class SearchBusinessUnitsController {
       queryParams.orderBy,
       queryParams.orderType,
       queryParams.text,
+      req.user.businessUnits,
     );
 
     const response = await this.handler.handle(query);

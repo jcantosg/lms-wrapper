@@ -3,12 +3,17 @@ import { RegisterAdminUserCommand } from '#admin-user/application/register-admin
 import { RegisterAdminUserHandler } from '#admin-user/application/register-admin-user/register-admin-user.handler';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { AdminUserDuplicatedException } from '#shared/domain/exception/admin-user/admin-user-duplicated.exception';
 import { AdminUserMockRepository } from '#test/mocks/sga/adminUser/admin-user.mock-repository';
-import { PasswordEncoderMock } from '#test/service-factory';
+import {
+  PasswordEncoderMock,
+  getBusinessUnitGetterMock,
+} from '#test/service-factory';
 
 let adminUserRepository: AdminUserRepository;
 let passwordEncoder: PasswordEncoder;
+let businessUnitGetter: BusinessUnitGetter;
 let handler: RegisterAdminUserHandler;
 
 let saveAdminUserSpy: any;
@@ -20,6 +25,7 @@ const command = new RegisterAdminUserCommand(
   'password',
   [AdminUserRoles.SUPERADMIN],
   'name',
+  [],
   'avatar',
 );
 
@@ -29,11 +35,13 @@ describe('Register adminUser handler', () => {
     saveAdminUserSpy = jest.spyOn(adminUserRepository, 'save');
     passwordEncoder = new PasswordEncoderMock();
     encodeSpy = jest.spyOn(passwordEncoder, 'encodePassword');
+    businessUnitGetter = getBusinessUnitGetterMock();
 
     handler = new RegisterAdminUserHandler(
       adminUserRepository,
       passwordEncoder,
       'defaultAvatar',
+      businessUnitGetter,
     );
   });
 

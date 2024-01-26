@@ -19,6 +19,7 @@ export const getAnAdminUser = (id = uuid()): AdminUser => {
     [AdminUserRoles.SUPERADMIN],
     'name',
     'avatar',
+    [],
   );
 };
 

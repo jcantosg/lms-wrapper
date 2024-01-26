@@ -5,6 +5,7 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus-duplicated.exception';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
 
 export class CreateVirtualCampusHandler implements CommandHandler {
   constructor(
@@ -16,6 +17,7 @@ export class CreateVirtualCampusHandler implements CommandHandler {
   async handle(command: CreateVirtualCampusCommand): Promise<void> {
     const businessUnit = await this.businessGetter.get(command.businessUnitId);
     const adminUser = await this.adminUserGetter.get(command.userId);
+    const adminUserBusinessUnits = adminUser.businessUnits.map((bu) => bu.id);
 
     if (
       (await this.virtualCampusRepository.existsById(command.id)) ||
@@ -30,6 +32,11 @@ export class CreateVirtualCampusHandler implements CommandHandler {
     ) {
       throw new VirtualCampusDuplicatedException();
     }
+
+    if (!adminUserBusinessUnits.includes(businessUnit.id)) {
+      throw new BusinessUnitNotFoundException();
+    }
+
     const virtualCampus = VirtualCampus.create(
       command.id,
       command.name,

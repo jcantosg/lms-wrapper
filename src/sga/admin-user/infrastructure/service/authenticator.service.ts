@@ -19,6 +19,7 @@ export class Authenticator {
         user.id,
         user.email,
         user.roles,
+        user.businessUnits,
       ),
       refreshToken: await this.refreshTokenGenerator.generateRefreshToken(
         user.id,

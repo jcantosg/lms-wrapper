@@ -6,6 +6,7 @@ import { CreateClassroomCommand } from '#business-unit/application/create-classr
 import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
 import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
 
 export class CreateClassroomHandler implements CommandHandler {
   constructor(
@@ -34,6 +35,17 @@ export class CreateClassroomHandler implements CommandHandler {
       command.examinationCenterId,
     );
     const adminUser = await this.adminUserGetter.get(command.userId);
+    const adminUserBusinessUnits = adminUser.businessUnits.map((bu) => bu.id);
+
+    if (
+      examinationCenter.businessUnits.length > 0 &&
+      !examinationCenter.businessUnits.find((bu) =>
+        adminUserBusinessUnits.includes(bu.id),
+      )
+    ) {
+      throw new BusinessUnitNotFoundException();
+    }
+
     const classroom = Classroom.create(
       command.id,
       command.code,

@@ -1,4 +1,8 @@
-import { getAnAdminUser, getAnExaminationCenter } from '#test/entity-factory';
+import {
+  getABusinessUnit,
+  getAnAdminUser,
+  getAnExaminationCenter,
+} from '#test/entity-factory';
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import {
   getAClassroomGetterMock,
@@ -16,6 +20,7 @@ import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.se
 import { EditExaminationCenterCommand } from './edit-examination-center.command';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 let handler: EditExaminationCenterHandler;
 let examinationCenterRepository: ExaminationCenterRepository;
@@ -29,12 +34,14 @@ let updateSpy: any;
 let getExaminationCenterSpy: any;
 let getBusinessUnitsSpy: any;
 
+const businessUnit = getABusinessUnit();
+
 const command = new EditExaminationCenterCommand(
   uuid(),
   'name',
   'code',
   'address',
-  [uuid()],
+  [businessUnit.id],
   uuid(),
   true,
   [],
@@ -42,6 +49,8 @@ const command = new EditExaminationCenterCommand(
 
 const user = getAnAdminUser();
 const examinationCenter = getAnExaminationCenter(command.id);
+
+user.addBusinessUnit(businessUnit);
 
 describe('Edit Examination Center Handler', () => {
   beforeAll(() => {
@@ -76,11 +85,9 @@ describe('Edit Examination Center Handler', () => {
       },
     );
 
-    getBusinessUnitsSpy.mockImplementation(
-      (): Promise<ExaminationCenter | null> => {
-        return Promise.resolve(examinationCenter);
-      },
-    );
+    getBusinessUnitsSpy.mockImplementation((): Promise<BusinessUnit | null> => {
+      return Promise.resolve(businessUnit);
+    });
 
     await handler.handle(command);
 

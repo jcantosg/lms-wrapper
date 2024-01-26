@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { GetAllBusinessUnitsHandler } from '#business-unit/application/get-all-business-units/get-all-business-units.handler';
 import { GetAllBusinessUnitsQuery } from '#business-unit/application/get-all-business-units/get-all-business-units.query';
 import { getAllBusinessUnitSchema } from '#business-unit/infrastructure/config/validation-schema/get-all-business-units.schema';
@@ -11,6 +18,7 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
+import { AuthRequest } from '#shared/infrastructure/http/request';
 
 type GetAllBusinessUnitsQueryParams = {
   page: number;
@@ -35,12 +43,14 @@ export class GetAllBusinessController {
   )
   async getAllBusinessUnits(
     @Query() queryParams: GetAllBusinessUnitsQueryParams,
+    @Req() req: AuthRequest,
   ): Promise<CollectionResponse<BusinessUnitResponse>> {
     const query = new GetAllBusinessUnitsQuery(
       queryParams.page,
       queryParams.limit,
       queryParams.orderBy,
       queryParams.orderType,
+      req.user.businessUnits,
       queryParams.name,
       queryParams.code,
       queryParams.isActive,

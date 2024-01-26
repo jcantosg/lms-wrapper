@@ -6,6 +6,7 @@ import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.re
 import { RefreshTokenRepository } from '#admin-user/domain/repository/refresh-token.repository';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { ConfigService } from '@nestjs/config';
 
 const getAdminUserHandler = {
@@ -22,14 +23,21 @@ const registerUserHandler = {
     adminUserRepository: AdminUserRepository,
     passwordEncoder: PasswordEncoder,
     configService: ConfigService,
+    businessUnitGetter: BusinessUnitGetter,
   ) => {
     return new RegisterAdminUserHandler(
       adminUserRepository,
       passwordEncoder,
       configService.getOrThrow<string>('DEFAULT_AVATAR'),
+      businessUnitGetter,
     );
   },
-  inject: [AdminUserRepository, PasswordEncoder, ConfigService],
+  inject: [
+    AdminUserRepository,
+    PasswordEncoder,
+    ConfigService,
+    BusinessUnitGetter,
+  ],
 };
 
 const createRefreshTokenHandler = {

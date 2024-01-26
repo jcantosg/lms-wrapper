@@ -33,6 +33,8 @@ const command = new EditVirtualCampusCommand(
 const user = getAnAdminUser();
 const virtualCampus = getAVirtualCampus(command.id);
 
+user.addBusinessUnit(virtualCampus.businessUnit);
+
 describe('Edit Virtual Campus Handler', () => {
   beforeAll(() => {
     adminUserGetter = getAdminUserGetterMock();

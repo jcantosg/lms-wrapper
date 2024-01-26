@@ -13,11 +13,17 @@ export class AdminUserPostgresRepository implements AdminUserRepository {
   ) {}
 
   async get(id: string): Promise<AdminUser | null> {
-    return await this.repository.findOne({ where: { id } });
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnits: true },
+    });
   }
 
   async getByEmail(email: string): Promise<AdminUser | null> {
-    return await this.repository.findOne({ where: { email } });
+    return await this.repository.findOne({
+      where: { email },
+      relations: { businessUnits: true },
+    });
   }
 
   async save(adminUser: AdminUser): Promise<void> {

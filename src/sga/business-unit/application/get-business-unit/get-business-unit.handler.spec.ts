@@ -10,13 +10,13 @@ import { BusinessUnitNotFoundException } from '#shared/domain/exception/business
 let handler: GetBusinessUnitHandler;
 let businessUnitGetter: BusinessUnitGetter;
 let getBusinessUnitSpy: any;
-const query = new GetBusinessUnitQuery(uuid());
+const query = new GetBusinessUnitQuery(uuid(), [uuid()]);
 const businessUnit = getABusinessUnit(query.id);
 
 describe('Get Business Unit Handler', () => {
   beforeAll(() => {
     businessUnitGetter = getBusinessUnitGetterMock();
-    getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'get');
+    getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     handler = new GetBusinessUnitHandler(businessUnitGetter);
   });
   it('should return a business unit', async () => {

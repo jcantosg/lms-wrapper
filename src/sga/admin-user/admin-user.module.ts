@@ -9,6 +9,7 @@ import { JwtStrategy } from '#/sga/shared/infrastructure/auth/jwt.strategy';
 import { LocalStrategy } from '#admin-user/infrastructure/auth/local.strategy';
 import { handlers } from '#admin-user/handlers';
 import { controllers } from '#admin-user/controllers';
+import { BusinessUnitModule } from '#business-unit/business-unit.module';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -29,7 +30,11 @@ const jwtStrategy = {
   inject: [ConfigService],
 };
 @Module({
-  imports: [TypeOrmModule.forFeature(adminUserSchemas), jwtModule],
+  imports: [
+    TypeOrmModule.forFeature(adminUserSchemas),
+    jwtModule,
+    BusinessUnitModule,
+  ],
   providers: [
     ...repositories,
     ...services,

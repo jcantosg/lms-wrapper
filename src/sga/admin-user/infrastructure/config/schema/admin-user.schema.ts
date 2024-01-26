@@ -33,4 +33,19 @@ export const adminUserSchema = new EntitySchema<AdminUser>({
       nullable: true,
     },
   },
+  relations: {
+    businessUnits: {
+      type: 'many-to-many',
+      target: 'BusinessUnit',
+      joinTable: {
+        name: 'business_unit_admin_user',
+        joinColumn: {
+          name: 'admin_user_id',
+        },
+        inverseJoinColumn: {
+          name: 'business_unit_id',
+        },
+      },
+    },
+  },
 });

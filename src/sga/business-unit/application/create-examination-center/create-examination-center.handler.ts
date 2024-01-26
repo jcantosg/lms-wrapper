@@ -8,6 +8,7 @@ import { ExaminationCenterDuplicatedNameException } from '#shared/domain/excepti
 import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
 import { ExaminationCenterDuplicatedException } from '#shared/domain/exception/business-unit/examination-center-duplicated.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
 
 export class CreateExaminationCenterHandler implements CommandHandler {
   constructor(
@@ -33,11 +34,20 @@ export class CreateExaminationCenterHandler implements CommandHandler {
       throw new ExaminationCenterDuplicatedException();
     }
     const user = await this.adminUserGetter.get(command.userId);
+    const adminUserBusinessUnits = user.businessUnits.map((bu) => bu.id);
     const businessUnits = await Promise.all(
       command.businessUnits.map(async (businessUnitId: string) => {
         return await this.businessUnitGetter.get(businessUnitId);
       }),
     );
+
+    if (
+      businessUnits.length > 0 &&
+      !businessUnits.find((bu) => adminUserBusinessUnits.includes(bu.id))
+    ) {
+      throw new BusinessUnitNotFoundException();
+    }
+
     const country = await this.countryGetter.get(command.countryId);
 
     const examinationCenter = ExaminationCenter.create(

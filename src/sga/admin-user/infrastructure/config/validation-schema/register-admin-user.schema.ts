@@ -13,4 +13,5 @@ export const registerAdminUserSchema: Joi.ObjectSchema = Joi.object({
     .required(),
   name: Joi.string().required(),
   avatar: Joi.string(),
+  businessUnits: Joi.array().items(Joi.string().guid()).min(1).required(),
 });

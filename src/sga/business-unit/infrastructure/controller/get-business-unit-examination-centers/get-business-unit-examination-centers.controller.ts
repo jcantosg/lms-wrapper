@@ -1,4 +1,11 @@
-import { Controller, Get, Param, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
@@ -11,6 +18,7 @@ import {
 } from '#business-unit/infrastructure/controller/get-business-unit-examination-centers/get-business-unit-examination-centers.response';
 import { GetBusinessUnitExaminationCentersQuery } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.query';
 import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
+import { AuthRequest } from '#shared/infrastructure/http/request';
 
 @Controller('business-unit')
 export class GetBusinessUnitExaminationCentersController {
@@ -24,8 +32,12 @@ export class GetBusinessUnitExaminationCentersController {
   @UsePipes(new JoiRequestParamIdValidationPipeService(uuidSchema))
   async getBusinessUnitExaminationCenters(
     @Param('id') businessUnitId: string,
+    @Req() req: AuthRequest,
   ): Promise<BusinessUnitExaminationCenterResponse[]> {
-    const query = new GetBusinessUnitExaminationCentersQuery(businessUnitId);
+    const query = new GetBusinessUnitExaminationCentersQuery(
+      businessUnitId,
+      req.user.businessUnits,
+    );
 
     const response = await this.handler.handle(query);
 

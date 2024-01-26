@@ -5,6 +5,7 @@ export type UserRequest = {
   id: string;
   email: string;
   roles: AdminUserRoles[];
+  businessUnits: string[];
 };
 
 export interface AuthRequest extends Request {

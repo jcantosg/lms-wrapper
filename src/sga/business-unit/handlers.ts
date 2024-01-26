@@ -236,7 +236,7 @@ const getAllBusinessUnitsPlainHandler = {
   useFactory: (businessUnitRepository: BusinessUnitRepository) => {
     return new GetAllBusinessUnitsPlainHandler(businessUnitRepository);
   },
-  inject: [BusinessUnitRepository],
+  inject: [BusinessUnitRepository, AdminUserGetter],
 };
 
 const createClassRoomHandler = {

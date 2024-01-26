@@ -10,13 +10,15 @@ let handler: GetExaminationCenterHandler;
 let examinationCenterGetter: ExaminationCenterGetter;
 let getSpy: any;
 const examinationCenter = getAnExaminationCenter();
-const query = new GetExaminationCenterQuery(examinationCenter.id);
+const query = new GetExaminationCenterQuery(examinationCenter.id, [
+  'businessUnitId',
+]);
 
 describe('Get Examination Center Handler', () => {
   beforeAll(() => {
     examinationCenterGetter = getAnExaminationCenterGetterMock();
     handler = new GetExaminationCenterHandler(examinationCenterGetter);
-    getSpy = jest.spyOn(examinationCenterGetter, 'get');
+    getSpy = jest.spyOn(examinationCenterGetter, 'getByAdminUser');
   });
   it('should return an examination center getter', async () => {
     getSpy.mockImplementation((): Promise<ExaminationCenter> => {

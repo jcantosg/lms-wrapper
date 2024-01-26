@@ -5,6 +5,7 @@ import { EditBusinessUnitCommand } from '#business-unit/application/edit-busines
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit-duplicated.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
 
 export class EditBusinessUnitHandler implements CommandHandler {
   constructor(
@@ -27,6 +28,12 @@ export class EditBusinessUnitHandler implements CommandHandler {
     const businessUnit = await this.businessUnitGetter.get(command.id);
     const country = await this.countryGetter.get(command.countryId);
     const user = await this.adminUserGetter.get(command.userId);
+    const adminUserBusinessUnits = user.businessUnits.map((bu) => bu.id);
+
+    if (!adminUserBusinessUnits.includes(businessUnit.id)) {
+      throw new BusinessUnitNotFoundException();
+    }
+
     businessUnit.update(
       command.name,
       command.code,

@@ -6,6 +6,7 @@ import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.se
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
 
 export class EditExaminationCenterHandler implements CommandHandler {
   constructor(
@@ -29,12 +30,21 @@ export class EditExaminationCenterHandler implements CommandHandler {
       command.id,
     );
     const user = await this.adminUserGetter.get(command.userId);
+    const adminUserBusinessUnits = user.businessUnits.map((bu) => bu.id);
 
     const businessUnits = await Promise.all(
       command.businessUnits.map(async (businessUnitId: string) => {
         return await this.businessUnitGetter.get(businessUnitId);
       }),
     );
+
+    if (
+      businessUnits.length > 0 &&
+      !businessUnits.find((bu) => adminUserBusinessUnits.includes(bu.id))
+    ) {
+      throw new BusinessUnitNotFoundException();
+    }
+
     const classrooms = await Promise.all(
       command.classrooms.map(async (classroomId: string) => {
         return await this.classroomGetter.get(classroomId);

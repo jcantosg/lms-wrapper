@@ -3,6 +3,7 @@ import { ExaminationCenterRepository } from '#business-unit/domain/repository/ex
 import { DeleteExaminationCenterCommand } from '#business-unit/application/delete-examination-center/delete-examination-center.command';
 import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
 
 export class DeleteExaminationCenterHandler implements CommandHandler {
   constructor(
@@ -16,6 +17,15 @@ export class DeleteExaminationCenterHandler implements CommandHandler {
     );
     if (examinationCenter.isMain) {
       throw new ExaminationCenterMainException();
+    }
+
+    if (
+      examinationCenter.businessUnits.length > 0 &&
+      !examinationCenter.businessUnits.find((bu) =>
+        command.adminUserBusinessUnits.includes(bu.id),
+      )
+    ) {
+      throw new BusinessUnitNotFoundException();
     }
     await this.examinationCenterRepository.delete(examinationCenter.id);
   }

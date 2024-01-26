@@ -7,6 +7,9 @@ export class GetBusinessUnitHandler implements QueryHandler {
   constructor(private readonly businessGetterService: BusinessUnitGetter) {}
 
   async handle(query: GetBusinessUnitQuery): Promise<BusinessUnit> {
-    return await this.businessGetterService.get(query.id);
+    return await this.businessGetterService.getByAdminUser(
+      query.id,
+      query.adminUserBusinessUnits,
+    );
   }
 }

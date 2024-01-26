@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
@@ -11,6 +18,7 @@ import { getAllExaminationCentersSchema } from '#business-unit/infrastructure/co
 import { GetAllExaminationCentersQuery } from '#business-unit/application/get-all-examination-centers/get-all-examination-centers.query';
 import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/get-all-examination-centers/get-all-examination-centers.response';
 import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.response';
+import { AuthRequest } from '#shared/infrastructure/http/request';
 
 type GetAllExaminationCentersQueryParams = {
   page: number;
@@ -38,12 +46,14 @@ export class GetAllExaminationCentersController {
   )
   async getAllExaminationCenters(
     @Query() queryParams: GetAllExaminationCentersQueryParams,
+    @Req() req: AuthRequest,
   ): Promise<CollectionResponse<ExaminationCenterResponse>> {
     const query = new GetAllExaminationCentersQuery(
       queryParams.page,
       queryParams.limit,
       queryParams.orderBy,
       queryParams.orderType,
+      req.user.businessUnits,
       queryParams.name,
       queryParams.code,
       queryParams.isActive,

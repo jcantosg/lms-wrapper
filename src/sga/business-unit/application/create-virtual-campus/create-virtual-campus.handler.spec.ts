@@ -26,6 +26,7 @@ let adminUserGetter: AdminUserGetter;
 let businessUnitGetter: BusinessUnitGetter;
 
 const user = getAnAdminUser();
+user.addBusinessUnit(businessUnit);
 
 const command = new CreateVirtualCampusCommand(
   uuid(),

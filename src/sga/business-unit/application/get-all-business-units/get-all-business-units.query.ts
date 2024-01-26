@@ -8,6 +8,7 @@ export class GetAllBusinessUnitsQuery extends CollectionQuery implements Query {
     readonly limit: number,
     readonly orderBy: string,
     readonly orderType: OrderTypes,
+    readonly adminUserBusinessUnits: string[],
     public readonly name?: string,
     public readonly code?: string,
     public readonly isActive?: boolean,

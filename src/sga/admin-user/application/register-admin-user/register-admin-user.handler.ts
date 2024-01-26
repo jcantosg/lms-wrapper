@@ -2,6 +2,7 @@ import { RegisterAdminUserCommand } from '#admin-user/application/register-admin
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { AdminUserDuplicatedException } from '#shared/domain/exception/admin-user/admin-user-duplicated.exception';
 
@@ -10,6 +11,7 @@ export class RegisterAdminUserHandler implements CommandHandler {
     private readonly adminUserRepository: AdminUserRepository,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly defaultAvatar: string,
+    private readonly businessUnitGetter: BusinessUnitGetter,
   ) {}
 
   async handle(command: RegisterAdminUserCommand): Promise<void> {
@@ -20,6 +22,12 @@ export class RegisterAdminUserHandler implements CommandHandler {
       throw new AdminUserDuplicatedException();
     }
 
+    const businessUnits = await Promise.all(
+      command.businessUnits.map(async (businessUnitId: string) => {
+        return await this.businessUnitGetter.get(businessUnitId);
+      }),
+    );
+
     const adminUser: AdminUser = AdminUser.create(
       command.id,
       command.email,
@@ -27,6 +35,7 @@ export class RegisterAdminUserHandler implements CommandHandler {
       command.roles,
       command.name,
       command.avatar ?? this.defaultAvatar,
+      businessUnits,
     );
     await this.adminUserRepository.save(adminUser);
   }

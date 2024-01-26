@@ -57,9 +57,11 @@ describe('/business-unit/:id/examination-centers (GET)', () => {
     const response = await supertest(httpServer)
       .get(emptyPath)
       .auth(superAdminAccessToken, { type: 'bearer' })
-      .expect(200);
+      .expect(404);
 
-    expect(response.body.length).toBe(0);
+    expect(response.body.message).toBe(
+      'sga.business-unit.business-unit-not-found',
+    );
   });
 
   afterAll(async () => {

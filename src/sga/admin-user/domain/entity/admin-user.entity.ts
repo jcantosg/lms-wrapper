@@ -1,4 +1,5 @@
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 
 export class AdminUser extends BaseEntity {
@@ -13,6 +14,7 @@ export class AdminUser extends BaseEntity {
     private _roles: AdminUserRoles[],
     private _name: string,
     private _avatar: string,
+    private _businessUnits: BusinessUnit[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -24,6 +26,7 @@ export class AdminUser extends BaseEntity {
     roles: AdminUserRoles[],
     name: string,
     avatar: string,
+    businessUnits: BusinessUnit[],
   ) {
     return new this(
       id,
@@ -34,6 +37,7 @@ export class AdminUser extends BaseEntity {
       roles,
       name,
       avatar,
+      businessUnits,
     );
   }
 
@@ -86,6 +90,28 @@ export class AdminUser extends BaseEntity {
   public removeRole(value: AdminUserRoles) {
     if (this._roles.includes(value)) {
       this._roles = this._roles.filter((role) => role !== value);
+    }
+  }
+
+  public get businessUnits(): BusinessUnit[] {
+    return this._businessUnits;
+  }
+
+  public set businessUnits(value: BusinessUnit[]) {
+    this._businessUnits = value;
+  }
+
+  public addBusinessUnit(businessUnit: BusinessUnit) {
+    if (!this._businessUnits.find((bu) => bu.id === businessUnit.id)) {
+      this._businessUnits.push(businessUnit);
+    }
+  }
+
+  public removeBusinessUnit(value: BusinessUnit) {
+    if (this._businessUnits.find((bu) => bu.id === value.id)) {
+      this._businessUnits = this._businessUnits.filter(
+        (businessUnit) => businessUnit !== value,
+      );
     }
   }
 }

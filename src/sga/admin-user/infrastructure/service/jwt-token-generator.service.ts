@@ -11,6 +11,7 @@ export class JwtTokenGenerator {
     userId: string,
     userEmail: string,
     userRoles: AdminUserRoles[],
+    businessUnits: string[],
   ): string {
     const opts: SignOptions = {
       subject: String(userId),
@@ -20,6 +21,7 @@ export class JwtTokenGenerator {
       {
         email: userEmail,
         roles: userRoles,
+        businessUnits,
       },
       opts,
     );

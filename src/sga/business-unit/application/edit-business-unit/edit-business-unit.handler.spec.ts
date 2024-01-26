@@ -44,6 +44,8 @@ const user = getAnAdminUser();
 const country = getACountry();
 const businessUnit = getABusinessUnit(command.id);
 
+user.addBusinessUnit(businessUnit);
+
 describe('Edit Business Unit Handler', () => {
   beforeAll(() => {
     countryGetter = getCountryGetterMock();

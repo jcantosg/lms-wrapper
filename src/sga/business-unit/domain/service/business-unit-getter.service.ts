@@ -7,6 +7,22 @@ export class BusinessUnitGetter {
     private readonly businessUnitRepository: BusinessUnitRepository,
   ) {}
 
+  async getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+  ): Promise<BusinessUnit> {
+    const businessUnit = await this.businessUnitRepository.getByAdminUser(
+      id,
+      adminUserBusinessUnits,
+    );
+
+    if (!businessUnit) {
+      throw new BusinessUnitNotFoundException();
+    }
+
+    return businessUnit;
+  }
+
   async get(id: string): Promise<BusinessUnit> {
     const businessUnit = await this.businessUnitRepository.get(id);
 

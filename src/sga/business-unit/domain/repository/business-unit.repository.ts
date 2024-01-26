@@ -6,17 +6,28 @@ export abstract class BusinessUnitRepository {
 
   abstract get(id: string): Promise<BusinessUnit | null>;
 
+  abstract getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+  ): Promise<BusinessUnit | null>;
+
   abstract existsById(id: string): Promise<boolean>;
 
   abstract existsByName(id: string, name: string): Promise<boolean>;
 
   abstract existsByCode(id: string, code: string): Promise<boolean>;
 
-  abstract matching(criteria: Criteria): Promise<BusinessUnit[]>;
+  abstract matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: string[],
+  ): Promise<BusinessUnit[]>;
 
-  abstract count(criteria: Criteria): Promise<number>;
+  abstract count(
+    criteria: Criteria,
+    adminUserBusinessUnits: string[],
+  ): Promise<number>;
 
   abstract update(businessUnit: BusinessUnit): Promise<void>;
 
-  abstract getAll(): Promise<BusinessUnit[]>;
+  abstract getAll(adminUserBusinessUnits: string[]): Promise<BusinessUnit[]>;
 }

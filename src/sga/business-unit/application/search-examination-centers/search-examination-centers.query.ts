@@ -12,6 +12,7 @@ export class SearchExaminationCentersQuery
     readonly orderBy: string,
     readonly orderType: OrderTypes,
     public readonly text: string,
+    readonly adminUserBusinessUnits: string[],
   ) {
     super(page, limit, orderBy, orderType);
   }

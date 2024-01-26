@@ -16,8 +16,11 @@ export class GetAllBusinessUnitsHandler implements QueryHandler {
     const criteria = new GetAllBusinessUnitsCriteria(query);
 
     const [total, businessUnits] = await Promise.all([
-      this.businessUnitRepository.count(criteria),
-      this.businessUnitRepository.matching(criteria),
+      this.businessUnitRepository.count(criteria, query.adminUserBusinessUnits),
+      this.businessUnitRepository.matching(
+        criteria,
+        query.adminUserBusinessUnits,
+      ),
     ]);
 
     return {
