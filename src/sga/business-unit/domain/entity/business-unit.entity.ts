@@ -2,6 +2,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
+import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 
 export class BusinessUnit extends BaseEntity {
   private constructor(
@@ -15,6 +16,7 @@ export class BusinessUnit extends BaseEntity {
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
     private _virtualCampuses: VirtualCampus[],
+    private _examinationCenters: ExaminationCenter[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -75,6 +77,14 @@ export class BusinessUnit extends BaseEntity {
     this._virtualCampuses = value;
   }
 
+  public get examinationCenters(): ExaminationCenter[] {
+    return this._examinationCenters;
+  }
+
+  public set examinationCenters(value: ExaminationCenter[]) {
+    this._examinationCenters = value;
+  }
+
   static create(
     id: string,
     name: string,
@@ -92,6 +102,7 @@ export class BusinessUnit extends BaseEntity {
       country,
       user,
       user,
+      [],
       [],
     );
   }

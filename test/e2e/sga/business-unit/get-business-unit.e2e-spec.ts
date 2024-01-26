@@ -52,6 +52,7 @@ describe('/business-unit/:id (GET)', () => {
         name: GetBusinessUnitE2eSeed.businessUnitName,
         code: GetBusinessUnitE2eSeed.businessUnitCode,
         virtualCampuses: [],
+        examinationCenters: [],
         country: {
           id: GetBusinessUnitE2eSeed.countryId,
           name: GetBusinessUnitE2eSeed.countryName,

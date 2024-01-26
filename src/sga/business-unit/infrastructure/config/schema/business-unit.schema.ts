@@ -42,5 +42,18 @@ export const businessUnitSchema = new EntitySchema<BusinessUnit>({
       target: 'VirtualCampus',
       inverseSide: 'businessUnit',
     },
+    examinationCenters: {
+      type: 'many-to-many',
+      target: 'ExaminationCenter',
+      joinTable: {
+        name: 'business_unit_examination_centers',
+        joinColumn: {
+          name: 'business_unit_id',
+        },
+        inverseJoinColumn: {
+          name: 'examination_center_id',
+        },
+      },
+    },
   },
 });

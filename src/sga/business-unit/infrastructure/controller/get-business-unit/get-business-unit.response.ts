@@ -8,6 +8,8 @@ import {
   VirtualCampusResponse,
 } from '#business-unit/infrastructure/controller/get-business-unit/get-virtual-campus.response';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
+import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
+import { GetExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-business-unit/get-examination-center.response';
 
 export interface BusinessResponse {
   id: string;
@@ -15,6 +17,7 @@ export interface BusinessResponse {
   code: string;
   country: CountryResponse;
   virtualCampuses: VirtualCampusResponse[];
+  examinationCenters: ExaminationCenter[];
 }
 
 export class GetBusinessUnitResponse {
@@ -27,6 +30,11 @@ export class GetBusinessUnitResponse {
       virtualCampuses: businessUnit.virtualCampuses.map(
         (virtualCampus: VirtualCampus) => {
           return GetVirtualCampusResponse.create(virtualCampus);
+        },
+      ),
+      examinationCenters: businessUnit.examinationCenters.map(
+        (examinationCenter: ExaminationCenter) => {
+          return GetExaminationCenterResponse.create(examinationCenter);
         },
       ),
     };
