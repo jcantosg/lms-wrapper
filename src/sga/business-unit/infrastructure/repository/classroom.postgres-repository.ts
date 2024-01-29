@@ -48,6 +48,18 @@ export class ClassroomPostgresRepository implements ClassroomRepository {
     return !classroom ? false : classroom.id !== id;
   }
 
+  async update(classroom: Classroom): Promise<void> {
+    await this.repository.update(classroom.id, {
+      name: classroom.name,
+      code: classroom.code,
+      capacity: classroom.capacity,
+      updatedAt: classroom.updatedAt,
+      updatedBy: classroom.updatedBy,
+      isActive: classroom.isActive,
+      examinationCenter: classroom.examinationCenter,
+    });
+  }
+
   async existsById(id: string): Promise<boolean> {
     const classroom = await this.repository.findOne({ where: { id } });
 

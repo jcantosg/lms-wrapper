@@ -30,4 +30,34 @@ describe('Classroom Creation', () => {
       );
     }).toThrow(ClassroomWrongCapacityException);
   });
+
+  it('should throw a ClassroomWrongCapacityException when edit', () => {
+    const classroom = Classroom.create(
+      uuid(),
+      'CODE',
+      'name',
+      4,
+      adminUser,
+      examinationCenter,
+    );
+
+    expect(() => {
+      classroom.update('name', 'CODE', -1, adminUser);
+    }).toThrow(ClassroomWrongCapacityException);
+  });
+
+  it('should edit a classroom', () => {
+    const classroom = Classroom.create(
+      uuid(),
+      'CODE',
+      'name',
+      4,
+      adminUser,
+      examinationCenter,
+    );
+
+    classroom.update('name', 'CODETEST', 5, adminUser);
+
+    expect(classroom.code).toEqual('CODETEST');
+  });
 });

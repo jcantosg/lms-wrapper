@@ -41,6 +41,10 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
       'businessUnit.virtualCampuses',
       'virtualCampus',
     );
+    queryBuilder.leftJoinAndSelect(
+      'businessUnit.examinationCenters',
+      'examinationCenter',
+    );
 
     return await queryBuilder
       .where('businessUnit.id = :id', { id: businessUnitId })

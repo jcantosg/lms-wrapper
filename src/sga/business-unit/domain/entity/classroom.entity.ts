@@ -102,4 +102,21 @@ export class Classroom extends BaseEntity {
       examinationCenter,
     );
   }
+
+  public update(
+    name: string,
+    code: string,
+    capacity: number,
+    user: AdminUser,
+  ): void {
+    if (capacity < MINIMUM_CAPACITY) {
+      throw new ClassroomWrongCapacityException();
+    }
+
+    this._code = code;
+    this._name = name;
+    this._capacity = capacity;
+    this.updatedAt = new Date();
+    this._updatedBy = user;
+  }
 }

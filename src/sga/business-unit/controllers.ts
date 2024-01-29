@@ -14,6 +14,7 @@ import { EditExaminationCenterController } from '#business-unit/infrastructure/c
 import { GetBusinessUnitExaminationCentersController } from '#business-unit/infrastructure/controller/get-business-unit-examination-centers/get-business-unit-examination-centers.controller';
 import { GetAllBusinessPlainController } from '#business-unit/infrastructure/controller/get-all-business-units-plain/get-all-business-units-plain.controller';
 import { CreateClassroomController } from '#business-unit/infrastructure/controller/create-classroom.controller';
+import { EditClassroomController } from './infrastructure/controller/edit-classroom.controller';
 import { DeleteClassroomController } from '#business-unit/infrastructure/controller/delete-classroom.controller';
 
 export const controllers = [
@@ -33,5 +34,6 @@ export const controllers = [
   EditExaminationCenterController,
   GetBusinessUnitExaminationCentersController,
   CreateClassroomController,
+  EditClassroomController,
   DeleteClassroomController,
 ];

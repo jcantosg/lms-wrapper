@@ -13,6 +13,10 @@ export abstract class ClassroomRepository {
 
   public abstract existsByCode(id: string, code: string): Promise<boolean>;
 
+  public abstract update(classroom: Classroom): Promise<void>;
+
+  public abstract existsById(id: string): Promise<boolean>;
+
   public abstract existsById(id: string): Promise<boolean>;
 
   public abstract delete(classroom: Classroom): Promise<void>;
