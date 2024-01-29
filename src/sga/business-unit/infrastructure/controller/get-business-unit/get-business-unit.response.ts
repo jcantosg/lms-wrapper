@@ -37,6 +37,7 @@ export class GetBusinessUnitResponse {
           return GetExaminationCenterResponse.create(examinationCenter);
         },
       ),
+      isActive: businessUnit.isActive,
     };
   }
 }
