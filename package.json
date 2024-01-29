@@ -32,7 +32,9 @@
     "sga:test:db:create": "ts-node -r tsconfig-paths/register src/commands/db/create-e2e-database.command.ts",
     "sga:test:db:drop": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/db/drop-e2e-database.command.ts",
     "typeorm:test:migrations:up": "NODE_ENV=test ts-node -r tsconfig-paths/register node_modules/typeorm/cli.js migration:run -d config/ormconfig.ts",
-    "sga:test:db:seed:country": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/country/import-countries.command.ts"
+    "sga:test:db:seed:country": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/country/import-countries.command.ts",
+    "sga:db:seed:admin-user": "ts-node -r tsconfig-paths/register src/commands/admin-user/create-default-admin-user.command.ts",
+    "sga:test:db:seed:admin-user": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/admin-user/create-default-admin-user.command.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.1",

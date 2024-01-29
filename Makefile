@@ -50,11 +50,13 @@ database-reload: ## drop, runs migrations, seed
 	@npm run sga:db:drop -- -f
 	@npm run typeorm:migrations:up
 	@npm run sga:db:seed:country
+	@npm run sga:db:seed:admin-user
 
 test-database-setup:
 	@npm run sga:test:db:create
 	@npm run typeorm:test:migrations:up
 	@npm run sga:test:db:seed:country
+	@npm run sga:test:db:seed:admin-user
 
 test-database-drop:
 	@npm run sga:test:db:drop -f
