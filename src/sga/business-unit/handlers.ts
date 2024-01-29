@@ -26,6 +26,7 @@ import { CreateClassroomHandler } from '#business-unit/application/create-classr
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { EditClassroomHandler } from '#business-unit/application/edit-classroom/edit-classroom.handler';
 import { DeleteClassroomHandler } from '#business-unit/application/delete-classroom/delete-classroom.handler';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -35,6 +36,7 @@ const createBusinessUnitHandler = {
     countryGetter: CountryGetter,
     virtualCampusRepository: VirtualCampusRepository,
     examinationCenterRepository: ExaminationCenterRepository,
+    eventDispatcher: EventDispatcher,
   ) => {
     return new CreateBusinessUnitHandler(
       businessUnitRepository,
@@ -42,6 +44,7 @@ const createBusinessUnitHandler = {
       countryGetter,
       virtualCampusRepository,
       examinationCenterRepository,
+      eventDispatcher,
     );
   },
   inject: [
@@ -50,6 +53,7 @@ const createBusinessUnitHandler = {
     CountryGetter,
     VirtualCampusRepository,
     ExaminationCenterRepository,
+    EventDispatcher,
   ],
 };
 const editBusinessUnitHandler = {

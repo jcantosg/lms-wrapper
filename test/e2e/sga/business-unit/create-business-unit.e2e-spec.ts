@@ -39,7 +39,7 @@ describe('/business-unit (POST)', () => {
     await supertest(httpServer).post(path).expect(401);
   });
 
-  it('Should return forbiden (User not Superadmin)', async () => {
+  it('Should return forbidden (User not Superadmin)', async () => {
     await supertest(httpServer)
       .post(path)
       .auth(adminAccessToken, { type: 'bearer' })
@@ -83,6 +83,23 @@ describe('/business-unit (POST)', () => {
         countryId: CreateBusinessUnitE2eSeed.countryId,
       })
       .expect(201);
+    const businessUnitExpected = [
+      {
+        id: CreateBusinessUnitE2eSeed.newBusinessUnitId,
+        name: 'New business unit name',
+        code: 'New business unit code',
+        country: {
+          id: CreateBusinessUnitE2eSeed.countryId,
+          name: 'Test Country',
+          emoji: 'emoji',
+        },
+      },
+    ];
+    const response = await supertest(httpServer)
+      .get('/me')
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .expect(200);
+    expect(response.body.businessUnits).toEqual(businessUnitExpected);
   });
 
   afterAll(async () => {

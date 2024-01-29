@@ -13,6 +13,8 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { BusinessUnitWrongNameLengthException } from '#shared/domain/exception/business-unit/business-unit-wrong-name-length.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { BusinessUnitCreatedEvent } from '#business-unit/domain/event/business-unit-created.event';
 
 const START_POSITION = 0;
 const END_POSITION = 3;
@@ -24,6 +26,7 @@ export class CreateBusinessUnitHandler implements CommandHandler {
     private readonly countryGetter: CountryGetter,
     private readonly virtualCampusRepository: VirtualCampusRepository,
     private readonly examinationCenterRepository: ExaminationCenterRepository,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: CreateBusinessUnitCommand): Promise<void> {
@@ -54,6 +57,10 @@ export class CreateBusinessUnitHandler implements CommandHandler {
     );
     await this.createVirtualCampus(businessUnit, user);
     await this.createExaminationCenter(businessUnit, user);
+
+    await this.eventDispatcher.dispatch(
+      new BusinessUnitCreatedEvent(businessUnit.id),
+    );
   }
 
   private async createBusinessUnit(

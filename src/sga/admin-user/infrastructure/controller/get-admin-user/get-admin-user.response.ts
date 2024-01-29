@@ -1,4 +1,16 @@
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import {
+  CountryResponse,
+  GetCountryResponse,
+} from '#shared/infrastructure/controller/country/get-country.response';
+
+type GetBusinessUnitByUserResponse = {
+  id: string;
+  name: string;
+  code: string;
+  country: CountryResponse;
+};
 
 export class GetAdminUserResponse {
   static create(adminUser: AdminUser) {
@@ -6,7 +18,16 @@ export class GetAdminUserResponse {
       id: adminUser.id,
       name: adminUser.name,
       roles: adminUser.roles,
-      businessUnits: [],
+      businessUnits: adminUser.businessUnits.map(
+        (businessUnit: BusinessUnit): GetBusinessUnitByUserResponse => {
+          return {
+            id: businessUnit.id,
+            name: businessUnit.name,
+            code: businessUnit.code,
+            country: GetCountryResponse.create(businessUnit.country),
+          };
+        },
+      ),
       avatar: adminUser.avatar,
     };
   }

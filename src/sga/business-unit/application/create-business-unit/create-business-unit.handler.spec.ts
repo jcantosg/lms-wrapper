@@ -17,6 +17,8 @@ import { VirtualCampusRepository } from '#business-unit/domain/repository/virtua
 import { VirtualCampusMockRepository } from '#test/mocks/sga/business-unit/virtual-campus.mock-repository';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: CreateBusinessUnitHandler;
 let businessUnitRepository: BusinessUnitRepository;
@@ -24,6 +26,7 @@ let adminUserGetter: AdminUserGetter;
 let countryGetter: CountryGetter;
 let virtualCampusRepository: VirtualCampusRepository;
 let examinationCenterRepository: ExaminationCenterRepository;
+let eventDispatcher: EventDispatcher;
 
 let getUserSpy: any;
 let getCountrySpy: any;
@@ -32,6 +35,7 @@ let saveSpy: any;
 let saveVirtualCampusSpy: any;
 let saveExaminationCenterSpy: any;
 let getNextAvailableCodeSpy: any;
+let dispatchSpy: any;
 
 const command = new CreateBusinessUnitCommand(
   uuid(),
@@ -52,6 +56,7 @@ describe('Create Business Unit Handler', () => {
     countryGetter = getCountryGetterMock();
     virtualCampusRepository = new VirtualCampusMockRepository();
     examinationCenterRepository = new ExaminationCenterMockRepository();
+    eventDispatcher = new EventDispatcherMock();
 
     getUserSpy = jest.spyOn(adminUserGetter, 'get');
     getCountrySpy = jest.spyOn(countryGetter, 'get');
@@ -66,6 +71,7 @@ describe('Create Business Unit Handler', () => {
       examinationCenterRepository,
       'getNextAvailableCode',
     );
+    dispatchSpy = jest.spyOn(eventDispatcher, 'dispatch');
 
     handler = new CreateBusinessUnitHandler(
       businessUnitRepository,
@@ -73,6 +79,7 @@ describe('Create Business Unit Handler', () => {
       countryGetter,
       virtualCampusRepository,
       examinationCenterRepository,
+      eventDispatcher,
     );
   });
 
@@ -117,6 +124,12 @@ describe('Create Business Unit Handler', () => {
       expect.objectContaining({
         _name: command.name,
         _code: examinationCenterCode,
+      }),
+    );
+    expect(dispatchSpy).toHaveBeenCalledTimes(1);
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'business-unit.created',
       }),
     );
   });

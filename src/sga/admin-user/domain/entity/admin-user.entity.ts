@@ -105,6 +105,7 @@ export class AdminUser extends BaseEntity {
     if (!this._businessUnits.find((bu) => bu.id === businessUnit.id)) {
       this._businessUnits.push(businessUnit);
     }
+    this.updatedAt = new Date();
   }
 
   public removeBusinessUnit(value: BusinessUnit) {
@@ -113,5 +114,6 @@ export class AdminUser extends BaseEntity {
         (businessUnit) => businessUnit !== value,
       );
     }
+    this.updatedAt = new Date();
   }
 }
