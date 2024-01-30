@@ -59,18 +59,12 @@ export const getAnExaminationCenter = (
 export const getAMainExaminationCenter = (
   id: string = uuid(),
 ): ExaminationCenter => {
-  const examinationCenter = ExaminationCenter.create(
+  return ExaminationCenter.createFromBusinessUnit(
     id,
-    'name',
-    'code',
-    [],
-    'address',
+    getABusinessUnit(),
     getAnAdminUser(),
-    getACountry(),
+    'code',
   );
-  examinationCenter.isMain = true;
-
-  return examinationCenter;
 };
 
 export const getAClassroom = (id: string = uuid()): Classroom => {

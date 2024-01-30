@@ -17,7 +17,7 @@ export class ExaminationCenter extends BaseEntity {
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
     private _country: Country,
-    private _isMain: boolean,
+    private _mainBusinessUnit: BusinessUnit | null,
     private _classrooms: Classroom[],
   ) {
     super(id, createdAt, updatedAt);
@@ -87,12 +87,12 @@ export class ExaminationCenter extends BaseEntity {
     this._country = value;
   }
 
-  public get isMain(): boolean {
-    return this._isMain;
+  public get mainBusinessUnit(): BusinessUnit | null {
+    return this._mainBusinessUnit;
   }
 
-  public set isMain(value: boolean) {
-    this._isMain = value;
+  public set mainBusinessUnit(value: BusinessUnit | null) {
+    this._mainBusinessUnit = value;
   }
 
   public get classrooms(): Classroom[] {
@@ -124,7 +124,7 @@ export class ExaminationCenter extends BaseEntity {
       user,
       user,
       country,
-      false,
+      null,
       [],
     );
   }
@@ -147,7 +147,7 @@ export class ExaminationCenter extends BaseEntity {
       user,
       user,
       businessUnit.country,
-      true,
+      businessUnit,
       [],
     );
   }

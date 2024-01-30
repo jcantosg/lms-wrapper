@@ -15,7 +15,7 @@ export class DeleteExaminationCenterHandler implements CommandHandler {
     const examinationCenter = await this.examinationCenterGetter.get(
       command.id,
     );
-    if (examinationCenter.isMain) {
+    if (examinationCenter.mainBusinessUnit) {
       throw new ExaminationCenterMainException();
     }
 

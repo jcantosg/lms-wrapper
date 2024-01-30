@@ -30,12 +30,6 @@ export const examinationCenterSchema = new EntitySchema<ExaminationCenter>({
       type: String,
       nullable: false,
     },
-    isMain: {
-      name: 'is_main',
-      type: Boolean,
-      nullable: false,
-      default: false,
-    },
   },
   relations: {
     ...BaseSchemaRelations,
@@ -63,6 +57,13 @@ export const examinationCenterSchema = new EntitySchema<ExaminationCenter>({
       type: 'one-to-many',
       target: 'Classroom',
       inverseSide: 'examinationCenter',
+    },
+    mainBusinessUnit: {
+      type: 'one-to-one',
+      target: 'BusinessUnit',
+      joinColumn: {
+        name: 'main_business_unit_id',
+      },
     },
   },
 });
