@@ -30,7 +30,7 @@ export class CreateBusinessUnitController {
       body.name,
       body.code,
       body.countryId,
-      req.user.id,
+      req.user,
     );
 
     await this.handler.handle(command);

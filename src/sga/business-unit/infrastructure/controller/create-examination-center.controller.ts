@@ -43,7 +43,7 @@ export class CreateExaminationCenterController {
       body.code,
       body.businessUnits,
       body.address,
-      req.user.id,
+      req.user,
       body.countryId,
     );
     await this.handler.handle(command);

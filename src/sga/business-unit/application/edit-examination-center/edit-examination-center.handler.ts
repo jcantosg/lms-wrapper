@@ -2,7 +2,6 @@ import { ExaminationCenterRepository } from '#business-unit/domain/repository/ex
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { EditExaminationCenterCommand } from '#business-unit/application/edit-examination-center/edit-examination-center.command';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
@@ -13,7 +12,6 @@ export class EditExaminationCenterHandler implements CommandHandler {
     private readonly examinationCenterRepository: ExaminationCenterRepository,
     private readonly examinationCenterGetter: ExaminationCenterGetter,
     private readonly businessUnitGetter: BusinessUnitGetter,
-    private readonly adminUserGetter: AdminUserGetter,
     private readonly classroomGetter: ClassroomGetter,
   ) {}
 
@@ -29,8 +27,9 @@ export class EditExaminationCenterHandler implements CommandHandler {
     const examinationCenter = await this.examinationCenterGetter.get(
       command.id,
     );
-    const user = await this.adminUserGetter.get(command.userId);
-    const adminUserBusinessUnits = user.businessUnits.map((bu) => bu.id);
+    const adminUserBusinessUnits = command.user.businessUnits.map(
+      (bu) => bu.id,
+    );
 
     const businessUnits = await Promise.all(
       command.businessUnits.map(async (businessUnitId: string) => {
@@ -56,7 +55,7 @@ export class EditExaminationCenterHandler implements CommandHandler {
       command.code,
       command.address,
       businessUnits,
-      user,
+      command.user,
       command.isActive,
       classrooms,
     );

@@ -53,7 +53,7 @@ export class GetAllExaminationCentersController {
       queryParams.limit,
       queryParams.orderBy,
       queryParams.orderType,
-      req.user.businessUnits,
+      req.user.businessUnits.map((bu) => bu.id),
       queryParams.name,
       queryParams.code,
       queryParams.isActive,

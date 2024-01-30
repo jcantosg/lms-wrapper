@@ -51,7 +51,7 @@ export class EditExaminationCenterController {
         body.code,
         body.address,
         body.businessUnits,
-        req.user.id,
+        req.user,
         body.isActive,
         body.classrooms,
       );

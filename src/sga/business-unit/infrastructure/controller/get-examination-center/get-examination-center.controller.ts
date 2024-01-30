@@ -26,7 +26,10 @@ export class GetExaminationCenterController {
   @Roles(AdminUserRoles.SUPERADMIN)
   @Get(':id')
   async getExaminationCenter(@Param('id') id: string, @Req() req: AuthRequest) {
-    const query = new GetExaminationCenterQuery(id, req.user.businessUnits);
+    const query = new GetExaminationCenterQuery(
+      id,
+      req.user.businessUnits.map((bu) => bu.id),
+    );
     const examinationCenter = await this.handler.handle(query);
 
     return GetExaminationCenterResponse.create(examinationCenter);

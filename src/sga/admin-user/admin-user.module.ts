@@ -10,6 +10,7 @@ import { LocalStrategy } from '#admin-user/infrastructure/auth/local.strategy';
 import { handlers } from '#admin-user/handlers';
 import { controllers } from '#admin-user/controllers';
 import { BusinessUnitModule } from '#business-unit/business-unit.module';
+import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -22,12 +23,15 @@ const jwtModule = JwtModule.registerAsync({
 
 const jwtStrategy = {
   provide: JwtStrategy,
-  useFactory: (configService: ConfigService) => {
+  useFactory: (
+    configService: ConfigService,
+    adminUserGetter: AdminUserGetter,
+  ) => {
     const jwtSecret = configService.get<string>('JWT_SECRET')!;
 
-    return new JwtStrategy(jwtSecret);
+    return new JwtStrategy(jwtSecret, adminUserGetter);
   },
-  inject: [ConfigService],
+  inject: [ConfigService, AdminUserGetter],
 };
 @Module({
   imports: [

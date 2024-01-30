@@ -1,3 +1,4 @@
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { Command } from '#shared/domain/bus/command';
 
 export class CreateClassroomCommand implements Command {
@@ -7,6 +8,6 @@ export class CreateClassroomCommand implements Command {
     public readonly code: string,
     public readonly capacity: number,
     public readonly examinationCenterId: string,
-    public readonly userId: string,
+    public readonly user: AdminUser,
   ) {}
 }

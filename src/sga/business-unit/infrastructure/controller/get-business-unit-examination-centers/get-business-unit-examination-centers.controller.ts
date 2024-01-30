@@ -36,7 +36,7 @@ export class GetBusinessUnitExaminationCentersController {
   ): Promise<BusinessUnitExaminationCenterResponse[]> {
     const query = new GetBusinessUnitExaminationCentersQuery(
       businessUnitId,
-      req.user.businessUnits,
+      req.user.businessUnits.map((bu) => bu.id),
     );
 
     const response = await this.handler.handle(query);

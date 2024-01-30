@@ -47,7 +47,7 @@ export class EditBusinessUnitController {
       body.name,
       body.code,
       body.countryId,
-      req.user.id,
+      req.user,
       body.isActive,
     );
     await this.handler.handle(command);

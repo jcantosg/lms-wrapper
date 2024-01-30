@@ -46,7 +46,7 @@ export class EditClassroomController {
       body.name,
       body.code,
       body.capacity,
-      req.user.id,
+      req.user,
     );
 
     await this.handler.handle(command);

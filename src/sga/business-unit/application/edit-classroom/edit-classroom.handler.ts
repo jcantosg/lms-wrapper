@@ -1,7 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { EditClassroomCommand } from '#business-unit/application/edit-classroom/edit-classroom.command';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
 import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
@@ -10,7 +9,6 @@ export class EditClassroomHandler implements CommandHandler {
   constructor(
     private readonly classroomRepository: ClassroomRepository,
     private readonly classroomGetter: ClassroomGetter,
-    private readonly adminUserGetter: AdminUserGetter,
   ) {}
 
   async handle(command: EditClassroomCommand): Promise<void> {
@@ -30,9 +28,12 @@ export class EditClassroomHandler implements CommandHandler {
       throw new ClassroomDuplicatedCodeException();
     }
 
-    const user = await this.adminUserGetter.get(command.userId);
-
-    classroom.update(command.name, command.code, command.capacity, user);
+    classroom.update(
+      command.name,
+      command.code,
+      command.capacity,
+      command.user,
+    );
 
     this.classroomRepository.update(classroom);
   }

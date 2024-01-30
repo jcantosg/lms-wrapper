@@ -1,4 +1,3 @@
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { CreateBusinessUnitHandler } from '#business-unit/application/create-business-unit/create-business-unit.handler';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
@@ -32,7 +31,6 @@ const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
   useFactory: (
     businessUnitRepository: BusinessUnitRepository,
-    adminUserGetter: AdminUserGetter,
     countryGetter: CountryGetter,
     virtualCampusRepository: VirtualCampusRepository,
     examinationCenterRepository: ExaminationCenterRepository,
@@ -40,7 +38,6 @@ const createBusinessUnitHandler = {
   ) => {
     return new CreateBusinessUnitHandler(
       businessUnitRepository,
-      adminUserGetter,
       countryGetter,
       virtualCampusRepository,
       examinationCenterRepository,
@@ -49,7 +46,6 @@ const createBusinessUnitHandler = {
   },
   inject: [
     BusinessUnitRepository,
-    AdminUserGetter,
     CountryGetter,
     VirtualCampusRepository,
     ExaminationCenterRepository,
@@ -61,22 +57,15 @@ const editBusinessUnitHandler = {
   useFactory: (
     businessUnitRepository: BusinessUnitRepository,
     businessGetter: BusinessUnitGetter,
-    adminUserGetter: AdminUserGetter,
     countryGetter: CountryGetter,
   ) => {
     return new EditBusinessUnitHandler(
       businessUnitRepository,
       businessGetter,
-      adminUserGetter,
       countryGetter,
     );
   },
-  inject: [
-    BusinessUnitRepository,
-    BusinessUnitGetter,
-    AdminUserGetter,
-    CountryGetter,
-  ],
+  inject: [BusinessUnitRepository, BusinessUnitGetter, CountryGetter],
 };
 const getBusinessUnitHandler = {
   provide: GetBusinessUnitHandler,
@@ -107,15 +96,13 @@ const createVirtualCampusHandler = {
   useFactory: (
     virtualCampusRepository: VirtualCampusRepository,
     businessUnitGetter: BusinessUnitGetter,
-    adminUserGetter: AdminUserGetter,
   ) => {
     return new CreateVirtualCampusHandler(
       virtualCampusRepository,
       businessUnitGetter,
-      adminUserGetter,
     );
   },
-  inject: [VirtualCampusRepository, BusinessUnitGetter, AdminUserGetter],
+  inject: [VirtualCampusRepository, BusinessUnitGetter],
 };
 
 const createExaminationServiceHandler = {
@@ -123,22 +110,15 @@ const createExaminationServiceHandler = {
   useFactory: (
     examinationCenterRepository: ExaminationCenterRepository,
     businessUnitGetter: BusinessUnitGetter,
-    adminUserGetter: AdminUserGetter,
     countryGetter: CountryGetter,
   ) => {
     return new CreateExaminationCenterHandler(
       examinationCenterRepository,
       businessUnitGetter,
-      adminUserGetter,
       countryGetter,
     );
   },
-  inject: [
-    ExaminationCenterRepository,
-    BusinessUnitGetter,
-    AdminUserGetter,
-    CountryGetter,
-  ],
+  inject: [ExaminationCenterRepository, BusinessUnitGetter, CountryGetter],
 };
 
 const editVirtualCampusHandler = {
@@ -146,20 +126,13 @@ const editVirtualCampusHandler = {
   useFactory: (
     virtualCampusRepository: VirtualCampusRepository,
     virtualCampusGetter: VirtualCampusGetter,
-    adminUserGetter: AdminUserGetter,
   ) => {
     return new EditVirtualCampusHandler(
       virtualCampusRepository,
       virtualCampusGetter,
-      adminUserGetter,
     );
   },
-  inject: [
-    VirtualCampusRepository,
-    VirtualCampusGetter,
-    AdminUserGetter,
-    CountryGetter,
-  ],
+  inject: [VirtualCampusRepository, VirtualCampusGetter, CountryGetter],
 };
 
 const getExaminationCenterHandler = {
@@ -206,14 +179,12 @@ const editExaminationCenterHandler = {
     examinationCenterRepository: ExaminationCenterRepository,
     examinationCenterGetter: ExaminationCenterGetter,
     businessUnitGetter: BusinessUnitGetter,
-    adminUserGetter: AdminUserGetter,
     classroomGetter: ClassroomGetter,
   ) => {
     return new EditExaminationCenterHandler(
       examinationCenterRepository,
       examinationCenterGetter,
       businessUnitGetter,
-      adminUserGetter,
       classroomGetter,
     );
   },
@@ -221,7 +192,6 @@ const editExaminationCenterHandler = {
     ExaminationCenterRepository,
     ExaminationCenterGetter,
     BusinessUnitGetter,
-    AdminUserGetter,
     ClassroomGetter,
   ],
 };
@@ -241,7 +211,7 @@ const getAllBusinessUnitsPlainHandler = {
   useFactory: (businessUnitRepository: BusinessUnitRepository) => {
     return new GetAllBusinessUnitsPlainHandler(businessUnitRepository);
   },
-  inject: [BusinessUnitRepository, AdminUserGetter],
+  inject: [BusinessUnitRepository],
 };
 
 const createClassRoomHandler = {
@@ -249,15 +219,13 @@ const createClassRoomHandler = {
   useFactory: (
     classroomRepository: ClassroomRepository,
     examinationCenterGetter: ExaminationCenterGetter,
-    adminUserGetter: AdminUserGetter,
   ) => {
     return new CreateClassroomHandler(
       classroomRepository,
       examinationCenterGetter,
-      adminUserGetter,
     );
   },
-  inject: [ClassroomRepository, ExaminationCenterGetter, AdminUserGetter],
+  inject: [ClassroomRepository, ExaminationCenterGetter],
 };
 
 const editClassroomHandler = {
@@ -265,15 +233,10 @@ const editClassroomHandler = {
   useFactory: (
     classroomRepository: ClassroomRepository,
     classroomGetter: ClassroomGetter,
-    adminUserGetter: AdminUserGetter,
   ) => {
-    return new EditClassroomHandler(
-      classroomRepository,
-      classroomGetter,
-      adminUserGetter,
-    );
+    return new EditClassroomHandler(classroomRepository, classroomGetter);
   },
-  inject: [ClassroomRepository, ClassroomGetter, AdminUserGetter],
+  inject: [ClassroomRepository, ClassroomGetter],
 };
 
 const deleteClassroomHandler = {

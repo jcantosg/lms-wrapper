@@ -19,7 +19,9 @@ export class GetAllBusinessPlainController {
   async getAllBusinessUnitsPlain(
     @Req() req: AuthRequest,
   ): Promise<BusinessUnitResponseBasic[]> {
-    const query = new GetAllBusinessUnitsPlainQuery(req.user.businessUnits);
+    const query = new GetAllBusinessUnitsPlainQuery(
+      req.user.businessUnits.map((bu) => bu.id),
+    );
     const response = await this.handler.handle(query);
 
     return GetAllBusinessUnitPlainResponse.create(response);

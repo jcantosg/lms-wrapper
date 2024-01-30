@@ -1,7 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { CreateClassroomCommand } from '#business-unit/application/create-classroom/create-classroom.command';
 import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
 import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
@@ -12,7 +11,6 @@ export class CreateClassroomHandler implements CommandHandler {
   constructor(
     private readonly classroomRepository: ClassroomRepository,
     private readonly examinationCenterGetter: ExaminationCenterGetter,
-    private readonly adminUserGetter: AdminUserGetter,
   ) {}
 
   async handle(command: CreateClassroomCommand): Promise<void> {
@@ -34,8 +32,9 @@ export class CreateClassroomHandler implements CommandHandler {
     const examinationCenter = await this.examinationCenterGetter.get(
       command.examinationCenterId,
     );
-    const adminUser = await this.adminUserGetter.get(command.userId);
-    const adminUserBusinessUnits = adminUser.businessUnits.map((bu) => bu.id);
+    const adminUserBusinessUnits = command.user.businessUnits.map(
+      (bu) => bu.id,
+    );
 
     if (
       examinationCenter.businessUnits.length > 0 &&
@@ -51,7 +50,7 @@ export class CreateClassroomHandler implements CommandHandler {
       command.code,
       command.name,
       command.capacity,
-      adminUser,
+      command.user,
       examinationCenter,
     );
 

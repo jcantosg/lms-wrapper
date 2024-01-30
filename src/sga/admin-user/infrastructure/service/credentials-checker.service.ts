@@ -1,3 +1,4 @@
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { PasswordChecker } from '#admin-user/domain/service/password-checker.service';
 import { Injectable } from '@nestjs/common';
@@ -12,7 +13,7 @@ export class CredentialsChecker {
   public async checkCredentials(
     email: string,
     plainPassword: string,
-  ): Promise<any> {
+  ): Promise<AdminUser | void> {
     const adminUser = await this.adminUserRepository.getByEmail(email);
 
     if (
@@ -20,12 +21,7 @@ export class CredentialsChecker {
       adminUser &&
       (await this.passwordChecker.checkPassword(plainPassword, adminUser))
     ) {
-      return {
-        id: adminUser.id,
-        email: adminUser.email,
-        roles: adminUser.roles,
-        businessUnits: adminUser.businessUnits.map((bu) => bu.id),
-      };
+      return adminUser;
     }
   }
 }

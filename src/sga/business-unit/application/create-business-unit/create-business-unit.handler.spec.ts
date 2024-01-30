@@ -1,5 +1,3 @@
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { CreateBusinessUnitCommand } from '#business-unit/application/create-business-unit/create-business-unit.command';
 import { CreateBusinessUnitHandler } from '#business-unit/application/create-business-unit/create-business-unit.handler';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
@@ -8,10 +6,7 @@ import { BusinessUnitDuplicatedException } from '#shared/domain/exception/busine
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { getACountry, getAnAdminUser } from '#test/entity-factory';
 import { BusinessUnitMockRepository } from '#test/mocks/sga/business-unit/business-unit.mock-repository';
-import {
-  getAdminUserGetterMock,
-  getCountryGetterMock,
-} from '#test/service-factory';
+import { getCountryGetterMock } from '#test/service-factory';
 import { v4 as uuid } from 'uuid';
 import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
 import { VirtualCampusMockRepository } from '#test/mocks/sga/business-unit/virtual-campus.mock-repository';
@@ -22,13 +17,11 @@ import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-se
 
 let handler: CreateBusinessUnitHandler;
 let businessUnitRepository: BusinessUnitRepository;
-let adminUserGetter: AdminUserGetter;
 let countryGetter: CountryGetter;
 let virtualCampusRepository: VirtualCampusRepository;
 let examinationCenterRepository: ExaminationCenterRepository;
 let eventDispatcher: EventDispatcher;
 
-let getUserSpy: any;
 let getCountrySpy: any;
 let existsBusinessUnitByIdSpy: any;
 let saveSpy: any;
@@ -37,28 +30,26 @@ let saveExaminationCenterSpy: any;
 let getNextAvailableCodeSpy: any;
 let dispatchSpy: any;
 
+const user = getAnAdminUser();
 const command = new CreateBusinessUnitCommand(
   uuid(),
   'name',
   'code',
   uuid(),
-  uuid(),
+  user,
 );
 
-const user = getAnAdminUser();
 const country = getACountry();
 const examinationCenterCode = 'NAM01';
 
 describe('Create Business Unit Handler', () => {
   beforeAll(() => {
     businessUnitRepository = new BusinessUnitMockRepository();
-    adminUserGetter = getAdminUserGetterMock();
     countryGetter = getCountryGetterMock();
     virtualCampusRepository = new VirtualCampusMockRepository();
     examinationCenterRepository = new ExaminationCenterMockRepository();
     eventDispatcher = new EventDispatcherMock();
 
-    getUserSpy = jest.spyOn(adminUserGetter, 'get');
     getCountrySpy = jest.spyOn(countryGetter, 'get');
     existsBusinessUnitByIdSpy = jest.spyOn(
       businessUnitRepository,
@@ -75,7 +66,6 @@ describe('Create Business Unit Handler', () => {
 
     handler = new CreateBusinessUnitHandler(
       businessUnitRepository,
-      adminUserGetter,
       countryGetter,
       virtualCampusRepository,
       examinationCenterRepository,
@@ -86,10 +76,6 @@ describe('Create Business Unit Handler', () => {
   it('Should create a business unit', async () => {
     existsBusinessUnitByIdSpy.mockImplementation((): Promise<boolean> => {
       return Promise.resolve(false);
-    });
-
-    getUserSpy.mockImplementation((): Promise<AdminUser | null> => {
-      return Promise.resolve(user);
     });
 
     getCountrySpy.mockImplementation((): Promise<Country | null> => {

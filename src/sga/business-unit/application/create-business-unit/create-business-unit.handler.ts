@@ -1,4 +1,3 @@
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { CreateBusinessUnitCommand } from '#business-unit/application/create-business-unit/create-business-unit.command';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
@@ -22,7 +21,6 @@ const END_POSITION = 3;
 export class CreateBusinessUnitHandler implements CommandHandler {
   constructor(
     private readonly businessUnitRepository: BusinessUnitRepository,
-    private readonly adminUserGetter: AdminUserGetter,
     private readonly countryGetter: CountryGetter,
     private readonly virtualCampusRepository: VirtualCampusRepository,
     private readonly examinationCenterRepository: ExaminationCenterRepository,
@@ -44,8 +42,6 @@ export class CreateBusinessUnitHandler implements CommandHandler {
     if (command.name.length <= END_POSITION) {
       throw new BusinessUnitWrongNameLengthException();
     }
-
-    const user = await this.adminUserGetter.get(command.userId);
     const country = await this.countryGetter.get(command.countryId);
 
     const businessUnit = await this.createBusinessUnit(
@@ -53,10 +49,10 @@ export class CreateBusinessUnitHandler implements CommandHandler {
       command.name,
       command.code,
       country,
-      user,
+      command.user,
     );
-    await this.createVirtualCampus(businessUnit, user);
-    await this.createExaminationCenter(businessUnit, user);
+    await this.createVirtualCampus(businessUnit, command.user);
+    await this.createExaminationCenter(businessUnit, command.user);
 
     await this.eventDispatcher.dispatch(
       new BusinessUnitCreatedEvent(businessUnit.id),

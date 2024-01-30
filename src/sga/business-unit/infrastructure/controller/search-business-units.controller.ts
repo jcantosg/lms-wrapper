@@ -48,7 +48,7 @@ export class SearchBusinessUnitsController {
       queryParams.orderBy,
       queryParams.orderType,
       queryParams.text,
-      req.user.businessUnits,
+      req.user.businessUnits.map((bu) => bu.id),
     );
 
     const response = await this.handler.handle(query);

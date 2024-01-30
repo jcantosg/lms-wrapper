@@ -1,7 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { CreateExaminationCenterCommand } from '#business-unit/application/create-examination-center/create-examination-center.command';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
@@ -14,7 +13,6 @@ export class CreateExaminationCenterHandler implements CommandHandler {
   constructor(
     private readonly examinationCenterRepository: ExaminationCenterRepository,
     private readonly businessUnitGetter: BusinessUnitGetter,
-    private readonly adminUserGetter: AdminUserGetter,
     private readonly countryGetter: CountryGetter,
   ) {}
 
@@ -33,8 +31,9 @@ export class CreateExaminationCenterHandler implements CommandHandler {
     if (await this.examinationCenterRepository.existsById(command.id)) {
       throw new ExaminationCenterDuplicatedException();
     }
-    const user = await this.adminUserGetter.get(command.userId);
-    const adminUserBusinessUnits = user.businessUnits.map((bu) => bu.id);
+    const adminUserBusinessUnits = command.user.businessUnits.map(
+      (bu) => bu.id,
+    );
     const businessUnits = await Promise.all(
       command.businessUnits.map(async (businessUnitId: string) => {
         return await this.businessUnitGetter.get(businessUnitId);
@@ -56,7 +55,7 @@ export class CreateExaminationCenterHandler implements CommandHandler {
       command.code,
       businessUnits,
       command.address,
-      user,
+      command.user,
       country,
     );
     await this.examinationCenterRepository.save(examinationCenter);

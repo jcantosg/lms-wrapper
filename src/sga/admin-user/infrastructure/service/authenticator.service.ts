@@ -1,4 +1,4 @@
-import { UserRequest } from '#shared/infrastructure/http/request';
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { JwtTokenGenerator } from './jwt-token-generator.service';
 import { RefreshTokenGenerator } from './refresh-token-generator.service';
 import { Injectable } from '@nestjs/common';
@@ -12,15 +12,10 @@ export class Authenticator {
   ) {}
 
   async login(
-    user: UserRequest,
+    user: AdminUser,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     return {
-      accessToken: this.jwtTokenGenerator.generateToken(
-        user.id,
-        user.email,
-        user.roles,
-        user.businessUnits,
-      ),
+      accessToken: this.jwtTokenGenerator.generateToken(user.id, user.email),
       refreshToken: await this.refreshTokenGenerator.generateRefreshToken(
         user.id,
         this.refreshTokenTTL,

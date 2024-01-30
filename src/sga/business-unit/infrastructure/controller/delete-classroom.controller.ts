@@ -30,7 +30,7 @@ export class DeleteClassroomController {
   ) {
     const command = new DeleteClassroomCommand(
       classroomId,
-      req.user.businessUnits,
+      req.user.businessUnits.map((bu) => bu.id),
     );
     await this.handler.handle(command);
   }

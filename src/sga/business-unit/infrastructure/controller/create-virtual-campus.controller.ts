@@ -40,7 +40,7 @@ export class CreateVirtualCampusController {
       body.name,
       body.code,
       body.businessUnitId,
-      req.user.id,
+      req.user,
     );
     await this.handler.handle(command);
   }

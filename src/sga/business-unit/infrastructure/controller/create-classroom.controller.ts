@@ -41,14 +41,13 @@ export class CreateClassroomController {
     @Request() req: AuthRequest,
     @Body() body: CreateClassroomBody,
   ): Promise<void> {
-    const userId = req.user.id;
     const command = new CreateClassroomCommand(
       body.id,
       body.name,
       body.code,
       body.capacity,
       body.examinationCenterId,
-      userId,
+      req.user,
     );
     await this.handler.handle(command);
   }

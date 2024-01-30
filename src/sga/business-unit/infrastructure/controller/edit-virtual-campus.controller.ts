@@ -46,7 +46,7 @@ export class EditVirtualCampusController {
       id,
       body.name,
       body.code,
-      req.user.id,
+      req.user,
       body.isActive,
     );
 

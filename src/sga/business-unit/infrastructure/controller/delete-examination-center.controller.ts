@@ -30,7 +30,7 @@ export class DeleteExaminationCenterController {
   ): Promise<void> {
     const command = new DeleteExaminationCenterCommand(
       id,
-      req.user.businessUnits,
+      req.user.businessUnits.map((bu) => bu.id),
     );
     await this.handler.handle(command);
   }

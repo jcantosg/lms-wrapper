@@ -1,17 +1,14 @@
 import { CreateExaminationCenterHandler } from '#business-unit/application/create-examination-center/create-examination-center.handler';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
-import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { getACountry, getAnAdminUser } from '#test/entity-factory';
 import {
-  getAdminUserGetterMock,
   getBusinessUnitGetterMock,
   getCountryGetterMock,
 } from '#test/service-factory';
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import { CreateExaminationCenterCommand } from '#business-unit/application/create-examination-center/create-examination-center.command';
 import { v4 as uuid } from 'uuid';
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
 import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
@@ -19,13 +16,11 @@ import { Country } from '#shared/domain/entity/country.entity';
 
 let handler: CreateExaminationCenterHandler;
 let examinationCenterRepository: ExaminationCenterRepository;
-let adminUserGetter: AdminUserGetter;
 let businessUnitGetter: BusinessUnitGetter;
 let countryGetter: CountryGetter;
 let existsByNameSpy: any;
 let existsByCodeSpy: any;
 let saveExaminationCenterSpy: any;
-let getAdminUserSpy: any;
 let getCountrySpy: any;
 
 const user = getAnAdminUser();
@@ -35,14 +30,13 @@ const command = new CreateExaminationCenterCommand(
   'code',
   [],
   'address',
-  user.id,
+  user,
   'countryId',
 );
 const country = getACountry();
 
 describe('Create Examination Center Handler', () => {
   beforeAll(() => {
-    adminUserGetter = getAdminUserGetterMock();
     businessUnitGetter = getBusinessUnitGetterMock();
     countryGetter = getCountryGetterMock();
     examinationCenterRepository = new ExaminationCenterMockRepository();
@@ -50,12 +44,10 @@ describe('Create Examination Center Handler', () => {
     existsByCodeSpy = jest.spyOn(examinationCenterRepository, 'existsByCode');
     saveExaminationCenterSpy = jest.spyOn(examinationCenterRepository, 'save');
     getCountrySpy = jest.spyOn(countryGetter, 'get');
-    getAdminUserSpy = jest.spyOn(adminUserGetter, 'get');
 
     handler = new CreateExaminationCenterHandler(
       examinationCenterRepository,
       businessUnitGetter,
-      adminUserGetter,
       countryGetter,
     );
   });
@@ -65,9 +57,6 @@ describe('Create Examination Center Handler', () => {
     });
     existsByCodeSpy.mockImplementation((): Promise<boolean> => {
       return Promise.resolve(false);
-    });
-    getAdminUserSpy.mockImplementation((): Promise<AdminUser | null> => {
-      return Promise.resolve(user);
     });
     getCountrySpy.mockImplementation((): Promise<Country | null> => {
       return Promise.resolve(country);

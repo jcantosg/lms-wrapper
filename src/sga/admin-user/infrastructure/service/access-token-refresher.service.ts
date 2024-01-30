@@ -36,8 +36,6 @@ export class AccessTokenRefresherService {
     const token = this.jwtTokenGenerator.generateToken(
       adminUser.id,
       adminUser.email,
-      adminUser.roles,
-      adminUser.businessUnits.map((bu) => bu.id),
     );
 
     return {
