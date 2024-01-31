@@ -19,12 +19,15 @@ import { SearchExaminationCentersHandler } from '#business-unit/application/sear
 import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
 import { EditExaminationCenterHandler } from '#business-unit/application/edit-examination-center/edit-examination-center.handler';
 import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
+import { GetAllPlainExaminationCentersHandler } from '#business-unit/application/get-all-plain-examination-centers/get-all-plain-examination-centers.handler';
 import { GetAllBusinessUnitsPlainHandler } from '#business-unit/application/get-all-business-units-plain/get-all-business-units-plain.handler';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
 import { CreateClassroomHandler } from '#business-unit/application/create-classroom/create-classroom.handler';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { EditClassroomHandler } from '#business-unit/application/edit-classroom/edit-classroom.handler';
 import { DeleteClassroomHandler } from '#business-unit/application/delete-classroom/delete-classroom.handler';
+import { AddExaminationCentersToBusinessUnitHandler } from '#business-unit/application/add-examination-centers-to-business-unit/add-examination-centers-to-business-unit.handler';
+import { RemoveExaminationCentersFromBusinessUnitHandler } from '#business-unit/application/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.handler';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const createBusinessUnitHandler = {
@@ -206,6 +209,16 @@ const getBusinessUnitExaminationCentersHandler = {
   inject: [ExaminationCenterRepository],
 };
 
+const getAllPlainExaminationCentersHandler = {
+  provide: GetAllPlainExaminationCentersHandler,
+  useFactory: (examinationCenterRepository: ExaminationCenterRepository) => {
+    return new GetAllPlainExaminationCentersHandler(
+      examinationCenterRepository,
+    );
+  },
+  inject: [ExaminationCenterRepository],
+};
+
 const getAllBusinessUnitsPlainHandler = {
   provide: GetAllBusinessUnitsPlainHandler,
   useFactory: (businessUnitRepository: BusinessUnitRepository) => {
@@ -250,6 +263,38 @@ const deleteClassroomHandler = {
   inject: [ClassroomRepository, ClassroomGetter],
 };
 
+const addExaminationCentersToBusinessUnit = {
+  provide: AddExaminationCentersToBusinessUnitHandler,
+  useFactory: (
+    businessUnitRepository: BusinessUnitRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    examinationCenterGetter: ExaminationCenterGetter,
+  ) => {
+    return new AddExaminationCentersToBusinessUnitHandler(
+      businessUnitRepository,
+      businessUnitGetter,
+      examinationCenterGetter,
+    );
+  },
+  inject: [BusinessUnitRepository, BusinessUnitGetter, ExaminationCenterGetter],
+};
+
+const removeExaminationCentersFromBusinessUnit = {
+  provide: RemoveExaminationCentersFromBusinessUnitHandler,
+  useFactory: (
+    businessUnitRepository: BusinessUnitRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    examinationCenterGetter: ExaminationCenterGetter,
+  ) => {
+    return new RemoveExaminationCentersFromBusinessUnitHandler(
+      businessUnitRepository,
+      businessUnitGetter,
+      examinationCenterGetter,
+    );
+  },
+  inject: [BusinessUnitRepository, BusinessUnitGetter, ExaminationCenterGetter],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -267,8 +312,11 @@ export const handlers = [
   deleteExaminationCenterHandler,
   editExaminationCenterHandler,
   getBusinessUnitExaminationCentersHandler,
+  getAllPlainExaminationCentersHandler,
   editClassroomHandler,
   getAllBusinessUnitsPlainHandler,
   createClassRoomHandler,
   deleteClassroomHandler,
+  addExaminationCentersToBusinessUnit,
+  removeExaminationCentersFromBusinessUnit,
 ];

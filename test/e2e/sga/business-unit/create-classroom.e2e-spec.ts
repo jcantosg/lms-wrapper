@@ -90,6 +90,25 @@ describe('/classroom (POST)', () => {
     );
   });
 
+  it('should return a ClassroomWrongCapacityException', async () => {
+    const result = await supertest(httpServer)
+      .post(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        id: CreateClassroomE2eSeed.secondClassroomId,
+        name: CreateClassroomE2eSeed.secondClassroomName,
+        code: CreateClassroomE2eSeed.secondClassRoomCode,
+        capacity: 0,
+        examinationCenterId: CreateClassroomE2eSeed.examinationCenterId,
+      })
+      .expect(409);
+    expect(result.body).toMatchObject(
+      expect.objectContaining({
+        message: 'sga.classroom.wrong-capacity',
+      }),
+    );
+  });
+
   afterAll(async () => {
     await seeder.clear();
     await app.close();

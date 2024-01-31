@@ -32,6 +32,8 @@ export abstract class ExaminationCenterRepository {
     businessUnitId: string,
   ): Promise<ExaminationCenter[]>;
 
+  public abstract getAll(): Promise<ExaminationCenter[]>;
+
   abstract getByAdminUser(
     id: string,
     adminUserBusinessUnits: string[],

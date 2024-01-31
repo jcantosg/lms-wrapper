@@ -240,6 +240,10 @@ export class ExaminationCenterPostgresRepository
     });
   }
 
+  async getAll(): Promise<ExaminationCenter[]> {
+    return await this.repository.find();
+  }
+
   private filterUser(
     queryBuilder: SelectQueryBuilder<ExaminationCenter>,
     adminUserBusinessUnits: string[],

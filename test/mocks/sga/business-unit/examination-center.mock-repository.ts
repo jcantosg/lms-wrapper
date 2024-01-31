@@ -14,5 +14,6 @@ export class ExaminationCenterMockRepository
   update = jest.fn();
   getNextAvailableCode = jest.fn();
   getByBusinessUnit = jest.fn();
+  getAll = jest.fn();
   getByAdminUser = jest.fn();
 }

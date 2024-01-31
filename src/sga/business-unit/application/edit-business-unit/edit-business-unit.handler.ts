@@ -39,6 +39,7 @@ export class EditBusinessUnitHandler implements CommandHandler {
       country,
       command.user,
       command.isActive,
+      businessUnit.examinationCenters,
     );
     await this.businessUnitRepository.update(businessUnit);
   }

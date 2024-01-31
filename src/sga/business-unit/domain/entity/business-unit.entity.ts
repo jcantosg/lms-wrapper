@@ -3,6 +3,7 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
+import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
 
 export class BusinessUnit extends BaseEntity {
   private constructor(
@@ -113,6 +114,7 @@ export class BusinessUnit extends BaseEntity {
     country: Country,
     user: AdminUser,
     isActive: boolean,
+    examinationCenters: ExaminationCenter[],
   ): void {
     this._name = name;
     this._code = code;
@@ -120,5 +122,26 @@ export class BusinessUnit extends BaseEntity {
     this._updatedBy = user;
     this.updatedAt = new Date();
     this._isActive = isActive;
+    this._examinationCenters = examinationCenters;
+  }
+
+  public addExaminationCenter(examinationCenter: ExaminationCenter): void {
+    if (
+      !this._examinationCenters.find(
+        (examCenter) => examCenter.id === examinationCenter.id,
+      )
+    ) {
+      this._examinationCenters.push(examinationCenter);
+    }
+  }
+
+  public removeExaminationCenter(examinationCenter: ExaminationCenter): void {
+    if (examinationCenter.mainBusinessUnit?.id === this.id) {
+      throw new ExaminationCenterMainException();
+    }
+
+    this._examinationCenters = this._examinationCenters.filter(
+      (examCenter) => examCenter.id !== examinationCenter.id,
+    );
   }
 }
