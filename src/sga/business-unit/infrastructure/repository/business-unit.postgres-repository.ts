@@ -46,6 +46,11 @@ export class BusinessUnitPostgresRepository implements BusinessUnitRepository {
       'examinationCenter',
     );
 
+    queryBuilder.leftJoinAndSelect(
+      'examinationCenter.mainBusinessUnit',
+      'mainBusinessUnit',
+    );
+
     return await queryBuilder
       .where('businessUnit.id = :id', { id: businessUnitId })
       .andWhere('businessUnit.id IN(:...ids)', {

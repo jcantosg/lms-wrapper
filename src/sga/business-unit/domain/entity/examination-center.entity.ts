@@ -103,6 +103,10 @@ export class ExaminationCenter extends BaseEntity {
     this._classrooms = value;
   }
 
+  public isMainForBusinessUnit(businessUnitId: string): boolean {
+    return this._mainBusinessUnit?.id === businessUnitId;
+  }
+
   static create(
     id: string,
     name: string,

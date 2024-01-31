@@ -34,7 +34,10 @@ export class GetBusinessUnitResponse {
       ),
       examinationCenters: businessUnit.examinationCenters.map(
         (examinationCenter: ExaminationCenter) => {
-          return GetExaminationCenterResponse.create(examinationCenter);
+          return GetExaminationCenterResponse.create(
+            examinationCenter,
+            businessUnit.id,
+          );
         },
       ),
       isActive: businessUnit.isActive,
