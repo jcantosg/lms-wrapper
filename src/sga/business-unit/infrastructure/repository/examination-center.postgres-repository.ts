@@ -51,10 +51,7 @@ export class ExaminationCenterPostgresRepository
     return !!result;
   }
 
-  async count(
-    criteria: Criteria,
-    adminUserBusinessUnits: string[],
-  ): Promise<number> {
+  async count(criteria: Criteria): Promise<number> {
     const aliasQuery = 'examinationCenter';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
@@ -66,7 +63,7 @@ export class ExaminationCenterPostgresRepository
 
     return await (
       await this.convertCriteriaToQueryBuilder(
-        adminUserBusinessUnits,
+        null,
         criteria,
         queryBuilder,
         aliasQuery,
@@ -75,10 +72,7 @@ export class ExaminationCenterPostgresRepository
     ).getCount(queryBuilder);
   }
 
-  async matching(
-    criteria: Criteria,
-    adminUserBusinessUnits: string[],
-  ): Promise<ExaminationCenter[]> {
+  async matching(criteria: Criteria): Promise<ExaminationCenter[]> {
     const aliasQuery = 'examinationCenter';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
@@ -90,7 +84,7 @@ export class ExaminationCenterPostgresRepository
 
     return await (
       await this.convertCriteriaToQueryBuilder(
-        adminUserBusinessUnits,
+        null,
         criteria,
         queryBuilder,
         aliasQuery,
@@ -155,7 +149,7 @@ export class ExaminationCenterPostgresRepository
     businessUnitId: string,
   ): Promise<ExaminationCenter[]> {
     return await this.repository.find({
-      relations: { businessUnits: true },
+      relations: { businessUnits: true, classrooms: true },
       where: {
         businessUnits: {
           id: businessUnitId,

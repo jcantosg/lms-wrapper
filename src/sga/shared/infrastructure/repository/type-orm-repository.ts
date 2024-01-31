@@ -5,7 +5,7 @@ import { FilterOperators } from '#/sga/shared/domain/criteria/filter';
 
 export class TypeOrmRepository<T extends ObjectLiteral> {
   async convertCriteriaToQueryBuilder(
-    adminUserBusinessUnits: string[],
+    adminUserBusinessUnits: string[] | null,
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<T>,
     aliasQuery: string,
@@ -54,9 +54,12 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
 
   private filterUser(
     queryBuilder: SelectQueryBuilder<T>,
-    adminUserBusinessUnits: string[],
+    adminUserBusinessUnits: string[] | null,
     aliasQuery: string,
   ): TypeOrmRepository<T> {
+    if (!adminUserBusinessUnits) {
+      return this;
+    }
     adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
       adminUserBusinessUnits,
     );

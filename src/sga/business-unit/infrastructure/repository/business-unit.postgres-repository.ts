@@ -61,7 +61,9 @@ export class BusinessUnitPostgresRepository
       relations: {
         country: true,
         virtualCampuses: true,
-        examinationCenters: true,
+        examinationCenters: {
+          classrooms: true,
+        },
       },
     });
   }

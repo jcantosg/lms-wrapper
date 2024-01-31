@@ -3,6 +3,7 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 export interface VirtualCampusResponse {
   name: string;
   code: string;
+  isMain: boolean;
 }
 
 export class GetVirtualCampusResponse {
@@ -10,6 +11,7 @@ export class GetVirtualCampusResponse {
     return {
       name: virtualCampus.name,
       code: virtualCampus.code,
+      isMain: virtualCampus.isMain,
     };
   }
 }

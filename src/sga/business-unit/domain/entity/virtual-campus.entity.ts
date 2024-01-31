@@ -13,6 +13,7 @@ export class VirtualCampus extends BaseEntity {
     private _isActive: boolean,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _isMain: boolean,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -65,6 +66,14 @@ export class VirtualCampus extends BaseEntity {
     this._isActive = value;
   }
 
+  public get isMain(): boolean {
+    return this._isMain;
+  }
+
+  public set isMain(value: boolean) {
+    this._isMain = value;
+  }
+
   static createFromBusinessUnit(
     id: string,
     businessUnit: BusinessUnit,
@@ -80,6 +89,7 @@ export class VirtualCampus extends BaseEntity {
       true,
       user,
       user,
+      true,
     );
   }
 
@@ -100,6 +110,7 @@ export class VirtualCampus extends BaseEntity {
       true,
       user,
       user,
+      false,
     );
   }
 

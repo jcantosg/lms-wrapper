@@ -11,7 +11,6 @@ export class GetAllExaminationCentersQuery
     readonly limit: number,
     readonly orderBy: string,
     readonly orderType: OrderTypes,
-    readonly adminUserBusinessUnits: string[],
     public readonly name?: string,
     public readonly code?: string,
     public readonly isActive?: boolean,

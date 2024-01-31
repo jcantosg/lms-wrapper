@@ -27,6 +27,12 @@ export const virtualCampusSchema = new EntitySchema<VirtualCampus>({
       default: true,
       name: 'is_active',
     },
+    isMain: {
+      type: Boolean,
+      nullable: false,
+      default: false,
+      name: 'is_main',
+    },
   },
   relations: {
     ...BaseSchemaRelations,

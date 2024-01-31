@@ -12,7 +12,7 @@ import { BusinessUnitRepository } from '#business-unit/domain/repository/busines
 const path =
   '/business-unit/ab151b65-af1c-4e85-a939-a46ba4ed8095/remove-examination-center';
 
-describe('/business-unit/{id}/add-examination-center', () => {
+describe('/business-unit/{id}/remove-examination-center', () => {
   let app: INestApplication;
   let httpServer: any;
   let seeder: E2eSeed;

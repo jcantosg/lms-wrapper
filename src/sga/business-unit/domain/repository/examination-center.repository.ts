@@ -10,15 +10,9 @@ export abstract class ExaminationCenterRepository {
 
   public abstract existsByCode(id: string, code: string): Promise<boolean>;
 
-  abstract matching(
-    criteria: Criteria,
-    adminUserBusinessUnits: string[],
-  ): Promise<ExaminationCenter[]>;
+  abstract matching(criteria: Criteria): Promise<ExaminationCenter[]>;
 
-  abstract count(
-    criteria: Criteria,
-    adminUserBusinessUnits: string[],
-  ): Promise<number>;
+  abstract count(criteria: Criteria): Promise<number>;
 
   public abstract get(id: string): Promise<ExaminationCenter | null>;
 

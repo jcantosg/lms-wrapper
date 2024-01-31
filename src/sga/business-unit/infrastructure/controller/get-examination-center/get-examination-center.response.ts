@@ -1,6 +1,7 @@
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
+import { ClassroomResponse } from '../get-business-unit/get-examination-center.response';
 
 export interface ExaminationCenterResponse {
   id: string;
@@ -15,13 +16,6 @@ export interface ExaminationCenterResponse {
 export interface ExaminationCenterBusinessUnitResponse {
   id: string;
   name: string;
-}
-
-export interface ClassroomResponse {
-  id: string;
-  name: string;
-  code: string;
-  capacity: number;
 }
 
 export class GetExaminationCenterResponse {

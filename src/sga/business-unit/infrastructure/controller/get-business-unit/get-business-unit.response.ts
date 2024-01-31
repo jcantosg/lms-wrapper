@@ -9,7 +9,13 @@ import {
 } from '#business-unit/infrastructure/controller/get-business-unit/get-virtual-campus.response';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { GetExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-business-unit/get-examination-center.response';
+import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-business-unit/get-examination-center.response';
+
+export interface BusinessUnitExaminationCenterResponse {
+  name: string;
+  code: string;
+  isMain: boolean;
+}
 
 export interface BusinessResponse {
   id: string;
@@ -17,7 +23,7 @@ export interface BusinessResponse {
   code: string;
   country: CountryResponse;
   virtualCampuses: VirtualCampusResponse[];
-  examinationCenters: ExaminationCenter[];
+  examinationCenters: ExaminationCenterResponse[];
 }
 
 export class GetBusinessUnitResponse {
@@ -33,12 +39,13 @@ export class GetBusinessUnitResponse {
         },
       ),
       examinationCenters: businessUnit.examinationCenters.map(
-        (examinationCenter: ExaminationCenter) => {
-          return GetExaminationCenterResponse.create(
-            examinationCenter,
-            businessUnit.id,
-          );
-        },
+        (
+          examinationCenter: ExaminationCenter,
+        ): BusinessUnitExaminationCenterResponse => ({
+          name: examinationCenter.name,
+          code: examinationCenter.code,
+          isMain: examinationCenter.isMainForBusinessUnit(businessUnit.id),
+        }),
       ),
       isActive: businessUnit.isActive,
     };
