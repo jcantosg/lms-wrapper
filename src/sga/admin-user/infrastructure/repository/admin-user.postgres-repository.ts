@@ -5,13 +5,19 @@ import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.re
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 
 @Injectable()
-export class AdminUserPostgresRepository implements AdminUserRepository {
+export class AdminUserPostgresRepository
+  extends TypeOrmRepository<AdminUser>
+  implements AdminUserRepository
+{
   constructor(
     @InjectRepository(adminUserSchema)
     private readonly repository: Repository<AdminUser>,
-  ) {}
+  ) {
+    super();
+  }
 
   async get(id: string): Promise<AdminUser | null> {
     return await this.repository.findOne({

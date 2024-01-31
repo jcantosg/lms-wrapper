@@ -4,15 +4,19 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
 import { Injectable } from '@nestjs/common';
+import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 
 @Injectable()
 export class VirtualCampusPostgresRepository
+  extends TypeOrmRepository<VirtualCampus>
   implements VirtualCampusRepository
 {
   constructor(
     @InjectRepository(virtualCampusSchema)
     private repository: Repository<VirtualCampus>,
-  ) {}
+  ) {
+    super();
+  }
 
   async save(virtualCampus: VirtualCampus): Promise<void> {
     await this.repository.save(virtualCampus);

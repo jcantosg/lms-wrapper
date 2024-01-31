@@ -4,13 +4,19 @@ import { ClassroomRepository } from '#business-unit/domain/repository/classroom.
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 import { Repository } from 'typeorm';
 import { classroomSchema } from '#business-unit/infrastructure/config/schema/classroom.schema';
+import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 
 @Injectable()
-export class ClassroomPostgresRepository implements ClassroomRepository {
+export class ClassroomPostgresRepository
+  extends TypeOrmRepository<Classroom>
+  implements ClassroomRepository
+{
   constructor(
     @InjectRepository(classroomSchema)
     private repository: Repository<Classroom>,
-  ) {}
+  ) {
+    super();
+  }
 
   async get(id: string): Promise<Classroom | null> {
     return await this.repository.findOne({

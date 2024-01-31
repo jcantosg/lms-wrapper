@@ -1,6 +1,9 @@
 export enum FilterOperators {
-  EQUALS = 'EQUALS',
+  EQUALS = '=',
   LIKE = 'LIKE',
+  GT = '>',
+  LT = '<',
+  IN = 'IN',
 }
 
 export class Filter {

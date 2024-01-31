@@ -3,26 +3,20 @@ import { Injectable } from '@nestjs/common';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
-import { Brackets, Like, Repository, SelectQueryBuilder } from 'typeorm';
-import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
-import { FilterOperators } from '#/sga/shared/domain/criteria/filter';
-import { OrderTypes } from '#/sga/shared/domain/criteria/order';
+import { Like, Repository } from 'typeorm';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 
 @Injectable()
 export class ExaminationCenterPostgresRepository
+  extends TypeOrmRepository<ExaminationCenter>
   implements ExaminationCenterRepository
 {
   constructor(
     @InjectRepository(examinationCenterSchema)
     private repository: Repository<ExaminationCenter>,
-  ) {}
-
-  private normalizeAdminUserBusinessUnits(businessUnits: string[]) {
-    if (businessUnits.length === 0) {
-      businessUnits.push('empty');
-    }
-
-    return businessUnits;
+  ) {
+    super();
   }
 
   async save(examinationCenter: ExaminationCenter): Promise<void> {
@@ -70,13 +64,15 @@ export class ExaminationCenterPostgresRepository
       'businessUnits',
     );
 
-    return this.applyFilters(criteria, queryBuilder, aliasQuery)
-      .filterUser(queryBuilder, adminUserBusinessUnits, 'businessUnits')
-      .getCount(queryBuilder);
-  }
-
-  private async getCount(queryBuilder: SelectQueryBuilder<ExaminationCenter>) {
-    return await queryBuilder.getCount();
+    return await (
+      await this.convertCriteriaToQueryBuilder(
+        adminUserBusinessUnits,
+        criteria,
+        queryBuilder,
+        aliasQuery,
+        'businessUnits',
+      )
+    ).getCount(queryBuilder);
   }
 
   async matching(
@@ -92,87 +88,15 @@ export class ExaminationCenterPostgresRepository
       'businessUnits',
     );
 
-    return this.applyFilters(criteria, queryBuilder, aliasQuery)
-      .filterUser(queryBuilder, adminUserBusinessUnits, 'businessUnits')
-      .applyOrder(criteria, queryBuilder, aliasQuery)
-      .applyPagination(criteria, queryBuilder)
-      .getMany(queryBuilder);
-  }
-
-  private async getMany(queryBuilder: SelectQueryBuilder<ExaminationCenter>) {
-    return await queryBuilder.getMany();
-  }
-
-  private applyPagination(
-    criteria: Criteria,
-    queryBuilder: SelectQueryBuilder<ExaminationCenter>,
-  ) {
-    queryBuilder
-      .skip((criteria.page - 1) * criteria.limit)
-      .take(criteria.limit);
-
-    return this;
-  }
-
-  private applyOrder(
-    criteria: Criteria,
-    queryBuilder: SelectQueryBuilder<ExaminationCenter>,
-    aliasQuery: string,
-  ) {
-    if (criteria.order.hasOrderType() && criteria.order.hasOrderBy()) {
-      const orderBy =
-        criteria.order.orderBy === 'country'
-          ? 'country.name'
-          : `${aliasQuery}.${criteria.order.orderBy}`;
-      queryBuilder.addOrderBy(
-        orderBy,
-        criteria.order.orderType === OrderTypes.NONE
-          ? undefined
-          : criteria.order.orderType,
-      );
-    }
-
-    return this;
-  }
-
-  private applyFilters(
-    criteria: Criteria,
-    queryBuilder: SelectQueryBuilder<ExaminationCenter>,
-    aliasQuery: string,
-  ) {
-    if (!criteria.hasFilters()) {
-      return this;
-    }
-
-    const whereMethod =
-      criteria.groupOperator === GroupOperator.AND ? 'andWhere' : 'orWhere';
-
-    queryBuilder.where(
-      new Brackets((qb) => {
-        criteria.filters.forEach((filter) => {
-          const fieldPath = filter.relationPath
-            ? `${filter.relationPath}.${filter.field}`
-            : `${aliasQuery}.${filter.field}`;
-
-          const paramName = filter.field;
-
-          switch (filter.operator) {
-            case FilterOperators.EQUALS:
-              qb[whereMethod](`${fieldPath} = :${paramName}`, {
-                [paramName]: filter.value,
-              });
-              break;
-            case FilterOperators.LIKE:
-              qb[whereMethod](`LOWER(${fieldPath}) LIKE LOWER(:${paramName})`, {
-                [paramName]: `%${filter.value}%`,
-              });
-              break;
-          }
-        });
-      }),
-    );
-
-    return this;
+    return await (
+      await this.convertCriteriaToQueryBuilder(
+        adminUserBusinessUnits,
+        criteria,
+        queryBuilder,
+        aliasQuery,
+        'businessUnits',
+      )
+    ).getMany(queryBuilder);
   }
 
   async get(id: string): Promise<ExaminationCenter | null> {
@@ -242,21 +166,5 @@ export class ExaminationCenterPostgresRepository
 
   async getAll(): Promise<ExaminationCenter[]> {
     return await this.repository.find();
-  }
-
-  private filterUser(
-    queryBuilder: SelectQueryBuilder<ExaminationCenter>,
-    adminUserBusinessUnits: string[],
-    aliasQuery: string,
-  ) {
-    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
-      adminUserBusinessUnits,
-    );
-
-    queryBuilder.andWhere(`${aliasQuery}.id IN(:...ids)`, {
-      ids: adminUserBusinessUnits,
-    });
-
-    return this;
   }
 }
