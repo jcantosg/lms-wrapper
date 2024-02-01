@@ -19,6 +19,8 @@ import { EditClassroomController } from '#business-unit/infrastructure/controlle
 import { DeleteClassroomController } from '#business-unit/infrastructure/controller/delete-classroom.controller';
 import { AddExaminationCentersToBusinessUnitController } from '#business-unit/infrastructure/controller/add-examination-centers-to-business.unit.controller';
 import { RemoveExaminationCenterFromBusinessUnitController } from '#business-unit/infrastructure/controller/remove-examination-center-from-business.unit.controller';
+import { AddBusinessUnitsToExaminationCenterController } from '#business-unit/infrastructure/controller/add-business-units-to-examination-center.controller';
+import { RemoveBusinessUnitFromExaminationCenterController } from '#business-unit/infrastructure/controller/remove-business-unit-from-examination-center.controller';
 
 export const controllers = [
   SearchBusinessUnitsController,
@@ -42,4 +44,6 @@ export const controllers = [
   DeleteClassroomController,
   AddExaminationCentersToBusinessUnitController,
   RemoveExaminationCenterFromBusinessUnitController,
+  AddBusinessUnitsToExaminationCenterController,
+  RemoveBusinessUnitFromExaminationCenterController,
 ];

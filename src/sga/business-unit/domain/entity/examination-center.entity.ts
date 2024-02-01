@@ -3,6 +3,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
+import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
 
 export class ExaminationCenter extends BaseEntity {
   private constructor(
@@ -105,6 +106,22 @@ export class ExaminationCenter extends BaseEntity {
 
   public isMainForBusinessUnit(businessUnitId: string): boolean {
     return this._mainBusinessUnit?.id === businessUnitId;
+  }
+
+  public addBusinessUnit(businessUnit: BusinessUnit): void {
+    if (!this._businessUnits.find((bu) => bu.id === businessUnit.id)) {
+      this._businessUnits.push(businessUnit);
+    }
+  }
+
+  public removeBusinessUnit(businessUnit: BusinessUnit): void {
+    if (businessUnit.id === this._mainBusinessUnit?.id) {
+      throw new ExaminationCenterMainException();
+    }
+
+    this._businessUnits = this._businessUnits.filter(
+      (bu) => bu.id !== businessUnit.id,
+    );
   }
 
   static create(

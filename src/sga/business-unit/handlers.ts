@@ -29,6 +29,8 @@ import { DeleteClassroomHandler } from '#business-unit/application/delete-classr
 import { AddExaminationCentersToBusinessUnitHandler } from '#business-unit/application/add-examination-centers-to-business-unit/add-examination-centers-to-business-unit.handler';
 import { RemoveExaminationCentersFromBusinessUnitHandler } from '#business-unit/application/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.handler';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { AddBusinessUnitsToExaminationCenterHandler } from '#business-unit/application/add-business-units-to-examination-center/add-business-units-to-examination-center.handler';
+import { RemoveBusinessUnitFromExaminationCenterHandler } from '#business-unit/application/remove-business-unit-from-examination-center/remove-business-unit-from-examination-center.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -263,7 +265,7 @@ const deleteClassroomHandler = {
   inject: [ClassroomRepository, ClassroomGetter],
 };
 
-const addExaminationCentersToBusinessUnit = {
+const addExaminationCentersToBusinessUnitHandler = {
   provide: AddExaminationCentersToBusinessUnitHandler,
   useFactory: (
     businessUnitRepository: BusinessUnitRepository,
@@ -279,7 +281,7 @@ const addExaminationCentersToBusinessUnit = {
   inject: [BusinessUnitRepository, BusinessUnitGetter, ExaminationCenterGetter],
 };
 
-const removeExaminationCentersFromBusinessUnit = {
+const removeExaminationCentersFromBusinessUnitHandler = {
   provide: RemoveExaminationCentersFromBusinessUnitHandler,
   useFactory: (
     businessUnitRepository: BusinessUnitRepository,
@@ -293,6 +295,46 @@ const removeExaminationCentersFromBusinessUnit = {
     );
   },
   inject: [BusinessUnitRepository, BusinessUnitGetter, ExaminationCenterGetter],
+};
+
+const addBusinessUnitsToExaminationCenterHandler = {
+  provide: AddBusinessUnitsToExaminationCenterHandler,
+  useFactory: (
+    examinationCenterRepository: ExaminationCenterRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    examinationCenterGetter: ExaminationCenterGetter,
+  ) => {
+    return new AddBusinessUnitsToExaminationCenterHandler(
+      examinationCenterRepository,
+      businessUnitGetter,
+      examinationCenterGetter,
+    );
+  },
+  inject: [
+    ExaminationCenterRepository,
+    BusinessUnitGetter,
+    ExaminationCenterGetter,
+  ],
+};
+
+const removeBusinessUnitFromExaminationCenterHandler = {
+  provide: RemoveBusinessUnitFromExaminationCenterHandler,
+  useFactory: (
+    examinationCenterRepository: ExaminationCenterRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    examinationCenterGetter: ExaminationCenterGetter,
+  ) => {
+    return new RemoveBusinessUnitFromExaminationCenterHandler(
+      examinationCenterRepository,
+      businessUnitGetter,
+      examinationCenterGetter,
+    );
+  },
+  inject: [
+    ExaminationCenterRepository,
+    BusinessUnitGetter,
+    ExaminationCenterGetter,
+  ],
 };
 
 export const handlers = [
@@ -317,6 +359,8 @@ export const handlers = [
   getAllBusinessUnitsPlainHandler,
   createClassRoomHandler,
   deleteClassroomHandler,
-  addExaminationCentersToBusinessUnit,
-  removeExaminationCentersFromBusinessUnit,
+  addExaminationCentersToBusinessUnitHandler,
+  removeExaminationCentersFromBusinessUnitHandler,
+  addBusinessUnitsToExaminationCenterHandler,
+  removeBusinessUnitFromExaminationCenterHandler,
 ];
