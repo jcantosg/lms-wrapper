@@ -19,7 +19,7 @@ export class EditVirtualCampusHandler implements CommandHandler {
       )) ||
       (await this.virtualCampusRepository.existsByCode(
         command.id,
-        command.name,
+        command.code,
       ))
     ) {
       throw new VirtualCampusDuplicatedException();
