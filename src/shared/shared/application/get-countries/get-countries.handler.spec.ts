@@ -21,12 +21,28 @@ describe('Get Countries Handler', () => {
     handler = new GetCountriesHandler(countryRepository);
   });
 
-  it('should get all countries', async () => {
+  it('should get all countries without filter', async () => {
     getSpy.mockImplementation(
       (): Promise<Country[]> => Promise.resolve(countries),
     );
 
-    const expectedCountries = await handler.handle();
+    const expectedCountries = await handler.handle({ filter: '' });
+
+    expect(expectedCountries[0]).toEqual(
+      expect.objectContaining({
+        id: countryId,
+        name: 'España',
+        emoji: '🇪🇸',
+      }),
+    );
+  });
+
+  it('should get all countries with businessUnit filter', async () => {
+    getSpy.mockImplementation(
+      (): Promise<Country[]> => Promise.resolve(countries),
+    );
+
+    const expectedCountries = await handler.handle({ filter: 'businessUnit' });
 
     expect(expectedCountries[0]).toEqual(
       expect.objectContaining({
