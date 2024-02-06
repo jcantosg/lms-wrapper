@@ -81,6 +81,7 @@ export class ExaminationCenterPostgresRepository
       `${aliasQuery}.businessUnits`,
       'businessUnits',
     );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.classrooms`, 'classrooms');
 
     return await (
       await this.convertCriteriaToQueryBuilder(
@@ -100,6 +101,7 @@ export class ExaminationCenterPostgresRepository
         businessUnits: true,
         classrooms: true,
         mainBusinessUnit: true,
+        country: true,
       },
     });
   }
