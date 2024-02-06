@@ -63,11 +63,13 @@ describe('/business-unit/:id (PUT)', () => {
     const businessUnit = await businessRepository.get(
       'dda38bd6-5d7e-4d85-a8c2-6d130dac9f4b',
     );
+
     expect(businessUnit?.name).toEqual('TestBusinessUnit');
     expect(businessUnit?.isActive).toBeFalsy();
     expect(businessUnit?.country.id).toEqual(
       EditBusinessUnitE2eSeed.secondCountryId,
     );
+    expect(businessUnit?.virtualCampuses[0].isActive).toEqual(false);
   });
   it('should return bad request when empty body', async () => {
     await supertest(httpServer)

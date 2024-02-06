@@ -74,6 +74,14 @@ export class VirtualCampus extends BaseEntity {
     this._isMain = value;
   }
 
+  public activate() {
+    this._isActive = true;
+  }
+
+  public deactivate() {
+    this._isActive = false;
+  }
+
   static createFromBusinessUnit(
     id: string,
     businessUnit: BusinessUnit,

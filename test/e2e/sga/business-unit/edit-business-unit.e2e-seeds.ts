@@ -11,6 +11,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 
 export class EditBusinessUnitE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-edit-business-unit@email.com';
@@ -29,19 +30,26 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
   public static secondBusinessUnitName = 'Madrid';
   public static secondBusinessUnitCode = 'MAD01';
 
+  public static virtualCampusId = 'f993b416-37db-4a4a-b934-b26955770c1e';
+  public static virtualCampusName = 'Virtual Campus';
+  public static virtualCampusCode = 'VC01';
+
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
   private businessUnit: BusinessUnit;
   private secondBusinessUnit: BusinessUnit;
+  private virtualCampus: VirtualCampus;
   private country: Country;
   private secondCountry: Country;
 
   private readonly businessUnitRepository: Repository<BusinessUnit>;
+  private readonly virtualCampusRepository: Repository<VirtualCampus>;
   private readonly countryRepository: Repository<Country>;
   private readonly adminUserRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.virtualCampusRepository = datasource.getRepository(VirtualCampus);
     this.countryRepository = datasource.getRepository(CountrySchema);
     this.adminUserRepository = datasource.getRepository(AdminUser);
   }
@@ -107,9 +115,19 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.businessUnitRepository.save(this.secondBusinessUnit);
+
+    this.virtualCampus = VirtualCampus.create(
+      EditBusinessUnitE2eSeed.virtualCampusId,
+      EditBusinessUnitE2eSeed.virtualCampusName,
+      EditBusinessUnitE2eSeed.virtualCampusCode,
+      this.businessUnit,
+      this.superAdminUser,
+    );
+    await this.virtualCampusRepository.save(this.virtualCampus);
   }
 
   async clear() {
+    await this.virtualCampusRepository.delete(this.virtualCampus.id);
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await this.businessUnitRepository.delete(this.secondBusinessUnit.id);
     await this.countryRepository.delete(this.country.id);

@@ -61,16 +61,23 @@ const editBusinessUnitHandler = {
   provide: EditBusinessUnitHandler,
   useFactory: (
     businessUnitRepository: BusinessUnitRepository,
+    virtualCampusRepository: VirtualCampusRepository,
     businessGetter: BusinessUnitGetter,
     countryGetter: CountryGetter,
   ) => {
     return new EditBusinessUnitHandler(
       businessUnitRepository,
+      virtualCampusRepository,
       businessGetter,
       countryGetter,
     );
   },
-  inject: [BusinessUnitRepository, BusinessUnitGetter, CountryGetter],
+  inject: [
+    BusinessUnitRepository,
+    VirtualCampusRepository,
+    BusinessUnitGetter,
+    CountryGetter,
+  ],
 };
 const getBusinessUnitHandler = {
   provide: GetBusinessUnitHandler,

@@ -16,9 +16,12 @@ import {
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { EditBusinessUnitCommand } from '#business-unit/application/edit-business-unit/edit-business-unit.command';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
+import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
+import { VirtualCampusMockRepository } from '#test/mocks/sga/business-unit/virtual-campus.mock-repository';
 
 let handler: EditBusinessUnitHandler;
 let businessUnitRepository: BusinessUnitRepository;
+let virtualCampusRepository: VirtualCampusRepository;
 let countryGetter: CountryGetter;
 let businessUnitGetter: BusinessUnitGetter;
 
@@ -45,12 +48,14 @@ describe('Edit Business Unit Handler', () => {
   beforeAll(() => {
     countryGetter = getCountryGetterMock();
     businessUnitRepository = new BusinessUnitMockRepository();
+    virtualCampusRepository = new VirtualCampusMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     getCountrySpy = jest.spyOn(countryGetter, 'get');
     updateSpy = jest.spyOn(businessUnitRepository, 'update');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'get');
     handler = new EditBusinessUnitHandler(
       businessUnitRepository,
+      virtualCampusRepository,
       businessUnitGetter,
       countryGetter,
     );
