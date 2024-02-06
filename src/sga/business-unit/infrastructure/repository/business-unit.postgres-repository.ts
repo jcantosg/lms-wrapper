@@ -147,7 +147,7 @@ export class BusinessUnitPostgresRepository
     );
 
     return await this.repository.find({
-      where: { id: In(adminUserBusinessUnits) },
+      where: { id: In(adminUserBusinessUnits), isActive: true },
     });
   }
 }

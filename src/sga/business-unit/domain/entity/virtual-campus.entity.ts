@@ -112,6 +112,10 @@ export class VirtualCampus extends BaseEntity {
     businessUnit: BusinessUnit,
     user: AdminUser,
   ): VirtualCampus {
+    if (!businessUnit.isActive) {
+      throw new VirtualCampusBusinessUnitInactiveException();
+    }
+
     return new VirtualCampus(
       id,
       new Date(),
