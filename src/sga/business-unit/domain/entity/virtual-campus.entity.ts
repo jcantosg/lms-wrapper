@@ -1,6 +1,7 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus-business-unit-inactive.exception';
 
 export class VirtualCampus extends BaseEntity {
   private constructor(
@@ -75,6 +76,9 @@ export class VirtualCampus extends BaseEntity {
   }
 
   public activate() {
+    if (!this.businessUnit.isActive) {
+      throw new VirtualCampusBusinessUnitInactiveException();
+    }
     this._isActive = true;
   }
 
@@ -128,6 +132,9 @@ export class VirtualCampus extends BaseEntity {
     user: AdminUser,
     isActive: boolean,
   ) {
+    if (!this.businessUnit.isActive && isActive) {
+      throw new VirtualCampusBusinessUnitInactiveException();
+    }
     this._name = name;
     this._code = code;
     this.updatedAt = new Date();
