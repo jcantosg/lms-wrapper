@@ -22,6 +22,8 @@ type GetAllExaminationCentersQueryParams = {
   isActive?: boolean;
   country?: string;
   address?: string;
+  businessUnits?: string[];
+  classrooms?: string[];
 };
 
 @Controller('examination-center')
@@ -49,6 +51,8 @@ export class GetAllExaminationCentersController {
       queryParams.isActive,
       queryParams.address,
       queryParams.country,
+      queryParams.businessUnits,
+      queryParams.classrooms,
     );
 
     const response = await this.handler.handle(query);

@@ -16,6 +16,8 @@ export class GetAllExaminationCentersQuery
     public readonly isActive?: boolean,
     public readonly address?: string,
     public readonly country?: string,
+    public readonly businessUnits?: string[],
+    public readonly classrooms?: string[],
   ) {
     super(page, limit, orderBy, orderType);
   }

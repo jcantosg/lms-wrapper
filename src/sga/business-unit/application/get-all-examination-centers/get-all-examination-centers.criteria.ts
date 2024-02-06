@@ -21,6 +21,13 @@ export class GetAllExaminationCentersCriteria extends Criteria {
       new Filter('isActive', query.isActive),
       new Filter('country', query.country),
       new Filter('address', query.address, FilterOperators.LIKE),
+      new Filter(
+        'name',
+        query.businessUnits,
+        FilterOperators.LIKE,
+        'businessUnits',
+      ),
+      new Filter('name', query.classrooms, FilterOperators.LIKE, 'classrooms'),
     ].filter((filter) => filter.value !== undefined);
   }
 }
