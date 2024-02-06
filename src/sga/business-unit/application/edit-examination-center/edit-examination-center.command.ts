@@ -7,9 +7,7 @@ export class EditExaminationCenterCommand implements Command {
     public readonly name: string,
     public readonly code: string,
     public readonly address: string,
-    public readonly businessUnits: string[],
     public readonly user: AdminUser,
     public isActive: boolean,
-    public classrooms: string[],
   ) {}
 }

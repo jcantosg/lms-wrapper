@@ -6,7 +6,7 @@ export abstract class ExaminationCenterRepository {
 
   public abstract existsById(id: string): Promise<boolean>;
 
-  public abstract existsByName(name: string): Promise<boolean>;
+  public abstract existsByName(id: string, name: string): Promise<boolean>;
 
   public abstract existsByCode(id: string, code: string): Promise<boolean>;
 

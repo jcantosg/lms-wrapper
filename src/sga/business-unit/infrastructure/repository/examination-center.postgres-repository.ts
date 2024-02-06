@@ -45,10 +45,10 @@ export class ExaminationCenterPostgresRepository
     return !!result;
   }
 
-  async existsByName(name: string): Promise<boolean> {
+  async existsByName(id: string, name: string): Promise<boolean> {
     const result = await this.repository.findOne({ where: { name } });
 
-    return !!result;
+    return result === null ? false : result.name !== name;
   }
 
   async count(criteria: Criteria): Promise<number> {

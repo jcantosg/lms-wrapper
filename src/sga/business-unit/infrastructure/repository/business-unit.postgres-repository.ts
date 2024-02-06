@@ -60,7 +60,9 @@ export class BusinessUnitPostgresRepository
       where: { id },
       relations: {
         country: true,
-        virtualCampuses: true,
+        virtualCampuses: {
+          businessUnit: true,
+        },
         examinationCenters: {
           classrooms: true,
         },

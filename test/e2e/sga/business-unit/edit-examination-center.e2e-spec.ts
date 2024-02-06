@@ -54,10 +54,8 @@ describe('/examination-center/:id (PUT)', () => {
       .send({
         name: 'TestBusinessUnit',
         code: 'TestBusinessCode',
-        businessUnits: [],
         address: 'test address',
         isActive: false,
-        classrooms: [],
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(404);
@@ -70,51 +68,17 @@ describe('/examination-center/:id (PUT)', () => {
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(400);
   });
-
-  it('should return 404 when business unit does not exist', async () => {
-    await supertest(httpServer)
-      .put(path)
-      .send({
-        name: 'TestBusinessUnit',
-        code: 'TestBusinessCode',
-        businessUnits: ['ce3e994a-0bd0-4911-a0ec-48429a709284'],
-        address: 'test address',
-        isActive: false,
-        classrooms: [],
-      })
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .expect(404);
-  });
-
-  it('should return 409 when duplicated examination center', async () => {
-    await supertest(httpServer)
-      .put(path)
-      .send({
-        name: 'TestExaminationCenter',
-        code: EditExaminationCenterE2eSeed.secondExaminationCenterCode,
-        businessUnits: [EditExaminationCenterE2eSeed.businessUnitId],
-        address: 'test address',
-        isActive: false,
-        classrooms: [],
-      })
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .expect(409);
-  });
-
   it('should edit the examination center', async () => {
     examinationCenterRepository = new ExaminationCenterPostgresRepository(
       datasource.getRepository(examinationCenterSchema),
     );
-
     await supertest(httpServer)
       .put(path)
       .send({
         name: 'TestExaminationCenterUnit',
         code: 'TestExaminationCenterCode',
-        businessUnits: [EditExaminationCenterE2eSeed.businessUnitId],
         address: 'test address',
         isActive: false,
-        classrooms: [],
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
@@ -127,9 +91,6 @@ describe('/examination-center/:id (PUT)', () => {
     expect(examinationCenter?.code).toBe('TestExaminationCenterCode');
     expect(examinationCenter?.address).toBe('test address');
     expect(examinationCenter?.isActive).toBe(false);
-    expect(examinationCenter?.businessUnits[0].id).toBe(
-      EditExaminationCenterE2eSeed.businessUnitId,
-    );
   });
 
   afterAll(async () => {

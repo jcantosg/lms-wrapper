@@ -17,7 +17,12 @@ export class CreateExaminationCenterHandler implements CommandHandler {
   ) {}
 
   async handle(command: CreateExaminationCenterCommand): Promise<void> {
-    if (await this.examinationCenterRepository.existsByName(command.name)) {
+    if (
+      await this.examinationCenterRepository.existsByName(
+        command.id,
+        command.name,
+      )
+    ) {
       throw new ExaminationCenterDuplicatedNameException();
     }
     if (

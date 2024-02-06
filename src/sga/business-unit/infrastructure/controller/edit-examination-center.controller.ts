@@ -23,9 +23,7 @@ type EditExaminationCenterEndpointBody = {
   name: string;
   code: string;
   address: string;
-  businessUnits: string[];
   isActive: boolean;
-  classrooms: string[];
 };
 
 @Controller('examination-center')
@@ -50,10 +48,8 @@ export class EditExaminationCenterController {
         body.name,
         body.code,
         body.address,
-        body.businessUnits,
         req.user,
         body.isActive,
-        body.classrooms,
       );
 
     await this.handler.handle(command);

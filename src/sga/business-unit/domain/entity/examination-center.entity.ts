@@ -177,18 +177,14 @@ export class ExaminationCenter extends BaseEntity {
     name: string,
     code: string,
     address: string,
-    businessUnits: BusinessUnit[],
     user: AdminUser,
     isActive: boolean,
-    classrooms: Classroom[],
   ): void {
     this._name = name;
     this._code = code;
     this._address = address;
-    this._businessUnits = businessUnits;
     this._updatedBy = user;
     this.updatedAt = new Date();
     this._isActive = isActive;
-    this._classrooms = classrooms;
   }
 }

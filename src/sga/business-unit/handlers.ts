@@ -190,22 +190,13 @@ const editExaminationCenterHandler = {
   useFactory: (
     examinationCenterRepository: ExaminationCenterRepository,
     examinationCenterGetter: ExaminationCenterGetter,
-    businessUnitGetter: BusinessUnitGetter,
-    classroomGetter: ClassroomGetter,
   ) => {
     return new EditExaminationCenterHandler(
       examinationCenterRepository,
       examinationCenterGetter,
-      businessUnitGetter,
-      classroomGetter,
     );
   },
-  inject: [
-    ExaminationCenterRepository,
-    ExaminationCenterGetter,
-    BusinessUnitGetter,
-    ClassroomGetter,
-  ],
+  inject: [ExaminationCenterRepository, ExaminationCenterGetter],
 };
 
 const getBusinessUnitExaminationCentersHandler = {
