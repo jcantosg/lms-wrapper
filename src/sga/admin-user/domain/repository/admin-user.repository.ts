@@ -1,4 +1,5 @@
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 
 export abstract class AdminUserRepository {
   abstract save(adminUser: AdminUser): Promise<void>;
@@ -11,6 +12,5 @@ export abstract class AdminUserRepository {
 
   abstract existsByEmail(email: string): Promise<boolean>;
 
-  /*@TODO refactor to use Criteria */
-  abstract getByRole(role: string): Promise<AdminUser[]>;
+  abstract matching(criteria: Criteria): Promise<AdminUser[]>;
 }

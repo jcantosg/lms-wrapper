@@ -5,16 +5,11 @@ import { FilterOperators } from '#/sga/shared/domain/criteria/filter';
 
 export class TypeOrmRepository<T extends ObjectLiteral> {
   async convertCriteriaToQueryBuilder(
-    adminUserBusinessUnits: string[] | null,
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<T>,
     aliasQuery: string,
-    filterUserAliasQuery: string,
   ): Promise<TypeOrmRepository<T>> {
-    return this.applyFilters(criteria, queryBuilder, aliasQuery)
-      .filterUser(queryBuilder, adminUserBusinessUnits, filterUserAliasQuery)
-      .applyOrder(criteria, queryBuilder, aliasQuery)
-      .applyPagination(criteria, queryBuilder);
+    return this.applyFilters(criteria, queryBuilder, aliasQuery);
   }
 
   private applyFilters(
@@ -40,6 +35,13 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
                 [paramName]: `%${filter.value}%`,
               },
             );
+          } else if (filter.operator === FilterOperators.ANY) {
+            qb[whereMethod](
+              `:${paramName} = ${filter.operator}(${fieldPath})`,
+              {
+                [paramName]: filter.value,
+              },
+            );
           } else {
             qb[whereMethod](`${fieldPath} ${filter.operator} :${paramName}`, {
               [paramName]: filter.value,
@@ -52,7 +54,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     return this;
   }
 
-  private filterUser(
+  filterUser(
     queryBuilder: SelectQueryBuilder<T>,
     adminUserBusinessUnits: string[] | null,
     aliasQuery: string,
@@ -79,7 +81,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     return await queryBuilder.getCount();
   }
 
-  private applyOrder(
+  applyOrder(
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<T>,
     aliasQuery: string,
@@ -100,7 +102,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     return this;
   }
 
-  private applyPagination(
+  applyPagination(
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<T>,
   ): TypeOrmRepository<T> {

@@ -97,13 +97,15 @@ export class BusinessUnitPostgresRepository
 
     return (
       await this.convertCriteriaToQueryBuilder(
-        adminUserBusinessUnits,
         criteria,
         queryBuilder,
         aliasQuery,
-        aliasQuery,
       )
-    ).getCount(queryBuilder);
+    )
+      .filterUser(queryBuilder, adminUserBusinessUnits, aliasQuery)
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
   }
 
   async matching(
@@ -117,13 +119,15 @@ export class BusinessUnitPostgresRepository
 
     return (
       await this.convertCriteriaToQueryBuilder(
-        adminUserBusinessUnits,
         criteria,
         queryBuilder,
         aliasQuery,
-        aliasQuery,
       )
-    ).getMany(queryBuilder);
+    )
+      .filterUser(queryBuilder, adminUserBusinessUnits, aliasQuery)
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 
   async update(businessUnit: BusinessUnit): Promise<void> {

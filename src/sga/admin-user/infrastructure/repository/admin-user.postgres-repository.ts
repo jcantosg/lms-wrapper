@@ -4,8 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 
 @Injectable()
 export class AdminUserPostgresRepository
@@ -55,11 +55,20 @@ export class AdminUserPostgresRepository
     return !!(await this.repository.findOne({ where: { email } }));
   }
 
-  async getByRole(role: AdminUserRoles): Promise<AdminUser[]> {
-    return await this.repository
-      .createQueryBuilder('au')
-      .leftJoinAndSelect('au.businessUnits', 'bu')
-      .where(':role = ANY(au.roles)', { role: role })
-      .getMany();
+  async matching(criteria: Criteria): Promise<AdminUser[]> {
+    const aliasQuery = 'admin';
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnits`,
+      'business_units',
+    );
+
+    return (
+      await this.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    ).getMany(queryBuilder);
   }
 }

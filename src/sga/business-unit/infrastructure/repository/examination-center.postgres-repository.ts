@@ -63,13 +63,15 @@ export class ExaminationCenterPostgresRepository
 
     return await (
       await this.convertCriteriaToQueryBuilder(
-        null,
         criteria,
         queryBuilder,
         aliasQuery,
-        'businessUnits',
       )
-    ).getCount(queryBuilder);
+    )
+      .filterUser(queryBuilder, null, 'businessUnits')
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
   }
 
   async matching(criteria: Criteria): Promise<ExaminationCenter[]> {
@@ -85,13 +87,15 @@ export class ExaminationCenterPostgresRepository
 
     return await (
       await this.convertCriteriaToQueryBuilder(
-        null,
         criteria,
         queryBuilder,
         aliasQuery,
-        'businessUnits',
       )
-    ).getMany(queryBuilder);
+    )
+      .filterUser(queryBuilder, null, 'businessUnits')
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 
   async get(id: string): Promise<ExaminationCenter | null> {

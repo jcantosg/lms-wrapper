@@ -4,6 +4,7 @@ export enum FilterOperators {
   GT = '>',
   LT = '<',
   IN = 'IN',
+  ANY = 'ANY',
 }
 
 export class Filter {
