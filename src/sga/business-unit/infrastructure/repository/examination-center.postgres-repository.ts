@@ -60,6 +60,7 @@ export class ExaminationCenterPostgresRepository
       `${aliasQuery}.businessUnits`,
       'businessUnits',
     );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.classrooms`, 'classrooms');
 
     return await (
       await this.convertCriteriaToQueryBuilder(
