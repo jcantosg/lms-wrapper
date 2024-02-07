@@ -18,7 +18,7 @@ export const getAllExaminationCentersSchema = createCollectionSchema(
     code: Joi.string().trim().optional(),
     isActive: Joi.boolean().truthy('true').falsy('false').optional(),
     country: Joi.string().guid().optional(),
-    businessUnits: Joi.string().trim().optional(),
-    classrooms: Joi.string().trim().optional(),
+    businessUnit: Joi.string().trim().optional(),
+    classroom: Joi.string().trim().optional(),
   },
 );
