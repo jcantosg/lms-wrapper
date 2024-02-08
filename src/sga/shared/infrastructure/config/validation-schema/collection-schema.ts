@@ -14,8 +14,8 @@ export function createCollectionSchema(
     limit: Joi.number().min(LOW_LIMIT).default(DEFAULT_LIMIT),
     orderBy: Joi.string()
       .valid(...orderByFields)
-      .default(''),
-    orderType: Joi.string().valid('ASC', 'DESC').default('ASC').optional(),
+      .default('createdAt'),
+    orderType: Joi.string().valid('ASC', 'DESC').default('DESC').optional(),
   };
 
   return Joi.object({ ...baseSchema, ...additionalFields });
