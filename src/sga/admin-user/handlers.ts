@@ -5,9 +5,27 @@ import { RegisterAdminUserHandler } from '#admin-user/application/register-admin
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { RefreshTokenRepository } from '#admin-user/domain/repository/refresh-token.repository';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
-import { ConfigService } from '@nestjs/config';
+import { GetUserRolesHandler } from './application/get-user-roles/get-user-roles.handler';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { GetIdentityDocumentTypesHandler } from './application/get-identity-document-types/get-document-types.handler';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
+import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
+
+const getIdentityDocumentTypesHandler = {
+  provide: GetIdentityDocumentTypesHandler,
+  useFactory: () => {
+    return new GetIdentityDocumentTypesHandler();
+  },
+};
+
+const getRolesHandler = {
+  provide: GetUserRolesHandler,
+  useFactory: () => {
+    return new GetUserRolesHandler();
+  },
+};
 
 const getAdminUserHandler = {
   provide: GetAdminUserHandler,
@@ -21,22 +39,28 @@ const registerUserHandler = {
   provide: RegisterAdminUserHandler,
   useFactory: (
     adminUserRepository: AdminUserRepository,
-    passwordEncoder: PasswordEncoder,
-    configService: ConfigService,
     businessUnitGetter: BusinessUnitGetter,
+    imageUploader: ImageUploader,
+    eventDispatcher: EventDispatcher,
+    passwordGenerator: AdminUserPasswordGenerator,
+    adminUserRolesChecker: AdminUserRolesChecker,
   ) => {
     return new RegisterAdminUserHandler(
       adminUserRepository,
-      passwordEncoder,
-      configService.getOrThrow<string>('DEFAULT_AVATAR'),
       businessUnitGetter,
+      imageUploader,
+      eventDispatcher,
+      passwordGenerator,
+      adminUserRolesChecker,
     );
   },
   inject: [
     AdminUserRepository,
-    PasswordEncoder,
-    ConfigService,
     BusinessUnitGetter,
+    ImageUploader,
+    EventDispatcher,
+    AdminUserPasswordGenerator,
+    AdminUserRolesChecker,
   ],
 };
 
@@ -67,4 +91,6 @@ export const handlers = [
   createRefreshTokenHandler,
   expireRefreshTokenHandler,
   getAdminUserHandler,
+  getIdentityDocumentTypesHandler,
+  getRolesHandler,
 ];

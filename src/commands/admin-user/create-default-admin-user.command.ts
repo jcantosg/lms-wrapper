@@ -8,6 +8,10 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ConfigService } from '@nestjs/config';
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import {
+  IdentityDocument,
+  IdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
 
 async function createAdminUser(
   passwordEncoder: PasswordEncoder,
@@ -44,6 +48,12 @@ async function createAdminUser(
     'Super admin',
     '',
     businessUnits,
+    'primer apelido',
+    'segundo apellido',
+    new IdentityDocument({
+      identityDocumentType: IdentityDocumentType.DNI,
+      identityDocumentNumber: '65580242C',
+    }),
   );
 
   await adminUserRepository.save(newAdminUser);

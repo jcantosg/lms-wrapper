@@ -16,6 +16,18 @@ services:
   networks:
    - universae-network
 
+ mail:
+  container_name: universae_mail
+  image: maildev/maildev
+  environment:
+   MAILDEV_OUTGOING_USER: "${FROM_EMAIL}"
+   MAILDEV_OUTGOING_PASS: "${FROM_EMAIL_PASS}"
+  ports:
+   - "1025:1025"
+   - "1080:1080"
+  networks:
+   - universae-network
+
 networks:
  universae-network:
   external: true

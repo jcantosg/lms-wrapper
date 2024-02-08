@@ -23,5 +23,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     'newline-before-return': 'error',
+    '@typescript-eslint/ban-types': 'off',
   },
 };

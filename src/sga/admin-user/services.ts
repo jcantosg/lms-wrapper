@@ -10,6 +10,8 @@ import { CredentialsChecker } from '#admin-user/infrastructure/service/credentia
 import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
 import { RefreshTokenGenerator } from '#admin-user/infrastructure/service/refresh-token-generator.service';
 import { ConfigService } from '@nestjs/config';
+import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
+import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
 
 const adminUserGetter = {
   provide: AdminUserGetter,
@@ -56,4 +58,6 @@ export const services = [
   CredentialsChecker,
   passwordChecker,
   AccessTokenRefresherService,
+  AdminUserPasswordGenerator,
+  AdminUserRolesChecker,
 ];

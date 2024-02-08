@@ -44,6 +44,9 @@ export class AdminUserPostgresRepository
       createdAt: adminUser.createdAt,
       updatedAt: adminUser.updatedAt,
       businessUnits: adminUser.businessUnits,
+      surname: adminUser.surname,
+      surname2: adminUser.surname2,
+      identityDocument: adminUser.identityDocument,
     });
   }
 

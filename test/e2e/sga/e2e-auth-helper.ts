@@ -4,6 +4,10 @@ import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-
 import { BCryptPasswordEncoder } from '#admin-user/infrastructure/service/bcrypt-password-encoder.service';
 import supertest from 'supertest';
 import { DataSource } from 'typeorm';
+import {
+  IdentityDocument,
+  IdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
 
 export async function login(httpServer: any, email: string, password: string) {
   const loginResponse = await supertest(httpServer).post('/auth/login').send({
@@ -33,6 +37,12 @@ export async function createAdminUser(
       'name',
       'avatar',
       [],
+      'surname',
+      'surname2',
+      new IdentityDocument({
+        identityDocumentType: IdentityDocumentType.DNI,
+        identityDocumentNumber: '74700994F',
+      }),
     ),
   );
 }

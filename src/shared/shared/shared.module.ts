@@ -1,4 +1,4 @@
-import { Global, Module, Provider } from '@nestjs/common';
+import { FactoryProvider, Global, Module, Provider } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +11,29 @@ import { HealthController } from '#shared/infrastructure/controller/health.contr
 import { services } from '#shared/services';
 import { handlers } from '#shared/handlers';
 import { GetCountryController } from '#shared/infrastructure/controller/country/get-countries.controller';
+import { ConfigService } from '@nestjs/config';
+import { FileManager } from '#shared/domain/file-manager/file-manager';
+import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
+import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
+
+const fileManager: FactoryProvider = {
+  provide: FileManager,
+  useFactory: (configService: ConfigService) => {
+    const env = configService.get<string>('NODE_ENV', 'dev');
+
+    if ('dev' === env || 'test' === env) {
+      return new LocalStorageManager();
+    }
+
+    return new AWSStorageManager(
+      configService.get<string>('AWS_ACCESS_KEY')!,
+      configService.get<string>('AWS_SECRET_KEY')!,
+      configService.get<string>('AWS_BUCKET_NAME')!,
+      configService.get<string>('AWS_REGION')!,
+    );
+  },
+  inject: [ConfigService],
+};
 
 const providers: Provider[] = [
   {
@@ -20,6 +43,7 @@ const providers: Provider[] = [
   ...repositories,
   ...services,
   ...handlers,
+  fileManager,
 ];
 
 @Global()

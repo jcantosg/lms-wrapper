@@ -1,6 +1,7 @@
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
+import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
 
 export class AdminUser extends BaseEntity {
   static readonly passwordPattern = '^\\S{6,}$';
@@ -15,6 +16,9 @@ export class AdminUser extends BaseEntity {
     private _name: string,
     private _avatar: string,
     private _businessUnits: BusinessUnit[],
+    private _surname: string,
+    private _surname2: string | null,
+    private _identityDocument: IdentityDocument,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -27,6 +31,9 @@ export class AdminUser extends BaseEntity {
     name: string,
     avatar: string,
     businessUnits: BusinessUnit[],
+    surname: string,
+    surname2: string | null,
+    identityDocument: IdentityDocument,
   ) {
     return new this(
       id,
@@ -38,6 +45,9 @@ export class AdminUser extends BaseEntity {
       name,
       avatar,
       businessUnits,
+      surname,
+      surname2,
+      identityDocument,
     );
   }
 
@@ -115,5 +125,29 @@ export class AdminUser extends BaseEntity {
       );
     }
     this.updatedAt = new Date();
+  }
+
+  public get surname(): string {
+    return this._surname;
+  }
+
+  public set surname(value: string) {
+    this._surname = value;
+  }
+
+  public get surname2(): string | null {
+    return this._surname2;
+  }
+
+  public set surname2(value: string) {
+    this._surname2 = value;
+  }
+
+  public get identityDocument(): IdentityDocument {
+    return this._identityDocument;
+  }
+
+  public set identityDocument(value: IdentityDocument) {
+    this._identityDocument = value;
   }
 }

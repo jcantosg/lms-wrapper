@@ -6,6 +6,10 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
+import {
+  IdentityDocument,
+  IdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -20,6 +24,12 @@ export const getAnAdminUser = (id = uuid()): AdminUser => {
     'name',
     'avatar',
     [],
+    'surname',
+    'surname2',
+    new IdentityDocument({
+      identityDocumentType: IdentityDocumentType.DNI,
+      identityDocumentNumber: '74700994F',
+    }),
   );
 };
 

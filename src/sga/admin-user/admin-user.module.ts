@@ -11,6 +11,10 @@ import { handlers } from '#admin-user/handlers';
 import { controllers } from '#admin-user/controllers';
 import { BusinessUnitModule } from '#business-unit/business-unit.module';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
+import { SharedModule } from '#shared/shared.module';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
+import { listeners } from '#admin-user/listeners';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -33,18 +37,25 @@ const jwtStrategy = {
   },
   inject: [ConfigService, AdminUserGetter],
 };
+
 @Module({
   imports: [
     TypeOrmModule.forFeature(adminUserSchemas),
     jwtModule,
     BusinessUnitModule,
+    SharedModule,
   ],
   providers: [
     ...repositories,
     ...services,
     ...handlers,
+    ...listeners,
     LocalStrategy,
     jwtStrategy,
+    {
+      provide: EventDispatcher,
+      useClass: NestEventDispatcher,
+    },
   ],
   exports: [...repositories, ...services],
   controllers: [...controllers],

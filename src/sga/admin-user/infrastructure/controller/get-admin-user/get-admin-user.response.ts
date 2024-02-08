@@ -29,6 +29,7 @@ export class GetAdminUserResponse {
         },
       ),
       avatar: adminUser.avatar,
+      identityDocument: adminUser.identityDocument.value,
     };
   }
 }

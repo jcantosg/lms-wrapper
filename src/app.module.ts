@@ -19,6 +19,8 @@ import { VersionHeaderMiddleware } from '#shared/infrastructure/middleware/versi
 import { SGAModule } from '#/sga/sga.module';
 import { StudentModule } from '#/student/student.module';
 import { TeacherModule } from '#/teacher/Teacher.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 const env = process.env.NODE_ENV;
 const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
@@ -38,6 +40,14 @@ const configModule = ConfigModule.forRoot({
     JWT_SECRET: Joi.string().required(),
     JWT_TTL: Joi.string().required(),
     DEFAULT_AVATAR: Joi.string().required(),
+    EMAIL_HOST: Joi.string().required(),
+    EMAIL_PORT: Joi.number().required(),
+    FROM_EMAIL: Joi.string().required(),
+    FROM_EMAIL_PASS: Joi.string().required(),
+    AWS_ACCESS_KEY: Joi.string().required(),
+    AWS_SECRET_KEY: Joi.string().required(),
+    AWS_BUCKET_NAME: Joi.string().required(),
+    AWS_REGION: Joi.string().required(),
   }),
 });
 
@@ -84,6 +94,31 @@ const loggerModule = LoggerModule.forRootAsync({
   inject: [ConfigService],
 });
 
+const mailerModule = MailerModule.forRootAsync({
+  imports: [ConfigModule],
+  useFactory: (configService: ConfigService) => ({
+    transport: {
+      host: configService.getOrThrow<string>('EMAIL_HOST'),
+      port: configService.getOrThrow<number>('EMAIL_PORT'),
+      auth: {
+        user: configService.getOrThrow<string>('FROM_EMAIL'),
+        pass: configService.getOrThrow<string>('FROM_EMAIL_PASS'),
+      },
+    },
+    defaults: {
+      from: configService.getOrThrow<string>('FROM_EMAIL'),
+    },
+    template: {
+      dir: __dirname + '/templates',
+      adapter: new PugAdapter(),
+      options: {
+        strict: true,
+      },
+    },
+  }),
+  inject: [ConfigService],
+});
+
 @Module({
   imports: [
     configModule,
@@ -93,6 +128,7 @@ const loggerModule = LoggerModule.forRootAsync({
     SGAModule,
     StudentModule,
     TeacherModule,
+    mailerModule,
   ],
   providers: [
     {
