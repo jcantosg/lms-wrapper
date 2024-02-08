@@ -4,7 +4,7 @@ import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import supertest from 'supertest';
-import { GetBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/get-business-unit.e2e-seeds';
+import { GetBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/business-unit/get-business-unit.e2e-seeds';
 
 const path = '/business-unit/35637f98-af93-456d-bde4-811ec48d4814';
 

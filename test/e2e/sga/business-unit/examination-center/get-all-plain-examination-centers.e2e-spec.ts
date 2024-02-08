@@ -4,7 +4,7 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
-import { GetAllPlainExaminationCentersE2eSeed } from '#test/e2e/sga/business-unit/get-all-plain-examination-centers.e2e-seed';
+import { GetAllPlainExaminationCentersE2eSeed } from '#test/e2e/sga/business-unit/examination-center/get-all-plain-examination-centers.e2e-seed';
 
 const path = '/examination-center/all';
 

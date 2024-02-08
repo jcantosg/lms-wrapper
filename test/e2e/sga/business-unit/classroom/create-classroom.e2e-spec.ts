@@ -1,10 +1,10 @@
 import { HttpServer, INestApplication } from '@nestjs/common';
 import supertest from 'supertest';
-import { CreateClassroomE2eSeed } from '#test/e2e/sga/business-unit/create-classroom.e2e-seeds';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { CreateClassroomE2eSeed } from '#test/e2e/sga/business-unit/classroom/create-classroom.e2e-seeds';
 
 const path = `/classroom`;
 

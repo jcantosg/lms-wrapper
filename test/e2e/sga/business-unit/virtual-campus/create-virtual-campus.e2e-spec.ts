@@ -2,9 +2,9 @@ import supertest from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
-import { CreateVirtualCampusE2eSeeds } from '#test/e2e/sga/business-unit/create-virtual-campus.e2e-seeds';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { CreateVirtualCampusE2eSeeds } from '#test/e2e/sga/business-unit/virtual-campus/create-virtual-campus.e2e-seeds';
 
 const path = '/virtual-campus';
 

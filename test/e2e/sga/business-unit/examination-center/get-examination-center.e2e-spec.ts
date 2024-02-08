@@ -1,10 +1,10 @@
-import { GetExaminationCenterE2eSeed } from '#test/e2e/sga/business-unit/get-examination-center.e2e-seeds';
 import { startApp } from '#test/e2e/e2e-helper';
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { GetExaminationCenterE2eSeed } from '#test/e2e/sga/business-unit/examination-center/get-examination-center.e2e-seeds';
 
 const path = `/examination-center/${GetExaminationCenterE2eSeed.examinationCenterId}`;
 const wrongPath = '/examination-center/5eebfc83-21f4-4234-bd0d-859875493e26';

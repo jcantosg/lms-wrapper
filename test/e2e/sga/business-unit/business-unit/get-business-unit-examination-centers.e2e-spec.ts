@@ -5,8 +5,8 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { GetAllExaminationCentersE2eSeed } from '#test/e2e/sga/business-unit/get-all-examination-center.e2e-seed';
 import { GetAllExaminationCentersE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-examination-centers.e2e-seed-data-config';
+import { GetAllExaminationCentersE2eSeed } from '#test/e2e/sga/business-unit/examination-center/get-all-examination-center.e2e-seed';
 
 const path = `/business-unit/${GetAllExaminationCentersE2eSeedDataConfig.businessUnit.id}/examination-centers`;
 const emptyPath = `/business-unit/${uuid()}/examination-centers`;

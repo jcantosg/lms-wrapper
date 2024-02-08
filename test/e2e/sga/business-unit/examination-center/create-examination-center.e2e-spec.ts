@@ -1,10 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
-import { CreateExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/create-examination-center.e2e-seeds';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import datasource from '#config/ormconfig';
 import supertest from 'supertest';
+import { CreateExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/examination-center/create-examination-center.e2e-seeds';
 
 const path = '/examination-center';
 

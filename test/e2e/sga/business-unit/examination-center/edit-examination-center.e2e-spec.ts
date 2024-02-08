@@ -5,9 +5,9 @@ import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
-import { EditExaminationCenterE2eSeed } from '#test/e2e/sga/business-unit/edit-examination-center.e2e-seed';
 import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
 import { ExaminationCenterPostgresRepository } from '#business-unit/infrastructure/repository/examination-center.postgres-repository';
+import { EditExaminationCenterE2eSeed } from '#test/e2e/sga/business-unit/examination-center/edit-examination-center.e2e-seed';
 
 const path = '/examination-center/7baf9fc5-8976-4780-aa07-c0dfb420e230';
 const wrongPath = '/examination-center/6fe5450c-4830-41cb-9e86-1c0ef1bdd5e5';

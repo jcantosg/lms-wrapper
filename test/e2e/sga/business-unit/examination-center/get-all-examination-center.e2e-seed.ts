@@ -3,10 +3,13 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
-import { createAdminUser, removeAdminUser } from '../e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { GetAllExaminationCentersE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-examination-centers.e2e-seed-data-config';
+import {
+  createAdminUser,
+  removeAdminUser,
+} from '#test/e2e/sga/e2e-auth-helper';
 
 export class GetAllExaminationCentersE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;

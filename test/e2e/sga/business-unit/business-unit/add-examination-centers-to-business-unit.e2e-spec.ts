@@ -4,15 +4,16 @@ import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { RemoveExaminationCentersFromBusinessUnitE2eSeeds } from '#test/e2e/sga/business-unit/remove-examination-center-from-business-unit.e2e-seed';
+
 import { BusinessUnitPostgresRepository } from '#business-unit/infrastructure/repository/business-unit.postgres-repository';
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
+import { AddExaminationCentersToBusinessUnitE2eSeeds } from '#test/e2e/sga/business-unit/business-unit/add-examination-centers-to-business-unit.e2e-seed';
 
 const path =
-  '/business-unit/ab151b65-af1c-4e85-a939-a46ba4ed8095/remove-examination-center';
+  '/business-unit/b8d48d2a-7bab-4ef9-b30a-9eebf75ccae5/add-examination-center';
 
-describe('/business-unit/{id}/remove-examination-center', () => {
+describe('/business-unit/{id}/add-examination-center', () => {
   let app: INestApplication;
   let httpServer: any;
   let seeder: E2eSeed;
@@ -23,17 +24,17 @@ describe('/business-unit/{id}/remove-examination-center', () => {
   beforeAll(async () => {
     app = await startApp();
     httpServer = app.getHttpServer();
-    seeder = new RemoveExaminationCentersFromBusinessUnitE2eSeeds(datasource);
+    seeder = new AddExaminationCentersToBusinessUnitE2eSeeds(datasource);
     await seeder.arrange();
     adminAccessToken = await login(
       httpServer,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.adminUserEmail,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.adminUserPassword,
+      AddExaminationCentersToBusinessUnitE2eSeeds.adminUserEmail,
+      AddExaminationCentersToBusinessUnitE2eSeeds.adminUserPassword,
     );
     superAdminAccessToken = await login(
       httpServer,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.superAdminUserEmail,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.superAdminUserPassword,
+      AddExaminationCentersToBusinessUnitE2eSeeds.superAdminUserEmail,
+      AddExaminationCentersToBusinessUnitE2eSeeds.superAdminUserPassword,
     );
   });
 
@@ -51,22 +52,23 @@ describe('/business-unit/{id}/remove-examination-center', () => {
   it('Should throw a BusinessUnitNotFoundException ', async () => {
     await supertest(httpServer)
       .put(
-        '/business-unit/68d03278-df64-4afa-a482-89336197243e/remove-examination-center',
+        '/business-unit/68d03278-df64-4afa-a482-89336197243e/add-examination-center',
       )
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        examinationCenter:
-          RemoveExaminationCentersFromBusinessUnitE2eSeeds.examinationCenterMainId,
+        examinationCenters: [
+          AddExaminationCentersToBusinessUnitE2eSeeds.examinationCenterId,
+        ],
       })
       .expect(404);
   });
 
   it('Should throw a ExaminationCenterNotFoundException ', async () => {
     await supertest(httpServer)
-      .post(path)
+      .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        examinationCenter: 'ab03f530-fab4-4b06-bf48-d2d3497df4ef',
+        examinationCenters: ['ab03f530-fab4-4b06-bf48-d2d3497df4ef'],
       })
       .expect(404);
   });
@@ -78,17 +80,7 @@ describe('/business-unit/{id}/remove-examination-center', () => {
       .expect(400);
   });
 
-  it('Should throw a conflict exception when remove a main Examination Center', async () => {
-    await supertest(httpServer)
-      .put(path)
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .send({
-        examinationCenter: '10bf8e4b-ac53-45b2-bc52-41ef206b065b',
-      })
-      .expect(409);
-  });
-
-  it('Should remove examination center from business unit', async () => {
+  it('Should add examination centers to business unit', async () => {
     businessRepository = new BusinessUnitPostgresRepository(
       datasource.getRepository(businessUnitSchema),
     );
@@ -97,22 +89,23 @@ describe('/business-unit/{id}/remove-examination-center', () => {
       .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        examinationCenter:
-          RemoveExaminationCentersFromBusinessUnitE2eSeeds.examinationCenterId,
+        examinationCenters: [
+          AddExaminationCentersToBusinessUnitE2eSeeds.examinationCenterId,
+        ],
       })
       .expect(200);
 
     const businessUnit = await businessRepository.get(
-      'ab151b65-af1c-4e85-a939-a46ba4ed8095',
+      'b8d48d2a-7bab-4ef9-b30a-9eebf75ccae5',
     );
 
     expect(businessUnit?.examinationCenters).toHaveLength(1);
     expect(businessUnit?.examinationCenters).toEqual(
-      expect.not.arrayContaining([
+      expect.arrayContaining([
         expect.objectContaining({
-          id: RemoveExaminationCentersFromBusinessUnitE2eSeeds.examinationCenterId,
-          name: RemoveExaminationCentersFromBusinessUnitE2eSeeds.examinationCenterName,
-          code: RemoveExaminationCentersFromBusinessUnitE2eSeeds.examinationCenterCode,
+          id: AddExaminationCentersToBusinessUnitE2eSeeds.examinationCenterId,
+          name: AddExaminationCentersToBusinessUnitE2eSeeds.examinationCenterName,
+          code: AddExaminationCentersToBusinessUnitE2eSeeds.examinationCenterCode,
         }),
       ]),
     );

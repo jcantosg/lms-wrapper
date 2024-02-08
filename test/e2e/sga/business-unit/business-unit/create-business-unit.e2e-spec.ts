@@ -2,9 +2,10 @@ import supertest from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { startApp } from '#test/e2e/e2e-helper';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { CreateBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/create-business-unit.e2e-seeds';
+
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { CreateBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/business-unit/create-business-unit.e2e-seeds';
 
 const path = `/business-unit`;
 

@@ -7,7 +7,7 @@ import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenterPostgresRepository } from '#business-unit/infrastructure/repository/examination-center.postgres-repository';
-import { RemoveBusinessUnitFromExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/remove-business-unit-from-examination-center.e2e-seed';
+import { RemoveBusinessUnitFromExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/examination-center/remove-business-unit-from-examination-center.e2e-seed';
 
 const path =
   '/examination-center/a6beb944-d662-4342-b578-61d55d23838a/remove-business-unit';

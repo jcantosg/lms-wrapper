@@ -1,11 +1,11 @@
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
-import { DeleteExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/delete-examination-center.e2e-seeds';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { GetAllBusinessUnitsE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-business-units.e2e-seed-data-config';
 import supertest from 'supertest';
+import { DeleteExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/examination-center/delete-examination-center.e2e-seeds';
 
 const happyPath = `/examination-center/${DeleteExaminationCenterE2eSeeds.examinationCenterId}`;
 const badPath = `/examination-center/${DeleteExaminationCenterE2eSeeds.mainExaminationCenterId}`;

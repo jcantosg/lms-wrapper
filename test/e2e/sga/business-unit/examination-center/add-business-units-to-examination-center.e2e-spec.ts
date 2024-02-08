@@ -6,8 +6,8 @@ import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
-import { AddBusinessUnitsToExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/add-business-units-to-examination-center.e2e-seed';
 import { ExaminationCenterPostgresRepository } from '#business-unit/infrastructure/repository/examination-center.postgres-repository';
+import { AddBusinessUnitsToExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/examination-center/add-business-units-to-examination-center.e2e-seed';
 
 const path =
   '/examination-center/02096887-c100-4170-b470-1230b90bcbc4/add-business-unit';

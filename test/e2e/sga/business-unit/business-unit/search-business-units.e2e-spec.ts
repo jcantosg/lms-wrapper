@@ -4,12 +4,12 @@ import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '&/config/ormconfig';
 import supertest from 'supertest';
-import { GetAllBusinessUnitsE2eSeed } from '#test/e2e/sga/business-unit/get-all-business-units.e2e-seed';
-import { GetAllBusinessUnitsE2eSeedDataConfig } from './seed-data-config/get-all-business-units.e2e-seed-data-config';
 import {
   FIRST_PAGE,
   DEFAULT_LIMIT,
 } from '#/sga/shared/application/collection.query';
+import { GetAllBusinessUnitsE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-business-units.e2e-seed-data-config';
+import { GetAllBusinessUnitsE2eSeed } from '#test/e2e/sga/business-unit/business-unit/get-all-business-units.e2e-seed';
 
 const path = '/business-unit/search';
 

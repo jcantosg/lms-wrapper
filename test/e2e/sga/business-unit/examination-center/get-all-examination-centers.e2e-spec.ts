@@ -9,7 +9,7 @@ import {
   FIRST_PAGE,
 } from '#/sga/shared/application/collection.query';
 import { GetAllExaminationCentersE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-examination-centers.e2e-seed-data-config';
-import { GetAllExaminationCentersE2eSeed } from '#test/e2e/sga/business-unit/get-all-examination-center.e2e-seed';
+import { GetAllExaminationCentersE2eSeed } from '#test/e2e/sga/business-unit/examination-center/get-all-examination-center.e2e-seed';
 
 const path = '/examination-center';
 

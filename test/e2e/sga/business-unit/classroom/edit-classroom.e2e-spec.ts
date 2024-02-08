@@ -1,6 +1,5 @@
 import { HttpServer, INestApplication } from '@nestjs/common';
 import supertest from 'supertest';
-import { EditClassroomE2eSeed } from '#test/e2e/sga/business-unit/edit-classroom.e2e-seeds';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
@@ -8,6 +7,7 @@ import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { ClassroomPostgresRepository } from '#business-unit/infrastructure/repository/classroom.postgres-repository';
 import { classroomSchema } from '#business-unit/infrastructure/config/schema/classroom.schema';
+import { EditClassroomE2eSeed } from '#test/e2e/sga/business-unit/classroom/edit-classroom.e2e-seeds';
 
 const path = `/classroom/c2fc03f3-676c-4591-b815-e762d0e54542`;
 
