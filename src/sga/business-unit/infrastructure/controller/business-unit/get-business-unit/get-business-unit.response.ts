@@ -6,10 +6,10 @@ import {
 import {
   GetVirtualCampusResponse,
   VirtualCampusResponse,
-} from '#business-unit/infrastructure/controller/get-business-unit/get-virtual-campus.response';
+} from '#business-unit/infrastructure/controller/business-unit/get-business-unit/get-virtual-campus.response';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-business-unit/get-examination-center.response';
+import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/business-unit/get-business-unit/get-examination-center.response';
 
 export interface BusinessUnitExaminationCenterResponse {
   name: string;

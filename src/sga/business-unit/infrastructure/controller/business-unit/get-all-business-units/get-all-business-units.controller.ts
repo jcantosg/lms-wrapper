@@ -11,9 +11,9 @@ import { GetAllBusinessUnitsQuery } from '#business-unit/application/business-un
 import { getAllBusinessUnitSchema } from '#business-unit/infrastructure/config/validation-schema/get-all-business-units.schema';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
-import { GetAllBusinessUnitResponse } from '#business-unit/infrastructure/controller/get-all-business-units/get-all-business-units.response';
+import { GetAllBusinessUnitResponse } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units/get-all-business-units.response';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
-import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/get-all-business-units/get-business-unit.response';
+import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units/get-business-unit.response';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';

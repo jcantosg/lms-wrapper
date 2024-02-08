@@ -7,7 +7,7 @@ import { GetAllPlainExaminationCentersHandler } from '#business-unit/application
 import {
   ExaminationCenterBaseResponse,
   GetAllPlainExaminationCentersResponse,
-} from '#business-unit/infrastructure/controller/get-all-plain-examination-centers/get-all-plain-examination-centers.response';
+} from '#business-unit/infrastructure/controller/examination-center/get-all-plain-examination-centers/get-all-plain-examination-centers.response';
 
 @Controller('examination-center')
 export class GetAllPlainExaminationCentersController {

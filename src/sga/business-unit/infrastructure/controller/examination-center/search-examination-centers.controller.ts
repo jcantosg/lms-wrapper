@@ -16,8 +16,8 @@ import { SearchExaminationCentersHandler } from '#business-unit/application/exam
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
 import { searchExaminationCenterSchema } from '#business-unit/infrastructure/config/validation-schema/search-examination-centers.schema';
 import { SearchExaminationCentersQuery } from '#business-unit/application/examination-center/search-examination-centers/search-examination-centers.query';
-import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.response';
-import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/get-all-examination-centers/get-all-examination-centers.response';
+import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/examination-center/get-examination-center/get-examination-center.response';
+import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/examination-center/get-all-examination-centers/get-all-examination-centers.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 
 type SearchExaminationCentersQueryParams = {

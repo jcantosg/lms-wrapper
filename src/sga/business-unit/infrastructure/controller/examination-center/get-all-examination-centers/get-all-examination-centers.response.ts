@@ -3,7 +3,7 @@ import { ExaminationCenter } from '#business-unit/domain/entity/examination-cent
 import {
   ExaminationCenterResponse,
   GetExaminationCenterResponse,
-} from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.response';
+} from '#business-unit/infrastructure/controller/examination-center/get-examination-center/get-examination-center.response';
 
 export class GetAllExaminationCentersResponse {
   static create(

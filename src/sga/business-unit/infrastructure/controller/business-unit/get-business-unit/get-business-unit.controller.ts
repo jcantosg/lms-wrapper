@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { GetBusinessUnitQuery } from '#business-unit/application/business-unit/get-business-unit/get-business-unit.query';
-import { GetBusinessUnitResponse } from '#business-unit/infrastructure/controller/get-business-unit/get-business-unit.response';
+import { GetBusinessUnitResponse } from '#business-unit/infrastructure/controller/business-unit/get-business-unit/get-business-unit.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 
 @Controller('business-unit')

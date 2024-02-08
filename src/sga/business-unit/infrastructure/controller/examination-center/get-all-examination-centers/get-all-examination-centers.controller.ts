@@ -9,8 +9,8 @@ import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { GetAllExaminationCentersHandler } from '#business-unit/application/examination-center/get-all-examination-centers/get-all-examination-centers.handler';
 import { getAllExaminationCentersSchema } from '#business-unit/infrastructure/config/validation-schema/get-all-examination-centers.schema';
 import { GetAllExaminationCentersQuery } from '#business-unit/application/examination-center/get-all-examination-centers/get-all-examination-centers.query';
-import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/get-all-examination-centers/get-all-examination-centers.response';
-import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.response';
+import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/examination-center/get-all-examination-centers/get-all-examination-centers.response';
+import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/examination-center/get-examination-center/get-examination-center.response';
 
 type GetAllExaminationCentersQueryParams = {
   page: number;

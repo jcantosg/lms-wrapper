@@ -11,7 +11,7 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
-import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/get-all-business-units/get-business-unit.response';
+import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units/get-business-unit.response';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { searchBusinessUnitSchema } from '#business-unit/infrastructure/config/validation-schema/search-business-units.schema';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';

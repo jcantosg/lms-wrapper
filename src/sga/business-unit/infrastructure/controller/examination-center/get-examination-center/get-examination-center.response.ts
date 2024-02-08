@@ -1,7 +1,7 @@
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
-import { ClassroomResponse } from '../get-business-unit/get-examination-center.response';
+import { ClassroomResponse } from '../../business-unit/get-business-unit/get-examination-center.response';
 import {
   CountryResponse,
   GetCountryResponse,
