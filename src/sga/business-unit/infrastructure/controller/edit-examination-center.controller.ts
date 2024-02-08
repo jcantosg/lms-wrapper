@@ -24,6 +24,7 @@ type EditExaminationCenterEndpointBody = {
   code: string;
   address: string;
   isActive: boolean;
+  countryId: string;
 };
 
 @Controller('examination-center')
@@ -50,6 +51,7 @@ export class EditExaminationCenterController {
         body.address,
         req.user,
         body.isActive,
+        body.countryId,
       );
 
     await this.handler.handle(command);

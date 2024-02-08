@@ -149,6 +149,7 @@ export class ExaminationCenterPostgresRepository
       isActive: examinationCenter.isActive,
       updatedBy: examinationCenter.updatedBy,
       updatedAt: examinationCenter.updatedAt,
+      country: examinationCenter.country,
     });
   }
 

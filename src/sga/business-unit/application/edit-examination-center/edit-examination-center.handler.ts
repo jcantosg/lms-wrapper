@@ -6,11 +6,13 @@ import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/excepti
 import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { CountryGetter } from '#shared/domain/service/country-getter.service';
 
 export class EditExaminationCenterHandler implements CommandHandler {
   constructor(
     private readonly examinationCenterRepository: ExaminationCenterRepository,
     private readonly examinationCenterGetter: ExaminationCenterGetter,
+    private readonly countryGetter: CountryGetter,
   ) {}
 
   async handle(command: EditExaminationCenterCommand): Promise<void> {
@@ -46,12 +48,15 @@ export class EditExaminationCenterHandler implements CommandHandler {
       }
     });
 
+    const country = await this.countryGetter.get(command.countryId);
+
     examinationCenter.update(
       command.name,
       command.code,
       command.address,
       command.user,
       command.isActive,
+      country,
     );
 
     await this.examinationCenterRepository.update(examinationCenter);

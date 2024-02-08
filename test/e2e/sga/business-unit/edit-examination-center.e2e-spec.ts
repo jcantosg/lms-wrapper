@@ -56,6 +56,7 @@ describe('/examination-center/:id (PUT)', () => {
         code: 'TestBusinessCode',
         address: 'test address',
         isActive: false,
+        countryId: EditExaminationCenterE2eSeed.countryId,
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(404);
@@ -79,6 +80,7 @@ describe('/examination-center/:id (PUT)', () => {
         code: 'TestExaminationCenterCode',
         address: 'test address',
         isActive: false,
+        countryId: EditExaminationCenterE2eSeed.countryId,
       })
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);

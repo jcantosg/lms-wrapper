@@ -179,6 +179,7 @@ export class ExaminationCenter extends BaseEntity {
     address: string,
     user: AdminUser,
     isActive: boolean,
+    country: Country,
   ): void {
     this._name = name;
     this._code = code;
@@ -186,5 +187,6 @@ export class ExaminationCenter extends BaseEntity {
     this._updatedBy = user;
     this.updatedAt = new Date();
     this._isActive = isActive;
+    this._country = country;
   }
 }
