@@ -10,12 +10,12 @@ import {
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
-import { RemoveBusinessUnitFromExaminationCenterHandler } from '#business-unit/application/remove-business-unit-from-examination-center/remove-business-unit-from-examination-center.handler';
+import { RemoveBusinessUnitFromExaminationCenterHandler } from '#business-unit/application/examination-center/remove-business-unit-from-examination-center/remove-business-unit-from-examination-center.handler';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
-import { RemoveBusinessUnitFromExaminationCenterCommand } from '#business-unit/application/remove-business-unit-from-examination-center/remove-business-unit-from-examination-center.command';
+import { RemoveBusinessUnitFromExaminationCenterCommand } from '#business-unit/application/examination-center/remove-business-unit-from-examination-center/remove-business-unit-from-examination-center.command';
 import { RemoveBusinessUnitFromExaminationCenterSchema } from '#business-unit/infrastructure/config/validation-schema/remove-business-unit-from-examination-center.schema';
 
 type RemoveBusinessUnitFromExaminationCenterEndpointBody = {

@@ -6,8 +6,8 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { GetAllBusinessUnitsHandler } from '#business-unit/application/get-all-business-units/get-all-business-units.handler';
-import { GetAllBusinessUnitsQuery } from '#business-unit/application/get-all-business-units/get-all-business-units.query';
+import { GetAllBusinessUnitsHandler } from '#business-unit/application/business-unit/get-all-business-units/get-all-business-units.handler';
+import { GetAllBusinessUnitsQuery } from '#business-unit/application/business-unit/get-all-business-units/get-all-business-units.query';
 import { getAllBusinessUnitSchema } from '#business-unit/infrastructure/config/validation-schema/get-all-business-units.schema';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';

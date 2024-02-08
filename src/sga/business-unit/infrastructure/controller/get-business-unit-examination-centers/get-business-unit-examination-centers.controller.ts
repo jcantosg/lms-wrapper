@@ -16,8 +16,8 @@ import {
   BusinessUnitExaminationCenterResponse,
   GetBusinessUnitExaminationCentersResponse,
 } from '#business-unit/infrastructure/controller/get-business-unit-examination-centers/get-business-unit-examination-centers.response';
-import { GetBusinessUnitExaminationCentersQuery } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.query';
-import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
+import { GetBusinessUnitExaminationCentersQuery } from '#business-unit/application/business-unit/get-business-unit-examination-centers/get-business-unit-examination-centers.query';
+import { GetBusinessUnitExaminationCentersHandler } from '#business-unit/application/business-unit/get-business-unit-examination-centers/get-business-unit-examination-centers.handler';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 
 @Controller('business-unit')

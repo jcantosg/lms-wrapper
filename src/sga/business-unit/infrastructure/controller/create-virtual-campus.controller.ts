@@ -6,7 +6,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { CreateVirtualCampusHandler } from '#business-unit/application/create-virtual-campus/create-virtual-campus.handler';
+import { CreateVirtualCampusHandler } from '#business-unit/application/virtual-campus/create-virtual-campus/create-virtual-campus.handler';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { createVirtualCampusSchema } from '#business-unit/infrastructure/config/validation-schema/create-virtual-campus.schema';
@@ -14,7 +14,7 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { CreateVirtualCampusCommand } from '#business-unit/application/create-virtual-campus/create-virtual-campus.command';
+import { CreateVirtualCampusCommand } from '#business-unit/application/virtual-campus/create-virtual-campus/create-virtual-campus.command';
 
 type CreateVirtualCampusBody = {
   id: string;

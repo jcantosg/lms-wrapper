@@ -3,7 +3,7 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
-import { GetAllPlainExaminationCentersHandler } from '#business-unit/application/get-all-plain-examination-centers/get-all-plain-examination-centers.handler';
+import { GetAllPlainExaminationCentersHandler } from '#business-unit/application/examination-center/get-all-plain-examination-centers/get-all-plain-examination-centers.handler';
 import {
   ExaminationCenterBaseResponse,
   GetAllPlainExaminationCentersResponse,

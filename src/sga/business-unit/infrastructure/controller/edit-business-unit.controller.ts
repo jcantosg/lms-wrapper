@@ -7,9 +7,9 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { EditBusinessUnitHandler } from '#business-unit/application/edit-business-unit/edit-business-unit.handler';
+import { EditBusinessUnitHandler } from '#business-unit/application/business-unit/edit-business-unit/edit-business-unit.handler';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { EditBusinessUnitCommand } from '#business-unit/application/edit-business-unit/edit-business-unit.command';
+import { EditBusinessUnitCommand } from '#business-unit/application/business-unit/edit-business-unit/edit-business-unit.command';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';

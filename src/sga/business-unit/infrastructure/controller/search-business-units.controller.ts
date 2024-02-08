@@ -15,8 +15,8 @@ import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/g
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { searchBusinessUnitSchema } from '#business-unit/infrastructure/config/validation-schema/search-business-units.schema';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
-import { SearchBusinessUnitsHandler } from '#business-unit/application/search-business-units/search-business-units.handler';
-import { SearchBusinessUnitsQuery } from '#business-unit/application/search-business-units/search-business-units.query';
+import { SearchBusinessUnitsHandler } from '#business-unit/application/business-unit/search-business-units/search-business-units.handler';
+import { SearchBusinessUnitsQuery } from '#business-unit/application/business-unit/search-business-units/search-business-units.query';
 import { GetAllBusinessUnitResponse } from './get-all-business-units/get-all-business-units.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 

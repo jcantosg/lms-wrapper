@@ -15,9 +15,9 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
-import { RemoveExaminationCentersFromBusinessUnitHandler } from '#business-unit/application/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.handler';
+import { RemoveExaminationCentersFromBusinessUnitHandler } from '#business-unit/application/business-unit/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.handler';
 import { removeExaminationCentersFromBusinessUnitSchema } from '#business-unit/infrastructure/config/validation-schema/remove-examination-center-from-business-unit.schema';
-import { RemoveExaminationCentersFromBusinessUnitCommand } from '#business-unit/application/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.command';
+import { RemoveExaminationCentersFromBusinessUnitCommand } from '#business-unit/application/business-unit/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.command';
 
 type RemoveExaminationCentersToBusinessUnitEndpointBody = {
   examinationCenter: string;

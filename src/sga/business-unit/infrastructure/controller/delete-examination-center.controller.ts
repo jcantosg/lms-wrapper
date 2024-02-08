@@ -1,4 +1,4 @@
-import { DeleteExaminationCenterHandler } from '#business-unit/application/delete-examination-center/delete-examination-center.handler';
+import { DeleteExaminationCenterHandler } from '#business-unit/application/examination-center/delete-examination-center/delete-examination-center.handler';
 import {
   Controller,
   Delete,
@@ -13,7 +13,7 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
-import { DeleteExaminationCenterCommand } from '#business-unit/application/delete-examination-center/delete-examination-center.command';
+import { DeleteExaminationCenterCommand } from '#business-unit/application/examination-center/delete-examination-center/delete-examination-center.command';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 
 @Controller('examination-center')

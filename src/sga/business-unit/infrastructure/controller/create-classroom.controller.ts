@@ -6,7 +6,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { CreateClassroomHandler } from '#business-unit/application/create-classroom/create-classroom.handler';
+import { CreateClassroomHandler } from '#business-unit/application/classroom/create-classroom/create-classroom.handler';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { createClassroomSchema } from '#business-unit/infrastructure/config/validation-schema/create-classroom.schema';
@@ -16,7 +16,7 @@ import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/p
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { CreateClassroomCommand } from '#business-unit/application/create-classroom/create-classroom.command';
+import { CreateClassroomCommand } from '#business-unit/application/classroom/create-classroom/create-classroom.command';
 
 type CreateClassroomBody = {
   id: string;

@@ -7,7 +7,7 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
-import { EditVirtualCampusHandler } from '#business-unit/application/edit-virtual-campus/edit-virtual-campus.handler';
+import { EditVirtualCampusHandler } from '#business-unit/application/virtual-campus/edit-virtual-campus/edit-virtual-campus.handler';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
@@ -17,7 +17,7 @@ import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid
 import { editVirtualCampusSchema } from '../config/validation-schema/edit-virtual-campus.schema';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { EditVirtualCampusCommand } from '#business-unit/application/edit-virtual-campus/edit-virtual-campus.command';
+import { EditVirtualCampusCommand } from '#business-unit/application/virtual-campus/edit-virtual-campus/edit-virtual-campus.command';
 
 type EditVirtualCampusEndpointBody = {
   name: string;

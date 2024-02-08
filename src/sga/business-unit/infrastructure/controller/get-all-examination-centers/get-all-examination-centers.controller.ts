@@ -6,9 +6,9 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
-import { GetAllExaminationCentersHandler } from '#business-unit/application/get-all-examination-centers/get-all-examination-centers.handler';
+import { GetAllExaminationCentersHandler } from '#business-unit/application/examination-center/get-all-examination-centers/get-all-examination-centers.handler';
 import { getAllExaminationCentersSchema } from '#business-unit/infrastructure/config/validation-schema/get-all-examination-centers.schema';
-import { GetAllExaminationCentersQuery } from '#business-unit/application/get-all-examination-centers/get-all-examination-centers.query';
+import { GetAllExaminationCentersQuery } from '#business-unit/application/examination-center/get-all-examination-centers/get-all-examination-centers.query';
 import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/get-all-examination-centers/get-all-examination-centers.response';
 import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/get-examination-center/get-examination-center.response';
 
