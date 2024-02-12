@@ -12,6 +12,7 @@ import { ExaminationCenter } from '#business-unit/domain/entity/examination-cent
 import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/business-unit/get-business-unit/get-examination-center.response';
 
 export interface BusinessUnitExaminationCenterResponse {
+  id: string;
   name: string;
   code: string;
   isMain: boolean;
@@ -42,6 +43,7 @@ export class GetBusinessUnitResponse {
         (
           examinationCenter: ExaminationCenter,
         ): BusinessUnitExaminationCenterResponse => ({
+          id: examinationCenter.id,
           name: examinationCenter.name,
           code: examinationCenter.code,
           isMain: examinationCenter.isMainForBusinessUnit(businessUnit.id),
