@@ -4,6 +4,7 @@ import { Country } from '#shared/domain/entity/country.entity';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
+import { ExaminationCenterAlreadyAddedException } from '#shared/domain/exception/business-unit/examination-center-already-added.exception';
 
 export class BusinessUnit extends BaseEntity {
   private constructor(
@@ -127,12 +128,13 @@ export class BusinessUnit extends BaseEntity {
 
   public addExaminationCenter(examinationCenter: ExaminationCenter): void {
     if (
-      !this._examinationCenters.find(
+      this._examinationCenters.find(
         (examCenter) => examCenter.id === examinationCenter.id,
       )
     ) {
-      this._examinationCenters.push(examinationCenter);
+      throw new ExaminationCenterAlreadyAddedException();
     }
+    this._examinationCenters.push(examinationCenter);
   }
 
   public removeExaminationCenter(examinationCenter: ExaminationCenter): void {
