@@ -14,4 +14,20 @@ export class AdminUserGetter {
 
     return adminUser;
   }
+
+  async getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+  ): Promise<AdminUser> {
+    const adminUser = await this.adminUserRepository.getByAdminUser(
+      id,
+      adminUserBusinessUnits,
+    );
+
+    if (!adminUser) {
+      throw new AdminUserNotFoundException();
+    }
+
+    return adminUser;
+  }
 }

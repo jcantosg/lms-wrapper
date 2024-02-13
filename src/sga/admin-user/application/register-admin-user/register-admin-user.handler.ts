@@ -22,6 +22,10 @@ export class RegisterAdminUserHandler implements CommandHandler {
   ) {}
 
   async handle(command: RegisterAdminUserCommand): Promise<void> {
+    const adminUserBusinessUnits = command.user.businessUnits.map(
+      (bu) => bu.id,
+    );
+
     if (
       (await this.adminUserRepository.exists(command.id)) ||
       (await this.adminUserRepository.existsByEmail(command.email))
@@ -32,7 +36,10 @@ export class RegisterAdminUserHandler implements CommandHandler {
 
     const businessUnits = await Promise.all(
       command.businessUnits.map(async (businessUnitId: string) => {
-        return await this.businessUnitGetter.get(businessUnitId);
+        return await this.businessUnitGetter.getByAdminUser(
+          businessUnitId,
+          adminUserBusinessUnits,
+        );
       }),
     );
     const avatarUrl = command.avatar

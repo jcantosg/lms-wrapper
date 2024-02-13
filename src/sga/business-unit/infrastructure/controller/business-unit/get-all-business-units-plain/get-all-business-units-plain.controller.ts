@@ -15,7 +15,7 @@ export class GetAllBusinessPlainController {
 
   @Get('all')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(...Object.values(AdminUserRoles))
   async getAllBusinessUnitsPlain(
     @Req() req: AuthRequest,
   ): Promise<BusinessUnitResponseBasic[]> {

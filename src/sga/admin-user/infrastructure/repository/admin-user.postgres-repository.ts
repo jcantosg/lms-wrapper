@@ -82,4 +82,24 @@ export class AdminUserPostgresRepository
       )
     ).getMany(queryBuilder);
   }
+
+  async getByAdminUser(
+    adminUserId: string,
+    adminUserBusinessUnits: string[],
+  ): Promise<AdminUser | null> {
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+
+    const queryBuilder = this.repository.createQueryBuilder('adminUser');
+
+    queryBuilder.leftJoinAndSelect('adminUser.businessUnits', 'businessUnit');
+
+    return await queryBuilder
+      .where('adminUser.id = :id', { id: adminUserId })
+      .andWhere('businessUnit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
 }

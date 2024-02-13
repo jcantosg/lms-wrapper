@@ -45,6 +45,7 @@ describe('Register User (POST)', () => {
         identityDocument: RegisterAdminUserE2eSeed.newIdentityDocument,
       })
       .expect(201);
+
     const adminUserGetter = new AdminUserGetter(
       new AdminUserPostgresRepository(datasource.getRepository(AdminUser)),
     );

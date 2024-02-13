@@ -9,6 +9,7 @@ let service: AdminUserGetter;
 let adminUserRepository: AdminUserRepository;
 
 let getUserSpy: any;
+let getByAdminUserSpy: any;
 
 const user = getAnAdminUser();
 
@@ -17,6 +18,7 @@ describe('Admin User Getter', () => {
     adminUserRepository = new AdminUserMockRepository();
 
     getUserSpy = jest.spyOn(adminUserRepository, 'get');
+    getByAdminUserSpy = jest.spyOn(adminUserRepository, 'getByAdminUser');
 
     service = new AdminUserGetter(adminUserRepository);
   });
@@ -40,6 +42,27 @@ describe('Admin User Getter', () => {
       AdminUserNotFoundException,
     );
   });
+
+  it('Should return an user by admin user', async () => {
+    getByAdminUserSpy.mockImplementation((): Promise<AdminUser | null> => {
+      return Promise.resolve(user);
+    });
+
+    const result = await service.getByAdminUser('userId', ['businessUnit']);
+
+    expect(result).toBe(user);
+  });
+
+  it('Should throw a AdminUserNotFoundException by admin user', async () => {
+    getByAdminUserSpy.mockImplementation((): Promise<AdminUser | null> => {
+      return Promise.resolve(null);
+    });
+
+    await expect(
+      service.getByAdminUser('userId', ['businessUnit']),
+    ).rejects.toThrow(AdminUserNotFoundException);
+  });
+
   afterAll(() => {
     jest.clearAllMocks();
   });

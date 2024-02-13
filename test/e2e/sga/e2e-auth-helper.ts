@@ -8,6 +8,7 @@ import {
   IdentityDocument,
   IdentityDocumentType,
 } from '#/sga/shared/domain/value-object/identity-document';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 export async function login(httpServer: any, email: string, password: string) {
   const loginResponse = await supertest(httpServer).post('/auth/login').send({
@@ -24,6 +25,7 @@ export async function createAdminUser(
   email: string,
   password: string,
   roles: AdminUserRoles[],
+  businessUnits: BusinessUnit[] = [],
 ): Promise<AdminUser> {
   const passwordEncoder = new BCryptPasswordEncoder();
   const userRepository = datasource.getRepository(adminUserSchema);
@@ -36,7 +38,7 @@ export async function createAdminUser(
       roles,
       'name',
       'avatar',
-      [],
+      businessUnits,
       'surname',
       'surname2',
       new IdentityDocument({

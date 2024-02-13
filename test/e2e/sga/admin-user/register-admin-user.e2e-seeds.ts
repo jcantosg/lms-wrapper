@@ -66,6 +66,7 @@ export class RegisterAdminUserE2eSeed implements E2eSeed {
       RegisterAdminUserE2eSeed.email,
       RegisterAdminUserE2eSeed.password,
       [RegisterAdminUserE2eSeed.role],
+      [this.businessUnit],
     );
   }
 

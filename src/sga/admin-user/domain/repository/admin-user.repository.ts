@@ -13,4 +13,9 @@ export abstract class AdminUserRepository {
   abstract existsByEmail(email: string): Promise<boolean>;
 
   abstract matching(criteria: Criteria): Promise<AdminUser[]>;
+
+  abstract getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+  ): Promise<AdminUser | null>;
 }
