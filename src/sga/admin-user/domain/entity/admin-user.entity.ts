@@ -1,7 +1,23 @@
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
-import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
+import {
+  IdentityDocument,
+  IdentityDocumentType,
+  IdentityDocumentValues,
+} from '#/sga/shared/domain/value-object/identity-document';
+
+export enum AdminUserStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  DELETED = 'deleted',
+}
+
+const DELETED_USER_NAME = 'deleted';
+const DELETED_IDENTITY_DOCUMENT: IdentityDocumentValues = {
+  identityDocumentType: IdentityDocumentType.DNI,
+  identityDocumentNumber: '87296079Q',
+};
 
 export class AdminUser extends BaseEntity {
   static readonly passwordPattern = '^\\S{6,}$';
@@ -19,6 +35,7 @@ export class AdminUser extends BaseEntity {
     private _surname: string,
     private _surname2: string | null,
     private _identityDocument: IdentityDocument,
+    private _status: AdminUserStatus,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -48,6 +65,7 @@ export class AdminUser extends BaseEntity {
       surname,
       surname2,
       identityDocument,
+      AdminUserStatus.ACTIVE,
     );
   }
 
@@ -125,6 +143,26 @@ export class AdminUser extends BaseEntity {
       );
     }
     this.updatedAt = new Date();
+  }
+
+  public get status(): AdminUserStatus {
+    return this._status;
+  }
+
+  public set status(value: AdminUserStatus) {
+    this._status = value;
+  }
+
+  static getAdminUserStatuses(): string[] {
+    return Object.values(AdminUserStatus);
+  }
+
+  public delete(): void {
+    this.status = AdminUserStatus.DELETED;
+    this.name = DELETED_USER_NAME;
+    this.surname = DELETED_USER_NAME;
+    this.surname2 = DELETED_USER_NAME;
+    this.identityDocument = new IdentityDocument(DELETED_IDENTITY_DOCUMENT);
   }
 
   public get surname(): string {

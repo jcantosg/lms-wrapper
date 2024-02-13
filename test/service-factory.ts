@@ -9,6 +9,7 @@ import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
+import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -59,4 +60,12 @@ export function getPasswordGeneratorMock(): AdminUserPasswordGenerator {
 export function getAnAdminUserRolesCheckerMock(): AdminUserRolesChecker {
   return (AdminUserRolesChecker as jest.Mocked<typeof AdminUserRolesChecker>)
     .prototype;
+}
+
+export function getAnAdminUserBusinessUnitsCheckerMock(): AdminUserBusinessUnitsChecker {
+  return (
+    AdminUserBusinessUnitsChecker as jest.Mocked<
+      typeof AdminUserBusinessUnitsChecker
+    >
+  ).prototype;
 }

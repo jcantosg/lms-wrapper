@@ -15,6 +15,7 @@ import { SharedModule } from '#shared/shared.module';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
 import { listeners } from '#admin-user/listeners';
+import { AdminUserBusinessUnitsChecker } from './domain/service/admin-user-business-units.checker.service';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -56,6 +57,7 @@ const jwtStrategy = {
       provide: EventDispatcher,
       useClass: NestEventDispatcher,
     },
+    AdminUserBusinessUnitsChecker,
   ],
   exports: [...repositories, ...services],
   controllers: [...controllers],

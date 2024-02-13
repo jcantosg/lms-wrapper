@@ -12,6 +12,8 @@ import { GetIdentityDocumentTypesHandler } from './application/get-identity-docu
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
+import { DeleteAdminUserHandler } from '#admin-user/application/delete-admin-user/delete-admin-user.handler';
+import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 
 const getIdentityDocumentTypesHandler = {
   provide: GetIdentityDocumentTypesHandler,
@@ -86,6 +88,29 @@ const expireRefreshTokenHandler = {
   inject: [AdminUserGetter, RefreshTokenRepository],
 };
 
+const deleteAdminUserHandler = {
+  provide: DeleteAdminUserHandler,
+  useFactory: (
+    adminUserRepository: AdminUserRepository,
+    adminUserGetter: AdminUserGetter,
+    adminUserRolesChecker: AdminUserRolesChecker,
+    adminUserBusinessUnitsChecker: AdminUserBusinessUnitsChecker,
+  ) => {
+    return new DeleteAdminUserHandler(
+      adminUserRepository,
+      adminUserGetter,
+      adminUserRolesChecker,
+      adminUserBusinessUnitsChecker,
+    );
+  },
+  inject: [
+    AdminUserRepository,
+    AdminUserGetter,
+    AdminUserRolesChecker,
+    AdminUserBusinessUnitsChecker,
+  ],
+};
+
 export const handlers = [
   registerUserHandler,
   createRefreshTokenHandler,
@@ -93,4 +118,5 @@ export const handlers = [
   getAdminUserHandler,
   getIdentityDocumentTypesHandler,
   getRolesHandler,
+  deleteAdminUserHandler,
 ];

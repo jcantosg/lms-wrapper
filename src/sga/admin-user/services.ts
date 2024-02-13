@@ -12,6 +12,7 @@ import { RefreshTokenGenerator } from '#admin-user/infrastructure/service/refres
 import { ConfigService } from '@nestjs/config';
 import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
+import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 
 const adminUserGetter = {
   provide: AdminUserGetter,
@@ -60,4 +61,5 @@ export const services = [
   AccessTokenRefresherService,
   AdminUserPasswordGenerator,
   AdminUserRolesChecker,
+  AdminUserBusinessUnitsChecker,
 ];

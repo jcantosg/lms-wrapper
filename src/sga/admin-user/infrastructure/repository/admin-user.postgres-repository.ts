@@ -1,8 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import {
+  AdminUser,
+  AdminUserStatus,
+} from '#admin-user/domain/entity/admin-user.entity';
 import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
@@ -21,14 +24,17 @@ export class AdminUserPostgresRepository
 
   async get(id: string): Promise<AdminUser | null> {
     return await this.repository.findOne({
-      where: { id },
+      where: {
+        id,
+        status: Not(AdminUserStatus.DELETED),
+      },
       relations: { businessUnits: { country: true } },
     });
   }
 
   async getByEmail(email: string): Promise<AdminUser | null> {
     return await this.repository.findOne({
-      where: { email },
+      where: { email, status: Not(AdminUserStatus.DELETED) },
       relations: { businessUnits: true },
     });
   }
@@ -47,6 +53,7 @@ export class AdminUserPostgresRepository
       surname: adminUser.surname,
       surname2: adminUser.surname2,
       identityDocument: adminUser.identityDocument,
+      status: adminUser.status,
     });
   }
 
@@ -65,6 +72,7 @@ export class AdminUserPostgresRepository
       `${aliasQuery}.businessUnits`,
       'business_units',
     );
+    queryBuilder.andWhere(`${aliasQuery}.status != deleted`);
 
     return (
       await this.convertCriteriaToQueryBuilder(

@@ -6,6 +6,7 @@ import {
   CountryResponse,
   GetCountryResponse,
 } from '#shared/infrastructure/controller/country/get-country.response';
+import { BusinessUnitExaminationCenterResponse } from '#business-unit/infrastructure/controller/business-unit/get-business-unit/get-business-unit.response';
 
 export interface ExaminationCenterResponse {
   id: string;
@@ -16,6 +17,7 @@ export interface ExaminationCenterResponse {
   address: string;
   businessUnits: ExaminationCenterBusinessUnitResponse[];
   classrooms: ClassroomResponse[];
+  mainBusinessUnit: BusinessUnitExaminationCenterResponse | null;
 }
 
 export interface ExaminationCenterBusinessUnitResponse {
@@ -52,6 +54,14 @@ export class GetExaminationCenterResponse {
           };
         },
       ),
+      mainBusinessUnit: examinationCenter.mainBusinessUnit
+        ? {
+            id: examinationCenter.mainBusinessUnit.id,
+            name: examinationCenter.mainBusinessUnit.name,
+            code: examinationCenter.mainBusinessUnit.code,
+            isMain: true,
+          }
+        : null,
     };
   }
 }
