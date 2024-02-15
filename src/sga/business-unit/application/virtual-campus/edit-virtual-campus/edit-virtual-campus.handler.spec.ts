@@ -11,7 +11,7 @@ import { getVirtualCampusGetterMock } from '#test/service-factory';
 import { VirtualCampusMockRepository } from '#test/mocks/sga/business-unit/virtual-campus.mock-repository';
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
-import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus-business-unit-inactive.exception';
+import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-business-unit-inactive.exception';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 let handler: EditVirtualCampusHandler;

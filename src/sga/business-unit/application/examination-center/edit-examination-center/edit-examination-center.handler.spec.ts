@@ -15,8 +15,8 @@ import { ExaminationCenter } from '#business-unit/domain/entity/examination-cent
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
 import { EditExaminationCenterCommand } from './edit-examination-center.command';
-import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
-import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
+import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-name.exception';
+import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-code.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { Country } from '#shared/domain/entity/country.entity';
 

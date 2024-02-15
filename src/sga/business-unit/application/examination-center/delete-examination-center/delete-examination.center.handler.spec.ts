@@ -9,7 +9,7 @@ import {
 import { getAnExaminationCenterGetterMock } from '#test/service-factory';
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
+import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center/examination-center-main.exception';
 
 let handler: DeleteExaminationCenterHandler;
 let examinationCenterGetter: ExaminationCenterGetter;

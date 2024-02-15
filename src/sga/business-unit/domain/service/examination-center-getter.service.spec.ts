@@ -3,7 +3,7 @@ import { ExaminationCenterRepository } from '#business-unit/domain/repository/ex
 import { getAnExaminationCenter } from '#test/entity-factory';
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterNotFoundException } from '#shared/domain/exception/business-unit/examination-center-not-found.exception';
+import { ExaminationCenterNotFoundException } from '#shared/domain/exception/business-unit/examination-center/examination-center-not-found.exception';
 
 let service: ExaminationCenterGetter;
 let repository: ExaminationCenterRepository;

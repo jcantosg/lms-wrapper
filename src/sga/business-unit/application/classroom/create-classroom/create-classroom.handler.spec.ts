@@ -7,8 +7,8 @@ import { v4 as uuid } from 'uuid';
 import { getAnExaminationCenterGetterMock } from '#test/service-factory';
 import { ClassroomMockRepository } from '#test/mocks/sga/business-unit/classroom.mock-repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
-import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
+import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated.exception';
+import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated-code.exception';
 
 let handler: CreateClassroomHandler;
 let repository: ClassroomRepository;

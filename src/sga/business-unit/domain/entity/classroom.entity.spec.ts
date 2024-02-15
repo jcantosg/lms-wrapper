@@ -1,7 +1,7 @@
 import { getAnAdminUser, getAnExaminationCenter } from '#test/entity-factory';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 import { v4 as uuid } from 'uuid';
-import { ClassroomWrongCapacityException } from '#shared/domain/exception/business-unit/classroom-wrong-capacity.exception';
+import { ClassroomWrongCapacityException } from '#shared/domain/exception/business-unit/classroom/classroom-wrong-capacity.exception';
 
 const examinationCenter = getAnExaminationCenter();
 const adminUser = getAnAdminUser();

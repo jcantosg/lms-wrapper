@@ -5,7 +5,7 @@ import { getBusinessUnitGetterMock } from '#test/service-factory';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { getABusinessUnit } from '#test/entity-factory';
 import { GetBusinessUnitQuery } from '#business-unit/application/business-unit/get-business-unit/get-business-unit.query';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 let handler: GetBusinessUnitHandler;
 let businessUnitGetter: BusinessUnitGetter;

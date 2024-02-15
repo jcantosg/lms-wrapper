@@ -1,7 +1,7 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { AddBusinessUnitsToExaminationCenterCommand } from '#business-unit/application/examination-center/add-business-units-to-examination-center/add-business-units-to-examination-center.command';
 

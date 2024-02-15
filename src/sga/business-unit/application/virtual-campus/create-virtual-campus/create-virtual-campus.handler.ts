@@ -2,10 +2,10 @@ import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
 import { CreateVirtualCampusCommand } from '#business-unit/application/virtual-campus/create-virtual-campus/create-virtual-campus.command';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
-import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus-duplicated.exception';
+import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-duplicated.exception';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
-import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus-business-unit-inactive.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
+import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-business-unit-inactive.exception';
 
 export class CreateVirtualCampusHandler implements CommandHandler {
   constructor(

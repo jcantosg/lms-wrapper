@@ -2,10 +2,10 @@ import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
 import { CreateClassroomCommand } from '#business-unit/application/classroom/create-classroom/create-classroom.command';
-import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
-import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
+import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated.exception';
+import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated-code.exception';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 export class CreateClassroomHandler implements CommandHandler {
   constructor(

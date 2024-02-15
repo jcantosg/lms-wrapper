@@ -3,7 +3,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
-import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
+import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center/examination-center-main.exception';
 
 export class ExaminationCenter extends BaseEntity {
   private constructor(

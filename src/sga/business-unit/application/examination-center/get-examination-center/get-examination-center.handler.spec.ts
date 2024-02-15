@@ -4,7 +4,7 @@ import { getAnExaminationCenter } from '#test/entity-factory';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
 import { getAnExaminationCenterGetterMock } from '#test/service-factory';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterNotFoundException } from '#shared/domain/exception/business-unit/examination-center-not-found.exception';
+import { ExaminationCenterNotFoundException } from '#shared/domain/exception/business-unit/examination-center/examination-center-not-found.exception';
 
 let handler: GetExaminationCenterHandler;
 let examinationCenterGetter: ExaminationCenterGetter;

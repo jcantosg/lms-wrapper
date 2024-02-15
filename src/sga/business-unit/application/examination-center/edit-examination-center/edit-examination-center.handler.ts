@@ -2,10 +2,10 @@ import { ExaminationCenterRepository } from '#business-unit/domain/repository/ex
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { EditExaminationCenterCommand } from '#business-unit/application/examination-center/edit-examination-center/edit-examination-center.command';
 import { ExaminationCenterGetter } from '#business-unit/domain/service/examination-center-getter.service';
-import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
-import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
+import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-code.exception';
+import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-name.exception';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 
 export class EditExaminationCenterHandler implements CommandHandler {

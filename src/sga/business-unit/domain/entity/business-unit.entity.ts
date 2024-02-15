@@ -3,8 +3,8 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center-main.exception';
-import { ExaminationCenterAlreadyAddedException } from '#shared/domain/exception/business-unit/examination-center-already-added.exception';
+import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center/examination-center-main.exception';
+import { ExaminationCenterAlreadyAddedException } from '#shared/domain/exception/business-unit/examination-center/examination-center-already-added.exception';
 
 export class BusinessUnit extends BaseEntity {
   private constructor(

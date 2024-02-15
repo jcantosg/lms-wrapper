@@ -1,7 +1,7 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
-import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus-business-unit-inactive.exception';
+import { VirtualCampusBusinessUnitInactiveException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-business-unit-inactive.exception';
 
 export class VirtualCampus extends BaseEntity {
   private constructor(

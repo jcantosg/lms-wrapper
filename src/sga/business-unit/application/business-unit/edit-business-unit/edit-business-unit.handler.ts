@@ -3,8 +3,8 @@ import { BusinessUnitRepository } from '#business-unit/domain/repository/busines
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { EditBusinessUnitCommand } from '#business-unit/application/business-unit/edit-business-unit/edit-business-unit.command';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
-import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit-duplicated.exception';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit/business-unit-duplicated.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
 
 export class EditBusinessUnitHandler implements CommandHandler {

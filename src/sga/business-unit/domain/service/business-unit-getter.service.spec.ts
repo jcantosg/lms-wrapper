@@ -3,7 +3,7 @@ import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-
 import { BusinessUnitMockRepository } from '#test/mocks/sga/business-unit/business-unit.mock-repository';
 import { getABusinessUnit } from '#test/entity-factory';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 let businessUnitRepository: BusinessUnitRepository;
 let service: BusinessUnitGetter;

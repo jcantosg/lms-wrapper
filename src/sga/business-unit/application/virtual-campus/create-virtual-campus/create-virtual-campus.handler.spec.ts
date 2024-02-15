@@ -5,8 +5,8 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { getABusinessUnit, getAnAdminUser } from '#test/entity-factory';
 import { v4 as uuid } from 'uuid';
 import { CreateVirtualCampusCommand } from '#business-unit/application/virtual-campus/create-virtual-campus/create-virtual-campus.command';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
-import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus-duplicated.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
+import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-duplicated.exception';
 import { getBusinessUnitGetterMock } from '#test/service-factory';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 

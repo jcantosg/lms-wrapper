@@ -2,7 +2,7 @@ import { CreateBusinessUnitCommand } from '#business-unit/application/business-u
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit-duplicated.exception';
+import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit/business-unit-duplicated.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { VirtualCampusRepository } from '#business-unit/domain/repository/virtual-campus.repository';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
@@ -11,7 +11,7 @@ import { Country } from '#shared/domain/entity/country.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { BusinessUnitWrongNameLengthException } from '#shared/domain/exception/business-unit/business-unit-wrong-name-length.exception';
+import { BusinessUnitWrongNameLengthException } from '#shared/domain/exception/business-unit/business-unit/business-unit-wrong-name-length.exception';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { BusinessUnitCreatedEvent } from '#business-unit/domain/event/business-unit-created.event';
 

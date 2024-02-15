@@ -2,8 +2,8 @@ import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { EditClassroomCommand } from '#business-unit/application/classroom/edit-classroom/edit-classroom.command';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
-import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
-import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
+import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated.exception';
+import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated-code.exception';
 
 export class EditClassroomHandler implements CommandHandler {
   constructor(

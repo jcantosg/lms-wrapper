@@ -6,7 +6,7 @@ import { DeleteClassroomCommand } from '#business-unit/application/classroom/del
 import { ClassroomMockRepository } from '#test/mocks/sga/business-unit/classroom.mock-repository';
 import { getAClassroomGetterMock } from '#test/service-factory';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
-import { ClassroomNotFoundException } from '#shared/domain/exception/business-unit/classroom-not-found.exception';
+import { ClassroomNotFoundException } from '#shared/domain/exception/business-unit/classroom/classroom-not-found.exception';
 
 let handler: DeleteClassroomHandler;
 let classroomRepository: ClassroomRepository;

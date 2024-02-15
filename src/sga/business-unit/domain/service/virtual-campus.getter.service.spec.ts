@@ -3,7 +3,7 @@ import { getAVirtualCampus } from '#test/entity-factory';
 import { VirtualCampusMockRepository } from '#test/mocks/sga/business-unit/virtual-campus.mock-repository';
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
-import { VirtualCampusNotFoundException } from '#shared/domain/exception/business-unit/virtual-campus-not-found.exception';
+import { VirtualCampusNotFoundException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-not-found.exception';
 
 let virtualCampusRepository: VirtualCampusRepository;
 let service: VirtualCampusGetter;

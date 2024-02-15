@@ -1,7 +1,7 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ClassroomWrongCapacityException } from '#shared/domain/exception/business-unit/classroom-wrong-capacity.exception';
+import { ClassroomWrongCapacityException } from '#shared/domain/exception/business-unit/classroom/classroom-wrong-capacity.exception';
 
 const MINIMUM_CAPACITY = 1;
 

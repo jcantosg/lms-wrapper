@@ -2,7 +2,7 @@ import { CreateBusinessUnitCommand } from '#business-unit/application/business-u
 import { CreateBusinessUnitHandler } from '#business-unit/application/business-unit/create-business-unit/create-business-unit.handler';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
 import { Country } from '#shared/domain/entity/country.entity';
-import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit-duplicated.exception';
+import { BusinessUnitDuplicatedException } from '#shared/domain/exception/business-unit/business-unit/business-unit-duplicated.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { getACountry, getAnAdminUser } from '#test/entity-factory';
 import { BusinessUnitMockRepository } from '#test/mocks/sga/business-unit/business-unit.mock-repository';

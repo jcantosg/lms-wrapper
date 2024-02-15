@@ -1,12 +1,12 @@
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.service';
-import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom-duplicated.exception';
+import { ClassroomDuplicatedException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated.exception';
 import { getAClassroom, getAnAdminUser } from '#test/entity-factory';
 import { ClassroomMockRepository } from '#test/mocks/sga/business-unit/classroom.mock-repository';
 import { getAClassroomGetterMock } from '#test/service-factory';
 import { EditClassroomHandler } from '#business-unit/application/classroom/edit-classroom/edit-classroom.handler';
 import { EditClassroomCommand } from '#business-unit/application/classroom/edit-classroom/edit-classroom.command';
-import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom-duplicated-code.exception';
+import { ClassroomDuplicatedCodeException } from '#shared/domain/exception/business-unit/classroom/classroom-duplicated-code.exception';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
 
 let handler: EditClassroomHandler;

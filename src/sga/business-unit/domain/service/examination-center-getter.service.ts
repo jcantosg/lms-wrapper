@@ -1,7 +1,7 @@
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterNotFoundException } from '#shared/domain/exception/business-unit/examination-center-not-found.exception';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { ExaminationCenterNotFoundException } from '#shared/domain/exception/business-unit/examination-center/examination-center-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 export class ExaminationCenterGetter {
   constructor(

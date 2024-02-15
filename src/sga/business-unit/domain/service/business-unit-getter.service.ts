@@ -1,6 +1,6 @@
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 export class BusinessUnitGetter {
   constructor(

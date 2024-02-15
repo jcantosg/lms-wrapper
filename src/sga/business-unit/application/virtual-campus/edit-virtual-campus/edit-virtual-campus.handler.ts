@@ -2,8 +2,8 @@ import { VirtualCampusRepository } from '#business-unit/domain/repository/virtua
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { EditVirtualCampusCommand } from '#business-unit/application/virtual-campus/edit-virtual-campus/edit-virtual-campus.command';
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
-import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus-duplicated.exception';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { VirtualCampusDuplicatedException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-duplicated.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 export class EditVirtualCampusHandler implements CommandHandler {
   constructor(

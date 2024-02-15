@@ -3,11 +3,11 @@ import { ExaminationCenterRepository } from '#business-unit/domain/repository/ex
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { CreateExaminationCenterCommand } from '#business-unit/application/examination-center/create-examination-center/create-examination-center.command';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
-import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
-import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
-import { ExaminationCenterDuplicatedException } from '#shared/domain/exception/business-unit/examination-center-duplicated.exception';
+import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-name.exception';
+import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-code.exception';
+import { ExaminationCenterDuplicatedException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
-import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit-not-found.exception';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 export class CreateExaminationCenterHandler implements CommandHandler {
   constructor(

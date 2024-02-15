@@ -9,8 +9,8 @@ import {
 import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import { CreateExaminationCenterCommand } from '#business-unit/application/examination-center/create-examination-center/create-examination-center.command';
 import { v4 as uuid } from 'uuid';
-import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center-duplicated-name.exception';
-import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center-duplicated-code.exception';
+import { ExaminationCenterDuplicatedNameException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-name.exception';
+import { ExaminationCenterDuplicatedCodeException } from '#shared/domain/exception/business-unit/examination-center/examination-center-duplicated-code.exception';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { Country } from '#shared/domain/entity/country.entity';
 

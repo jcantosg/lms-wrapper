@@ -3,7 +3,7 @@ import { ClassroomGetter } from '#business-unit/domain/service/classroom-getter.
 import { getAClassroom } from '#test/entity-factory';
 import { ClassroomMockRepository } from '#test/mocks/sga/business-unit/classroom.mock-repository';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
-import { ClassroomNotFoundException } from '#shared/domain/exception/business-unit/classroom-not-found.exception';
+import { ClassroomNotFoundException } from '#shared/domain/exception/business-unit/classroom/classroom-not-found.exception';
 
 let classroomRepository: ClassroomRepository;
 let service: ClassroomGetter;
