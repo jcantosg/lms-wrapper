@@ -7,6 +7,7 @@ import { GetAdminUserDetailController } from './infrastructure/controller/get-ad
 import { GetIdentityDocumentTypesController } from './infrastructure/controller/get-identity-document-types/get-identity-document-types.controller';
 import { GetRolesController } from './infrastructure/controller/get-user-roles/get-user-roles.controller';
 import { DeleteAdminUserController } from '#admin-user/infrastructure/controller/delete-admin-user/delete-admin-user.controller';
+import { EditAdminUserController } from '#admin-user/infrastructure/controller/edit-admin-user/edit-admin-user.controller';
 
 export const controllers = [
   RegisterAdminUserController,
@@ -18,4 +19,5 @@ export const controllers = [
   GetRolesController,
   DeleteAdminUserController,
   GetAdminUserDetailController,
+  EditAdminUserController,
 ];

@@ -188,4 +188,21 @@ export class AdminUser extends BaseEntity {
   public set identityDocument(value: IdentityDocument) {
     this._identityDocument = value;
   }
+
+  public update(
+    name: string,
+    surname: string,
+    surname2: string | null,
+    identityDocument: IdentityDocument,
+    roles: AdminUserRoles[],
+    avatar: string,
+  ) {
+    this._name = name;
+    this._surname = surname;
+    this._surname2 = surname2;
+    this._identityDocument = identityDocument;
+    this._roles = roles;
+    this._avatar = avatar || this._avatar;
+    this.updatedAt = new Date();
+  }
 }

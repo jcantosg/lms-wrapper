@@ -15,6 +15,7 @@ import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-rol
 import { DeleteAdminUserHandler } from '#admin-user/application/delete-admin-user/delete-admin-user.handler';
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { GetAdminUserDetailHandler } from '#admin-user/application/get-admin-user-detail/get-admin-user-detail.handler';
+import { EditAdminUserHandler } from '#admin-user/application/edit-admin-user/edit-admin-user.handler';
 
 const getIdentityDocumentTypesHandler = {
   provide: GetIdentityDocumentTypesHandler,
@@ -126,6 +127,29 @@ const getAdminUserDetailHandler = {
   inject: [AdminUserGetter, AdminUserRolesChecker],
 };
 
+const editAdminUserHandler = {
+  provide: EditAdminUserHandler,
+  useFactory: (
+    adminUserRepository: AdminUserRepository,
+    adminUserGetterService: AdminUserGetter,
+    adminUserRolesChecker: AdminUserRolesChecker,
+    imageUploader: ImageUploader,
+  ) => {
+    return new EditAdminUserHandler(
+      adminUserRepository,
+      adminUserGetterService,
+      adminUserRolesChecker,
+      imageUploader,
+    );
+  },
+  inject: [
+    AdminUserRepository,
+    AdminUserGetter,
+    AdminUserRolesChecker,
+    ImageUploader,
+  ],
+};
+
 export const handlers = [
   registerUserHandler,
   createRefreshTokenHandler,
@@ -135,4 +159,5 @@ export const handlers = [
   getRolesHandler,
   getAdminUserDetailHandler,
   deleteAdminUserHandler,
+  editAdminUserHandler,
 ];
