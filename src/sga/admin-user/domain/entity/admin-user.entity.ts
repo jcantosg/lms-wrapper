@@ -202,7 +202,7 @@ export class AdminUser extends BaseEntity {
     this._surname2 = surname2;
     this._identityDocument = identityDocument;
     this._roles = roles;
-    this._avatar = avatar || this._avatar;
+    this._avatar = avatar;
     this.updatedAt = new Date();
   }
 }

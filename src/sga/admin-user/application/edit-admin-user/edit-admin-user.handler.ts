@@ -33,7 +33,7 @@ export class EditAdminUserHandler implements CommandHandler {
           command.name,
           'admin-user-avatar',
         )
-      : '';
+      : userToEdit.avatar;
 
     const identityDocument = new IdentityDocument(command.identityDocument);
 
