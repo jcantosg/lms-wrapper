@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
 import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
-import { json } from 'express';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,8 +15,9 @@ async function bootstrap() {
   });
   app.enableCors();
 
-  app.use('/', json({ limit: '50mb' }));
+  app.use(bodyParser.json({ limit: '50mb' }));
 
   await app.listen(3000);
 }
+
 bootstrap();
