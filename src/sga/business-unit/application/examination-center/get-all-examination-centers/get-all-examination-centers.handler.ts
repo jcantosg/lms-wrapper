@@ -16,8 +16,8 @@ export class GetAllExaminationCentersHandler implements QueryHandler {
     const criteria = new GetAllExaminationCentersCriteria(query);
 
     const [total, examinationCenters] = await Promise.all([
-      this.examinationCenterRepository.count(criteria),
-      this.examinationCenterRepository.matching(criteria),
+      this.examinationCenterRepository.count(criteria, query.businessUnits!),
+      this.examinationCenterRepository.matching(criteria, query.businessUnits!),
     ]);
 
     return {

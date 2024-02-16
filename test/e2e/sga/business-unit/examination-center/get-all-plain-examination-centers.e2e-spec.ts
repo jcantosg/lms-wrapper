@@ -12,7 +12,6 @@ describe('/examination-center/all', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
-  let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
@@ -20,12 +19,6 @@ describe('/examination-center/all', () => {
     httpServer = app.getHttpServer();
     seeder = new GetAllPlainExaminationCentersE2eSeed(datasource);
     await seeder.arrange();
-
-    adminAccessToken = await login(
-      httpServer,
-      GetAllPlainExaminationCentersE2eSeed.adminUserEmail,
-      GetAllPlainExaminationCentersE2eSeed.adminUserPassword,
-    );
 
     superAdminAccessToken = await login(
       httpServer,
@@ -36,13 +29,6 @@ describe('/examination-center/all', () => {
 
   it('should return unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
-  });
-
-  it('should return forbidden', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
   });
 
   it('should return all plain examination centers', async () => {

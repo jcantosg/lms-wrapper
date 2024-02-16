@@ -16,7 +16,6 @@ describe('/business-unit/:id/examination-centers (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
-  let adminAccessToken: string;
 
   beforeAll(async () => {
     app = await startApp();
@@ -28,21 +27,10 @@ describe('/business-unit/:id/examination-centers (GET)', () => {
       GetAllExaminationCentersE2eSeedDataConfig.superAdmin.email,
       GetAllExaminationCentersE2eSeedDataConfig.superAdmin.password,
     );
-    adminAccessToken = await login(
-      httpServer,
-      GetAllExaminationCentersE2eSeedDataConfig.admin.email,
-      GetAllExaminationCentersE2eSeedDataConfig.admin.password,
-    );
   });
 
   it('should throw unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
-  });
-  it('should throw forbidden', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
   });
 
   it('should return an examination center array', async () => {

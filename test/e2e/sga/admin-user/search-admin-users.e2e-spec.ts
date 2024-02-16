@@ -71,8 +71,6 @@ describe('/admin-users/search', () => {
         adminUser.name.toLowerCase().includes(text),
       );
 
-    console.log(response.body);
-
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
       limit: DEFAULT_LIMIT,

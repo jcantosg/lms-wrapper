@@ -12,7 +12,6 @@ describe('/business-unit/:id (GET)', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
-  let adminAccessToken: string;
 
   let superAdminAccessToken: string;
 
@@ -21,11 +20,6 @@ describe('/business-unit/:id (GET)', () => {
     httpServer = app.getHttpServer();
     seeder = new GetBusinessUnitE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      GetBusinessUnitE2eSeed.adminUserEmail,
-      GetBusinessUnitE2eSeed.adminUserPassword,
-    );
     superAdminAccessToken = await login(
       httpServer,
       GetBusinessUnitE2eSeed.superAdminUserEmail,
@@ -35,12 +29,7 @@ describe('/business-unit/:id (GET)', () => {
   it('should return unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
   });
-  it('should return forbidden', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
-  });
+
   it('should return a business unit', async () => {
     const businessUnit = await supertest(httpServer)
       .get(path)

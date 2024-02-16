@@ -45,6 +45,13 @@ test-e2e: ## Run e2e tests
 	@npm run test:e2e ; make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*
 
+test-e2e-ci: ## Run e2e tests
+	mkdir -p files/admin-user-avatar
+	make test-database-setup
+	@npm run test:e2e
+	make test-database-drop
+	rm -rf files/admin-user-avatar/new-admin*
+
 database-drop: ## Remove all database collections
 	@npm run sga:db:drop -- -f
 

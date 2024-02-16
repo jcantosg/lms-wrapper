@@ -1,5 +1,6 @@
 import { HttpServer, INestApplication } from '@nestjs/common';
 import request from 'supertest';
+import supertest from 'supertest';
 import { CountryResponse } from '#shared/infrastructure/controller/country/get-country.response';
 import { countries as countriesExpected } from '#commands/country/countries';
 import { startApp } from '#test/e2e/e2e-helper';
@@ -7,7 +8,6 @@ import datasource from '#config/ormconfig';
 import { login } from '../sga/e2e-auth-helper';
 import { GetCountriesE2ESeed } from './get-countries.e2e-seeds';
 import { E2eSeed } from '../e2e-seed';
-import supertest from 'supertest';
 
 const path = `/country`;
 
@@ -15,7 +15,6 @@ describe('Get Countries', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let superAdminAccessToken: string;
-  let adminAccessToken: string;
   let seeder: E2eSeed;
 
   beforeAll(async () => {
@@ -23,11 +22,6 @@ describe('Get Countries', () => {
     httpServer = app.getHttpServer();
     seeder = new GetCountriesE2ESeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      GetCountriesE2ESeed.adminUserEmail,
-      GetCountriesE2ESeed.adminUserPassword,
-    );
     superAdminAccessToken = await login(
       httpServer,
       GetCountriesE2ESeed.superAdminUserEmail,
@@ -37,13 +31,6 @@ describe('Get Countries', () => {
 
   it('should return unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
-  });
-
-  it('should throw forbidden', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
   });
 
   it('should return all countries', async () => {

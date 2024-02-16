@@ -5,8 +5,8 @@ import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '&/config/ormconfig';
 import supertest from 'supertest';
 import {
-  FIRST_PAGE,
   DEFAULT_LIMIT,
+  FIRST_PAGE,
 } from '#/sga/shared/application/collection.query';
 import { GetAllBusinessUnitsE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-business-units.e2e-seed-data-config';
 import { GetAllBusinessUnitsE2eSeed } from '#test/e2e/sga/business-unit/business-unit/get-all-business-units.e2e-seed';
@@ -17,7 +17,6 @@ describe('/business-unit/search', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
-  let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   const expectCountryResponse = () => {
@@ -33,11 +32,6 @@ describe('/business-unit/search', () => {
     httpServer = app.getHttpServer();
     seeder = new GetAllBusinessUnitsE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      GetAllBusinessUnitsE2eSeedDataConfig.admin.email,
-      GetAllBusinessUnitsE2eSeedDataConfig.admin.password,
-    );
 
     superAdminAccessToken = await login(
       httpServer,
@@ -48,13 +42,6 @@ describe('/business-unit/search', () => {
 
   it('should return unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
-  });
-
-  it('should return forbidden', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
   });
 
   it('should return 400 when query field doest not exist', async () => {

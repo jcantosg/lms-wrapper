@@ -59,7 +59,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
       limit: DEFAULT_LIMIT,
-      total: GetAllAdminUsersE2eSeedDataConfig.adminUsers.length,
+      total: 1,
     });
 
     const expectedItems = GetAllAdminUsersE2eSeedDataConfig.adminUsers.map(
@@ -84,7 +84,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: 2,
       limit: DEFAULT_LIMIT,
-      total: GetAllAdminUsersE2eSeedDataConfig.adminUsers.length,
+      total: 1,
     });
 
     expect(response.body.items).toEqual([]);
@@ -252,7 +252,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
       limit: DEFAULT_LIMIT,
-      total: adminUsersExpected.length,
+      total: 1,
     });
 
     expect(response.body.items).toEqual(

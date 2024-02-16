@@ -51,7 +51,10 @@ export class ExaminationCenterPostgresRepository
     return result === null ? false : result.name !== name;
   }
 
-  async count(criteria: Criteria): Promise<number> {
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: string[],
+  ): Promise<number> {
     const aliasQuery = 'examinationCenter';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
@@ -69,13 +72,16 @@ export class ExaminationCenterPostgresRepository
         aliasQuery,
       )
     )
-      .filterUser(queryBuilder, null, 'businessUnits')
+      .filterUser(queryBuilder, adminUserBusinessUnits, 'businessUnits')
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getCount(queryBuilder);
   }
 
-  async matching(criteria: Criteria): Promise<ExaminationCenter[]> {
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: string[],
+  ): Promise<ExaminationCenter[]> {
     const aliasQuery = 'examinationCenter';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
@@ -93,7 +99,7 @@ export class ExaminationCenterPostgresRepository
         aliasQuery,
       )
     )
-      .filterUser(queryBuilder, null, 'businessUnits')
+      .filterUser(queryBuilder, adminUserBusinessUnits, 'businessUnits')
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);

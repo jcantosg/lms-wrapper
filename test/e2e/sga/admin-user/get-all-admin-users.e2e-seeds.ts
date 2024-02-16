@@ -35,6 +35,7 @@ export class GetAllAdminUsersE2eSeed implements E2eSeed {
           baseUser.email,
           '1234',
           baseUser.roles,
+          [],
           baseUser.name,
           baseUser.surname,
         ),

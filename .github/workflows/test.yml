@@ -45,4 +45,4 @@ jobs:
    - name: Start Database
      run: make up
    - name: Run E2E test
-     run: make test-e2e
+     run: make test-e2e-ci

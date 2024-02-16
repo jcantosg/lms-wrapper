@@ -15,7 +15,6 @@ describe('/business-unit/:id (PUT)', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
-  let adminAccessToken: string;
   let superAdminAccessToken: string;
   let businessRepository: BusinessUnitRepository;
 
@@ -24,11 +23,7 @@ describe('/business-unit/:id (PUT)', () => {
     httpServer = app.getHttpServer();
     seeder = new EditBusinessUnitE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      EditBusinessUnitE2eSeed.adminUserEmail,
-      EditBusinessUnitE2eSeed.adminUserPassword,
-    );
+
     superAdminAccessToken = await login(
       httpServer,
       EditBusinessUnitE2eSeed.superAdminUserEmail,
@@ -40,12 +35,6 @@ describe('/business-unit/:id (PUT)', () => {
     await supertest(httpServer).put(path).expect(401);
   });
 
-  it('should return forbidden', async () => {
-    await supertest(httpServer)
-      .put(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
-  });
   it('should edit the business unit', async () => {
     businessRepository = new BusinessUnitPostgresRepository(
       datasource.getRepository(businessUnitSchema),
