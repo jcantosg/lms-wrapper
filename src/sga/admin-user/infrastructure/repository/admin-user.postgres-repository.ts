@@ -9,6 +9,7 @@ import {
 import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 @Injectable()
 export class AdminUserPostgresRepository
@@ -65,7 +66,10 @@ export class AdminUserPostgresRepository
     return !!(await this.repository.findOne({ where: { email } }));
   }
 
-  async matching(criteria: Criteria): Promise<AdminUser[]> {
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+  ): Promise<number> {
     const aliasQuery = 'admin';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
     queryBuilder.leftJoinAndSelect(
@@ -74,13 +78,55 @@ export class AdminUserPostgresRepository
     );
     queryBuilder.andWhere(`${aliasQuery}.status != deleted`);
 
-    return (
-      await this.convertCriteriaToQueryBuilder(
-        criteria,
+    const result = await this.convertCriteriaToQueryBuilder(
+      criteria,
+      queryBuilder,
+      aliasQuery,
+    );
+
+    if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
+      result.filterUser(
         queryBuilder,
-        aliasQuery,
-      )
-    ).getMany(queryBuilder);
+        adminUserBusinessUnits.map((bu) => bu.id),
+        'business_units',
+      );
+    }
+
+    return result
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
+  }
+
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+  ): Promise<AdminUser[]> {
+    const aliasQuery = 'admin';
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnits`,
+      'business_units',
+    );
+
+    const result = await this.convertCriteriaToQueryBuilder(
+      criteria,
+      queryBuilder,
+      aliasQuery,
+    );
+
+    if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
+      result.filterUser(
+        queryBuilder,
+        adminUserBusinessUnits.map((bu) => bu.id),
+        'business_units',
+      );
+    }
+
+    return result
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 
   async getByAdminUser(

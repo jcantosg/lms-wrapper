@@ -8,7 +8,7 @@ export enum AdminUserRoles {
   JEFATURA = 'jefatura',
 }
 
-const rolePermissionsMap = new Map<AdminUserRoles, AdminUserRoles[]>([
+export const rolePermissionsMap = new Map<AdminUserRoles, AdminUserRoles[]>([
   [AdminUserRoles.SUPERADMIN, Object.values(AdminUserRoles)],
   [
     AdminUserRoles.SUPERVISOR_JEFATURA,

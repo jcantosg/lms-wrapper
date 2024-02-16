@@ -3,7 +3,7 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { GetAdminUserHandler } from '#admin-user/application/get-admin-user/get-admin-user.handler';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { GetAdminUserQuery } from '#admin-user/application/get-admin-user/get-admin-user.query';
-import { GetAdminUserResponse } from '#admin-user/infrastructure/controller/get-admin-user/get-admin-user.response';
+import { GetAdminUserDetailResponse } from '#admin-user/infrastructure/controller/get-admin-user/get-admin-user.response';
 
 @Controller('me')
 export class GetAdminUserController {
@@ -15,6 +15,6 @@ export class GetAdminUserController {
     const query = new GetAdminUserQuery(req.user.id);
     const adminUser = await this.handler.handle(query);
 
-    return GetAdminUserResponse.create(adminUser);
+    return GetAdminUserDetailResponse.create(adminUser);
   }
 }

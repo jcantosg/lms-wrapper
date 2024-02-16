@@ -12,7 +12,7 @@ type GetBusinessUnitByUserResponse = {
   country: CountryResponse;
 };
 
-export class GetAdminUserResponse {
+export class GetAdminUserDetailResponse {
   static create(adminUser: AdminUser) {
     return {
       id: adminUser.id,

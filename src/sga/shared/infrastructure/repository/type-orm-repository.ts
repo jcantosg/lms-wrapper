@@ -27,7 +27,9 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
             ? `${filter.relationPath}.${filter.field}`
             : `${aliasQuery}.${filter.field}`;
 
-          const paramName = filter.field;
+          const paramName = filter.relationPath
+            ? `${filter.relationPath}_${filter.field}`
+            : filter.field;
           if (filter.operator === FilterOperators.LIKE) {
             qb[whereMethod](
               `LOWER(${fieldPath}) ${filter.operator} LOWER(:${paramName})`,

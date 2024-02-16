@@ -58,7 +58,6 @@ test-database-setup: ## Setup the test database
 	@npm run sga:test:db:create
 	@npm run typeorm:test:migrations:up
 	@npm run sga:test:db:seed:country
-	@npm run sga:test:db:seed:admin-user
 
 test-database-drop: ## Drop the test database
 	@npm run sga:test:db:drop -f

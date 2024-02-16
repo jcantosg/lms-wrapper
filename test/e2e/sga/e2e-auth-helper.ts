@@ -26,6 +26,8 @@ export async function createAdminUser(
   password: string,
   roles: AdminUserRoles[],
   businessUnits: BusinessUnit[] = [],
+  name?: string,
+  surname?: string,
 ): Promise<AdminUser> {
   const passwordEncoder = new BCryptPasswordEncoder();
   const userRepository = datasource.getRepository(adminUserSchema);
@@ -36,10 +38,10 @@ export async function createAdminUser(
       email,
       await passwordEncoder.encodePassword(password),
       roles,
-      'name',
+      name ?? 'name',
       'avatar',
       businessUnits,
-      'surname',
+      surname ?? 'surname',
       'surname2',
       new IdentityDocument({
         identityDocumentType: IdentityDocumentType.DNI,

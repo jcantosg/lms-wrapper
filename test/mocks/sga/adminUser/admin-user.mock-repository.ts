@@ -7,5 +7,6 @@ export class AdminUserMockRepository implements AdminUserRepository {
   exists = jest.fn();
   existsByEmail = jest.fn();
   matching = jest.fn();
+  count = jest.fn();
   getByAdminUser = jest.fn();
 }

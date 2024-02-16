@@ -5,6 +5,7 @@ export enum FilterOperators {
   LT = '<',
   IN = 'IN',
   ANY = 'ANY',
+  OVERLAP = '&&',
 }
 
 export class Filter {

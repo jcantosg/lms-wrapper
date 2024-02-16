@@ -12,6 +12,8 @@ import { GetIdentityDocumentTypesHandler } from './application/get-identity-docu
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
+import { SearchAdminUsersHandler } from '#admin-user/application/search-admin-users/search-admin-users.handler';
+import { GetAllAdminUsersHandler } from '#admin-user/application/get-all-admin-users/get-all-admin-users.handler';
 import { DeleteAdminUserHandler } from '#admin-user/application/delete-admin-user/delete-admin-user.handler';
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { GetAdminUserDetailHandler } from '#admin-user/application/get-admin-user-detail/get-admin-user-detail.handler';
@@ -90,6 +92,22 @@ const expireRefreshTokenHandler = {
   inject: [AdminUserGetter, RefreshTokenRepository],
 };
 
+const searchAdminUsersHandler = {
+  provide: SearchAdminUsersHandler,
+  useFactory: (adminUserRepository: AdminUserRepository) => {
+    return new SearchAdminUsersHandler(adminUserRepository);
+  },
+  inject: [AdminUserRepository],
+};
+
+const getAllAdminUsersHandler = {
+  provide: GetAllAdminUsersHandler,
+  useFactory: (adminUserRepository: AdminUserRepository) => {
+    return new GetAllAdminUsersHandler(adminUserRepository);
+  },
+  inject: [AdminUserRepository],
+};
+
 const deleteAdminUserHandler = {
   provide: DeleteAdminUserHandler,
   useFactory: (
@@ -157,6 +175,8 @@ export const handlers = [
   getAdminUserHandler,
   getIdentityDocumentTypesHandler,
   getRolesHandler,
+  searchAdminUsersHandler,
+  getAllAdminUsersHandler,
   getAdminUserDetailHandler,
   deleteAdminUserHandler,
   editAdminUserHandler,
