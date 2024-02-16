@@ -1,9 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { BusinessUnitResponseBasic } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units/get-business-unit.response';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { GetAllBusinessUnitsPlainHandler } from '#business-unit/application/business-unit/get-all-business-units-plain/get-all-business-units-plain.handler';
 import { GetAllBusinessUnitPlainResponse } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units-plain/get-all-business-units-plain.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
@@ -14,8 +11,7 @@ export class GetAllBusinessPlainController {
   constructor(private readonly handler: GetAllBusinessUnitsPlainHandler) {}
 
   @Get('all')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(...Object.values(AdminUserRoles))
+  @UseGuards(JwtAuthGuard)
   async getAllBusinessUnitsPlain(
     @Req() req: AuthRequest,
   ): Promise<BusinessUnitResponseBasic[]> {

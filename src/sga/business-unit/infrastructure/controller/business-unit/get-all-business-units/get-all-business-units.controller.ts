@@ -15,9 +15,6 @@ import { GetAllBusinessUnitResponse } from '#business-unit/infrastructure/contro
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units/get-business-unit.response';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 
 type GetAllBusinessUnitsQueryParams = {
@@ -36,8 +33,7 @@ export class GetAllBusinessController {
   constructor(private readonly handler: GetAllBusinessUnitsHandler) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(getAllBusinessUnitSchema),
   )

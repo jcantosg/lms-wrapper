@@ -30,7 +30,7 @@ export class CreateExaminationCenterController {
   constructor(private handler: CreateExaminationCenterHandler) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @UsePipes(new JoiRequestBodyValidationPipe(createExaminationCenterSchema))
   @Post()
   async createExaminationCenter(

@@ -1,7 +1,7 @@
 import { OrderByDefault, OrderTypes } from '#/sga/shared/domain/criteria/order';
 
 export const FIRST_PAGE = 1;
-export const DEFAULT_LIMIT = 25;
+export const DEFAULT_LIMIT = 10;
 export const LOW_LIMIT = 1;
 
 export class CollectionQuery {

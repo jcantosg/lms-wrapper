@@ -27,7 +27,7 @@ export class AddBusinessUnitsToExaminationCenterController {
   constructor(private handler: AddBusinessUnitsToExaminationCenterHandler) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @Put(':id/add-business-unit')
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),

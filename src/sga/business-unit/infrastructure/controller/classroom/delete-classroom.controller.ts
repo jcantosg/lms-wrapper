@@ -22,7 +22,7 @@ export class DeleteClassroomController {
 
   @Delete(':classroomId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @UsePipes(new JoiRequestParamIdValidationPipeService(uuidSchema))
   async deleteClassroom(
     @Param('classroomId') classroomId: string,

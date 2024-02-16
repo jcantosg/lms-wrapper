@@ -7,9 +7,6 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { BusinessUnitResponse } from '#business-unit/infrastructure/controller/business-unit/get-all-business-units/get-business-unit.response';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
@@ -32,8 +29,7 @@ type SearchBusinessUnitsQueryParams = {
 export class SearchBusinessUnitsController {
   constructor(private readonly handler: SearchBusinessUnitsHandler) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @UseGuards(JwtAuthGuard)
   @Get('search')
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(searchBusinessUnitSchema),

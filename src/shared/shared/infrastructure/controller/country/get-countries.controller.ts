@@ -4,9 +4,6 @@ import { GetCountriesResponse } from '#shared/infrastructure/controller/country/
 import { CountryResponse } from '#shared/infrastructure/controller/country/get-country.response';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { GetCountriesQuery } from '#shared/application/get-countries/get-countries.query';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
 import { getCountriesSchema } from '#shared/infrastructure/config/validation-schema/get-countries.schema';
 
@@ -19,8 +16,7 @@ export class GetCountryController {
   constructor(private readonly handler: GetCountriesHandler) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new JoiRequestQueryParamValidationPipeService(getCountriesSchema))
   async getAll(
     @Query() queryParams: GetCountriesQueryParams,

@@ -32,7 +32,7 @@ export class EditExaminationCenterController {
   constructor(private handler: EditExaminationCenterHandler) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @Put(':id')
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),

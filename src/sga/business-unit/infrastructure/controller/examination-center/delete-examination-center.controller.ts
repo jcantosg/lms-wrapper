@@ -23,7 +23,7 @@ export class DeleteExaminationCenterController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UsePipes(new JoiRequestParamIdValidationPipeService(uuidSchema))
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   async deleteExaminationCenter(
     @Param('id') id: string,
     @Req() req: AuthRequest,

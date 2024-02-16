@@ -7,9 +7,6 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { SearchExaminationCentersHandler } from '#business-unit/application/examination-center/search-examination-centers/search-examination-centers.handler';
@@ -32,8 +29,7 @@ type SearchExaminationCentersQueryParams = {
 export class SearchExaminationCentersController {
   constructor(private readonly handler: SearchExaminationCentersHandler) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @UseGuards(JwtAuthGuard)
   @Get('search')
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(

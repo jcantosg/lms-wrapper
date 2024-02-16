@@ -30,7 +30,7 @@ export class EditClassroomController {
   constructor(private handler: EditClassroomHandler) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @Put(':id')
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),

@@ -29,7 +29,7 @@ export class RemoveBusinessUnitFromExaminationCenterController {
   ) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @Put(':id/remove-business-unit')
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),

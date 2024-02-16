@@ -3,9 +3,6 @@ import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { GetAllExaminationCentersHandler } from '#business-unit/application/examination-center/get-all-examination-centers/get-all-examination-centers.handler';
 import { getAllExaminationCentersSchema } from '#business-unit/infrastructure/config/validation-schema/get-all-examination-centers.schema';
 import { GetAllExaminationCentersQuery } from '#business-unit/application/examination-center/get-all-examination-centers/get-all-examination-centers.query';
@@ -31,8 +28,7 @@ export class GetAllExaminationCentersController {
   constructor(private readonly handler: GetAllExaminationCentersHandler) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(
       getAllExaminationCentersSchema,

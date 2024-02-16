@@ -31,7 +31,7 @@ export class EditVirtualCampusController {
   constructor(private handler: EditVirtualCampusHandler) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @Put(':id')
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),

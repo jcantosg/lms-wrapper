@@ -28,7 +28,7 @@ export class CreateVirtualCampusController {
   constructor(private handler: CreateVirtualCampusHandler) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   @Post()
   @UsePipes(new JoiRequestBodyValidationPipe(createVirtualCampusSchema))
   async createVirtualCampus(

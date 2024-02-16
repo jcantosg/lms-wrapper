@@ -7,9 +7,6 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
-import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 import {
@@ -27,8 +24,7 @@ export class GetBusinessUnitExaminationCentersController {
   ) {}
 
   @Get(':id/examination-centers')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(AdminUserRoles.SUPERADMIN)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new JoiRequestParamIdValidationPipeService(uuidSchema))
   async getBusinessUnitExaminationCenters(
     @Param('id') businessUnitId: string,
