@@ -59,7 +59,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
       limit: DEFAULT_LIMIT,
-      total: 1,
+      total: 2,
     });
 
     const expectedItems = GetAllAdminUsersE2eSeedDataConfig.adminUsers.map(
@@ -84,7 +84,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: 2,
       limit: DEFAULT_LIMIT,
-      total: 1,
+      total: 2,
     });
 
     expect(response.body.items).toEqual([]);
@@ -184,7 +184,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
       limit: DEFAULT_LIMIT,
-      total: 1,
+      total: 2,
     });
 
     const adminUsersExpected = expect.objectContaining({
@@ -252,7 +252,7 @@ describe('/admin-users', () => {
     expect(response.body.pagination).toEqual({
       page: FIRST_PAGE,
       limit: DEFAULT_LIMIT,
-      total: 1,
+      total: 2,
     });
 
     expect(response.body.items).toEqual(

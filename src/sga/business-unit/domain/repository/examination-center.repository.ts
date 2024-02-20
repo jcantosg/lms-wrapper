@@ -1,4 +1,5 @@
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 
 export abstract class ExaminationCenterRepository {
@@ -12,12 +13,12 @@ export abstract class ExaminationCenterRepository {
 
   abstract matching(
     criteria: Criteria,
-    adminUserBusinessUnits: string[],
+    adminUserBusinessUnits: BusinessUnit[],
   ): Promise<ExaminationCenter[]>;
 
   abstract count(
     criteria: Criteria,
-    adminUserBusinessUnits: string[],
+    adminUserBusinessUnits: BusinessUnit[],
   ): Promise<number>;
 
   public abstract get(id: string): Promise<ExaminationCenter | null>;

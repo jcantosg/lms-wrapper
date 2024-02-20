@@ -4,8 +4,12 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { BusinessUnitCreatedEvent } from '#business-unit/domain/event/business-unit-created.event';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Filter, FilterOperators } from '#/sga/shared/domain/criteria/filter';
-import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
+import {
+  Filter,
+  FilterOperators,
+  GroupOperator,
+} from '#/sga/shared/domain/criteria/filter';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { Order } from '#/sga/shared/domain/criteria/order';
 
 @Injectable()
@@ -21,15 +25,14 @@ export class BusinessUnitCreatedEventListener {
       event.businessUnitId,
     );
     const filters = [
-      new Filter('roles', AdminUserRoles.SUPERADMIN, FilterOperators.ANY),
+      new Filter(
+        'roles',
+        AdminUserRoles.SUPERADMIN,
+        FilterOperators.ANY,
+        GroupOperator.AND,
+      ),
     ];
-    const criteria = new Criteria(
-      filters,
-      new Order('created_at'),
-      GroupOperator.AND,
-      0,
-      0,
-    );
+    const criteria = new Criteria(filters, new Order('created_at'), 0, 0);
 
     const superAdminUsers = await this.userRepository.matching(criteria);
     for (const superAdminUser of superAdminUsers) {

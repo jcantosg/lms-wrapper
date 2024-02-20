@@ -70,12 +70,15 @@ export class GetAllAdminUsersE2eSeed implements E2eSeed {
 
     for (const bu of savedBusinessUnits) {
       this.adminUsers[0].addBusinessUnit(bu);
+      this.adminUsers[1].addBusinessUnit(bu);
     }
 
-    await this.adminUserRepository.save({
-      id: this.adminUsers[0].id,
-      businessUnits: this.adminUsers[0].businessUnits,
-    });
+    for (const adminUser of this.adminUsers) {
+      await this.adminUserRepository.save({
+        id: adminUser.id,
+        businessUnits: adminUser.businessUnits,
+      });
+    }
   }
 
   async clear() {

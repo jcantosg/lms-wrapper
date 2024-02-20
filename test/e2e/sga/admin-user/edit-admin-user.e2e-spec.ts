@@ -90,7 +90,7 @@ describe('Edit Admin User (PUT)', () => {
     );
   });
 
-  it.skip('Should return a user updated', async () => {
+  it('Should return a user updated', async () => {
     adminUserRepository = new AdminUserPostgresRepository(
       datasource.getRepository(AdminUser),
     );

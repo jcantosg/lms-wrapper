@@ -36,9 +36,7 @@ export class SearchAdminUsersHandler implements QueryHandler {
 
     return {
       total,
-      items: adminUsers.filter((adminUser) =>
-        adminUser.roles.some((role) => allowedRoles.includes(role)),
-      ),
+      items: adminUsers,
     };
   }
 }

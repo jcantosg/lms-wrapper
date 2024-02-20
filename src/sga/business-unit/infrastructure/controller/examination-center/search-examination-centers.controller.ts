@@ -46,7 +46,7 @@ export class SearchExaminationCentersController {
       queryParams.orderBy,
       queryParams.orderType,
       queryParams.text,
-      req.user.businessUnits.map((bu) => bu.id),
+      req.user.businessUnits,
     );
 
     const response = await this.handler.handle(query);

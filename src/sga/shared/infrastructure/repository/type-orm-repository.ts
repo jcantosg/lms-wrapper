@@ -1,7 +1,18 @@
-import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
-import { Brackets, ObjectLiteral, SelectQueryBuilder } from 'typeorm';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import {
+  Brackets,
+  ObjectLiteral,
+  Repository,
+  SelectQueryBuilder,
+  WhereExpressionBuilder,
+} from 'typeorm';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
-import { FilterOperators } from '#/sga/shared/domain/criteria/filter';
+import {
+  Filter,
+  FilterOperators,
+  GroupOperator,
+} from '#/sga/shared/domain/criteria/filter';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 export class TypeOrmRepository<T extends ObjectLiteral> {
   async convertCriteriaToQueryBuilder(
@@ -12,48 +23,148 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     return this.applyFilters(criteria, queryBuilder, aliasQuery);
   }
 
-  private applyFilters(
+  async filterBusinessUnits(
+    queryBuilder: SelectQueryBuilder<T>,
+    adminUserBusinessUnits?: BusinessUnit[],
+  ): Promise<TypeOrmRepository<T>> {
+    if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
+      queryBuilder.andWhere(`"business_units"."id" IN(:...businessUnits)`, {
+        businessUnits: adminUserBusinessUnits.map((bu: BusinessUnit) => bu.id),
+      });
+    }
+
+    return this;
+  }
+
+  private async applyFilters(
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<T>,
     aliasQuery: string,
-  ): TypeOrmRepository<T> {
-    const whereMethod =
-      criteria.groupOperator === GroupOperator.AND ? 'andWhere' : 'orWhere';
+  ): Promise<TypeOrmRepository<T>> {
+    if (
+      criteria.filters.some(
+        (filter) => filter.groupOperator === GroupOperator.OR,
+      )
+    ) {
+      queryBuilder.andWhere(
+        new Brackets((qb) => {
+          this.applyGroupFilters(
+            criteria.filters.filter(
+              (filter) => filter.groupOperator === GroupOperator.OR,
+            ),
+            GroupOperator.OR,
+            qb,
+            aliasQuery,
+          );
+        }),
+      );
+    }
 
-    queryBuilder.where(
-      new Brackets((qb) => {
-        criteria.filters.forEach((filter) => {
-          const fieldPath = filter.relationPath
-            ? `${filter.relationPath}.${filter.field}`
-            : `${aliasQuery}.${filter.field}`;
-
-          const paramName = filter.relationPath
-            ? `${filter.relationPath}_${filter.field}`
-            : filter.field;
-          if (filter.operator === FilterOperators.LIKE) {
-            qb[whereMethod](
-              `LOWER(${fieldPath}) ${filter.operator} LOWER(:${paramName})`,
-              {
-                [paramName]: `%${filter.value}%`,
-              },
-            );
-          } else if (filter.operator === FilterOperators.ANY) {
-            qb[whereMethod](
-              `:${paramName} = ${filter.operator}(${fieldPath})`,
-              {
-                [paramName]: filter.value,
-              },
-            );
-          } else {
-            qb[whereMethod](`${fieldPath} ${filter.operator} :${paramName}`, {
-              [paramName]: filter.value,
-            });
-          }
-        });
-      }),
+    await this.applyGroupFilters(
+      criteria.filters.filter(
+        (filter) => filter.groupOperator === GroupOperator.AND,
+      ),
+      GroupOperator.AND,
+      queryBuilder,
+      aliasQuery,
     );
 
     return this;
+  }
+
+  private async getSubqueryResult(
+    filter: Filter,
+    aliasQuery: string,
+    repository: Repository<T>,
+  ): Promise<T[]> {
+    const subqueryBuilder = repository!.createQueryBuilder(aliasQuery);
+    subqueryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.${filter.relationObject}`,
+      filter.relationPath!,
+    );
+
+    subqueryBuilder.where(
+      `LOWER("${filter.relationPath}"."${filter.field}") LIKE LOWER(:${filter.relationObject})`,
+      {
+        [filter.relationObject!]: `%${filter.value}%`,
+      },
+    );
+
+    return await subqueryBuilder.getMany();
+  }
+
+  private async applyGroupFilters(
+    filters: any[],
+    groupOperator: GroupOperator,
+    queryBuilder: SelectQueryBuilder<T> | WhereExpressionBuilder,
+    aliasQuery: string,
+  ): Promise<void> {
+    for (const filter of filters) {
+      const fieldPath = this.getFieldPath(filter, aliasQuery);
+      const paramName = this.getParamName(filter);
+      const parameter = this.getParameter(filter);
+
+      switch (filter.operator) {
+        case FilterOperators.LIKE:
+          this.addWhereCondition(
+            queryBuilder,
+            `LOWER(${fieldPath}) LIKE LOWER(:${paramName})`,
+            parameter,
+            groupOperator,
+          );
+          break;
+        case FilterOperators.ANY:
+          this.addWhereCondition(
+            queryBuilder,
+            `:${paramName} = ANY(${fieldPath})`,
+            parameter,
+            groupOperator,
+          );
+          break;
+        default:
+          this.addWhereCondition(
+            queryBuilder,
+            `${fieldPath} ${filter.operator} :${paramName}`,
+            parameter,
+            groupOperator,
+          );
+          break;
+      }
+    }
+  }
+
+  private getFieldPath(filter: Filter, aliasQuery: string): string {
+    return filter.relationPath
+      ? `${filter.relationPath}.${filter.field}`
+      : `${aliasQuery}.${filter.field}`;
+  }
+
+  private getParamName(filter: Filter): string {
+    return filter.relationPath
+      ? `${filter.relationPath}_${filter.field}`
+      : filter.field;
+  }
+
+  private getParameter(filter: Filter): Object {
+    const paramName = this.getParamName(filter);
+
+    return {
+      [paramName]:
+        filter.operator === FilterOperators.LIKE
+          ? `%${filter.value}%`
+          : filter.value,
+    };
+  }
+
+  private addWhereCondition(
+    queryBuilder: SelectQueryBuilder<T> | WhereExpressionBuilder,
+    condition: string,
+    parameter: Object,
+    groupOperator: GroupOperator,
+  ): void {
+    groupOperator === GroupOperator.AND
+      ? queryBuilder.andWhere(condition, parameter)
+      : queryBuilder.orWhere(condition, parameter);
   }
 
   filterUser(

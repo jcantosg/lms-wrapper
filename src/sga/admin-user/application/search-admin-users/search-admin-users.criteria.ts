@@ -1,5 +1,9 @@
-import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
-import { Filter, FilterOperators } from '#/sga/shared/domain/criteria/filter';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import {
+  Filter,
+  FilterOperators,
+  GroupOperator,
+} from '#/sga/shared/domain/criteria/filter';
 import { Order } from '#/sga/shared/domain/criteria/order';
 import { rolePermissionsMap } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { SearchAdminUsersQuery } from '#admin-user/application/search-admin-users/search-admin-users.query';
@@ -9,7 +13,6 @@ export class SearchAdminUsersCriteria extends Criteria {
     super(
       SearchAdminUsersCriteria.createFilters(query),
       new Order(query.orderBy, query.orderType),
-      GroupOperator.OR,
       query.page,
       query.limit,
     );
@@ -25,11 +28,22 @@ export class SearchAdminUsersCriteria extends Criteria {
     }
 
     return [
-      new Filter('name', query.text, FilterOperators.LIKE),
-      new Filter('surname', query.text, FilterOperators.LIKE),
-      new Filter('email', query.text, FilterOperators.LIKE),
-      new Filter('name', query.text, FilterOperators.LIKE, 'business_units'),
-      new Filter('roles', allowedRoles, FilterOperators.OVERLAP),
+      new Filter('name', query.text, FilterOperators.LIKE, GroupOperator.OR),
+      new Filter('surname', query.text, FilterOperators.LIKE, GroupOperator.OR),
+      new Filter('email', query.text, FilterOperators.LIKE, GroupOperator.OR),
+      new Filter(
+        'name',
+        query.text,
+        FilterOperators.LIKE,
+        GroupOperator.OR,
+        'business_units',
+      ),
+      new Filter(
+        'roles',
+        allowedRoles,
+        FilterOperators.OVERLAP,
+        GroupOperator.AND,
+      ),
     ].filter((filter) => filter.value !== undefined);
   }
 }

@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import {
@@ -76,31 +76,31 @@ export class AdminUserPostgresRepository
       `${aliasQuery}.businessUnits`,
       'business_units',
     );
-    queryBuilder.andWhere(`${aliasQuery}.status != deleted`);
 
-    const result = await this.convertCriteriaToQueryBuilder(
+    queryBuilder.where(`${aliasQuery}.status != 'deleted'`);
+
+    const baseRepository = await this.filterBusinessUnits(
+      queryBuilder,
+      adminUserBusinessUnits,
+    );
+
+    await baseRepository.convertCriteriaToQueryBuilder(
       criteria,
       queryBuilder,
       aliasQuery,
     );
 
-    if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
-      result.filterUser(
-        queryBuilder,
-        adminUserBusinessUnits.map((bu) => bu.id),
-        'business_units',
-      );
-    }
-
-    return result
+    const count = await baseRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getCount(queryBuilder);
+
+    return count;
   }
 
   async matching(
     criteria: Criteria,
-    adminUserBusinessUnits: BusinessUnit[],
+    adminUserBusinessUnits?: BusinessUnit[],
   ): Promise<AdminUser[]> {
     const aliasQuery = 'admin';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
@@ -108,25 +108,45 @@ export class AdminUserPostgresRepository
       `${aliasQuery}.businessUnits`,
       'business_units',
     );
+    queryBuilder.where(`${aliasQuery}.status != 'deleted'`);
 
-    const result = await this.convertCriteriaToQueryBuilder(
+    const baseRepository = await this.filterBusinessUnits(
+      queryBuilder,
+      adminUserBusinessUnits,
+    );
+
+    await baseRepository.convertCriteriaToQueryBuilder(
       criteria,
       queryBuilder,
       aliasQuery,
     );
 
-    if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
-      result.filterUser(
-        queryBuilder,
-        adminUserBusinessUnits.map((bu) => bu.id),
-        'business_units',
-      );
-    }
-
-    return result
+    const result = await baseRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
+
+    return adminUserBusinessUnits
+      ? await this.cleanBusinessUnits(result, adminUserBusinessUnits)
+      : result;
+  }
+
+  private async cleanBusinessUnits(
+    result: AdminUser[],
+    adminUserBusinessUnits: BusinessUnit[],
+  ): Promise<AdminUser[]> {
+    const users = await this.repository.find({
+      where: { id: In(result.map((pre) => pre.id)) },
+      relations: { businessUnits: true },
+    });
+
+    users.forEach((user) => {
+      user.businessUnits = user.businessUnits.filter((bu) =>
+        adminUserBusinessUnits.find((adminBu) => adminBu.id === bu.id),
+      );
+    });
+
+    return users;
   }
 
   async getByAdminUser(

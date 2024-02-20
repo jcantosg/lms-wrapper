@@ -6,6 +6,7 @@ import { examinationCenterSchema } from '#business-unit/infrastructure/config/sc
 import { Like, Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 @Injectable()
 export class ExaminationCenterPostgresRepository
@@ -53,7 +54,7 @@ export class ExaminationCenterPostgresRepository
 
   async count(
     criteria: Criteria,
-    adminUserBusinessUnits: string[],
+    adminUserBusinessUnits: BusinessUnit[],
   ): Promise<number> {
     const aliasQuery = 'examinationCenter';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
@@ -61,18 +62,22 @@ export class ExaminationCenterPostgresRepository
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.country`, 'country');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.businessUnits`,
-      'businessUnits',
+      'business_units',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.classrooms`, 'classrooms');
 
+    const baseRepository = await this.filterBusinessUnits(
+      queryBuilder,
+      adminUserBusinessUnits,
+    );
+
     return await (
-      await this.convertCriteriaToQueryBuilder(
+      await baseRepository.convertCriteriaToQueryBuilder(
         criteria,
         queryBuilder,
         aliasQuery,
       )
     )
-      .filterUser(queryBuilder, adminUserBusinessUnits, 'businessUnits')
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getCount(queryBuilder);
@@ -80,7 +85,7 @@ export class ExaminationCenterPostgresRepository
 
   async matching(
     criteria: Criteria,
-    adminUserBusinessUnits: string[],
+    adminUserBusinessUnits: BusinessUnit[],
   ): Promise<ExaminationCenter[]> {
     const aliasQuery = 'examinationCenter';
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
@@ -88,18 +93,22 @@ export class ExaminationCenterPostgresRepository
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.country`, 'country');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.businessUnits`,
-      'businessUnits',
+      'business_units',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.classrooms`, 'classrooms');
 
+    const baseRepository = await this.filterBusinessUnits(
+      queryBuilder,
+      adminUserBusinessUnits,
+    );
+
     return await (
-      await this.convertCriteriaToQueryBuilder(
+      await baseRepository.convertCriteriaToQueryBuilder(
         criteria,
         queryBuilder,
         aliasQuery,
       )
     )
-      .filterUser(queryBuilder, adminUserBusinessUnits, 'businessUnits')
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);

@@ -1,5 +1,9 @@
-import { Criteria, GroupOperator } from '#/sga/shared/domain/criteria/criteria';
-import { Filter, FilterOperators } from '#/sga/shared/domain/criteria/filter';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import {
+  Filter,
+  FilterOperators,
+  GroupOperator,
+} from '#/sga/shared/domain/criteria/filter';
 import { Order } from '#/sga/shared/domain/criteria/order';
 import { GetAllBusinessUnitsQuery } from '#business-unit/application/business-unit/get-all-business-units/get-all-business-units.query';
 
@@ -8,7 +12,6 @@ export class GetAllBusinessUnitsCriteria extends Criteria {
     super(
       GetAllBusinessUnitsCriteria.createFilters(query),
       new Order(query.orderBy, query.orderType),
-      GroupOperator.AND,
       query.page,
       query.limit,
     );
@@ -16,10 +19,20 @@ export class GetAllBusinessUnitsCriteria extends Criteria {
 
   private static createFilters(query: GetAllBusinessUnitsQuery): Filter[] {
     return [
-      new Filter('name', query.name, FilterOperators.LIKE),
-      new Filter('code', query.code, FilterOperators.LIKE),
-      new Filter('isActive', query.isActive),
-      new Filter('country', query.country),
+      new Filter('name', query.name, FilterOperators.LIKE, GroupOperator.AND),
+      new Filter('code', query.code, FilterOperators.LIKE, GroupOperator.AND),
+      new Filter(
+        'isActive',
+        query.isActive,
+        FilterOperators.EQUALS,
+        GroupOperator.AND,
+      ),
+      new Filter(
+        'country',
+        query.country,
+        FilterOperators.EQUALS,
+        GroupOperator.AND,
+      ),
     ].filter((filter) => filter.value !== undefined);
   }
 }

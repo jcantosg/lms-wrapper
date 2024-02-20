@@ -40,6 +40,7 @@ test-unit: ## Run unit tests
 	@npm run test -- --passWithNoTests
 
 test-e2e: ## Run e2e tests
+	rm -rf dist
 	mkdir -p files/admin-user-avatar
 	make test-database-setup
 	@npm run test:e2e ; make test-database-drop
