@@ -43,5 +43,6 @@ export abstract class ExaminationCenterRepository {
   abstract getByAdminUser(
     id: string,
     adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
   ): Promise<ExaminationCenter | null>;
 }

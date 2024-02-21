@@ -4,5 +4,6 @@ export class GetExaminationCenterQuery implements Query {
   constructor(
     public readonly id: string,
     readonly adminUserBusinessUnits: string[],
+    readonly isSuperAdmin: boolean,
   ) {}
 }

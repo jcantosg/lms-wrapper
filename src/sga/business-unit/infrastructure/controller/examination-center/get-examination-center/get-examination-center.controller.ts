@@ -13,6 +13,7 @@ import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/p
 import { GetExaminationCenterQuery } from '#business-unit/application/examination-center/get-examination-center/get-examination-center.query';
 import { GetExaminationCenterResponse } from '#business-unit/infrastructure/controller/examination-center/get-examination-center/get-examination-center.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
+import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 
 @Controller('examination-center')
 export class GetExaminationCenterController {
@@ -25,6 +26,7 @@ export class GetExaminationCenterController {
     const query = new GetExaminationCenterQuery(
       id,
       req.user.businessUnits.map((bu) => bu.id),
+      req.user.roles.includes(AdminUserRoles.SUPERADMIN),
     );
     const examinationCenter = await this.handler.handle(query);
 

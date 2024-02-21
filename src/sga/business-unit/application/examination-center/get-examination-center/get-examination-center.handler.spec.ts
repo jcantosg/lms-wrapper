@@ -10,9 +10,11 @@ let handler: GetExaminationCenterHandler;
 let examinationCenterGetter: ExaminationCenterGetter;
 let getSpy: any;
 const examinationCenter = getAnExaminationCenter();
-const query = new GetExaminationCenterQuery(examinationCenter.id, [
-  'businessUnitId',
-]);
+const query = new GetExaminationCenterQuery(
+  examinationCenter.id,
+  ['businessUnitId'],
+  true,
+);
 
 describe('Get Examination Center Handler', () => {
   beforeAll(() => {

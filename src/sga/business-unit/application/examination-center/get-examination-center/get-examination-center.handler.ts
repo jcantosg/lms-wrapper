@@ -12,6 +12,7 @@ export class GetExaminationCenterHandler implements QueryHandler {
     return await this.examinationGetterService.getByAdminUser(
       query.id,
       query.adminUserBusinessUnits,
+      query.isSuperAdmin,
     );
   }
 }

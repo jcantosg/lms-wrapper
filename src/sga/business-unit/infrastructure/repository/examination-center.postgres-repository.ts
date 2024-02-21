@@ -147,22 +147,24 @@ export class ExaminationCenterPostgresRepository
   async getByAdminUser(
     examinationCenterId: string,
     adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
   ): Promise<ExaminationCenter | null> {
+    if (isSuperAdmin) {
+      return await this.get(examinationCenterId);
+    }
+
     adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
       adminUserBusinessUnits,
     );
-    const queryBuilder =
-      this.repository.createQueryBuilder('examinationCenter');
-
+    const queryBuilder = this.initializeQueryBuilder('examinationCenter');
     queryBuilder.leftJoinAndSelect(
-      'examinationCenter.businessUnits',
-      'businessUnit',
+      'examinationCenter.mainBusinessUnit',
+      'mainBusinessUnit',
     );
-    queryBuilder.leftJoinAndSelect('examinationCenter.classrooms', 'classroom');
 
     return await queryBuilder
       .where('examinationCenter.id = :id', { id: examinationCenterId })
-      .andWhere('businessUnit.id IN(:...ids)', {
+      .andWhere('business_units.id IN(:...ids)', {
         ids: adminUserBusinessUnits,
       })
       .getOne();

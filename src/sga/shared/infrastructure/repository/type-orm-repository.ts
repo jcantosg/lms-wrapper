@@ -2,7 +2,6 @@ import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import {
   Brackets,
   ObjectLiteral,
-  Repository,
   SelectQueryBuilder,
   WhereExpressionBuilder,
 } from 'typeorm';
@@ -71,28 +70,6 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
 
     return this;
   }
-
-  private async getSubqueryResult(
-    filter: Filter,
-    aliasQuery: string,
-    repository: Repository<T>,
-  ): Promise<T[]> {
-    const subqueryBuilder = repository!.createQueryBuilder(aliasQuery);
-    subqueryBuilder.leftJoinAndSelect(
-      `${aliasQuery}.${filter.relationObject}`,
-      filter.relationPath!,
-    );
-
-    subqueryBuilder.where(
-      `LOWER("${filter.relationPath}"."${filter.field}") LIKE LOWER(:${filter.relationObject})`,
-      {
-        [filter.relationObject!]: `%${filter.value}%`,
-      },
-    );
-
-    return await subqueryBuilder.getMany();
-  }
-
   private async applyGroupFilters(
     filters: any[],
     groupOperator: GroupOperator,

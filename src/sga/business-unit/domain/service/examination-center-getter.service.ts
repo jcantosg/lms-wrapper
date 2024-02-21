@@ -11,8 +11,13 @@ export class ExaminationCenterGetter {
   async getByAdminUser(
     id: string,
     adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
   ): Promise<ExaminationCenter> {
-    const result = await this.examinationCenterRepository.get(id);
+    const result = await this.examinationCenterRepository.getByAdminUser(
+      id,
+      adminUserBusinessUnits,
+      isSuperAdmin,
+    );
     if (!result) {
       throw new ExaminationCenterNotFoundException();
     }
