@@ -14,6 +14,7 @@ export class SearchExaminationCentersQuery
     readonly orderType: OrderTypes,
     public readonly text: string,
     readonly adminUserBusinessUnits: BusinessUnit[],
+    readonly isSuperAdmin: boolean,
   ) {
     super(page, limit, orderBy, orderType);
   }

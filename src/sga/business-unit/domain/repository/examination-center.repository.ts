@@ -14,11 +14,13 @@ export abstract class ExaminationCenterRepository {
   abstract matching(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
   ): Promise<ExaminationCenter[]>;
 
   abstract count(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
   ): Promise<number>;
 
   public abstract get(id: string): Promise<ExaminationCenter | null>;
@@ -33,7 +35,10 @@ export abstract class ExaminationCenterRepository {
     businessUnitId: string,
   ): Promise<ExaminationCenter[]>;
 
-  public abstract getAll(): Promise<ExaminationCenter[]>;
+  public abstract getAll(
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<ExaminationCenter[]>;
 
   abstract getByAdminUser(
     id: string,

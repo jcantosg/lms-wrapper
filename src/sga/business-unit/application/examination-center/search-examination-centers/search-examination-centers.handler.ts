@@ -19,10 +19,12 @@ export class SearchExaminationCentersHandler implements QueryHandler {
       this.examinationCenterRepository.count(
         criteria,
         query.adminUserBusinessUnits,
+        query.isSuperAdmin,
       ),
       this.examinationCenterRepository.matching(
         criteria,
         query.adminUserBusinessUnits,
+        query.isSuperAdmin,
       ),
     ]);
 

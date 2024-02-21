@@ -30,12 +30,7 @@ export class RemoveExaminationCenterFromBusinessUnitController {
   ) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(
-    AdminUserRoles.SUPERADMIN,
-    AdminUserRoles.SUPERVISOR_360,
-    AdminUserRoles.SUPERVISOR_JEFATURA,
-    AdminUserRoles.SUPERVISOR_SECRETARIA,
-  )
+  @Roles(AdminUserRoles.SUPERADMIN)
   @Put(':id/remove-examination-center')
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),

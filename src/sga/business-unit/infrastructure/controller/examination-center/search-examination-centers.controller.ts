@@ -16,6 +16,7 @@ import { SearchExaminationCentersQuery } from '#business-unit/application/examin
 import { ExaminationCenterResponse } from '#business-unit/infrastructure/controller/examination-center/get-examination-center/get-examination-center.response';
 import { GetAllExaminationCentersResponse } from '#business-unit/infrastructure/controller/examination-center/get-all-examination-centers/get-all-examination-centers.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
+import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 
 type SearchExaminationCentersQueryParams = {
   page: number;
@@ -47,6 +48,7 @@ export class SearchExaminationCentersController {
       queryParams.orderType,
       queryParams.text,
       req.user.businessUnits,
+      req.user.roles.includes(AdminUserRoles.SUPERADMIN),
     );
 
     const response = await this.handler.handle(query);

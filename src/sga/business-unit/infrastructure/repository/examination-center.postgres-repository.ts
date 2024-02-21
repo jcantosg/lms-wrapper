@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
-import { Like, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
@@ -52,11 +52,7 @@ export class ExaminationCenterPostgresRepository
     return result === null ? false : result.name !== name;
   }
 
-  async count(
-    criteria: Criteria,
-    adminUserBusinessUnits: BusinessUnit[],
-  ): Promise<number> {
-    const aliasQuery = 'examinationCenter';
+  private initializeQueryBuilder(aliasQuery: string) {
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.country`, 'country');
@@ -66,10 +62,19 @@ export class ExaminationCenterPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.classrooms`, 'classrooms');
 
-    const baseRepository = await this.filterBusinessUnits(
-      queryBuilder,
-      adminUserBusinessUnits,
-    );
+    return queryBuilder;
+  }
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'examinationCenter';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(queryBuilder, adminUserBusinessUnits);
 
     return await (
       await baseRepository.convertCriteriaToQueryBuilder(
@@ -86,23 +91,16 @@ export class ExaminationCenterPostgresRepository
   async matching(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
   ): Promise<ExaminationCenter[]> {
     const aliasQuery = 'examinationCenter';
-    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
 
-    queryBuilder.leftJoinAndSelect(`${aliasQuery}.country`, 'country');
-    queryBuilder.leftJoinAndSelect(
-      `${aliasQuery}.businessUnits`,
-      'business_units',
-    );
-    queryBuilder.leftJoinAndSelect(`${aliasQuery}.classrooms`, 'classrooms');
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(queryBuilder, adminUserBusinessUnits);
 
-    const baseRepository = await this.filterBusinessUnits(
-      queryBuilder,
-      adminUserBusinessUnits,
-    );
-
-    return await (
+    const result = await (
       await baseRepository.convertCriteriaToQueryBuilder(
         criteria,
         queryBuilder,
@@ -112,6 +110,26 @@ export class ExaminationCenterPostgresRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
+
+    return await this.cleanBusinessUnits(result, adminUserBusinessUnits);
+  }
+
+  private async cleanBusinessUnits(
+    result: ExaminationCenter[],
+    adminUserBusinessUnits: BusinessUnit[],
+  ): Promise<ExaminationCenter[]> {
+    const examinationCenters = await this.repository.find({
+      where: { id: In(result.map((pre) => pre.id)) },
+      relations: { businessUnits: true, country: true, classrooms: true },
+    });
+
+    examinationCenters.forEach((ec) => {
+      ec.businessUnits = ec.businessUnits.filter((bu) =>
+        adminUserBusinessUnits.find((adminBu) => adminBu.id === bu.id),
+      );
+    });
+
+    return examinationCenters;
   }
 
   async get(id: string): Promise<ExaminationCenter | null> {
@@ -181,7 +199,27 @@ export class ExaminationCenterPostgresRepository
     });
   }
 
-  async getAll(): Promise<ExaminationCenter[]> {
-    return await this.repository.find();
+  async getAll(
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<ExaminationCenter[]> {
+    if (isSuperAdmin) {
+      return await this.repository.find();
+    }
+
+    const aliasQuery = 'examinationCenter';
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnits`,
+      'business_units',
+    );
+
+    const baseRepository = await this.filterBusinessUnits(
+      queryBuilder,
+      adminUserBusinessUnits,
+    );
+    const result = await baseRepository.getMany(queryBuilder);
+
+    return await this.cleanBusinessUnits(result, adminUserBusinessUnits);
   }
 }

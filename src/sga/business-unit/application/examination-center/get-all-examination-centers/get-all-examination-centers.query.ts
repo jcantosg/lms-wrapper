@@ -9,6 +9,7 @@ export class GetAllExaminationCentersQuery
 {
   constructor(
     readonly adminUserBusinessUnits: BusinessUnit[],
+    readonly isSuperAdmin: boolean,
     readonly page: number,
     readonly limit: number,
     readonly orderBy: string,
