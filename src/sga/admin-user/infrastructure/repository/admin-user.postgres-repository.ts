@@ -140,13 +140,16 @@ export class AdminUserPostgresRepository
       relations: { businessUnits: true },
     });
 
-    users.forEach((user) => {
-      user.businessUnits = user.businessUnits.filter((bu) =>
+    result.forEach((resultUser) => {
+      const user = users.find((user) => user.id === resultUser.id);
+      resultUser.businessUnits = user!.businessUnits.filter((bu) =>
         adminUserBusinessUnits.find((adminBu) => adminBu.id === bu.id),
       );
+
+      return resultUser;
     });
 
-    return users;
+    return result;
   }
 
   async getByAdminUser(
