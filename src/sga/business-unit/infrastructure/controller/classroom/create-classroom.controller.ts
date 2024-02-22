@@ -36,7 +36,7 @@ export class CreateClassroomController {
     new JoiRequestBodyValidationPipe(createClassroomSchema),
     new JoiRequestParamIdValidationPipeService(uuidSchema),
   )
-  @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
+  @Roles(AdminUserRoles.SUPERADMIN)
   async createClassroom(
     @Request() req: AuthRequest,
     @Body() body: CreateClassroomBody,

@@ -48,9 +48,12 @@ export class EditBusinessUnitHandler implements CommandHandler {
 
     await Promise.all(
       businessUnit.virtualCampuses.map(async (vc) => {
-        command.isActive ? vc.activate() : vc.deactivate();
+        const virtualCampus = await this.virtualCampusRepository.get(vc.id);
+        command.isActive
+          ? virtualCampus?.activate()
+          : virtualCampus?.deactivate();
 
-        return await this.virtualCampusRepository.update(vc);
+        return await this.virtualCampusRepository.update(virtualCampus!);
       }),
     );
   }
