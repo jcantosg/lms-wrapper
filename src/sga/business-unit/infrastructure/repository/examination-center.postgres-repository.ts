@@ -123,13 +123,16 @@ export class ExaminationCenterPostgresRepository
       relations: { businessUnits: true, country: true, classrooms: true },
     });
 
-    examinationCenters.forEach((ec) => {
-      ec.businessUnits = ec.businessUnits.filter((bu) =>
+    result.forEach((resultEc) => {
+      const ec = examinationCenters.find((ec) => ec.id == resultEc.id);
+      resultEc.businessUnits = ec!.businessUnits.filter((bu) =>
         adminUserBusinessUnits.find((adminBu) => adminBu.id === bu.id),
       );
+
+      return resultEc;
     });
 
-    return examinationCenters;
+    return result;
   }
 
   async get(id: string): Promise<ExaminationCenter | null> {
