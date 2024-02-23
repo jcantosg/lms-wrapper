@@ -4,8 +4,14 @@ import { AdminUserNotFoundException } from '#shared/domain/exception/admin-user/
 
 export class AdminUserBusinessUnitsChecker {
   checkBusinessUnits(user: AdminUser, userToCompare: AdminUser): void {
-    user.businessUnits.forEach((businessUnit: BusinessUnit) => {
-      if (!userToCompare.businessUnits.includes(businessUnit)) {
+    const businessUnitsId = user.businessUnits.map(
+      (businessUnit: BusinessUnit) => businessUnit.id,
+    );
+    const businessUnitsIdToCompare = userToCompare.businessUnits.map(
+      (businessUnit: BusinessUnit) => businessUnit.id,
+    );
+    businessUnitsId.forEach((businessUnit: string) => {
+      if (!businessUnitsIdToCompare.includes(businessUnit)) {
         throw new AdminUserNotFoundException();
       }
     });
