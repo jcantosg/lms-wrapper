@@ -22,8 +22,9 @@ let adminUserRepository: AdminUserRepository;
 let adminUserGetter: AdminUserGetter;
 let adminUserRolesChecker: AdminUserRolesChecker;
 let adminUserBusinessUnitsChecker: AdminUserBusinessUnitsChecker;
-let getUserSpy: any;
-let saveSpy: any;
+let getUserSpy: jest.SpyInstance;
+let saveSpy: jest.SpyInstance;
+let checkBusinessUnitsSpy: jest.SpyInstance;
 
 const adminUser = getAnAdminUser();
 
@@ -38,6 +39,10 @@ describe('delete admin user handler', () => {
     adminUserBusinessUnitsChecker = getAnAdminUserBusinessUnitsCheckerMock();
     getUserSpy = jest.spyOn(adminUserGetter, 'get');
     saveSpy = jest.spyOn(adminUserRepository, 'save');
+    checkBusinessUnitsSpy = jest.spyOn(
+      adminUserBusinessUnitsChecker,
+      'checkBusinessUnits',
+    );
 
     handler = new DeleteAdminUserHandler(
       adminUserRepository,
@@ -50,6 +55,7 @@ describe('delete admin user handler', () => {
     getUserSpy.mockImplementation((): Promise<AdminUser> => {
       return Promise.resolve(adminUser);
     });
+    checkBusinessUnitsSpy.mockImplementation((): void => {});
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(

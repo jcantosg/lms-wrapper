@@ -10,10 +10,14 @@ export class AdminUserBusinessUnitsChecker {
     const businessUnitsIdToCompare = userToCompare.businessUnits.map(
       (businessUnit: BusinessUnit) => businessUnit.id,
     );
+    let result = false;
     businessUnitsId.forEach((businessUnit: string) => {
-      if (!businessUnitsIdToCompare.includes(businessUnit)) {
-        throw new AdminUserNotFoundException();
+      if (businessUnitsIdToCompare.includes(businessUnit)) {
+        result = true;
       }
     });
+    if (!result) {
+      throw new AdminUserNotFoundException();
+    }
   }
 }
