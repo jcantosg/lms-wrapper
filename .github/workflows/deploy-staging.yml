@@ -1,38 +1,55 @@
-name: CI
+name: Deploy to EC2
 
 on:
- push:
-  branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
- deploy-staging:
-  runs-on: ubuntu-latest
-  steps:
-   - uses: actions/checkout@v3
-     with:
-      fetch-depth: 0
-   - name: Setup node
-     uses: actions/setup-node@v4
-     with:
-      node-version: lts/*
-      cache: npm
-   - name: Print versions
-     run: |
-      git --version
-      node --version
-      npm --version
-   - name: Install dependencies
-     run: npm ci
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push the tagged docker image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: universae-api-sga
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Deploy to Amazon EC2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: universae-api-sga
+          IMAGE_TAG: latest
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          envs: STAGING_SSH_PRIVATE_KEY, ECR_REGISTRY, ECR_REPOSITORY, IMAGE_TAG, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+          script: |
+            aws configure set aws_access_key_id > echo $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key > echo $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region > echo $AWS_REGION
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+            docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            docker container stop universae-api-sga || true
+            cd /srv/www/api-sga/current/ && docker run -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga $ECR_REGISTRY/$ECR_REPOSITORY
 
-   - name: Set up SSH
-     run: |
-      mkdir -p ~/.ssh/
-      echo "$STAGING_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-      sudo chmod 600 ~/.ssh/id_rsa
-      echo "$STAGING_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-     shell: bash
-     env:
-      STAGING_SSH_PRIVATE_KEY: ${{secrets.STAGING_SSH_PRIVATE_KEY}}
-      STAGING_SSH_KNOWN_HOSTS: ${{secrets.STAGING_SSH_KNOWN_HOSTS}}
-   - name: Deploy staging
-     run: npm run deploy:staging
+
