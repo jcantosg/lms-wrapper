@@ -74,7 +74,11 @@ export class ExaminationCenterPostgresRepository
 
     const baseRepository = isSuperAdmin
       ? this
-      : await this.filterBusinessUnits(queryBuilder, adminUserBusinessUnits);
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'manyToMany',
+          adminUserBusinessUnits,
+        );
 
     return await (
       await baseRepository.convertCriteriaToQueryBuilder(
@@ -98,7 +102,11 @@ export class ExaminationCenterPostgresRepository
 
     const baseRepository = isSuperAdmin
       ? this
-      : await this.filterBusinessUnits(queryBuilder, adminUserBusinessUnits);
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'manyToMany',
+          adminUserBusinessUnits,
+        );
 
     const result = await (
       await baseRepository.convertCriteriaToQueryBuilder(
@@ -221,6 +229,7 @@ export class ExaminationCenterPostgresRepository
 
     const baseRepository = await this.filterBusinessUnits(
       queryBuilder,
+      'manyToMany',
       adminUserBusinessUnits,
     );
     const result = await baseRepository.getMany(queryBuilder);

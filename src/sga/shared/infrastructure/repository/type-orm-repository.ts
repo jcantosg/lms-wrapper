@@ -24,12 +24,20 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
 
   async filterBusinessUnits(
     queryBuilder: SelectQueryBuilder<T>,
+    relationType: string,
     adminUserBusinessUnits?: BusinessUnit[],
   ): Promise<TypeOrmRepository<T>> {
     if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
-      queryBuilder.andWhere(`"business_units"."id" IN(:...businessUnits)`, {
-        businessUnits: adminUserBusinessUnits.map((bu: BusinessUnit) => bu.id),
-      });
+      queryBuilder.andWhere(
+        `"${
+          relationType === 'oneToMany' ? 'business_unit' : 'business_units'
+        }"."id" IN(:...businessUnits)`,
+        {
+          businessUnits: adminUserBusinessUnits.map(
+            (bu: BusinessUnit) => bu.id,
+          ),
+        },
+      );
     }
 
     return this;
@@ -71,13 +79,13 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     return this;
   }
   private async applyGroupFilters(
-    filters: any[],
+    filters: Filter[],
     groupOperator: GroupOperator,
     queryBuilder: SelectQueryBuilder<T> | WhereExpressionBuilder,
     aliasQuery: string,
   ): Promise<void> {
     for (const filter of filters) {
-      const fieldPath = this.getFieldPath(filter, aliasQuery);
+      const fieldPath = this.getFieldPath(filter, aliasQuery, filter.value);
       const paramName = this.getParamName(filter);
       const parameter = this.getParameter(filter);
 
@@ -110,10 +118,20 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     }
   }
 
-  private getFieldPath(filter: Filter, aliasQuery: string): string {
-    return filter.relationPath
+  private getFieldPath(
+    filter: Filter,
+    aliasQuery: string,
+    filterValue: any,
+  ): string {
+    let path = filter.relationPath
       ? `${filter.relationPath}.${filter.field}`
       : `${aliasQuery}.${filter.field}`;
+
+    if (filterValue instanceof Date) {
+      path = `DATE(${path})`;
+    }
+
+    return path;
   }
 
   private getParamName(filter: Filter): string {

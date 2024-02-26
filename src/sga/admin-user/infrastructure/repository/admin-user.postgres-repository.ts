@@ -81,6 +81,7 @@ export class AdminUserPostgresRepository
 
     const baseRepository = await this.filterBusinessUnits(
       queryBuilder,
+      'manyToMany',
       adminUserBusinessUnits,
     );
 
@@ -112,6 +113,7 @@ export class AdminUserPostgresRepository
 
     const baseRepository = await this.filterBusinessUnits(
       queryBuilder,
+      'manyToMany',
       adminUserBusinessUnits,
     );
 

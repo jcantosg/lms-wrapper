@@ -6,4 +6,8 @@ export class AcademicPeriodMockRepository implements AcademicPeriodRepository {
   existsByCode = jest.fn();
 
   existsById = jest.fn();
+
+  matching = jest.fn();
+
+  count = jest.fn();
 }
