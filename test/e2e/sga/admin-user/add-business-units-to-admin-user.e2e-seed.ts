@@ -1,0 +1,146 @@
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { DataSource, Repository } from 'typeorm';
+import { Country } from '#shared/domain/entity/country.entity';
+import { AddBusinessUnitsToAdminUserE2eSeedDataConfig } from '#test/e2e/sga/admin-user/seed-data-config/add-business-units-to-admin-user.e2e-seed-data-config';
+import {
+  createAdminUser,
+  removeAdminUser,
+} from '#test/e2e/sga/e2e-auth-helper';
+
+export class AddBusinessUnitsToAdminUserE2eSeed implements E2eSeed {
+  private superAdminUser: AdminUser;
+  private gestor360User: AdminUser;
+  private gestor360MurciaUser: AdminUser;
+  private supervisor360User: AdminUser;
+  private secretariaUser: AdminUser;
+  private businessUnits: BusinessUnit[];
+  private spainCountry: Country;
+
+  private readonly businessUnitRepository: Repository<BusinessUnit>;
+  private readonly countryRepository: Repository<Country>;
+  private readonly adminUserRepository: Repository<AdminUser>;
+
+  constructor(private readonly datasource: DataSource) {
+    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
+    this.countryRepository = datasource.getRepository(Country);
+    this.adminUserRepository = datasource.getRepository(AdminUser);
+  }
+
+  async arrange(): Promise<void> {
+    this.superAdminUser = await createAdminUser(
+      this.datasource,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.userId,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.email,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.password,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.roles,
+    );
+
+    this.gestor360User = await createAdminUser(
+      this.datasource,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.userId,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.email,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.password,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.roles,
+    );
+
+    this.gestor360MurciaUser = await createAdminUser(
+      this.datasource,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.userId,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.email,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.password,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.roles,
+    );
+
+    this.supervisor360User = await createAdminUser(
+      this.datasource,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.userId,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.email,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.password,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.roles,
+    );
+
+    this.secretariaUser = await createAdminUser(
+      this.datasource,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.secretariaUser.userId,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.secretariaUser.email,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.secretariaUser.password,
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.secretariaUser.roles,
+    );
+
+    this.spainCountry = (await this.countryRepository.findOne({
+      where: {
+        iso: 'ES',
+      },
+    })) as Country;
+
+    this.businessUnits =
+      AddBusinessUnitsToAdminUserE2eSeedDataConfig.businessUnits.map(
+        (businessUnit) =>
+          BusinessUnit.create(
+            businessUnit.id,
+            businessUnit.name,
+            businessUnit.code,
+            this.spainCountry,
+            this.superAdminUser,
+          ),
+      );
+
+    const savedBusinessUnits = await this.businessUnitRepository.save(
+      this.businessUnits,
+    );
+
+    for (const bu of savedBusinessUnits) {
+      this.superAdminUser.addBusinessUnit(bu);
+    }
+
+    await this.adminUserRepository.save({
+      id: this.superAdminUser.id,
+      businessUnits: this.superAdminUser.businessUnits,
+    });
+
+    await this.adminUserRepository.save({
+      id: this.gestor360User.id,
+      businessUnits: this.superAdminUser.businessUnits.filter(
+        (bu) => bu.code === 'MAD',
+      ),
+    });
+
+    await this.adminUserRepository.save({
+      id: this.gestor360User.id,
+      businessUnits: this.superAdminUser.businessUnits.filter(
+        (bu) => bu.code === 'MAD',
+      ),
+    });
+
+    await this.adminUserRepository.save({
+      id: this.gestor360MurciaUser.id,
+      businessUnits: this.superAdminUser.businessUnits.filter(
+        (bu) => bu.code === 'MUR',
+      ),
+    });
+
+    await this.adminUserRepository.save({
+      id: this.supervisor360User.id,
+      businessUnits: this.superAdminUser.businessUnits.filter(
+        (bu) => bu.code === 'BAR' || bu.code === 'MAD',
+      ),
+    });
+
+    await this.adminUserRepository.save({
+      id: this.secretariaUser.id,
+      businessUnits: this.superAdminUser.businessUnits.filter(
+        (bu) => bu.code === 'MAD',
+      ),
+    });
+  }
+
+  async clear(): Promise<void> {
+    const businessUnitsIds = this.businessUnits.map((bu) => bu.id);
+    await this.businessUnitRepository.delete(businessUnitsIds);
+    await removeAdminUser(this.datasource, this.gestor360User);
+    await removeAdminUser(this.datasource, this.supervisor360User);
+    await removeAdminUser(this.datasource, this.superAdminUser);
+  }
+}

@@ -91,12 +91,10 @@ export class AdminUserPostgresRepository
       aliasQuery,
     );
 
-    const count = await baseRepository
+    return await baseRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getCount(queryBuilder);
-
-    return count;
   }
 
   async matching(

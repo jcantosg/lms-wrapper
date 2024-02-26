@@ -5,7 +5,7 @@ export enum FilterOperators {
   LT = '<',
   IN = 'IN',
   ANY = 'ANY',
-  OVERLAP = '&&',
+  IS_CONTAINED = '<@',
 }
 
 export enum GroupOperator {

@@ -41,7 +41,7 @@ export class SearchAdminUsersCriteria extends Criteria {
       new Filter(
         'roles',
         allowedRoles,
-        FilterOperators.OVERLAP,
+        FilterOperators.IS_CONTAINED,
         GroupOperator.AND,
       ),
     ].filter((filter) => filter.value !== undefined);

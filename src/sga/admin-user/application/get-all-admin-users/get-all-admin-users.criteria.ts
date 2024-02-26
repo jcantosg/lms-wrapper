@@ -52,7 +52,7 @@ export class GetAllAdminUsersCriteria extends Criteria {
       new Filter(
         'roles',
         filterRoles,
-        FilterOperators.OVERLAP,
+        FilterOperators.IS_CONTAINED,
         GroupOperator.AND,
       ),
     ].filter((filter) => filter.value !== undefined);

@@ -18,6 +18,7 @@ import { DeleteAdminUserHandler } from '#admin-user/application/delete-admin-use
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { GetAdminUserDetailHandler } from '#admin-user/application/get-admin-user-detail/get-admin-user-detail.handler';
 import { EditAdminUserHandler } from '#admin-user/application/edit-admin-user/edit-admin-user.handler';
+import { AddBusinessUnitsToAdminUserHandler } from '#admin-user/application/add-business-units-to-admin-user/add-business-units-to-admin-user.handler';
 
 const getIdentityDocumentTypesHandler = {
   provide: GetIdentityDocumentTypesHandler,
@@ -168,6 +169,29 @@ const editAdminUserHandler = {
   ],
 };
 
+const addBusinessUnitsToAdminUserHandler = {
+  provide: AddBusinessUnitsToAdminUserHandler,
+  useFactory: (
+    adminUserRepository: AdminUserRepository,
+    adminUserGetter: AdminUserGetter,
+    adminUserRolesChecker: AdminUserRolesChecker,
+    businessUnitGetter: BusinessUnitGetter,
+  ) => {
+    return new AddBusinessUnitsToAdminUserHandler(
+      adminUserRepository,
+      adminUserGetter,
+      adminUserRolesChecker,
+      businessUnitGetter,
+    );
+  },
+  inject: [
+    AdminUserRepository,
+    AdminUserGetter,
+    AdminUserRolesChecker,
+    BusinessUnitGetter,
+  ],
+};
+
 export const handlers = [
   registerUserHandler,
   createRefreshTokenHandler,
@@ -180,4 +204,5 @@ export const handlers = [
   getAdminUserDetailHandler,
   deleteAdminUserHandler,
   editAdminUserHandler,
+  addBusinessUnitsToAdminUserHandler,
 ];
