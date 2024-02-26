@@ -1,11 +1,14 @@
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import {
   createAdminUser,
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { v4 as uuid } from 'uuid';
+import { Country } from '#shared/domain/entity/country.entity';
 
 export class DeleteAdminUserE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-delete-admin-user@email.com';
@@ -14,20 +17,39 @@ export class DeleteAdminUserE2eSeed implements E2eSeed {
   public static adminUserEmail = 'delete-admin-user@email.com';
   public static adminUserPassword = 'pass123';
   public static adminUserId = '089585c3-3cc9-4d85-9e27-b733cf4100b2';
+  public static businessUnitId = '35637f98-af93-456d-bde4-811ec48d4814';
+  public static businessUnitName = 'Murcia';
+  public static businessUnitCode = 'MUR';
+  public static countryId = uuid();
+  public static countryEmoji = '🏳️GetId';
+  public static countryName = 'TestGetId';
 
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
+  private businessUnit: BusinessUnit;
+  private country: Country;
 
-  constructor(private readonly datasource: DataSource) {}
+  private businessUnitRepository: Repository<BusinessUnit>;
+  private countryRepository: Repository<Country>;
+  private userRepository: Repository<AdminUser>;
+
+  constructor(private readonly datasource: DataSource) {
+    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
+    this.countryRepository = datasource.getRepository(Country);
+    this.userRepository = datasource.getRepository(AdminUser);
+  }
 
   async arrange(): Promise<void> {
-    this.adminUser = await createAdminUser(
-      this.datasource,
-      DeleteAdminUserE2eSeed.adminUserId,
-      DeleteAdminUserE2eSeed.adminUserEmail,
-      DeleteAdminUserE2eSeed.adminUserPassword,
-      [],
+    this.country = Country.create(
+      DeleteAdminUserE2eSeed.countryId,
+      'TEST',
+      'TEST',
+      DeleteAdminUserE2eSeed.countryName,
+      '+12',
+      DeleteAdminUserE2eSeed.countryEmoji,
     );
+    await this.countryRepository.save(this.country);
+
     this.superAdminUser = await createAdminUser(
       this.datasource,
       DeleteAdminUserE2eSeed.superAdminUserId,
@@ -35,10 +57,34 @@ export class DeleteAdminUserE2eSeed implements E2eSeed {
       DeleteAdminUserE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
     );
+    this.businessUnit = BusinessUnit.create(
+      DeleteAdminUserE2eSeed.businessUnitId,
+      DeleteAdminUserE2eSeed.businessUnitName,
+      DeleteAdminUserE2eSeed.businessUnitCode,
+      this.country,
+      this.superAdminUser,
+    );
+    await this.businessUnitRepository.save(this.businessUnit);
+    this.superAdminUser.addBusinessUnit(this.businessUnit);
+    await this.userRepository.save({
+      id: this.superAdminUser.id,
+      businessUnits: this.superAdminUser.businessUnits,
+    });
+
+    this.adminUser = await createAdminUser(
+      this.datasource,
+      DeleteAdminUserE2eSeed.adminUserId,
+      DeleteAdminUserE2eSeed.adminUserEmail,
+      DeleteAdminUserE2eSeed.adminUserPassword,
+      [],
+      [this.businessUnit],
+    );
   }
 
   async clear(): Promise<void> {
+    await this.businessUnitRepository.delete(this.businessUnit.id);
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.adminUser);
+    await this.countryRepository.delete(this.country.id);
   }
 }

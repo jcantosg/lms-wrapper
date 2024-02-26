@@ -14,6 +14,7 @@
     "^#admin-user/(.*)$": "<rootDir>/../src/sga/admin-user/$1",
     "^#shared/(.*)$": "<rootDir>/../src/shared/shared/$1",
     "^#business-unit/(.*)$": "<rootDir>/../src/sga/business-unit/$1",
+    "^#academic-offering/(.*)$": "<rootDir>/../src/sga/academic-offering/$1",
     "^#commands/(.*)$": "<rootDir>/../src/commands/$1",
     "^#config/(.*)$": "<rootDir>/../config/$1",
     "^#test/(.*)$": "<rootDir>/../test/$1",

@@ -20,14 +20,33 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "paths": {
-      "#admin-user/*": ["src/sga/admin-user/*"],
-      "#shared/*": ["src/shared/shared/*"],
-      "#business-unit/*": ["src/sga/business-unit/*"],
-      "#commands/*": ["src/commands/*"],
-      "#config/*": ["config/*"],
-      "#test/*": ["test/*"],
-      "#/*": ["src/*"],
-      "&/*": ["./*"]
+      "#admin-user/*": [
+        "src/sga/admin-user/*"
+      ],
+      "#shared/*": [
+        "src/shared/shared/*"
+      ],
+      "#business-unit/*": [
+        "src/sga/business-unit/*"
+      ],
+      "#academic-offering/*": [
+        "src/sga/academic-offering/*"
+      ],
+      "#commands/*": [
+        "src/commands/*"
+      ],
+      "#config/*": [
+        "config/*"
+      ],
+      "#test/*": [
+        "test/*"
+      ],
+      "#/*": [
+        "src/*"
+      ],
+      "&/*": [
+        "./*"
+      ]
     }
   }
 }
