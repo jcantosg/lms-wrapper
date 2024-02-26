@@ -199,7 +199,7 @@ export class AdminUser extends BaseEntity {
   ) {
     this._name = name;
     this._surname = surname;
-    this._surname2 = surname2;
+    this._surname2 = surname2 ?? null;
     this._identityDocument = identityDocument;
     this._roles = roles;
     this._avatar = avatar;
