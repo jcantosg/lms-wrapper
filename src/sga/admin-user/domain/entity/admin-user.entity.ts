@@ -137,11 +137,10 @@ export class AdminUser extends BaseEntity {
   }
 
   public removeBusinessUnit(value: BusinessUnit) {
-    if (this._businessUnits.find((bu) => bu.id === value.id)) {
-      this._businessUnits = this._businessUnits.filter(
-        (businessUnit) => businessUnit !== value,
-      );
-    }
+    this._businessUnits = this._businessUnits.filter(
+      (bu) => bu.id !== value.id,
+    );
+
     this.updatedAt = new Date();
   }
 

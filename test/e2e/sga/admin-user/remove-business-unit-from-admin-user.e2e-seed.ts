@@ -9,10 +9,10 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 
-export class AddBusinessUnitsToAdminUserE2eSeed implements E2eSeed {
+export class RemoveBusinessUnitFromAdminUserE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;
   private gestor360User: AdminUser;
-  private gestor360MurciaUser: AdminUser;
+  //private gestor360MurciaUser: AdminUser;
   private supervisor360User: AdminUser;
   private secretariaUser: AdminUser;
   private businessUnits: BusinessUnit[];
@@ -43,14 +43,6 @@ export class AddBusinessUnitsToAdminUserE2eSeed implements E2eSeed {
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.email,
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.password,
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.roles,
-    );
-
-    this.gestor360MurciaUser = await createAdminUser(
-      this.datasource,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.userId,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.email,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.password,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.roles,
     );
 
     this.supervisor360User = await createAdminUser(
@@ -103,14 +95,7 @@ export class AddBusinessUnitsToAdminUserE2eSeed implements E2eSeed {
     await this.adminUserRepository.save({
       id: this.gestor360User.id,
       businessUnits: this.superAdminUser.businessUnits.filter(
-        (bu) => bu.code === 'MAD',
-      ),
-    });
-
-    await this.adminUserRepository.save({
-      id: this.gestor360MurciaUser.id,
-      businessUnits: this.superAdminUser.businessUnits.filter(
-        (bu) => bu.code === 'MUR',
+        (bu) => bu.code === 'MAD' || bu.code === 'BAR',
       ),
     });
 
@@ -134,7 +119,6 @@ export class AddBusinessUnitsToAdminUserE2eSeed implements E2eSeed {
     await this.businessUnitRepository.delete(businessUnitsIds);
     await removeAdminUser(this.datasource, this.gestor360User);
     await removeAdminUser(this.datasource, this.supervisor360User);
-    await removeAdminUser(this.datasource, this.gestor360MurciaUser);
     await removeAdminUser(this.datasource, this.secretariaUser);
     await removeAdminUser(this.datasource, this.superAdminUser);
   }

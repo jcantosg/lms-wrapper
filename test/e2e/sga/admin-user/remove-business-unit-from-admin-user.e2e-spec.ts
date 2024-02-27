@@ -2,16 +2,16 @@ import { HttpServer, INestApplication } from '@nestjs/common';
 import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { AdminUserPostgresRepository } from '#admin-user/infrastructure/repository/admin-user.postgres-repository';
-import { AddBusinessUnitsToAdminUserE2eSeed } from '#test/e2e/sga/admin-user/add-business-units-to-admin-user.e2e-seed';
 import { AddBusinessUnitsToAdminUserE2eSeedDataConfig } from '#test/e2e/sga/admin-user/seed-data-config/add-business-units-to-admin-user.e2e-seed-data-config';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
 import { startApp } from '#test/e2e/e2e-helper';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { RemoveBusinessUnitFromAdminUserE2eSeed } from '#test/e2e/sga/admin-user/remove-business-unit-from-admin-user.e2e-seed';
 
-const path = `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.userId}/add-business-unit`;
+const path = `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.userId}/remove-business-unit`;
 
-describe('Add Business Units to Admin User (PUT)', () => {
+describe('Remove Business Units from Admin User (PUT)', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
@@ -23,7 +23,7 @@ describe('Add Business Units to Admin User (PUT)', () => {
   beforeAll(async () => {
     app = await startApp();
     httpServer = app.getHttpServer();
-    seeder = new AddBusinessUnitsToAdminUserE2eSeed(datasource);
+    seeder = new RemoveBusinessUnitFromAdminUserE2eSeed(datasource);
     await seeder.arrange();
     superAdminUserToken = await login(
       httpServer,
@@ -65,85 +65,59 @@ describe('Add Business Units to Admin User (PUT)', () => {
     await supertest(httpServer)
       .put(path)
       .auth(superAdminUserToken, { type: 'bearer' })
-      .send({ businessUnits: ['invalid-id'] })
+      .send({ businessUnit: 'invalid-id' })
       .expect(400);
   });
 
   it('should return not found 404 (admin user not found in db)', async () => {
-    const murciaBusinessUnit =
+    const madridBusinessUnit =
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.businessUnits.find(
-        (businessUnit) => businessUnit.name === 'Murcia',
+        (businessUnit) => businessUnit.code === 'MAD',
       );
     const response = await supertest(httpServer)
-      .put(`/admin-user/087c5212-9b63-4a3b-9913-0781bd99b271/add-business-unit`)
+      .put(
+        `/admin-user/087c5212-9b63-4a3b-9913-0781bd99b271/remove-business-unit`,
+      )
       .auth(superAdminUserToken, { type: 'bearer' })
-      .send({ businessUnits: [murciaBusinessUnit?.id] })
+      .send({ businessUnit: madridBusinessUnit?.id })
       .expect(404);
 
     expect(response.body.message).toBe('sga.admin-user.not-found');
   });
 
   it('should return not found 404 (business unit not include on the admin user business unit requester)', async () => {
-    const murciaBusinessUnit =
+    const madridBusinessUnit =
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.businessUnits.find(
-        (businessUnit) => businessUnit.name === 'Murcia',
+        (businessUnit) => businessUnit.code === 'MAD',
       );
     const response = await supertest(httpServer)
       .put(
-        `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.userId}/add-business-unit`,
+        `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.userId}/remove-business-unit`,
       )
       .auth(supervisor360UserToken, { type: 'bearer' })
-      .send({ businessUnits: [murciaBusinessUnit?.id] })
+      .send({ businessUnit: madridBusinessUnit?.id })
       .expect(404);
 
     expect(response.body.message).toBe('sga.admin-user.not-found');
   });
 
   it('should return forbidden 403 (not roles permitted)', async () => {
-    const murciaBusinessUnit =
+    const madridBusinessUnit =
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.businessUnits.find(
-        (businessUnit) => businessUnit.name === 'Murcia',
+        (businessUnit) => businessUnit.code === 'MAD',
       );
     const response = await supertest(httpServer)
       .put(
-        `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.secretariaUser.userId}/add-business-unit`,
+        `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.secretariaUser.userId}/remove-business-unit`,
       )
       .auth(supervisor360UserToken, { type: 'bearer' })
-      .send({ businessUnits: [murciaBusinessUnit?.id] })
+      .send({ businessUnit: madridBusinessUnit?.id })
       .expect(403);
 
     expect(response.body.message).toBe('sga.admin-user.not-allowed-roles');
   });
 
-  it('should return a 404 business unit not found(bu to add no in the bd)', async () => {
-    const response = await supertest(httpServer)
-      .put(path)
-      .auth(supervisor360UserToken, { type: 'bearer' })
-      .send({ businessUnits: ['d31aa8ac-2ef7-4574-8774-d3e95963aaba'] })
-      .expect(404);
-
-    expect(response.body.message).toBe(
-      'sga.business-unit.business-unit-not-found',
-    );
-  });
-
-  it('should return a 404 business unit not found(bu to add not allow to admin user business unit requester)', async () => {
-    const murciaBusinessUnit =
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.businessUnits.find(
-        (businessUnit) => businessUnit.code === 'MUR',
-      );
-    const response = await supertest(httpServer)
-      .put(path)
-      .auth(supervisor360UserToken, { type: 'bearer' })
-      .send({ businessUnits: [murciaBusinessUnit?.id] })
-      .expect(404);
-
-    expect(response.body.message).toBe(
-      'sga.business-unit.business-unit-not-found',
-    );
-  });
-
-  it('should return a 200 business unit added', async () => {
+  it('should return a 200 business unit removed', async () => {
     adminUserRepository = new AdminUserPostgresRepository(
       datasource.getRepository(AdminUser),
     );
@@ -154,16 +128,16 @@ describe('Add Business Units to Admin User (PUT)', () => {
     await supertest(httpServer)
       .put(path)
       .auth(supervisor360UserToken, { type: 'bearer' })
-      .send({ businessUnits: [barcelonaBusinessUnit?.id] })
+      .send({ businessUnit: barcelonaBusinessUnit?.id })
       .expect(200);
 
     const gestor360User = await adminUserRepository.get(
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.userId,
     );
 
-    expect(gestor360User?.businessUnits.length).toEqual(2);
+    expect(gestor360User?.businessUnits.length).toEqual(1);
     expect(gestor360User?.businessUnits).toEqual(
-      expect.arrayContaining([
+      expect.not.arrayContaining([
         expect.objectContaining({
           id: barcelonaBusinessUnit?.id,
         }),

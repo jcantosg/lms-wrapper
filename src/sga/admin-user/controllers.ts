@@ -11,6 +11,7 @@ import { GetRolesController } from './infrastructure/controller/get-user-roles/g
 import { DeleteAdminUserController } from '#admin-user/infrastructure/controller/delete-admin-user/delete-admin-user.controller';
 import { EditAdminUserController } from '#admin-user/infrastructure/controller/edit-admin-user/edit-admin-user.controller';
 import { AddBusinessUnitsToAdminUserController } from '#admin-user/infrastructure/controller/add-business-units-to-admin-user/add-business-units-to-admin-user.controller';
+import { RemoveBusinessUnitFromAdminUserController } from '#admin-user/infrastructure/controller/remove-business-unit-from-admin-user/remove-business-unit-from-admin-user.controller';
 
 export const controllers = [
   RegisterAdminUserController,
@@ -26,4 +27,5 @@ export const controllers = [
   GetAdminUserDetailController,
   EditAdminUserController,
   AddBusinessUnitsToAdminUserController,
+  RemoveBusinessUnitFromAdminUserController,
 ];
