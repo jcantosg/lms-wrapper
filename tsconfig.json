@@ -29,6 +29,7 @@
       "#business-unit/*": [
         "src/sga/business-unit/*"
       ],
+      "#edae-user/*": ["src/sga/edae-user/*"],
       "#academic-offering/*": [
         "src/sga/academic-offering/*"
       ],

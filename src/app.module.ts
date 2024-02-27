@@ -21,6 +21,7 @@ import { StudentModule } from '#/student/student.module';
 import { TeacherModule } from '#/teacher/Teacher.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { EdaeUserModule } from '#edae-user/edae-user.module';
 
 const env = process.env.NODE_ENV;
 const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
@@ -129,6 +130,7 @@ const mailerModule = MailerModule.forRootAsync({
     StudentModule,
     TeacherModule,
     mailerModule,
+    EdaeUserModule,
   ],
   providers: [
     {

@@ -78,6 +78,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
 
     return this;
   }
+
   private async applyGroupFilters(
     filters: Filter[],
     groupOperator: GroupOperator,

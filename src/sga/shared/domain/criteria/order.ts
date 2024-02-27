@@ -4,7 +4,7 @@ export enum OrderTypes {
   NONE = 'NONE',
 }
 
-export const OrderByDefault = 'created_at';
+export const OrderByDefault = 'updatedAt';
 
 export class Order {
   constructor(

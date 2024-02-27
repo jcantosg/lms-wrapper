@@ -10,6 +10,10 @@ import {
   IdentityDocument,
   IdentityDocumentType,
 } from '#/sga/shared/domain/value-object/identity-document';
+import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
+import { getAnIdentityDocument } from '#test/value-object-factory';
+import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -85,5 +89,22 @@ export const getAClassroom = (id: string = uuid()): Classroom => {
     4,
     getAnAdminUser(),
     getAnExaminationCenter(),
+  );
+};
+
+export const getAnEdaeUser = (id: string = uuid()): EdaeUser => {
+  return EdaeUser.create(
+    id,
+    'test',
+    'surname',
+    'surname2',
+    'test@universae.com',
+    getAnIdentityDocument(),
+    [EdaeRoles.COORDINADOR_FCT],
+    [],
+    TimeZoneEnum.GMT_PLUS_1,
+    true,
+    getACountry(),
+    'avatar',
   );
 };
