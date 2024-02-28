@@ -12,7 +12,6 @@
     "^#business-unit/(.*)$": "<rootDir>/../src/sga/business-unit/$1",
     "^#edae-user/(.*)$": "<rootDir>/../src/sga/edae-user/$1",
     "^#academic-offering/(.*)$": "<rootDir>/../src/sga/academic-offering/$1",
-    "^#edae-user/(.*)$": "<rootDir>/../src/sga/edae-user/$1",
     "^#commands/(.*)$": "<rootDir>/../src/commands/$1",
     "^#config/(.*)$": "<rootDir>/../config/$1",
     "^#test/(.*)$": "<rootDir>/../test/$1",

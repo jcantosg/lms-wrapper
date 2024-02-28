@@ -11,6 +11,7 @@ import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-use
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -71,6 +72,14 @@ export function getAnAdminUserBusinessUnitsCheckerMock(): AdminUserBusinessUnits
   return (
     AdminUserBusinessUnitsChecker as jest.Mocked<
       typeof AdminUserBusinessUnitsChecker
+    >
+  ).prototype;
+}
+
+export function getEdaeUserBusinessUnitCheckerMock(): EdaeUserBusinessUnitChecker {
+  return (
+    EdaeUserBusinessUnitChecker as jest.Mocked<
+      typeof EdaeUserBusinessUnitChecker
     >
   ).prototype;
 }

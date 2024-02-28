@@ -1,10 +1,14 @@
-import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
+import { EditEdaeUserHandler } from '#edae-user/application/edit-edae-user/edit-edae-user.handler';
 import { EdaeUserRepository } from '#edae-user/domain/repository/edae-user.repository';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { CountryGetter } from '#shared/domain/service/country-getter.service';
+import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { SearchEdaeUsersHandler } from '#edae-user/application/search-edae-users/search-edae-users.handler';
 import { RemoveBusinessUnitsFromEdaeUserHandler } from '#edae-user/application/remove-business-units-from-edae-user/remove-business-units-from-edae-user.handler';
 import { AddBusinessUnitsToEdaeUserHandler } from '#edae-user/application/add-business-units-to-edae-user/add-business-units-to-edae-user.handler';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
 
 const getAllEdaeUsersHandler = {
   provide: GetAllEdaeUsersHandler,
@@ -26,6 +30,32 @@ const searchEdaeUserHandler = {
     return new SearchEdaeUsersHandler(repository, businessUnitGetter);
   },
   inject: [EdaeUserRepository, BusinessUnitGetter],
+};
+
+const editEdaeUserHandler = {
+  provide: EditEdaeUserHandler,
+  useFactory: (
+    repository: EdaeUserRepository,
+    edaeUserGetter: EdaeUserGetter,
+    imageUploader: ImageUploader,
+    countryGetter: CountryGetter,
+    edaeUserBusinessUnitGetter: EdaeUserBusinessUnitChecker,
+  ) => {
+    return new EditEdaeUserHandler(
+      repository,
+      edaeUserGetter,
+      imageUploader,
+      countryGetter,
+      edaeUserBusinessUnitGetter,
+    );
+  },
+  inject: [
+    EdaeUserRepository,
+    EdaeUserGetter,
+    ImageUploader,
+    CountryGetter,
+    EdaeUserBusinessUnitChecker,
+  ],
 };
 
 const removeBusinessUnitsFromEdaeUserHandler = {
@@ -65,4 +95,5 @@ export const handlers = [
   searchEdaeUserHandler,
   removeBusinessUnitsFromEdaeUserHandler,
   addBusinessUnitsToEdaeUserHandler,
+  editEdaeUserHandler,
 ];

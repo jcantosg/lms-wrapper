@@ -21,31 +21,27 @@ export class EdaeUserPostgresRepository
   }
 
   async save(edaeUser: EdaeUser): Promise<void> {
-    await this.repository.save(edaeUser);
+    await this.repository.save({
+      id: edaeUser.id,
+      name: edaeUser.name,
+      surname1: edaeUser.surname1,
+      surname2: edaeUser.surname2,
+      email: edaeUser.email,
+      identityDocument: edaeUser.identityDocument,
+      roles: edaeUser.roles,
+      timeZone: edaeUser.timeZone,
+      isRemote: edaeUser.isRemote,
+      businessUnits: edaeUser.businessUnits,
+      avatar: edaeUser.avatar,
+      createdAt: edaeUser.createdAt,
+      updatedAt: edaeUser.updatedAt,
+    });
   }
 
   async get(id: string): Promise<EdaeUser | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnits: true },
-    });
-  }
-
-  async update(edaeUser: EdaeUser): Promise<void> {
-    await this.repository.save({
-      id: edaeUser.id,
-      name: edaeUser.name,
-      avatar: edaeUser.avatar,
-      businessUnits: edaeUser.businessUnits,
-      email: edaeUser.email,
-      identityDocument: edaeUser.identityDocument,
-      isRemote: edaeUser.isRemote,
-      location: edaeUser.location,
-      roles: edaeUser.roles,
-      surname1: edaeUser.surname1,
-      surname2: edaeUser.surname2,
-      timeZone: edaeUser.timeZone,
-      updatedAt: edaeUser.updatedAt,
+      relations: { businessUnits: true, location: true },
     });
   }
 
@@ -134,5 +130,23 @@ export class EdaeUserPostgresRepository
     });
 
     return result;
+  }
+
+  async update(edaeUser: EdaeUser): Promise<void> {
+    await this.repository.save({
+      id: edaeUser.id,
+      name: edaeUser.name,
+      surname1: edaeUser.surname1,
+      surname2: edaeUser.surname2,
+      email: edaeUser.email,
+      identityDocument: edaeUser.identityDocument,
+      roles: edaeUser.roles,
+      timeZone: edaeUser.timeZone,
+      isRemote: edaeUser.isRemote,
+      businessUnits: edaeUser.businessUnits,
+      avatar: edaeUser.avatar,
+      createdAt: edaeUser.createdAt,
+      updatedAt: edaeUser.updatedAt,
+    });
   }
 }

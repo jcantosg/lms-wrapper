@@ -35,6 +35,7 @@ export class EdaeUser extends BaseEntity {
   public get surname1(): string {
     return this._surname1;
   }
+
   public set surname1(value: string) {
     if (!value) throw new Error('Surname1 cannot be empty.');
     this._surname1 = value;
@@ -133,6 +134,29 @@ export class EdaeUser extends BaseEntity {
       location,
       avatar,
     );
+  }
+
+  update(
+    name: string,
+    surname1: string,
+    surname2: string | null,
+    identityDocument: IdentityDocument,
+    roles: EdaeRoles[],
+    timeZone: TimeZoneEnum,
+    isRemote: boolean,
+    location: Country,
+    avatar: string | null,
+  ) {
+    this.name = name;
+    this.surname1 = surname1;
+    this.surname2 = surname2;
+    this.identityDocument = this.identityDocument;
+    this.roles = roles;
+    this.timeZone = timeZone;
+    this.isRemote = isRemote;
+    this.location = location;
+    this.avatar = avatar;
+    this.updatedAt = new Date();
   }
 
   public removeBusinessUnit(businessUnit: BusinessUnit): void {

@@ -1,5 +1,6 @@
 import { EdaeUserRepository } from '#edae-user/domain/repository/edae-user.repository';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 
 const edaeUserGetter = {
   provide: EdaeUserGetter,
@@ -9,4 +10,4 @@ const edaeUserGetter = {
   inject: [EdaeUserRepository],
 };
 
-export const services = [edaeUserGetter];
+export const services = [edaeUserGetter, EdaeUserBusinessUnitChecker];
