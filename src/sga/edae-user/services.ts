@@ -1,0 +1,12 @@
+import { EdaeUserRepository } from '#edae-user/domain/repository/edae-user.repository';
+import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+
+const edaeUserGetter = {
+  provide: EdaeUserGetter,
+  useFactory: (edaeUserRepository: EdaeUserRepository) => {
+    return new EdaeUserGetter(edaeUserRepository);
+  },
+  inject: [EdaeUserRepository],
+};
+
+export const services = [edaeUserGetter];

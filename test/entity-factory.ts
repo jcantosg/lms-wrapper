@@ -19,6 +19,23 @@ export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
 };
 
+export const getAnEdaeUser = (id: string = uuid()): EdaeUser => {
+  return EdaeUser.create(
+    id,
+    'test',
+    'surname',
+    'surname2',
+    'test@universae.com',
+    getAnIdentityDocument(),
+    [EdaeRoles.COORDINADOR_FCT],
+    [],
+    TimeZoneEnum.GMT_PLUS_1,
+    true,
+    getACountry(),
+    'avatar',
+  );
+};
+
 export const getAnAdminUser = (id = uuid()): AdminUser => {
   return AdminUser.create(
     id,
@@ -89,22 +106,5 @@ export const getAClassroom = (id: string = uuid()): Classroom => {
     4,
     getAnAdminUser(),
     getAnExaminationCenter(),
-  );
-};
-
-export const getAnEdaeUser = (id: string = uuid()): EdaeUser => {
-  return EdaeUser.create(
-    id,
-    'test',
-    'surname',
-    'surname2',
-    'test@universae.com',
-    getAnIdentityDocument(),
-    [EdaeRoles.COORDINADOR_FCT],
-    [],
-    TimeZoneEnum.GMT_PLUS_1,
-    true,
-    getACountry(),
-    'avatar',
   );
 };

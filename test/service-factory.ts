@@ -10,6 +10,7 @@ import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
+import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -17,6 +18,10 @@ export function getCountryGetterMock(): CountryGetter {
 
 export function getAdminUserGetterMock(): AdminUserGetter {
   return (AdminUserGetter as jest.Mocked<typeof AdminUserGetter>).prototype;
+}
+
+export function getEdaeUserGetterMock(): EdaeUserGetter {
+  return (EdaeUserGetter as jest.Mocked<typeof EdaeUserGetter>).prototype;
 }
 
 export class PasswordEncoderMock implements PasswordEncoder {

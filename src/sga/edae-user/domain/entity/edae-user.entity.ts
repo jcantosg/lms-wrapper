@@ -134,4 +134,11 @@ export class EdaeUser extends BaseEntity {
       avatar,
     );
   }
+
+  public addBusinessUnit(businessUnit: BusinessUnit): void {
+    if (!this._businessUnits.find((bu) => bu.id === businessUnit.id)) {
+      this._businessUnits.push(businessUnit);
+      this.updatedAt = new Date();
+    }
+  }
 }

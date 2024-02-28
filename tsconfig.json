@@ -33,21 +33,11 @@
       "#academic-offering/*": [
         "src/sga/academic-offering/*"
       ],
-      "#commands/*": [
-        "src/commands/*"
-      ],
-      "#config/*": [
-        "config/*"
-      ],
-      "#test/*": [
-        "test/*"
-      ],
-      "#/*": [
-        "src/*"
-      ],
-      "&/*": [
-        "./*"
-      ]
+      "#commands/*": ["src/commands/*"],
+      "#config/*": ["config/*"],
+      "#test/*": ["test/*"],
+      "#/*": ["src/*"],
+      "&/*": ["./*"]
     }
   }
 }

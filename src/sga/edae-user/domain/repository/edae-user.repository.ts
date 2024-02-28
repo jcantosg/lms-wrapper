@@ -18,4 +18,6 @@ export abstract class EdaeUserRepository {
     adminUserBusiness: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<number>;
+
+  abstract update(edaeUser: EdaeUser): Promise<void>;
 }
