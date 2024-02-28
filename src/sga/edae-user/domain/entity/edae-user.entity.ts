@@ -135,6 +135,12 @@ export class EdaeUser extends BaseEntity {
     );
   }
 
+  public removeBusinessUnit(businessUnit: BusinessUnit): void {
+    this._businessUnits = this._businessUnits.filter(
+      (bu) => bu.id !== businessUnit.id,
+    );
+  }
+
   public addBusinessUnit(businessUnit: BusinessUnit): void {
     if (!this._businessUnits.find((bu) => bu.id === businessUnit.id)) {
       this._businessUnits.push(businessUnit);
