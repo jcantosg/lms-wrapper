@@ -45,6 +45,16 @@ export class EdaeUserPostgresRepository
     });
   }
 
+  async existsById(id: string): Promise<boolean> {
+    const result = await this.repository.findOne({ where: { id } });
+
+    return !!result;
+  }
+
+  async existsByEmail(email: string): Promise<boolean> {
+    return !!(await this.repository.findOne({ where: { email } }));
+  }
+
   async matching(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],

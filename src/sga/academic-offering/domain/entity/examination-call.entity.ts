@@ -1,6 +1,6 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
-import { TimeZoneEnum } from '#shared/domain/enum/time-zone.enum';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export class ExaminationCall extends BaseEntity {
   private constructor(

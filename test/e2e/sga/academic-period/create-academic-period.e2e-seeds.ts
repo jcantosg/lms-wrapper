@@ -10,7 +10,7 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriod } from '#academic-offering//domain/entity/academic-period.entity';
-import { TimeZoneEnum } from '#shared/domain/enum/time-zone.enum';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-academic-period@email.com';

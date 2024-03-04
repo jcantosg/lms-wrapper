@@ -6,3 +6,7 @@ export enum EdaeRoles {
   RESPONSABLE_FCT = 'Responsable FCT',
   GESTOR_FCT = 'Gestor FCT',
 }
+
+export function getAllEdaeRoles(): string[] {
+  return Object.values(EdaeRoles);
+}

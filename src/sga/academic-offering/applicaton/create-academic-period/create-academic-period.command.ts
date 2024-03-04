@@ -1,6 +1,6 @@
 import { Command } from '#shared/domain/bus/command';
-import { TimeZoneEnum } from '#shared/domain/enum/time-zone.enum';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export interface ExaminationCallValues {
   id: string;

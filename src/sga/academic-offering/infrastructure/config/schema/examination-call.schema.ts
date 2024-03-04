@@ -1,7 +1,7 @@
 import { EntitySchema } from 'typeorm';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { BaseSchemaColumns } from '#shared/infrastructure/config/schema/base.schema';
-import { TimeZoneEnum } from '#shared/domain/enum/time-zone.enum';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export const examinationCallSchema = new EntitySchema<ExaminationCall>({
   name: 'ExaminationCall',

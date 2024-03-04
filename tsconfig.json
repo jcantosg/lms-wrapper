@@ -29,15 +29,27 @@
       "#business-unit/*": [
         "src/sga/business-unit/*"
       ],
-      "#edae-user/*": ["src/sga/edae-user/*"],
+      "#edae-user/*": [
+        "src/sga/edae-user/*"
+      ],
       "#academic-offering/*": [
         "src/sga/academic-offering/*"
       ],
-      "#commands/*": ["src/commands/*"],
-      "#config/*": ["config/*"],
-      "#test/*": ["test/*"],
-      "#/*": ["src/*"],
-      "&/*": ["./*"]
+      "#commands/*": [
+        "src/commands/*"
+      ],
+      "#config/*": [
+        "config/*"
+      ],
+      "#test/*": [
+        "test/*"
+      ],
+      "#/*": [
+        "src/*"
+      ],
+      "&/*": [
+        "./*"
+      ]
     }
   }
 }

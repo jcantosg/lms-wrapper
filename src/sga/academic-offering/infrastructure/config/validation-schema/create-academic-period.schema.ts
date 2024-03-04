@@ -1,5 +1,5 @@
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import Joi from 'joi';
-import { TimeZoneEnum } from '#shared/domain/enum/time-zone.enum';
 
 export const createAcademicPeriodSchema: Joi.ObjectSchema = Joi.object({
   id: Joi.string().guid().required(),

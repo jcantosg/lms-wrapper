@@ -35,7 +35,6 @@ export class EdaeUser extends BaseEntity {
   public get surname1(): string {
     return this._surname1;
   }
-
   public set surname1(value: string) {
     if (!value) throw new Error('Surname1 cannot be empty.');
     this._surname1 = value;

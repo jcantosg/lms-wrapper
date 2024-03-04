@@ -7,6 +7,10 @@ export abstract class EdaeUserRepository {
 
   abstract get(id: string): Promise<EdaeUser | null>;
 
+  abstract existsById(id: string): Promise<boolean>;
+
+  abstract existsByEmail(email: string): Promise<boolean>;
+
   abstract matching(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],

@@ -9,6 +9,23 @@ import { RemoveBusinessUnitsFromEdaeUserHandler } from '#edae-user/application/r
 import { AddBusinessUnitsToEdaeUserHandler } from '#edae-user/application/add-business-units-to-edae-user/add-business-units-to-edae-user.handler';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
+import { CreateEdaeUserHandler } from '#edae-user/application/edae-user/create-edae-user/create-edae-user.handler';
+
+const createEdaeUserHandler = {
+  provide: CreateEdaeUserHandler,
+  useFactory: (
+    repository: EdaeUserRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    countryGetter: CountryGetter,
+  ) => {
+    return new CreateEdaeUserHandler(
+      repository,
+      businessUnitGetter,
+      countryGetter,
+    );
+  },
+  inject: [EdaeUserRepository, BusinessUnitGetter, CountryGetter],
+};
 
 const getAllEdaeUsersHandler = {
   provide: GetAllEdaeUsersHandler,
@@ -96,4 +113,5 @@ export const handlers = [
   removeBusinessUnitsFromEdaeUserHandler,
   addBusinessUnitsToEdaeUserHandler,
   editEdaeUserHandler,
+  createEdaeUserHandler,
 ];
