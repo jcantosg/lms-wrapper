@@ -32,6 +32,7 @@ export class EdaeUserPostgresRepository
       timeZone: edaeUser.timeZone,
       isRemote: edaeUser.isRemote,
       businessUnits: edaeUser.businessUnits,
+      location: edaeUser.location,
       avatar: edaeUser.avatar,
       createdAt: edaeUser.createdAt,
       updatedAt: edaeUser.updatedAt,
