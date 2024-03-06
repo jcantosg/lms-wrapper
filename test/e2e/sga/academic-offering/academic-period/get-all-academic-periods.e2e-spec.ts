@@ -8,8 +8,8 @@ import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
 } from '#/sga/shared/application/collection.query';
-import { GetAllAcademicPeriodsE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/get-all-examination-center.e2e-seed';
 import { GetAllAcademicPeriodsE2eSeedDataConfig } from '#test/e2e/sga/academic-offering/academic-period/get-all-academic-periods.e2e-seed-data-config';
+import { GetAllAcademicPeriodsE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/get-all-academic-periods.e2e-seed';
 
 const path = '/academic-period';
 
