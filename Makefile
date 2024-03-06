@@ -59,8 +59,7 @@ database-drop: ## Remove all database collections
 database-reload: ## drop, runs migrations, seed
 	@npm run sga:db:drop -- -f
 	@npm run typeorm:migrations:up
-	@npm run sga:db:seed:country
-	@npm run sga:db:seed:admin-user
+	@npm run sga:db:seed:data
 
 test-database-setup: ## Setup the test database
 	@npm run sga:test:db:create
