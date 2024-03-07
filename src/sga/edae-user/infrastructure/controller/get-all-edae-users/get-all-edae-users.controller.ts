@@ -26,10 +26,11 @@ interface GetEdaeUsersQueryParams {
   orderBy: string;
   orderType: OrderTypes;
   name?: string;
-  surname?: string;
+  surname1?: string;
   surname2?: string;
   email?: string;
-  roles?: string[];
+  role?: string;
+  location?: string;
   businessUnit?: string;
 }
 
@@ -62,10 +63,11 @@ export class GetAllEdaeUsersController {
       ),
       req.user.roles.includes(AdminUserRoles.SUPERADMIN),
       queryParams.name,
-      queryParams.surname,
+      queryParams.surname1,
       queryParams.surname2,
       queryParams.email,
-      queryParams.roles,
+      queryParams.role,
+      queryParams.location,
       queryParams.businessUnit,
     );
     const response = await this.handler.handle(query);

@@ -21,8 +21,8 @@ export class GetAllEdaeUsersCriteria extends Criteria {
     return [
       new Filter('name', query.name, FilterOperators.LIKE, GroupOperator.AND),
       new Filter(
-        'surname',
-        query.surname,
+        'surname1',
+        query.surname1,
         FilterOperators.LIKE,
         GroupOperator.AND,
       ),
@@ -33,7 +33,14 @@ export class GetAllEdaeUsersCriteria extends Criteria {
         GroupOperator.AND,
       ),
       new Filter('email', query.email, FilterOperators.LIKE, GroupOperator.AND),
-      new Filter('roles', query.roles, FilterOperators.ANY, GroupOperator.AND),
+      new Filter('roles', query.role, FilterOperators.ANY, GroupOperator.AND),
+      new Filter(
+        'id',
+        query.location,
+        FilterOperators.LIKE,
+        GroupOperator.AND,
+        'country',
+      ),
       new Filter(
         'name',
         query.businessUnit,
