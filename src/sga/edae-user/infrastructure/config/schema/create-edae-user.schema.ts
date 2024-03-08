@@ -24,5 +24,5 @@ export const createEdaeUserSchema = Joi.object({
     .required(),
   isRemote: Joi.boolean().required(),
   location: Joi.string().required(),
-  avatar: Joi.string().base64().allow(null, '').optional(),
+  avatar: Joi.string().optional(),
 });
