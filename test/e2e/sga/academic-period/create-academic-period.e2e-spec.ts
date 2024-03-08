@@ -90,6 +90,33 @@ describe('/academic-period (POST)', () => {
       'sga.academic-period.not-examination-calls',
     );
   });
+  it('should throw a duplicated code error', async () => {
+    const response = await supertest(httpServer)
+      .post(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        id: CreateAcademicPeriodE2eSeed.thirdAcademicPeriodId,
+        name: CreateAcademicPeriodE2eSeed.academicPeriodName,
+        code: CreateAcademicPeriodE2eSeed.academicPeriodCode,
+        startDate: CreateAcademicPeriodE2eSeed.academicPeriodStartDate,
+        endDate: CreateAcademicPeriodE2eSeed.academicPeriodEndDate,
+        businessUnit: CreateAcademicPeriodE2eSeed.businessUnitId,
+        examinationCalls: [
+          {
+            id: CreateAcademicPeriodE2eSeed.examinationCallId,
+            name: CreateAcademicPeriodE2eSeed.examinationCallName,
+            startDate: CreateAcademicPeriodE2eSeed.examinationCallStartDate,
+            endDate: CreateAcademicPeriodE2eSeed.examinationCallEndDate,
+            timezone: CreateAcademicPeriodE2eSeed.examinationCallTimeZone,
+          },
+        ],
+        blocksNumber: 2,
+      })
+      .expect(409);
+    expect(response.body.message).toEqual(
+      'sga.academic-period.duplicated-code',
+    );
+  });
 
   afterAll(async () => {
     await seeder.clear();

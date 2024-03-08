@@ -33,6 +33,7 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   public static academicPeriodEndDate = new Date(2023, 10, 12);
   public static secondAcademicPeriodId = '37163ab1-f6ba-4fe7-8cfa-4d22dccc916a';
   public static secondAcademicPeriodCode = 'FEB2024';
+  public static thirdAcademicPeriodId = '6b52876d-c7e8-4b50-952b-441142e6dfa0';
 
   public static examinationCallId = '2adcb996-00c0-41bc-ab37-e1468843ce1e';
   public static examinationCallName = 'NAME';

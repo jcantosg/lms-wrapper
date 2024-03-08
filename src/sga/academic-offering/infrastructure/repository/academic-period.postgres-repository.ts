@@ -22,10 +22,10 @@ export class AcademicPeriodPostgresRepository
 
   async existsByCode(id: string, code: string): Promise<boolean> {
     const academicPeriod = await this.repository.findOne({
-      where: { id, code },
+      where: { code },
     });
 
-    return !academicPeriod ? false : academicPeriod.code !== code;
+    return !academicPeriod ? false : academicPeriod.id !== id;
   }
 
   async existsById(id: string): Promise<boolean> {
