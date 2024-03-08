@@ -17,14 +17,21 @@ const createEdaeUserHandler = {
     repository: EdaeUserRepository,
     businessUnitGetter: BusinessUnitGetter,
     countryGetter: CountryGetter,
+    imageUploader: ImageUploader,
   ) => {
     return new CreateEdaeUserHandler(
       repository,
       businessUnitGetter,
       countryGetter,
+      imageUploader,
     );
   },
-  inject: [EdaeUserRepository, BusinessUnitGetter, CountryGetter],
+  inject: [
+    EdaeUserRepository,
+    BusinessUnitGetter,
+    CountryGetter,
+    ImageUploader,
+  ],
 };
 
 const getAllEdaeUsersHandler = {

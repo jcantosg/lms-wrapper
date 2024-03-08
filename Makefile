@@ -42,6 +42,7 @@ test-unit: ## Run unit tests
 test-e2e: ## Run e2e tests
 	rm -rf dist
 	mkdir -p files/admin-user-avatar
+	mkdir -p files/edae-user-avatar
 	make test-database-setup
 	@npm run test:e2e ; make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*

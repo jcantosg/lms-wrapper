@@ -6,12 +6,14 @@ import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { EdaeUserRepository } from '#/sga/edae-user/domain/repository/edae-user.repository';
 import { EdaeUser } from '#/sga/edae-user/domain/entity/edae-user.entity';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 
 export class CreateEdaeUserHandler implements CommandHandler {
   constructor(
     private readonly edaeUserRepository: EdaeUserRepository,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly countryGetter: CountryGetter,
+    private readonly imageUploader: ImageUploader,
   ) {}
 
   async handle(command: CreateEdaeUserCommand): Promise<void> {
@@ -34,6 +36,14 @@ export class CreateEdaeUserHandler implements CommandHandler {
       }),
     );
 
+    const avatar = command.avatar
+      ? await this.imageUploader.uploadImage(
+          command.avatar,
+          command.name,
+          'edae-user-avatar',
+        )
+      : null;
+
     const location = await this.countryGetter.get(command.location);
 
     const edaeUser = EdaeUser.create(
@@ -48,7 +58,7 @@ export class CreateEdaeUserHandler implements CommandHandler {
       command.timeZone,
       command.isRemote,
       location,
-      command.avatar,
+      avatar,
     );
     await this.edaeUserRepository.save(edaeUser);
   }

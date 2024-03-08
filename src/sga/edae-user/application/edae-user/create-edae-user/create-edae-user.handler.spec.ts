@@ -9,11 +9,16 @@ import { BusinessUnitMockRepository } from '#test/mocks/sga/business-unit/busine
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { CountryMockRepository } from '#test/mocks/shared/country.mock-repository';
 import { EdaeUserDuplicatedException } from '#shared/domain/exception/edae-user/edae-user-duplicated.exception';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { getImageUploaderMock } from '#test/service-factory';
 
 let businessUnitGetter: BusinessUnitGetter;
 let businessUnitMockRepository: BusinessUnitMockRepository;
 let countryGetter: CountryGetter;
 let countryMockRepository: CountryMockRepository;
+let imageUploader: ImageUploader;
+
+let uploadImageSpy: jest.SpyInstance;
 
 const command = new CreateEdaeUserCommand(
   'id',
@@ -43,6 +48,8 @@ describe('CreateEdaeUserHandler', () => {
     businessUnitMockRepository = new BusinessUnitMockRepository();
     countryMockRepository = new CountryMockRepository();
     countryGetter = new CountryGetter(countryMockRepository);
+    imageUploader = getImageUploaderMock();
+    uploadImageSpy = jest.spyOn(imageUploader, 'uploadImage');
 
     businessUnitMockRepository.get.mockResolvedValue({});
 
@@ -51,6 +58,7 @@ describe('CreateEdaeUserHandler', () => {
       mockRepository,
       businessUnitGetter,
       countryGetter,
+      imageUploader,
     );
   });
 
@@ -73,6 +81,9 @@ describe('CreateEdaeUserHandler', () => {
   it('Should successfully create an EdaeUser', async () => {
     jest.spyOn(mockRepository, 'existsById').mockResolvedValue(false);
     jest.spyOn(mockRepository, 'existsByEmail').mockResolvedValue(false);
+    uploadImageSpy.mockImplementation(
+      (): Promise<string> => Promise.resolve('avatar'),
+    );
 
     const mockBusinessUnit = { id: 'businessUnit', name: 'Test Unit' };
     businessUnitMockRepository.getByAdminUser.mockResolvedValue(
