@@ -53,6 +53,7 @@ test-e2e-ci: ## Run e2e tests
 	@npm run test:e2e
 	make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*
+	rm -rf files/edae-user/new-edae-user*
 
 database-drop: ## Remove all database collections
 	@npm run sga:db:drop -- -f
@@ -61,11 +62,15 @@ database-reload: ## drop, runs migrations, seed
 	@npm run sga:db:drop -- -f
 	@npm run typeorm:migrations:up
 	@npm run sga:db:seed:data
+	@npm run sga:db:seed:evaluation-types
+
 
 test-database-setup: ## Setup the test database
 	@npm run sga:test:db:create
 	@npm run typeorm:test:migrations:up
 	@npm run sga:test:db:seed:country
+	@npm run sga:test:db:seed:evaluation-types
+
 
 test-database-drop: ## Drop the test database
 	@npm run sga:test:db:drop -f

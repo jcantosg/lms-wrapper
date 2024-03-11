@@ -3,12 +3,12 @@ import { AcademicPeriodRepository } from '#academic-offering/domain/repository/a
 import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { CreateAcademicPeriodCommand } from '#academic-offering/applicaton/create-academic-period/create-academic-period.command';
-import { AcademicPeriodDuplicatedException } from '#shared/domain/exception/academic-period/academic-period.duplicated.exception';
-import { AcademicPeriodDuplicatedCodeException } from '#shared/domain/exception/academic-period/academic-period.duplicated-code.exception';
-import { ExaminationCallDuplicatedException } from '#shared/domain/exception/academic-period/examination-call.duplicated.exception';
+import { AcademicPeriodDuplicatedException } from '#shared/domain/exception/academic-offering/academic-period.duplicated.exception';
+import { AcademicPeriodDuplicatedCodeException } from '#shared/domain/exception/academic-offering/academic-period.duplicated-code.exception';
+import { ExaminationCallDuplicatedException } from '#shared/domain/exception/academic-offering/examination-call.duplicated.exception';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
-import { AcademicPeriodNotExaminationCallsException } from '#shared/domain/exception/academic-period/academic-period.not-examination-calls.exception';
+import { AcademicPeriodNotExaminationCallsException } from '#shared/domain/exception/academic-offering/academic-period.not-examination-calls.exception';
 
 export class CreateAcademicPeriodHandler implements CommandHandler {
   constructor(

@@ -1,7 +1,7 @@
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
-import { CreateAcademicPeriodE2eSeed } from '#test/e2e/sga/academic-period/create-academic-period.e2e-seeds';
+import { CreateAcademicPeriodE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/create-academic-period.e2e-seeds';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';

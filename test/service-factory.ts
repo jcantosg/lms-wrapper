@@ -12,6 +12,7 @@ import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-rol
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
+import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -82,4 +83,9 @@ export function getEdaeUserBusinessUnitCheckerMock(): EdaeUserBusinessUnitChecke
       typeof EdaeUserBusinessUnitChecker
     >
   ).prototype;
+}
+
+export function getAnEvaluationTypeGetterMock(): EvaluationTypeGetter {
+  return (EvaluationTypeGetter as jest.Mocked<typeof EvaluationTypeGetter>)
+    .prototype;
 }

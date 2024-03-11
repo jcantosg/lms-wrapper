@@ -35,7 +35,9 @@
     "sga:test:db:seed:country": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/country/import-countries.command.ts",
     "sga:db:seed:admin-user": "ts-node -r tsconfig-paths/register src/commands/admin-user/create-default-admin-user.command.ts",
     "sga:test:db:seed:admin-user": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/admin-user/create-default-admin-user.command.ts",
-    "sga:db:seed:data": "ts-node -r tsconfig-paths/register src/commands/seed-database/seed-database.command.ts"
+    "sga:db:seed:data": "ts-node -r tsconfig-paths/register src/commands/seed-database/seed-database.command.ts",
+    "sga:db:seed:evaluation-types": "ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts",
+    "sga:test:db:seed:evaluation-types": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.10.3",

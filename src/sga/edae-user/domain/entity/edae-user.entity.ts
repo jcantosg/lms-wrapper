@@ -4,6 +4,7 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 export class EdaeUser extends BaseEntity {
   private constructor(
@@ -20,6 +21,7 @@ export class EdaeUser extends BaseEntity {
     private _timeZone: TimeZoneEnum,
     private _isRemote: boolean,
     private _location: Country,
+    private _subjects: Subject[],
     private _avatar: string | null,
   ) {
     super(id, createdAt, updatedAt);
@@ -28,6 +30,7 @@ export class EdaeUser extends BaseEntity {
   public get name(): string {
     return this._name;
   }
+
   public set name(value: string) {
     this._name = value;
   }
@@ -35,6 +38,7 @@ export class EdaeUser extends BaseEntity {
   public get surname1(): string {
     return this._surname1;
   }
+
   public set surname1(value: string) {
     if (!value) throw new Error('Surname1 cannot be empty.');
     this._surname1 = value;
@@ -43,6 +47,7 @@ export class EdaeUser extends BaseEntity {
   public get surname2(): string | null {
     return this._surname2;
   }
+
   public set surname2(value: string | null) {
     this._surname2 = value;
   }
@@ -50,6 +55,7 @@ export class EdaeUser extends BaseEntity {
   public get email(): string {
     return this._email;
   }
+
   public set email(value: string) {
     this._email = value;
   }
@@ -57,6 +63,7 @@ export class EdaeUser extends BaseEntity {
   public get identityDocument(): IdentityDocument {
     return this._identityDocument;
   }
+
   public set identityDocument(value: IdentityDocument) {
     this._identityDocument = value;
   }
@@ -64,6 +71,7 @@ export class EdaeUser extends BaseEntity {
   public get roles(): EdaeRoles[] {
     return this._roles;
   }
+
   public set roles(value: EdaeRoles[]) {
     this._roles = value;
   }
@@ -71,6 +79,7 @@ export class EdaeUser extends BaseEntity {
   public get businessUnits(): BusinessUnit[] {
     return this._businessUnits;
   }
+
   public set businessUnits(value: BusinessUnit[]) {
     this._businessUnits = value;
   }
@@ -78,6 +87,7 @@ export class EdaeUser extends BaseEntity {
   public get timeZone(): TimeZoneEnum {
     return this._timeZone;
   }
+
   public set timeZone(value: TimeZoneEnum) {
     this._timeZone = value;
   }
@@ -85,6 +95,7 @@ export class EdaeUser extends BaseEntity {
   public get isRemote(): boolean {
     return this._isRemote;
   }
+
   public set isRemote(value: boolean) {
     this._isRemote = value;
   }
@@ -92,6 +103,7 @@ export class EdaeUser extends BaseEntity {
   public get location(): Country {
     return this._location;
   }
+
   public set location(value: Country) {
     this._location = value;
   }
@@ -99,8 +111,17 @@ export class EdaeUser extends BaseEntity {
   public get avatar(): string | null {
     return this._avatar;
   }
+
   public set avatar(value: string | null) {
     this._avatar = value;
+  }
+
+  public get subjects(): Subject[] {
+    return this._subjects;
+  }
+
+  public set subjects(value: Subject[]) {
+    this._subjects = value;
   }
 
   static create(
@@ -131,6 +152,7 @@ export class EdaeUser extends BaseEntity {
       timeZone,
       isRemote,
       location,
+      [],
       avatar,
     );
   }

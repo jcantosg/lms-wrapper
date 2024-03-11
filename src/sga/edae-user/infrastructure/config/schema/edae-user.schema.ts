@@ -82,5 +82,9 @@ export const edaeUserSchema = new EntitySchema<EdaeUser>({
         name: 'location_id',
       },
     },
+    subjects: {
+      type: 'many-to-many',
+      target: 'Subject',
+    },
   },
 });

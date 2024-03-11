@@ -14,6 +14,7 @@ import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { getAnIdentityDocument } from '#test/value-object-factory';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -107,4 +108,10 @@ export const getAClassroom = (id: string = uuid()): Classroom => {
     getAnAdminUser(),
     getAnExaminationCenter(),
   );
+};
+
+export const getAnEvaluationType = (id: string = uuid()): EvaluationType => {
+  return EvaluationType.create(id, 'test', 60, 40, 0, false, [
+    getABusinessUnit(),
+  ]);
 };

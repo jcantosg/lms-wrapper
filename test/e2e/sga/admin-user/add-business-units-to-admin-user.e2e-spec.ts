@@ -122,9 +122,7 @@ describe('Add Business Units to Admin User (PUT)', () => {
       .send({ businessUnits: ['d31aa8ac-2ef7-4574-8774-d3e95963aaba'] })
       .expect(404);
 
-    expect(response.body.message).toBe(
-      'sga.business-unit.business-unit-not-found',
-    );
+    expect(response.body.message).toBe('sga.business-unit.not-found');
   });
 
   it('should return a 404 business unit not found(bu to add not allow to admin user business unit requester)', async () => {
@@ -138,9 +136,7 @@ describe('Add Business Units to Admin User (PUT)', () => {
       .send({ businessUnits: [murciaBusinessUnit?.id] })
       .expect(404);
 
-    expect(response.body.message).toBe(
-      'sga.business-unit.business-unit-not-found',
-    );
+    expect(response.body.message).toBe('sga.business-unit.not-found');
   });
 
   it('should return a 200 business unit added', async () => {

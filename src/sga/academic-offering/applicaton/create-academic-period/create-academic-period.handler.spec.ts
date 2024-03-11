@@ -5,13 +5,13 @@ import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-
 import { getABusinessUnit, getAnAdminUser } from '#test/entity-factory';
 import { CreateAcademicPeriodCommand } from '#academic-offering/applicaton/create-academic-period/create-academic-period.command';
 import { v4 as uuid } from 'uuid';
-import { AcademicPeriodMockRepository } from '#test/mocks/sga/academic-period/academic-period.mock-repository';
-import { ExaminationCallMockRepository } from '#test/mocks/sga/academic-period/examination-call.mock-repository';
+import { AcademicPeriodMockRepository } from '#test/mocks/sga/academic-offering/academic-period.mock-repository';
+import { ExaminationCallMockRepository } from '#test/mocks/sga/academic-offering/examination-call.mock-repository';
 import { getBusinessUnitGetterMock } from '#test/service-factory';
-import { AcademicPeriodDuplicatedCodeException } from '#shared/domain/exception/academic-period/academic-period.duplicated-code.exception';
-import { AcademicPeriodNotExaminationCallsException } from '#shared/domain/exception/academic-period/academic-period.not-examination-calls.exception';
+import { AcademicPeriodDuplicatedCodeException } from '#shared/domain/exception/academic-offering/academic-period.duplicated-code.exception';
+import { AcademicPeriodNotExaminationCallsException } from '#shared/domain/exception/academic-offering/academic-period.not-examination-calls.exception';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-period/academic-period.wrong-block-number.exception';
+import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 let handler: CreateAcademicPeriodHandler;

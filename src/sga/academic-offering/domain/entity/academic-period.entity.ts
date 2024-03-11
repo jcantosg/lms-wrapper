@@ -1,7 +1,7 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
-import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-period/academic-period.wrong-block-number.exception';
+import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 
 const MIN_BLOCK_NUMBER = 1;

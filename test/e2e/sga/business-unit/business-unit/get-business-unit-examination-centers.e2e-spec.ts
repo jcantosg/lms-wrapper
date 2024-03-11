@@ -47,9 +47,7 @@ describe('/business-unit/:id/examination-centers (GET)', () => {
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(404);
 
-    expect(response.body.message).toBe(
-      'sga.business-unit.business-unit-not-found',
-    );
+    expect(response.body.message).toBe('sga.business-unit.not-found');
   });
 
   afterAll(async () => {

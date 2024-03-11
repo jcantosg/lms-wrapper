@@ -2,6 +2,10 @@ import { ExaminationCallRepository } from '#academic-offering/domain/repository/
 import { ExaminationCallPostgresRepository } from '#academic-offering/infrastructure/repository/examination-call.postgres-repository';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { AcademicPeriodPostgresRepository } from '#academic-offering/infrastructure/repository/academic-period.postgres-repository';
+import { EvaluationTypeRepository } from '#academic-offering/domain/repository/evaluation-type.repository';
+import { EvaluationTypePostgresRepository } from '#academic-offering/infrastructure/repository/evaluation-type.postgres-repository';
+import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
+import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
 
 export const repositories = [
   {
@@ -11,5 +15,13 @@ export const repositories = [
   {
     provide: AcademicPeriodRepository,
     useClass: AcademicPeriodPostgresRepository,
+  },
+  {
+    provide: EvaluationTypeRepository,
+    useClass: EvaluationTypePostgresRepository,
+  },
+  {
+    provide: SubjectRepository,
+    useClass: SubjectPostgresRepository,
   },
 ];

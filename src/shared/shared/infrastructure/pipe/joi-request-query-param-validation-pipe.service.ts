@@ -4,13 +4,13 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
-import { ObjectSchema, ArraySchema } from 'joi';
+import { ArraySchema, ObjectSchema, StringSchema } from 'joi';
 
 @Injectable()
 export class JoiRequestQueryParamValidationPipeService
   implements PipeTransform
 {
-  constructor(private schema: ObjectSchema | ArraySchema) {}
+  constructor(private schema: ObjectSchema | ArraySchema | StringSchema) {}
 
   transform(value: any, metadata: ArgumentMetadata): any {
     if ('query' !== metadata.type) {
