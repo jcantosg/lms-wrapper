@@ -8,6 +8,7 @@ import { SearchEdaeUsersHandler } from '#edae-user/application/search-edae-users
 import { RemoveBusinessUnitsFromEdaeUserHandler } from '#edae-user/application/remove-business-units-from-edae-user/remove-business-units-from-edae-user.handler';
 import { AddBusinessUnitsToEdaeUserHandler } from '#edae-user/application/add-business-units-to-edae-user/add-business-units-to-edae-user.handler';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { GetEdaeUserHandler } from '#edae-user/application/get-edae-user/get-edae-user.handler';
 import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
 import { CreateEdaeUserHandler } from '#edae-user/application/edae-user/create-edae-user/create-edae-user.handler';
 
@@ -114,11 +115,20 @@ const addBusinessUnitsToEdaeUserHandler = {
   inject: [EdaeUserRepository, BusinessUnitGetter, EdaeUserGetter],
 };
 
+const getEdaeUserHandler = {
+  provide: GetEdaeUserHandler,
+  useFactory: (edaeUserGetter: EdaeUserGetter) => {
+    return new GetEdaeUserHandler(edaeUserGetter);
+  },
+  inject: [EdaeUserGetter],
+};
+
 export const handlers = [
   getAllEdaeUsersHandler,
   searchEdaeUserHandler,
   removeBusinessUnitsFromEdaeUserHandler,
   addBusinessUnitsToEdaeUserHandler,
+  getEdaeUserHandler,
   editEdaeUserHandler,
   createEdaeUserHandler,
 ];

@@ -143,6 +143,40 @@ export class EdaeUserPostgresRepository
     return result;
   }
 
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.location`, 'location');
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnits`,
+      'business_units',
+    );
+
+    return queryBuilder;
+  }
+
+  async getByAdminUser(
+    edaeUserId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<EdaeUser | null> {
+    if (isSuperAdmin) {
+      return await this.get(edaeUserId);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('edaeUser');
+
+    return await queryBuilder
+      .where('edaeUser.id = :id', { id: edaeUserId })
+      .andWhere('business_units.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
+
   async update(edaeUser: EdaeUser): Promise<void> {
     await this.repository.save({
       id: edaeUser.id,

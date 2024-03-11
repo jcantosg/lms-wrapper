@@ -24,4 +24,10 @@ export abstract class EdaeUserRepository {
   ): Promise<number>;
 
   abstract update(edaeUser: EdaeUser): Promise<void>;
+
+  abstract getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<EdaeUser | null>;
 }

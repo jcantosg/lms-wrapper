@@ -14,4 +14,21 @@ export class EdaeUserGetter {
 
     return edaeUser;
   }
+
+  async getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<EdaeUser> {
+    const result = await this.edaeUserRepository.getByAdminUser(
+      id,
+      adminUserBusinessUnits,
+      isSuperAdmin,
+    );
+    if (!result) {
+      throw new EdaeUserNotFoundException();
+    }
+
+    return result;
+  }
 }
