@@ -36,11 +36,11 @@ describe('Get Edae User Detail (GET)', () => {
     await supertest(httpServer).get(path).expect(401);
   });
 
-  it('Should return forbidden (User not Superadmin)', async () => {
+  it('Should return 404 (User not in business units of edae user)', async () => {
     await supertest(httpServer)
       .get(path)
       .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
+      .expect(404);
   });
 
   it('Should return a 404', async () => {

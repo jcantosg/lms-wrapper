@@ -146,7 +146,8 @@ describe('Remove Business Units from Admin User (PUT)', () => {
   });
 
   afterAll(async () => {
-    await seeder.clear();
     await app.close();
+    await seeder.clear();
+    await datasource.destroy();
   });
 });

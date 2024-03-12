@@ -4,6 +4,8 @@ import { SubjectRepository } from '#academic-offering/domain/repository/subject.
 import { InjectRepository } from '@nestjs/typeorm';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 import { Repository } from 'typeorm';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 export class SubjectPostgresRepository
   extends TypeOrmRepository<Subject>
@@ -47,5 +49,76 @@ export class SubjectPostgresRepository
       isRegulated: subject.isRegulated,
       isCore: subject.isCore,
     });
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnit`,
+      'business_unit',
+    );
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.evaluationType`,
+      'evaluation_type',
+    );
+
+    return queryBuilder;
+  }
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'subjects';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
+  }
+
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<Subject[]> {
+    const aliasQuery = 'subjects';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 }

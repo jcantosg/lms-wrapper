@@ -6,4 +6,16 @@ export abstract class SubjectRepository {
   abstract exists(id: string): Promise<boolean>;
 
   abstract save(subject: Subject): Promise<void>;
+
+  abstract matching(
+    criteria: any,
+    adminUserBusinessUnits: any[],
+    isSuperAdmin: boolean,
+  ): Promise<Subject[]>;
+
+  abstract count(
+    criteria: any,
+    adminUserBusinessUnits: any[],
+    isSuperAdmin: boolean,
+  ): Promise<number>;
 }
