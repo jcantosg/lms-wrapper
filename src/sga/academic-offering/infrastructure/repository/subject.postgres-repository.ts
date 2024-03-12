@@ -51,6 +51,13 @@ export class SubjectPostgresRepository
     });
   }
 
+  async get(id: string): Promise<Subject | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnit: true, evaluationType: true },
+    });
+  }
+
   private initializeQueryBuilder(aliasQuery: string) {
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 

@@ -24,7 +24,10 @@ export class EvaluationTypePostgresRepository
   }
 
   async get(id: string): Promise<EvaluationType | null> {
-    return await this.repository.findOne({ where: { id } });
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnits: true },
+    });
   }
 
   async save(evaluationType: EvaluationType): Promise<void> {

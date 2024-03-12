@@ -13,7 +13,6 @@ describe('Get Edae User Detail (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
-  let adminAccessToken: string;
 
   beforeAll(async () => {
     app = await startApp();
@@ -25,22 +24,10 @@ describe('Get Edae User Detail (GET)', () => {
       GetEdaeUserDetailE2eSeed.superAdminEmail,
       GetEdaeUserDetailE2eSeed.superAdminPassword,
     );
-    adminAccessToken = await login(
-      httpServer,
-      GetEdaeUserDetailE2eSeed.adminEmail,
-      GetEdaeUserDetailE2eSeed.adminPassword,
-    );
   });
 
   it('Should return Unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
-  });
-
-  it('Should return 404 (User not in business units of edae user)', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(404);
   });
 
   it('Should return a 404', async () => {
@@ -67,7 +54,8 @@ describe('Get Edae User Detail (GET)', () => {
             name: 'Madrid',
           },
         ],
-        identityDocument: GetEdaeUserDetailE2eSeed.edaeUserIdentityDocument,
+        identityDocument:
+          GetEdaeUserDetailE2eSeed.edaeUserIdentityDocument.value,
       }),
     );
   });

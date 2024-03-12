@@ -13,6 +13,9 @@ import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
+import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
+import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
+import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -88,4 +91,22 @@ export function getEdaeUserBusinessUnitCheckerMock(): EdaeUserBusinessUnitChecke
 export function getAnEvaluationTypeGetterMock(): EvaluationTypeGetter {
   return (EvaluationTypeGetter as jest.Mocked<typeof EvaluationTypeGetter>)
     .prototype;
+}
+
+export function getASubjectGetterMock(): SubjectGetter {
+  return (SubjectGetter as jest.Mocked<typeof SubjectGetter>).prototype;
+}
+
+export function getAnEvaluationTypeBusinessUnitCheckerMock(): EvaluationTypeBusinessUnitChecker {
+  return (
+    EvaluationTypeBusinessUnitChecker as jest.Mocked<
+      typeof EvaluationTypeBusinessUnitChecker
+    >
+  ).prototype;
+}
+
+export function getASubjectBusinessUnitCheckerMock(): SubjectBusinessUnitChecker {
+  return (
+    SubjectBusinessUnitChecker as jest.Mocked<typeof SubjectBusinessUnitChecker>
+  ).prototype;
 }

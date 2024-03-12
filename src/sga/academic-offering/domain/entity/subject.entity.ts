@@ -188,4 +188,41 @@ export class Subject extends BaseEntity {
       isCore,
     );
   }
+
+  update(
+    name: string,
+    code: string,
+    hours: number,
+    officialCode: string | null,
+    image: string | null,
+    modality: SubjectModality,
+    evaluationType: EvaluationType | null,
+    type: SubjectType,
+    isRegulated: boolean,
+    isCore: boolean,
+    user: AdminUser,
+  ) {
+    if (isRegulated && !evaluationType) {
+      throw new EvaluationTypeNotFoundException();
+    }
+    if (hours <= 0) {
+      throw new SubjectBelowZeroHoursException();
+    }
+    const assignedEvaluationType: EvaluationType | null = isRegulated
+      ? evaluationType
+      : null;
+
+    this.name = name;
+    this.code = code;
+    this.hours = hours;
+    this.officialCode = officialCode;
+    this.image = image;
+    this.modality = modality;
+    this.evaluationType = assignedEvaluationType;
+    this.type = type;
+    this.isRegulated = isRegulated;
+    this.isCore = isCore;
+    this.updatedBy = user;
+    this.updatedAt = new Date();
+  }
 }

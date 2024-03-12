@@ -7,6 +7,8 @@ export abstract class SubjectRepository {
 
   abstract save(subject: Subject): Promise<void>;
 
+  abstract get(id: string): Promise<Subject | null>;
+
   abstract matching(
     criteria: any,
     adminUserBusinessUnits: any[],

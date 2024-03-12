@@ -7,6 +7,7 @@ import { GetAllSubjectTypesController } from '#academic-offering/infrastructure/
 import { CreateSubjectController } from '#academic-offering/infrastructure/controller/create-subject.controller';
 import { GetAllSubjectsController } from '#academic-offering/infrastructure/controller/get-all-subjects/get-all-subjects.controller';
 import { SearchSubjectsController } from '#academic-offering/infrastructure/controller/search-subjects.controller';
+import { EditSubjectController } from '#academic-offering/infrastructure/controller/edit-subject.controller';
 
 export const controllers = [
   CreateAcademicPeriodController,
@@ -18,4 +19,5 @@ export const controllers = [
   GetAllSubjectTypesController,
   GetAllSubjectsController,
   SearchSubjectsController,
+  EditSubjectController,
 ];
