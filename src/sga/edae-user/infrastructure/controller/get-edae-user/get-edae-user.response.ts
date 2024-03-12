@@ -1,8 +1,8 @@
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { IdentityDocumentValues } from '#/sga/shared/domain/value-object/identity-document';
 
 export interface EdaeUserResponse {
   id: string;
@@ -10,7 +10,7 @@ export interface EdaeUserResponse {
   surname1: string;
   surname2: string | null;
   email: string;
-  identityDocument: IdentityDocument;
+  identityDocument: IdentityDocumentValues;
   roles: EdaeRoles[];
   businessUnits: EdaeUserBusinessUnitResponse[];
   timeZone: TimeZoneEnum;
@@ -39,7 +39,7 @@ export class GetEdaeUserResponse {
       surname1: edaeUser.surname1,
       surname2: edaeUser.surname2,
       email: edaeUser.email,
-      identityDocument: edaeUser.identityDocument,
+      identityDocument: edaeUser.identityDocument.value,
       roles: edaeUser.roles,
       businessUnits: edaeUser.businessUnits.map(
         (businessUnit: BusinessUnit): EdaeUserBusinessUnitResponse => {
