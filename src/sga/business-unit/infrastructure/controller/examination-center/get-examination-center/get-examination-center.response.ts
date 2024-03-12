@@ -59,6 +59,7 @@ export class GetExaminationCenterResponse {
             id: examinationCenter.mainBusinessUnit.id,
             name: examinationCenter.mainBusinessUnit.name,
             code: examinationCenter.mainBusinessUnit.code,
+            isActive: examinationCenter.mainBusinessUnit.isActive,
             isMain: true,
           }
         : null,

@@ -15,6 +15,7 @@ export interface BusinessUnitExaminationCenterResponse {
   id: string;
   name: string;
   code: string;
+  isActive: boolean;
   isMain: boolean;
 }
 
@@ -46,6 +47,7 @@ export class GetBusinessUnitResponse {
           id: examinationCenter.id,
           name: examinationCenter.name,
           code: examinationCenter.code,
+          isActive: examinationCenter.isActive,
           isMain: examinationCenter.isMainForBusinessUnit(businessUnit.id),
         }),
       ),
