@@ -94,7 +94,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
         case FilterOperators.LIKE:
           this.addWhereCondition(
             queryBuilder,
-            `LOWER(${fieldPath}) LIKE LOWER(:${paramName})`,
+            `unaccent(LOWER(${fieldPath})) LIKE unaccent(LOWER(:${paramName}))`,
             parameter,
             groupOperator,
           );
