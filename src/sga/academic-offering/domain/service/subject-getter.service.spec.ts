@@ -1,40 +1,47 @@
-import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
-import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
-import { SubjectMockRepository } from '#test/mocks/sga/academic-offering/subject.mock-repository';
-import { getASubject } from '#test/entity-factory';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
-import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject-not-found.exception';
-import clearAllMocks = jest.clearAllMocks;
+import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
+import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
+import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject.not-found.exception';
+import { getASubject } from '#test/entity-factory';
+import { SubjectMockRepository } from '#test/mocks/sga/academic-offering/subject.mock-repository';
 
 let service: SubjectGetter;
-let repository: SubjectRepository;
-const subject = getASubject();
-let getSpy: jest.SpyInstance;
+let subjectRepository: SubjectRepository;
 
-describe('Subject Getter Unit Tests', () => {
+let getSubjectSpy: any;
+
+const subject = getASubject();
+
+describe('Subject Getter', () => {
   beforeAll(() => {
-    repository = new SubjectMockRepository();
-    service = new SubjectGetter(repository);
-    getSpy = jest.spyOn(repository, 'get');
+    subjectRepository = new SubjectMockRepository();
+
+    getSubjectSpy = jest.spyOn(subjectRepository, 'get');
+
+    service = new SubjectGetter(subjectRepository);
   });
 
-  it('should return a subject', async () => {
-    getSpy.mockImplementation((): Promise<Subject | null> => {
+  it('Should return a subject', async () => {
+    getSubjectSpy.mockImplementation((): Promise<Subject | null> => {
       return Promise.resolve(subject);
     });
-    const result = await service.get(subject.id);
-    expect(result).toEqual(subject);
+
+    const result = await service.get('subjectId');
+
+    expect(result).toBe(subject);
   });
-  it('should throw an exception', async () => {
-    getSpy.mockImplementation(
-      (): Promise<Subject | null> => Promise.resolve(null),
-    );
-    await expect(service.get(subject.id)).rejects.toThrow(
+
+  it('Should throw a SubjectNotFoundException', async () => {
+    getSubjectSpy.mockImplementation((): Promise<Subject | null> => {
+      return Promise.resolve(null);
+    });
+
+    await expect(service.get('subjectId')).rejects.toThrow(
       SubjectNotFoundException,
     );
   });
 
   afterAll(() => {
-    clearAllMocks();
+    jest.clearAllMocks();
   });
 });

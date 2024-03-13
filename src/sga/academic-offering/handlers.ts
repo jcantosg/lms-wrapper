@@ -12,8 +12,9 @@ import { SubjectRepository } from '#academic-offering/domain/repository/subject.
 import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/get-all-subject-types/get-all-subject-types.handler';
-import { EditSubjectHandler } from '#academic-offering/applicaton/edit-subject/edit-subject.handler';
+import { GetSubjectHandler } from '#academic-offering/applicaton/get-subject/get-subject.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
+import { EditSubjectHandler } from '#academic-offering/applicaton/edit-subject/edit-subject.handler';
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
 import { GetAllSubjectsHandler } from '#academic-offering/applicaton/get-all-subjects/get-all-subjects.handler';
@@ -88,6 +89,14 @@ const createSubjectHandler = {
   ],
 };
 
+const getSubjectHandler = {
+  provide: GetSubjectHandler,
+  useFactory: (getter: SubjectGetter) => {
+    return new GetSubjectHandler(getter);
+  },
+  inject: [SubjectGetter],
+};
+
 const editSubjectHandler = {
   provide: EditSubjectHandler,
   useFactory: (
@@ -140,6 +149,7 @@ export const handlers = [
   GetAllSubjectsModalitiesHandler,
   GetAllSubjectTypesHandler,
   createSubjectHandler,
+  getSubjectHandler,
   getAllSubjectsHandler,
   searchSubjectsHandler,
   editSubjectHandler,

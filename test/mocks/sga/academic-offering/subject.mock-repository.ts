@@ -5,6 +5,7 @@ export class SubjectMockRepository implements SubjectRepository {
   save = jest.fn();
   existsByCode = jest.fn();
   exists = jest.fn();
+  getByAdminUser = jest.fn();
   matching = jest.fn();
   count = jest.fn();
 }

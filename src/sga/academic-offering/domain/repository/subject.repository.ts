@@ -9,6 +9,12 @@ export abstract class SubjectRepository {
 
   abstract get(id: string): Promise<Subject | null>;
 
+  abstract getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Subject | null>;
+
   abstract matching(
     criteria: any,
     adminUserBusinessUnits: any[],

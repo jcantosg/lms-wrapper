@@ -73,6 +73,29 @@ export class SubjectPostgresRepository
 
     return queryBuilder;
   }
+
+  async getByAdminUser(
+    subjectId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Subject | null> {
+    if (isSuperAdmin) {
+      return await this.get(subjectId);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('subject');
+
+    return await queryBuilder
+      .where('subject.id = :id', { id: subjectId })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
+
   async count(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],
