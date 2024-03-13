@@ -13,6 +13,7 @@ import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
@@ -93,6 +94,10 @@ export function getAnEvaluationTypeGetterMock(): EvaluationTypeGetter {
     .prototype;
 }
 
+export function getAnAcademicPeriodGetterMock(): AcademicPeriodGetter {
+  return (AcademicPeriodGetter as jest.Mocked<typeof AcademicPeriodGetter>)
+    .prototype;
+}
 export function getASubjectGetterMock(): SubjectGetter {
   return (SubjectGetter as jest.Mocked<typeof SubjectGetter>).prototype;
 }

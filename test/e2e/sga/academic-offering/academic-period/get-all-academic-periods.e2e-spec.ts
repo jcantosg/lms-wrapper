@@ -10,6 +10,7 @@ import {
 } from '#/sga/shared/application/collection.query';
 import { GetAllAcademicPeriodsE2eSeedDataConfig } from '#test/e2e/sga/academic-offering/academic-period/get-all-academic-periods.e2e-seed-data-config';
 import { GetAllAcademicPeriodsE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/get-all-academic-periods.e2e-seed';
+import { formatDate } from '#shared/domain/service/date-formatter.service';
 
 const path = '/academic-period';
 
@@ -55,12 +56,8 @@ describe('/academic-period', () => {
             id: academicPeriod.id,
             name: academicPeriod.name,
             code: academicPeriod.code,
-            startDate: `${academicPeriod.startDate.getDate()}/${
-              academicPeriod.startDate.getMonth() + 1
-            }/${academicPeriod.startDate.getFullYear()}`,
-            endDate: `${academicPeriod.endDate.getDate()}/${
-              academicPeriod.endDate.getMonth() + 1
-            }/${academicPeriod.endDate.getFullYear()}`,
+            startDate: formatDate(academicPeriod.startDate),
+            endDate: formatDate(academicPeriod.endDate),
             businessUnit: {
               id: GetAllAcademicPeriodsE2eSeedDataConfig.businessUnit.id,
               name: GetAllAcademicPeriodsE2eSeedDataConfig.businessUnit.name,
@@ -130,12 +127,8 @@ describe('/academic-period', () => {
           id: academicPeriod.id,
           name: academicPeriod.name,
           code: academicPeriod.code,
-          startDate: `${academicPeriod.startDate.getDate()}/${
-            academicPeriod.startDate.getMonth() + 1
-          }/${academicPeriod.startDate.getFullYear()}`,
-          endDate: `${academicPeriod.endDate.getDate()}/${
-            academicPeriod.endDate.getMonth() + 1
-          }/${academicPeriod.endDate.getFullYear()}`,
+          startDate: formatDate(academicPeriod.startDate),
+          endDate: formatDate(academicPeriod.endDate),
           businessUnit: {
             id: GetAllAcademicPeriodsE2eSeedDataConfig.businessUnit.id,
             name: GetAllAcademicPeriodsE2eSeedDataConfig.businessUnit.name,
@@ -166,12 +159,8 @@ describe('/academic-period', () => {
             id: academicPeriod.id,
             name: academicPeriod.name,
             code: academicPeriod.code,
-            startDate: `${academicPeriod.startDate.getDate()}/${
-              academicPeriod.startDate.getMonth() + 1
-            }/${academicPeriod.startDate.getFullYear()}`,
-            endDate: `${academicPeriod.endDate.getDate()}/${
-              academicPeriod.endDate.getMonth() + 1
-            }/${academicPeriod.endDate.getFullYear()}`,
+            startDate: formatDate(academicPeriod.startDate),
+            endDate: formatDate(academicPeriod.endDate),
             businessUnit: {
               id: GetAllAcademicPeriodsE2eSeedDataConfig.businessUnit.id,
               name: GetAllAcademicPeriodsE2eSeedDataConfig.businessUnit.name,

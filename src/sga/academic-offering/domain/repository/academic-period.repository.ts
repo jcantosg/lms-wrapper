@@ -20,4 +20,12 @@ export abstract class AcademicPeriodRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<number>;
+
+  abstract get(id: string): Promise<AcademicPeriod | null>;
+
+  abstract getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicPeriod | null>;
 }

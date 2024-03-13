@@ -57,6 +57,11 @@ export class AcademicPeriodPostgresRepository
       'business_unit',
     );
 
+    queryBuilder.leftJoinAndSelect(
+      `academicPeriod.examinationCalls`,
+      'examination_calls',
+    );
+
     return queryBuilder;
   }
 
@@ -114,5 +119,34 @@ export class AcademicPeriodPostgresRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
+  }
+
+  async get(id: string): Promise<AcademicPeriod | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnit: true, examinationCalls: true },
+    });
+  }
+
+  async getByAdminUser(
+    academicPeriodId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicPeriod | null> {
+    if (isSuperAdmin) {
+      return await this.get(academicPeriodId);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('academicPeriod');
+
+    return await queryBuilder
+      .where('academicPeriod.id = :id', { id: academicPeriodId })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
   }
 }

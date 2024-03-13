@@ -1,5 +1,7 @@
 import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
 import { EvaluationTypeRepository } from '#academic-offering/domain/repository/evaluation-type.repository';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
+import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
@@ -10,6 +12,13 @@ const evaluationTypeGetter = {
   useFactory: (repository: EvaluationTypeRepository): EvaluationTypeGetter =>
     new EvaluationTypeGetter(repository),
   inject: [EvaluationTypeRepository],
+};
+
+const academicPeriodGetter = {
+  provide: AcademicPeriodGetter,
+  useFactory: (repository: AcademicPeriodRepository): AcademicPeriodGetter =>
+    new AcademicPeriodGetter(repository),
+  inject: [AcademicPeriodRepository],
 };
 
 const subjectGetter = {
@@ -24,4 +33,5 @@ export const services = [
   subjectGetter,
   EvaluationTypeBusinessUnitChecker,
   SubjectBusinessUnitChecker,
+  academicPeriodGetter,
 ];

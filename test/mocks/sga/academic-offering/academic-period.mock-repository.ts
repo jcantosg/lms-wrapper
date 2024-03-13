@@ -10,4 +10,8 @@ export class AcademicPeriodMockRepository implements AcademicPeriodRepository {
   matching = jest.fn();
 
   count = jest.fn();
+
+  get = jest.fn();
+
+  getByAdminUser = jest.fn();
 }

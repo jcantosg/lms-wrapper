@@ -12,6 +12,8 @@ import { SubjectRepository } from '#academic-offering/domain/repository/subject.
 import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/get-all-subject-types/get-all-subject-types.handler';
+import { GetAcademicPeriodHandler } from '#academic-offering/applicaton/get-academic-period/get-academic-period.handler';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
 import { GetSubjectHandler } from '#academic-offering/applicaton/get-subject/get-subject.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
 import { EditSubjectHandler } from '#academic-offering/applicaton/edit-subject/edit-subject.handler';
@@ -89,6 +91,14 @@ const createSubjectHandler = {
   ],
 };
 
+const getAcademicPeriodHandler = {
+  provide: GetAcademicPeriodHandler,
+  useFactory: (getter: AcademicPeriodGetter) => {
+    return new GetAcademicPeriodHandler(getter);
+  },
+  inject: [AcademicPeriodGetter],
+};
+
 const getSubjectHandler = {
   provide: GetSubjectHandler,
   useFactory: (getter: SubjectGetter) => {
@@ -149,6 +159,7 @@ export const handlers = [
   GetAllSubjectsModalitiesHandler,
   GetAllSubjectTypesHandler,
   createSubjectHandler,
+  getAcademicPeriodHandler,
   getSubjectHandler,
   getAllSubjectsHandler,
   searchSubjectsHandler,

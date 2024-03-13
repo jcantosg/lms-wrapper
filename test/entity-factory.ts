@@ -15,6 +15,7 @@ import { getAnIdentityDocument } from '#test/value-object-factory';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
+import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
@@ -117,6 +118,23 @@ export const getAnEvaluationType = (id: string = uuid()): EvaluationType => {
   return EvaluationType.create(id, 'test', 60, 40, 0, false, [
     getABusinessUnit(),
   ]);
+};
+
+export const getAnAcademicPeriod = (id: string = uuid()): AcademicPeriod => {
+  const startDate = new Date();
+  const endDate = new Date();
+  endDate.setDate(startDate.getDate() + 10);
+
+  return AcademicPeriod.create(
+    id,
+    'name',
+    'code',
+    startDate,
+    endDate,
+    getABusinessUnit(),
+    1,
+    getAnAdminUser(),
+  );
 };
 
 export const getASubject = (id: string = uuid()): Subject => {
