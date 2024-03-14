@@ -31,6 +31,9 @@ export class ExaminationCallPostgresRepository
       startDate: examinationCall.startDate,
       endDate: examinationCall.endDate,
       timezone: examinationCall.timezone,
+      academicPeriod: examinationCall.academicPeriod,
+      createdAt: examinationCall.createdAt,
+      updatedAt: examinationCall.updatedAt,
     });
   }
 }

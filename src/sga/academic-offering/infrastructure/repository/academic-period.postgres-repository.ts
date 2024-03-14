@@ -46,6 +46,10 @@ export class AcademicPeriodPostgresRepository
       businessUnit: academicPeriod.businessUnit,
       examinationCalls: academicPeriod.examinationCalls,
       blocksNumber: academicPeriod.blocksNumber,
+      createdAt: academicPeriod.createdAt,
+      createdBy: academicPeriod.createdBy,
+      updatedAt: academicPeriod.updatedAt,
+      updatedBy: academicPeriod.updatedBy,
     });
   }
 

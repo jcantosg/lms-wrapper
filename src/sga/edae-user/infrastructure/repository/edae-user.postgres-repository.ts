@@ -36,6 +36,7 @@ export class EdaeUserPostgresRepository
       avatar: edaeUser.avatar,
       createdAt: edaeUser.createdAt,
       updatedAt: edaeUser.updatedAt,
+      subjects: edaeUser.subjects,
     });
   }
 

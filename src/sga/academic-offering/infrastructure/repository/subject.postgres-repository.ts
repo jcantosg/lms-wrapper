@@ -48,6 +48,7 @@ export class SubjectPostgresRepository
       updatedBy: subject.updatedBy,
       isRegulated: subject.isRegulated,
       isCore: subject.isCore,
+      image: subject.image,
     });
   }
 
