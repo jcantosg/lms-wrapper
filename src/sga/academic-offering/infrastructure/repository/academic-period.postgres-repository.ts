@@ -149,4 +149,19 @@ export class AcademicPeriodPostgresRepository
       })
       .getOne();
   }
+
+  async update(academicPeriod: AcademicPeriod): Promise<void> {
+    await this.repository.save({
+      id: academicPeriod.id,
+      name: academicPeriod.name,
+      code: academicPeriod.code,
+      startDate: academicPeriod.startDate,
+      endDate: academicPeriod.endDate,
+      businessUnit: academicPeriod.businessUnit,
+      examinationCalls: academicPeriod.examinationCalls,
+      blocksNumber: academicPeriod.blocksNumber,
+      createdAt: academicPeriod.createdAt,
+      updatedAt: academicPeriod.updatedAt,
+    });
+  }
 }

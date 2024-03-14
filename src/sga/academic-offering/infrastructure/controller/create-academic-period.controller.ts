@@ -20,7 +20,7 @@ import {
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
-interface CreateAcademyBody {
+interface CreateAcademicPeriodBody {
   id: string;
   name: string;
   code: string;
@@ -40,7 +40,7 @@ export class CreateAcademicPeriodController {
   @UsePipes(new JoiRequestBodyValidationPipe(createAcademicPeriodSchema))
   @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   async createAcademicPeriod(
-    @Body() body: CreateAcademyBody,
+    @Body() body: CreateAcademicPeriodBody,
     @Req() req: AuthRequest,
   ) {
     const command = new CreateAcademicPeriodCommand(

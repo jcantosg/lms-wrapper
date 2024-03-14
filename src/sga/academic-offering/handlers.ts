@@ -12,8 +12,9 @@ import { SubjectRepository } from '#academic-offering/domain/repository/subject.
 import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/get-all-subject-types/get-all-subject-types.handler';
-import { GetAcademicPeriodHandler } from '#academic-offering/applicaton/get-academic-period/get-academic-period.handler';
+import { EditAcademicPeriodHandler } from '#academic-offering/applicaton/edit-academic-period/edit-academic-period.handler';
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
+import { GetAcademicPeriodHandler } from '#academic-offering/applicaton/get-academic-period/get-academic-period.handler';
 import { GetSubjectHandler } from '#academic-offering/applicaton/get-subject/get-subject.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
 import { EditSubjectHandler } from '#academic-offering/applicaton/edit-subject/edit-subject.handler';
@@ -91,6 +92,17 @@ const createSubjectHandler = {
   ],
 };
 
+const editAcademicPeriodHandler = {
+  provide: EditAcademicPeriodHandler,
+  useFactory: (
+    getter: AcademicPeriodGetter,
+    repository: AcademicPeriodRepository,
+  ) => {
+    return new EditAcademicPeriodHandler(getter, repository);
+  },
+  inject: [AcademicPeriodGetter, AcademicPeriodRepository],
+};
+
 const getAcademicPeriodHandler = {
   provide: GetAcademicPeriodHandler,
   useFactory: (getter: AcademicPeriodGetter) => {
@@ -159,6 +171,7 @@ export const handlers = [
   GetAllSubjectsModalitiesHandler,
   GetAllSubjectTypesHandler,
   createSubjectHandler,
+  editAcademicPeriodHandler,
   getAcademicPeriodHandler,
   getSubjectHandler,
   getAllSubjectsHandler,

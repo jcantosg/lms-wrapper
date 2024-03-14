@@ -28,4 +28,6 @@ export abstract class AcademicPeriodRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<AcademicPeriod | null>;
+
+  abstract update(academicPeriod: AcademicPeriod): Promise<void>;
 }

@@ -27,6 +27,7 @@ export class AcademicPeriodGetter {
       adminUserBusinessUnits,
       isSuperAdmin,
     );
+
     if (!result) {
       throw new AcademicPeriodNotFoundException();
     }

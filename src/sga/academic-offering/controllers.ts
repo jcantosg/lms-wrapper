@@ -5,6 +5,7 @@ import { GetEvaluationTypesController } from '#academic-offering/infrastructure/
 import { GetAllSubjectModalitiesController } from '#academic-offering/infrastructure/controller/get-all-subject-modalities/get-all-subject-modalities.controller';
 import { GetAllSubjectTypesController } from '#academic-offering/infrastructure/controller/get-all-subject-types/get-all-subject-types.controller';
 import { CreateSubjectController } from '#academic-offering/infrastructure/controller/create-subject.controller';
+import { EditAcademicPeriodController } from '#academic-offering/infrastructure/controller/edit-academic-period.controller';
 import { GetAcademicPeriodController } from '#academic-offering/infrastructure/controller/get-academic-period.controller';
 import { GetSubjectController } from '#academic-offering/infrastructure/controller/get-subject/get-subject.controller';
 import { GetAllSubjectsController } from '#academic-offering/infrastructure/controller/get-all-subjects/get-all-subjects.controller';
@@ -19,6 +20,7 @@ export const controllers = [
   GetAllSubjectModalitiesController,
   GetEvaluationTypesController,
   GetAllSubjectTypesController,
+  EditAcademicPeriodController,
   GetAcademicPeriodController,
   GetAllSubjectsController,
   SearchSubjectsController,
