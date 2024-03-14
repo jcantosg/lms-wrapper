@@ -54,7 +54,7 @@ export class SubjectPostgresRepository
   async get(id: string): Promise<Subject | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnit: true, evaluationType: true },
+      relations: { businessUnit: true, evaluationType: true, teachers: true },
     });
   }
 
@@ -70,6 +70,8 @@ export class SubjectPostgresRepository
       `${aliasQuery}.evaluationType`,
       'evaluation_type',
     );
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.teachers`, 'teachers');
 
     return queryBuilder;
   }
