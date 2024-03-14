@@ -9,9 +9,7 @@ import {
 import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
-import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { GetAllEdaeUsersQuery } from '#edae-user/application/get-all-edae-users/get-all-edae-users.query';
 import { GetAllEdaeUsersResponse } from '#edae-user/infrastructure/controller/get-all-edae-users/get-all-edae-users.response';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
@@ -39,15 +37,9 @@ export class GetAllEdaeUsersController {
   constructor(private readonly handler: GetAllEdaeUsersHandler) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(getAllEdaeUsersSchema),
-  )
-  @Roles(
-    AdminUserRoles.SUPERADMIN,
-    AdminUserRoles.SUPERVISOR_SECRETARIA,
-    AdminUserRoles.SUPERVISOR_JEFATURA,
-    AdminUserRoles.SUPERVISOR_360,
   )
   async getAllEdaeUsers(
     @Query() queryParams: GetEdaeUsersQueryParams,

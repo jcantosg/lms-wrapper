@@ -17,7 +17,6 @@ describe('/edae-user (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
-  let adminAccessToken: string;
 
   beforeAll(async () => {
     app = await startApp();
@@ -29,20 +28,9 @@ describe('/edae-user (GET)', () => {
       GetAllEdaeUsersE2eSeed.superAdminUserEmail,
       GetAllEdaeUsersE2eSeed.superAdminUserPassword,
     );
-    adminAccessToken = await login(
-      httpServer,
-      GetAllEdaeUsersE2eSeed.adminUserEmail,
-      GetAllEdaeUsersE2eSeed.adminUserPassword,
-    );
   });
   it('should throw an unauthorized error', async () => {
     await supertest(httpServer).get(path).expect(401);
-  });
-  it('should throw an forbidden error', async () => {
-    await supertest(httpServer)
-      .get(path)
-      .auth(adminAccessToken, { type: 'bearer' })
-      .expect(403);
   });
   it('should return an edae users list', async () => {
     const response = await supertest(httpServer)
