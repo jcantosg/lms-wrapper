@@ -13,6 +13,6 @@ export const createSubjectSchema = Joi.object({
   evaluationType: Joi.string().guid().required(),
   type: Joi.valid(...getAllSubjectTypes()).required(),
   businessUnit: Joi.string().guid().required(),
-  isRegulated: Joi.boolean().required(),
+  isRegulated: Joi.boolean().optional(),
   isCore: Joi.boolean().required(),
 });
