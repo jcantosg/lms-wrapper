@@ -29,7 +29,7 @@ interface CreateSubjectBody {
   evaluationType: string | null;
   type: SubjectType;
   businessUnit: string;
-  isRegulated: boolean;
+  isRegulated: boolean | null;
   isCore: boolean;
 }
 
