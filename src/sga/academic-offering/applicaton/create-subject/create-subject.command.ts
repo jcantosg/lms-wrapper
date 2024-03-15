@@ -15,7 +15,7 @@ export class CreateSubjectCommand implements Command {
     public readonly evaluationTypeId: string | null,
     public readonly type: SubjectType,
     public readonly businessUnitId: string,
-    public readonly isRegulated: boolean,
+    public readonly isRegulated: boolean | null,
     public readonly isCore: boolean,
     public readonly adminUser: AdminUser,
   ) {}
