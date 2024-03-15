@@ -11,6 +11,7 @@ import { GetSubjectController } from '#academic-offering/infrastructure/controll
 import { GetAllSubjectsController } from '#academic-offering/infrastructure/controller/get-all-subjects/get-all-subjects.controller';
 import { SearchSubjectsController } from '#academic-offering/infrastructure/controller/search-subjects.controller';
 import { EditSubjectController } from '#academic-offering/infrastructure/controller/edit-subject.controller';
+import { EditExaminationCallController } from '#academic-offering/infrastructure/controller/edit-examination-call.controller';
 
 export const controllers = [
   CreateAcademicPeriodController,
@@ -26,4 +27,5 @@ export const controllers = [
   SearchSubjectsController,
   EditSubjectController,
   GetSubjectController,
+  EditExaminationCallController,
 ];

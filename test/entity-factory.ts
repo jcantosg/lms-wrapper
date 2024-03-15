@@ -19,6 +19,7 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -152,5 +153,16 @@ export const getASubject = (id: string = uuid()): Subject => {
     true,
     true,
     getAnAdminUser(),
+  );
+};
+
+export const getAnExaminationCall = (id: string = uuid()): ExaminationCall => {
+  return ExaminationCall.create(
+    id,
+    'name',
+    new Date('2024-12-12'),
+    new Date('2025-12-12'),
+    TimeZoneEnum.GMT,
+    getAnAcademicPeriod(),
   );
 };

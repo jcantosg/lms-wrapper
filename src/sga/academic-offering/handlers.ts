@@ -22,6 +22,8 @@ import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/ser
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
 import { GetAllSubjectsHandler } from '#academic-offering/applicaton/get-all-subjects/get-all-subjects.handler';
 import { SearchSubjectsHandler } from '#academic-offering/applicaton/search-subjects/search-subjects.handler';
+import { EditExaminationCallHandler } from '#academic-offering/applicaton/edit-examination-call/edit-examination-call.handler';
+import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -163,6 +165,17 @@ const searchSubjectsHandler = {
   inject: [SubjectRepository],
 };
 
+const editExaminationCallHandler = {
+  provide: EditExaminationCallHandler,
+  useFactory: (
+    repository: ExaminationCallRepository,
+    getter: ExaminationCallGetter,
+  ) => {
+    return new EditExaminationCallHandler(repository, getter);
+  },
+  inject: [ExaminationCallRepository, ExaminationCallGetter],
+};
+
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
@@ -177,4 +190,5 @@ export const handlers = [
   getAllSubjectsHandler,
   searchSubjectsHandler,
   editSubjectHandler,
+  editExaminationCallHandler,
 ];

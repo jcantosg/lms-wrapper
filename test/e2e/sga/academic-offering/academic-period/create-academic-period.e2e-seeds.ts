@@ -11,6 +11,7 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 
 export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-academic-period@email.com';
@@ -49,11 +50,13 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   private readonly businessUnitRepository: Repository<BusinessUnit>;
   private readonly countryRepository: Repository<Country>;
   private readonly academicPeriodRepository: Repository<AcademicPeriod>;
+  private readonly examinationCallRepository: Repository<ExaminationCall>;
 
   constructor(private datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(BusinessUnit);
     this.countryRepository = datasource.getRepository(Country);
     this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
+    this.examinationCallRepository = datasource.getRepository(ExaminationCall);
   }
 
   async arrange(): Promise<void> {
@@ -93,6 +96,9 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   }
 
   async clear(): Promise<void> {
+    await this.examinationCallRepository.delete(
+      CreateAcademicPeriodE2eSeed.examinationCallId,
+    );
     await this.academicPeriodRepository.delete(
       CreateAcademicPeriodE2eSeed.academicPeriodId,
     );

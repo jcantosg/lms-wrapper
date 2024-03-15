@@ -17,6 +17,7 @@ import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
+import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -114,4 +115,9 @@ export function getASubjectBusinessUnitCheckerMock(): SubjectBusinessUnitChecker
   return (
     SubjectBusinessUnitChecker as jest.Mocked<typeof SubjectBusinessUnitChecker>
   ).prototype;
+}
+
+export function getAnExaminationCallGetterMock(): ExaminationCallGetter {
+  return (ExaminationCallGetter as jest.Mocked<typeof ExaminationCallGetter>)
+    .prototype;
 }

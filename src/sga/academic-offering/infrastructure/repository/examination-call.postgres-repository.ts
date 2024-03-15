@@ -36,4 +36,44 @@ export class ExaminationCallPostgresRepository
       updatedAt: examinationCall.updatedAt,
     });
   }
+
+  async get(id: string): Promise<ExaminationCall | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { academicPeriod: true },
+    });
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPeriod`,
+      'academic_period',
+    );
+
+    return queryBuilder;
+  }
+
+  async getByAdminUser(
+    examinationCallId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<ExaminationCall | null> {
+    if (isSuperAdmin) {
+      return await this.get(examinationCallId);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('examinationCall');
+
+    return await queryBuilder
+      .where('examinationCall.id = :id', { id: examinationCallId })
+      .andWhere('academic_period.businessUnit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
 }

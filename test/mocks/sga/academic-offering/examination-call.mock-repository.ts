@@ -4,6 +4,7 @@ export class ExaminationCallMockRepository
   implements ExaminationCallRepository
 {
   existsById = jest.fn();
-
   save = jest.fn();
+  get = jest.fn();
+  getByAdminUser = jest.fn();
 }

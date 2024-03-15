@@ -10,17 +10,6 @@ import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
-/**
-  evaluationType: {
-    id: string (uuid),
-    name: string
-  },
-  businessUnit: {
-    id: string (uuid),
-    name: string
-  },
- */
-
 export class GetSubjectDetailE2eSeed implements E2eSeed {
   public static subjectId = '83670209-9598-41d5-9c57-a393493f1b98';
   public static subjectName = 'name';
