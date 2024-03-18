@@ -76,4 +76,8 @@ export class ExaminationCallPostgresRepository
       })
       .getOne();
   }
+
+  async delete(examinationCall: ExaminationCall): Promise<void> {
+    await this.repository.delete(examinationCall.id);
+  }
 }

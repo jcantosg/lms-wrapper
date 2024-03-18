@@ -19,5 +19,5 @@ const datasource = new DataSource(
     configService.getOrThrow<string>('DATABASE_NAME'),
   ),
 );
-datasource.initialize();
+datasource.initialize().then(() => {});
 export default datasource;

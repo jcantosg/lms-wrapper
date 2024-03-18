@@ -13,6 +13,8 @@ import { GetAllSubjectsController } from '#academic-offering/infrastructure/cont
 import { SearchSubjectsController } from '#academic-offering/infrastructure/controller/search-subjects.controller';
 import { EditSubjectController } from '#academic-offering/infrastructure/controller/edit-subject.controller';
 import { EditExaminationCallController } from '#academic-offering/infrastructure/controller/edit-examination-call.controller';
+import { CreateTitleController } from '#academic-offering/infrastructure/controller/create-title.controller';
+import { DeleteExaminationCallController } from '#academic-offering/infrastructure/controller/delete-examination-call.controller';
 
 export const controllers = [
   CreateAcademicPeriodController,
@@ -30,4 +32,6 @@ export const controllers = [
   EditSubjectController,
   GetSubjectController,
   EditExaminationCallController,
+  CreateTitleController,
+  DeleteExaminationCallController,
 ];

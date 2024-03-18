@@ -12,4 +12,6 @@ export abstract class ExaminationCallRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<ExaminationCall | null>;
+
+  abstract delete(examinationCall: ExaminationCall): Promise<void>;
 }
