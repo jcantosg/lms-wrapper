@@ -54,7 +54,7 @@ export class CreateSubjectHandler implements CommandHandler {
       evaluationType,
       command.type,
       businessUnit,
-      command.isRegulated ? command.isRegulated : false,
+      command.isRegulated,
       command.isCore,
       command.adminUser,
     );

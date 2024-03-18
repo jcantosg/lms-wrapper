@@ -10,9 +10,9 @@ export const createSubjectSchema = Joi.object({
   hours: Joi.number().required(),
   officialCode: Joi.string().optional(),
   modality: Joi.valid(...getAllSubjectModalities()).required(),
-  evaluationType: Joi.string().guid().required(),
+  evaluationType: Joi.string().guid().optional(),
   type: Joi.valid(...getAllSubjectTypes()).required(),
   businessUnit: Joi.string().guid().required(),
-  isRegulated: Joi.boolean().optional(),
+  isRegulated: Joi.boolean().required(),
   isCore: Joi.boolean().required(),
 });
