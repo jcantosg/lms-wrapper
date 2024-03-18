@@ -7,4 +7,6 @@ export class ExaminationCallMockRepository
   save = jest.fn();
   get = jest.fn();
   getByAdminUser = jest.fn();
+
+  delete = jest.fn();
 }

@@ -25,6 +25,7 @@ import { GetAllSubjectsHandler } from '#academic-offering/applicaton/get-all-sub
 import { SearchSubjectsHandler } from '#academic-offering/applicaton/search-subjects/search-subjects.handler';
 import { EditExaminationCallHandler } from '#academic-offering/applicaton/edit-examination-call/edit-examination-call.handler';
 import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
+import { DeleteExaminationCallHandler } from '#academic-offering/applicaton/delete-examination-call/delete-examination-call.handler';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -188,6 +189,16 @@ const editExaminationCallHandler = {
   inject: [ExaminationCallRepository, ExaminationCallGetter],
 };
 
+const deleteExaminationCall = {
+  provide: DeleteExaminationCallHandler,
+  useFactory: (
+    repository: ExaminationCallRepository,
+    getter: ExaminationCallGetter,
+  ): DeleteExaminationCallHandler =>
+    new DeleteExaminationCallHandler(repository, getter),
+  inject: [ExaminationCallRepository, ExaminationCallGetter],
+};
+
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
@@ -204,4 +215,5 @@ export const handlers = [
   searchSubjectsHandler,
   editSubjectHandler,
   editExaminationCallHandler,
+  deleteExaminationCall,
 ];

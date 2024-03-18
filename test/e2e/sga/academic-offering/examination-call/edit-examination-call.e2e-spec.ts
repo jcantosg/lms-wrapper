@@ -7,7 +7,7 @@ import supertest from 'supertest';
 import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
 import { ExaminationCallPostgresRepository } from '#academic-offering/infrastructure/repository/examination-call.postgres-repository';
 import { examinationCallSchema } from '#academic-offering/infrastructure/config/schema/examination-call.schema';
-import { EditExaminationCallE2eSeed } from '#test/e2e/sga/academic-offering/examintaion-call/edit-examination-call.e2e-seeds';
+import { EditExaminationCallE2eSeed } from '#test/e2e/sga/academic-offering/examination-call/edit-examination-call.e2e-seeds';
 
 const path = `/examination-call/${EditExaminationCallE2eSeed.examinationCallId}`;
 const wrongPath = '/examination-call/e7db2c44-4b29-49c6-9360-74ec885a6e56';
