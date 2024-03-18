@@ -1,8 +1,10 @@
 import { CreateAcademicPeriodHandler } from '#academic-offering/applicaton/create-academic-period/create-academic-period.handler';
+import { CreateExaminationCallHandler } from '#academic-offering/applicaton/create-examination-call/create-examination-call.handler';
 import { GetAllAcademicPeriodsHandler } from '#academic-offering/applicaton/get-all-academic-periods/get-all-academic-periods.handler';
 import { SearchAcademicPeriodsHandler } from '#academic-offering/applicaton/search-academic-periods/search-academic-periods.handler';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { GetEvaluationTypesHandler } from '#academic-offering/applicaton/get-evaluation-types/get-evaluation-types.handler';
 import { EvaluationTypeRepository } from '#academic-offering/domain/repository/evaluation-type.repository';
@@ -13,7 +15,6 @@ import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluati
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/get-all-subject-types/get-all-subject-types.handler';
 import { EditAcademicPeriodHandler } from '#academic-offering/applicaton/edit-academic-period/edit-academic-period.handler';
-import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
 import { GetAcademicPeriodHandler } from '#academic-offering/applicaton/get-academic-period/get-academic-period.handler';
 import { GetSubjectHandler } from '#academic-offering/applicaton/get-subject/get-subject.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
@@ -43,6 +44,17 @@ const createAcademicPeriodHandler = {
     ExaminationCallRepository,
     BusinessUnitGetter,
   ],
+};
+
+const createExaminationCallHandler = {
+  provide: CreateExaminationCallHandler,
+  useFactory: (
+    repository: ExaminationCallRepository,
+    academicPeriodGetter: AcademicPeriodGetter,
+  ) => {
+    return new CreateExaminationCallHandler(repository, academicPeriodGetter);
+  },
+  inject: [ExaminationCallRepository, AcademicPeriodGetter],
 };
 
 const getAllAcademicPeriodsHandler = {
@@ -179,6 +191,7 @@ const editExaminationCallHandler = {
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
+  createExaminationCallHandler,
   searchAcademicPeriodsHandler,
   getEvaluationTypesHandler,
   GetAllSubjectsModalitiesHandler,

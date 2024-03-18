@@ -99,6 +99,7 @@ export function getAnAcademicPeriodGetterMock(): AcademicPeriodGetter {
   return (AcademicPeriodGetter as jest.Mocked<typeof AcademicPeriodGetter>)
     .prototype;
 }
+
 export function getASubjectGetterMock(): SubjectGetter {
   return (SubjectGetter as jest.Mocked<typeof SubjectGetter>).prototype;
 }
