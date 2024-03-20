@@ -12,7 +12,7 @@ let getUserSpy: any;
 
 const academicPeriod = getAnAcademicPeriod();
 
-describe('Edae User Getter', () => {
+describe('Academic Period Getter', () => {
   beforeAll(() => {
     academicPeriodRepository = new AcademicPeriodMockRepository();
 

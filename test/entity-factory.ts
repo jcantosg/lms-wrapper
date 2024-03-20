@@ -20,6 +20,8 @@ import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import { Title } from '#academic-offering/domain/entity/title.entity';
 import { File } from '#shared/domain/file-manager/file';
 
 export const getACountry = (id = uuid()): Country => {
@@ -168,6 +170,29 @@ export const getAnExaminationCall = (id: string = uuid()): ExaminationCall => {
   );
 };
 
+export const getAnAcademicProgram = (id: string = uuid()): AcademicProgram => {
+  return AcademicProgram.create(
+    id,
+    'name',
+    'code',
+    getATitle(),
+    getABusinessUnit(),
+    getAnAdminUser(),
+  );
+};
+
 export const getAFile = (): File => {
   return new File('test', 'test', Buffer.from('test'));
+};
+
+export const getATitle = (id: string = uuid()): Title => {
+  return Title.create(
+    id,
+    'name',
+    'officialCode',
+    'officialTitle',
+    'officialProgram',
+    getABusinessUnit(),
+    getAnAdminUser(),
+  );
 };

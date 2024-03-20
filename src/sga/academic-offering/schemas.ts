@@ -4,6 +4,7 @@ import { subjectSchema } from '#academic-offering/infrastructure/config/schema/s
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 import { subjectResourceSchema } from '#academic-offering/infrastructure/config/schema/subject-resource.schema';
 import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 
 export const academicPeriodSchemas = [
   examinationCallSchema,
@@ -12,4 +13,5 @@ export const academicPeriodSchemas = [
   evaluationTypeSchema,
   subjectResourceSchema,
   titleSchema,
+  academicProgramSchema,
 ];

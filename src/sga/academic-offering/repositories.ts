@@ -10,6 +10,8 @@ import { SubjectResourceRepository } from '#academic-offering/domain/repository/
 import { SubjectResourcePostgresRepository } from '#academic-offering/infrastructure/repository/subject-resource.postgres-repository';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { TitlePostgresRepository } from '#academic-offering/infrastructure/repository/title.postgres-repository';
+import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
+import { AcademicProgramPostgresRepository } from '#academic-offering/infrastructure/repository/academic-program.postgres-repository';
 
 export const repositories = [
   {
@@ -35,5 +37,9 @@ export const repositories = [
   {
     provide: TitleRepository,
     useClass: TitlePostgresRepository,
+  },
+  {
+    provide: AcademicProgramRepository,
+    useClass: AcademicProgramPostgresRepository,
   },
 ];
