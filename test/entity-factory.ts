@@ -21,6 +21,7 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { File } from '#shared/domain/file-manager/file';
+import { Title } from '#academic-offering/domain/entity/title.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -170,4 +171,16 @@ export const getAnExaminationCall = (id: string = uuid()): ExaminationCall => {
 
 export const getAFile = (): File => {
   return new File('test', 'test', Buffer.from('test'));
+};
+
+export const getATitle = (id: string = uuid()): Title => {
+  return Title.create(
+    id,
+    'name',
+    'officialCode',
+    'officialTitle',
+    'officialProgram',
+    getABusinessUnit(),
+    getAnAdminUser(),
+  );
 };

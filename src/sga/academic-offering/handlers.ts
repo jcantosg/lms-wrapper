@@ -34,6 +34,8 @@ import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 import { AddEdaeUsersToSubjectHandler } from '#academic-offering/applicaton/add-edae-users-to-subject/add-edae-users-to-subject.handler';
+import { DeleteTitleHandler } from '#academic-offering/applicaton/delete-title/delete-title.handler';
+import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -206,7 +208,7 @@ const createTitleHandler = {
   inject: [TitleRepository, BusinessUnitGetter],
 };
 
-const deleteExaminationCall = {
+const deleteExaminationCallHandler = {
   provide: DeleteExaminationCallHandler,
   useFactory: (
     repository: ExaminationCallRepository,
@@ -249,6 +251,15 @@ const addEdaeUsersToSubjectHandler = {
   ],
 };
 
+const deleteTitleHandler = {
+  provide: DeleteTitleHandler,
+  useFactory: (
+    repository: TitleRepository,
+    getter: TitleGetter,
+  ): DeleteTitleHandler => new DeleteTitleHandler(repository, getter),
+  inject: [TitleRepository, TitleGetter],
+};
+
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
@@ -266,7 +277,8 @@ export const handlers = [
   editSubjectHandler,
   editExaminationCallHandler,
   createTitleHandler,
-  deleteExaminationCall,
   uploadResourceHandler,
   addEdaeUsersToSubjectHandler,
+  deleteExaminationCallHandler,
+  deleteTitleHandler,
 ];

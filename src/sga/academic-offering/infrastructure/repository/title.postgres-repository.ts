@@ -36,4 +36,48 @@ export class TitlePostgresRepository
       updatedBy: title.updatedBy,
     });
   }
+
+  async delete(title: Title): Promise<void> {
+    await this.repository.delete(title.id);
+  }
+
+  async get(id: string): Promise<Title | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnit: true },
+    });
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnit`,
+      'business_unit',
+    );
+
+    return queryBuilder;
+  }
+
+  async getByAdminUser(
+    titleId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Title | null> {
+    if (isSuperAdmin) {
+      return await this.get(titleId);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('title');
+
+    return await queryBuilder
+      .where('title.id = :id', { id: titleId })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
 }
