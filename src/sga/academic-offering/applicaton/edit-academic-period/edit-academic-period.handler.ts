@@ -2,6 +2,7 @@ import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { EditAcademicPeriodCommand } from '#academic-offering/applicaton/edit-academic-period/edit-academic-period.command';
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
+import { AcademicPeriodDuplicatedCodeException } from '#shared/domain/exception/academic-offering/academic-period.duplicated-code.exception';
 
 export class EditAcademicPeriodHandler implements CommandHandler {
   constructor(
@@ -15,6 +16,10 @@ export class EditAcademicPeriodHandler implements CommandHandler {
       command.adminUsersBusinessUnits,
       command.isSuperAdmin,
     );
+
+    if (await this.repository.existsByCode(command.id, command.code)) {
+      throw new AcademicPeriodDuplicatedCodeException();
+    }
 
     academicPeriod.name = command.name;
     academicPeriod.code = command.code;

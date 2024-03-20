@@ -33,6 +33,8 @@ export interface SubjectResponse {
   businessUnit: SubjectBusinessUnitResponse;
   isRegulated: boolean;
   teachers: TeacherSubjectResponse[];
+  hours: number;
+  isCore: boolean;
 }
 
 export class GetSubjectResponse {
@@ -63,6 +65,8 @@ export class GetSubjectResponse {
         surname2: teacher.surname2,
         avatar: teacher.avatar,
       })),
+      hours: subject.hours,
+      isCore: subject.isCore,
     };
   }
 }
