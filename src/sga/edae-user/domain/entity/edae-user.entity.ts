@@ -2,7 +2,10 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
-import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
+import {
+  EdaeRoles,
+  getAllTeacherRoles,
+} from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
@@ -190,5 +193,11 @@ export class EdaeUser extends BaseEntity {
       this._businessUnits.push(businessUnit);
       this.updatedAt = new Date();
     }
+  }
+
+  public isTeacher(): boolean {
+    const teacherRoles = getAllTeacherRoles();
+
+    return this.roles.some((role) => teacherRoles.includes(role));
   }
 }

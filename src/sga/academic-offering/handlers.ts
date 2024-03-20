@@ -31,6 +31,9 @@ import { DeleteExaminationCallHandler } from '#academic-offering/applicaton/dele
 import { UploadSubjectResourceHandler } from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.handler';
 import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
+import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
+import { AddEdaeUsersToSubjectHandler } from '#academic-offering/applicaton/add-edae-users-to-subject/add-edae-users-to-subject.handler';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -223,6 +226,29 @@ const uploadResourceHandler = {
   inject: [SubjectResourceRepository, SubjectGetter, FileManager],
 };
 
+const addEdaeUsersToSubjectHandler = {
+  provide: AddEdaeUsersToSubjectHandler,
+  useFactory: (
+    subjectRepository: SubjectRepository,
+    subjectGetter: SubjectGetter,
+    edaeUserGetter: EdaeUserGetter,
+    edaeUserBusinessUnitChecker: EdaeUserBusinessUnitChecker,
+  ) => {
+    return new AddEdaeUsersToSubjectHandler(
+      subjectRepository,
+      subjectGetter,
+      edaeUserGetter,
+      edaeUserBusinessUnitChecker,
+    );
+  },
+  inject: [
+    SubjectRepository,
+    SubjectGetter,
+    EdaeUserGetter,
+    EdaeUserBusinessUnitChecker,
+  ],
+};
+
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
@@ -242,4 +268,5 @@ export const handlers = [
   createTitleHandler,
   deleteExaminationCall,
   uploadResourceHandler,
+  addEdaeUsersToSubjectHandler,
 ];

@@ -30,4 +30,6 @@ export abstract class EdaeUserRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<EdaeUser | null>;
+
+  abstract getByBusinessUnit(businessUnit: BusinessUnit): Promise<EdaeUser[]>;
 }

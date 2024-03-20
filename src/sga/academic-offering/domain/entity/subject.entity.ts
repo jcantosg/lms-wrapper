@@ -8,6 +8,7 @@ import { SubjectBelowZeroHoursException } from '#shared/domain/exception/academi
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
+import { SubjectInvalidEdaeUserRoleException } from '#shared/domain/exception/academic-offering/subject.invalid-edae-user-role.exception';
 
 export class Subject extends BaseEntity {
   private constructor(
@@ -235,5 +236,15 @@ export class Subject extends BaseEntity {
     this.isCore = isCore;
     this.updatedBy = user;
     this.updatedAt = new Date();
+  }
+
+  addTeacher(teacher: EdaeUser) {
+    if (!teacher.isTeacher()) {
+      throw new SubjectInvalidEdaeUserRoleException();
+    }
+
+    if (!this._teachers.find((teacher) => teacher.id === teacher.id)) {
+      this._teachers.push(teacher);
+    }
   }
 }

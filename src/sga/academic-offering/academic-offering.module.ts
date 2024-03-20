@@ -10,6 +10,7 @@ import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { ConfigService } from '@nestjs/config';
 import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
 import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
+import { EdaeUserModule } from '#edae-user/edae-user.module';
 
 const fileManager: FactoryProvider = {
   provide: FileManager,
@@ -34,6 +35,7 @@ const fileManager: FactoryProvider = {
   imports: [
     TypeOrmModule.forFeature(academicPeriodSchemas),
     BusinessUnitModule,
+    EdaeUserModule,
   ],
   providers: [...repositories, ...handlers, ...services, fileManager],
   controllers: [...controllers],

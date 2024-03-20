@@ -16,6 +16,7 @@ import { EditExaminationCallController } from '#academic-offering/infrastructure
 import { CreateTitleController } from '#academic-offering/infrastructure/controller/create-title.controller';
 import { DeleteExaminationCallController } from '#academic-offering/infrastructure/controller/delete-examination-call.controller';
 import { UploadSubjectResourceController } from '#academic-offering/infrastructure/controller/upload-subject-resource.controller';
+import { AddEdaeUsersToSubjectController } from '#academic-offering/infrastructure/controller/add-edae-users-to-subject.controller';
 
 export const controllers = [
   CreateAcademicPeriodController,
@@ -36,4 +37,5 @@ export const controllers = [
   UploadSubjectResourceController,
   CreateTitleController,
   DeleteExaminationCallController,
+  AddEdaeUsersToSubjectController,
 ];

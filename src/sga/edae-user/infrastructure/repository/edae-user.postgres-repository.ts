@@ -195,4 +195,16 @@ export class EdaeUserPostgresRepository
       updatedAt: edaeUser.updatedAt,
     });
   }
+
+  async getByBusinessUnit(businessUnit: BusinessUnit): Promise<EdaeUser[]> {
+    const edaeUsers = await this.repository.find({
+      where: {
+        businessUnits: {
+          id: businessUnit.id,
+        },
+      },
+    });
+
+    return edaeUsers.filter((edaeUser) => edaeUser.isTeacher());
+  }
 }

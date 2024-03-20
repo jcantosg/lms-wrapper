@@ -11,6 +11,7 @@ import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.servi
 import { GetEdaeUserHandler } from '#edae-user/application/get-edae-user/get-edae-user.handler';
 import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
 import { CreateEdaeUserHandler } from '#edae-user/application/edae-user/create-edae-user/create-edae-user.handler';
+import { GetAllEdaeUsersPlainHandler } from '#edae-user/application/get-all-edae-users-plain/get-all-edae-users-plain.handler';
 
 const createEdaeUserHandler = {
   provide: CreateEdaeUserHandler,
@@ -123,6 +124,20 @@ const getEdaeUserHandler = {
   inject: [EdaeUserGetter],
 };
 
+const getAllEdaeUsersPlainHandler = {
+  provide: GetAllEdaeUsersPlainHandler,
+  useFactory: (
+    edaeUserRepository: EdaeUserRepository,
+    businessUnitGetter: BusinessUnitGetter,
+  ) => {
+    return new GetAllEdaeUsersPlainHandler(
+      edaeUserRepository,
+      businessUnitGetter,
+    );
+  },
+  inject: [EdaeUserRepository, BusinessUnitGetter],
+};
+
 export const handlers = [
   getAllEdaeUsersHandler,
   searchEdaeUserHandler,
@@ -131,4 +146,5 @@ export const handlers = [
   getEdaeUserHandler,
   editEdaeUserHandler,
   createEdaeUserHandler,
+  getAllEdaeUsersPlainHandler,
 ];
