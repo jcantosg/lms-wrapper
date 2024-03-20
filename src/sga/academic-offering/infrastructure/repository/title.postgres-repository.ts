@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 export class TitlePostgresRepository
   extends TypeOrmRepository<Title>
@@ -79,5 +80,15 @@ export class TitlePostgresRepository
         ids: adminUserBusinessUnits,
       })
       .getOne();
+  }
+
+  async getByBusinessUnit(businessUnit: BusinessUnit): Promise<Title[]> {
+    return await this.repository.find({
+      where: {
+        businessUnit: {
+          id: businessUnit.id,
+        },
+      },
+    });
   }
 }

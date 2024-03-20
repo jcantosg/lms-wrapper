@@ -28,6 +28,10 @@ import { ExaminationCallGetter } from '#academic-offering/domain/service/examina
 import { CreateTitleHandler } from '#academic-offering/applicaton/create-title/create-title.handler';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { DeleteExaminationCallHandler } from '#academic-offering/applicaton/delete-examination-call/delete-examination-call.handler';
+import { CreateAcademicProgramHandler } from '#academic-offering/applicaton/create-academic-program/create-academic-program.handler';
+import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
+import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
+import { GetAllTitlesPlainHandler } from '#academic-offering/applicaton/get-all-titles-plain/get-all-titles-plain.handler';
 import { UploadSubjectResourceHandler } from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.handler';
 import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
@@ -35,7 +39,6 @@ import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.servi
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 import { AddEdaeUsersToSubjectHandler } from '#academic-offering/applicaton/add-edae-users-to-subject/add-edae-users-to-subject.handler';
 import { DeleteTitleHandler } from '#academic-offering/applicaton/delete-title/delete-title.handler';
-import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -218,6 +221,30 @@ const deleteExaminationCallHandler = {
   inject: [ExaminationCallRepository, ExaminationCallGetter],
 };
 
+const createAcademicProgramHandler = {
+  provide: CreateAcademicProgramHandler,
+  useFactory: (
+    repository: AcademicProgramRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    titleGetter: TitleGetter,
+  ) =>
+    new CreateAcademicProgramHandler(
+      repository,
+      businessUnitGetter,
+      titleGetter,
+    ),
+  inject: [AcademicProgramRepository, BusinessUnitGetter, TitleGetter],
+};
+
+const getAllTitlesPlainHandler = {
+  provide: GetAllTitlesPlainHandler,
+  useFactory: (
+    repository: TitleRepository,
+    businessUnitGetter: BusinessUnitGetter,
+  ) => new GetAllTitlesPlainHandler(repository, businessUnitGetter),
+  inject: [TitleRepository, BusinessUnitGetter],
+};
+
 const uploadResourceHandler = {
   provide: UploadSubjectResourceHandler,
   useFactory: (
@@ -277,6 +304,8 @@ export const handlers = [
   editSubjectHandler,
   editExaminationCallHandler,
   createTitleHandler,
+  createAcademicProgramHandler,
+  getAllTitlesPlainHandler,
   uploadResourceHandler,
   addEdaeUsersToSubjectHandler,
   deleteExaminationCallHandler,

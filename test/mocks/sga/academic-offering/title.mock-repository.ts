@@ -3,7 +3,8 @@ import { TitleRepository } from '#academic-offering/domain/repository/title.repo
 export class TitleMockRepository implements TitleRepository {
   exists = jest.fn();
   save = jest.fn();
-  delete = jest.fn();
   get = jest.fn();
   getByAdminUser = jest.fn();
+  getByBusinessUnit = jest.fn();
+  delete = jest.fn();
 }

@@ -20,8 +20,9 @@ import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
-import { File } from '#shared/domain/file-manager/file';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
+import { File } from '#shared/domain/file-manager/file';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -166,6 +167,17 @@ export const getAnExaminationCall = (id: string = uuid()): ExaminationCall => {
     new Date('2025-12-12'),
     TimeZoneEnum.GMT,
     getAnAcademicPeriod(),
+  );
+};
+
+export const getAnAcademicProgram = (id: string = uuid()): AcademicProgram => {
+  return AcademicProgram.create(
+    id,
+    'name',
+    'code',
+    getATitle(),
+    getABusinessUnit(),
+    getAnAdminUser(),
   );
 };
 
