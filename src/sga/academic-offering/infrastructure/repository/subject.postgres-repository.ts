@@ -49,13 +49,19 @@ export class SubjectPostgresRepository
       isRegulated: subject.isRegulated,
       isCore: subject.isCore,
       image: subject.image,
+      resources: subject.resources,
     });
   }
 
   async get(id: string): Promise<Subject | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnit: true, evaluationType: true, teachers: true },
+      relations: {
+        businessUnit: true,
+        evaluationType: true,
+        teachers: true,
+        resources: true,
+      },
     });
   }
 
@@ -71,6 +77,8 @@ export class SubjectPostgresRepository
       `${aliasQuery}.evaluationType`,
       'evaluation_type',
     );
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.resources`, 'resources');
 
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.teachers`, 'teachers');
 

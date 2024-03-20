@@ -20,6 +20,7 @@ import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
+import { File } from '#shared/domain/file-manager/file';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -165,4 +166,8 @@ export const getAnExaminationCall = (id: string = uuid()): ExaminationCall => {
     TimeZoneEnum.GMT,
     getAnAcademicPeriod(),
   );
+};
+
+export const getAFile = (): File => {
+  return new File('test', 'test', Buffer.from('test'));
 };

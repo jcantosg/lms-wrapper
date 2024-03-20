@@ -88,5 +88,10 @@ export const subjectSchema = new EntitySchema<Subject>({
         },
       },
     },
+    resources: {
+      type: 'one-to-many',
+      target: 'SubjectResource',
+      inverseSide: 'subject',
+    },
   },
 });

@@ -6,6 +6,8 @@ import { EvaluationTypeRepository } from '#academic-offering/domain/repository/e
 import { EvaluationTypePostgresRepository } from '#academic-offering/infrastructure/repository/evaluation-type.postgres-repository';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
+import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
+import { SubjectResourcePostgresRepository } from '#academic-offering/infrastructure/repository/subject-resource.postgres-repository';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { TitlePostgresRepository } from '#academic-offering/infrastructure/repository/title.postgres-repository';
 
@@ -25,6 +27,10 @@ export const repositories = [
   {
     provide: SubjectRepository,
     useClass: SubjectPostgresRepository,
+  },
+  {
+    provide: SubjectResourceRepository,
+    useClass: SubjectResourcePostgresRepository,
   },
   {
     provide: TitleRepository,

@@ -1,0 +1,8 @@
+import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
+
+export class SubjectResourceMockRepository
+  implements SubjectResourceRepository
+{
+  save = jest.fn();
+  existsById = jest.fn();
+}

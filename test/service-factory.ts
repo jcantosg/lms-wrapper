@@ -18,6 +18,7 @@ import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
 import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
+import { FileManager } from '#shared/domain/file-manager/file-manager';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -121,4 +122,8 @@ export function getASubjectBusinessUnitCheckerMock(): SubjectBusinessUnitChecker
 export function getAnExaminationCallGetterMock(): ExaminationCallGetter {
   return (ExaminationCallGetter as jest.Mocked<typeof ExaminationCallGetter>)
     .prototype;
+}
+
+export function getAFileManagerMock(): FileManager {
+  return (FileManager as jest.Mocked<typeof FileManager>).prototype;
 }

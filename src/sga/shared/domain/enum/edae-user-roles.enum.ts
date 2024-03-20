@@ -10,3 +10,11 @@ export enum EdaeRoles {
 export function getAllEdaeRoles(): string[] {
   return Object.values(EdaeRoles);
 }
+
+export function getAllTeacherRoles(): EdaeRoles[] {
+  const excludedRoles = [EdaeRoles.GESTOR_FCT];
+
+  return Object.values(EdaeRoles).filter(
+    (role) => !excludedRoles.includes(role),
+  );
+}

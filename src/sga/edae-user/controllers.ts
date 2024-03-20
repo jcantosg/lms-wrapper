@@ -7,6 +7,7 @@ import { GetEdaeUserController } from '#edae-user/infrastructure/controller/get-
 import { RemoveBusinessUnitsFromEdaeUserController } from '#edae-user/infrastructure/controller/remove-business-units-from-edae-user.controller';
 import { SearchEdaeUsersController } from '#edae-user/infrastructure/controller/search-edae-users/search-edae-users.controller';
 import { EditEdaeUserController } from '#edae-user/infrastructure/controller/edit-edae-user.controller';
+import { GetAllEdaeUsersPlainController } from '#edae-user/infrastructure/controller/get-all-edae-users-plain/get-all-edae-users-plain.controller';
 
 export const controllers = [
   CreateEdaeUserController,
@@ -17,5 +18,6 @@ export const controllers = [
   EditEdaeUserController,
   RemoveBusinessUnitsFromEdaeUserController,
   AddBusinessUnitsToEdaeUserController,
+  GetAllEdaeUsersPlainController,
   GetEdaeUserController,
 ];
