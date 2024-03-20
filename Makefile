@@ -43,17 +43,26 @@ test-e2e: ## Run e2e tests
 	rm -rf dist
 	mkdir -p files/admin-user-avatar
 	mkdir -p files/edae-user-avatar
+	mkdir -p files/uploads/subject-resources
 	make test-database-setup
 	@npm run test:e2e ; make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*
+	rm -rf files/edae-user/new-edae-user*
+	rm -rf files/uploads/subject-resources/*
+
+
 
 test-e2e-ci: ## Run e2e tests
 	mkdir -p files/admin-user-avatar
 	make test-database-setup
+	mkdir -p files/edae-user-avatar
+	mkdir -p files/uploads/subject-resources
 	@npm run test:e2e
 	make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*
 	rm -rf files/edae-user/new-edae-user*
+	rm -rf files/uploads/subject-resources/*
+
 
 database-drop: ## Remove all database collections
 	@npm run sga:db:drop -- -f

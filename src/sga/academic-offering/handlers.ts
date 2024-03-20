@@ -28,6 +28,9 @@ import { ExaminationCallGetter } from '#academic-offering/domain/service/examina
 import { CreateTitleHandler } from '#academic-offering/applicaton/create-title/create-title.handler';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { DeleteExaminationCallHandler } from '#academic-offering/applicaton/delete-examination-call/delete-examination-call.handler';
+import { UploadSubjectResourceHandler } from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.handler';
+import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
+import { FileManager } from '#shared/domain/file-manager/file-manager';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -210,6 +213,16 @@ const deleteExaminationCall = {
   inject: [ExaminationCallRepository, ExaminationCallGetter],
 };
 
+const uploadResourceHandler = {
+  provide: UploadSubjectResourceHandler,
+  useFactory: (
+    repository: SubjectResourceRepository,
+    subjectGetter: SubjectGetter,
+    fileManager: FileManager,
+  ) => new UploadSubjectResourceHandler(repository, subjectGetter, fileManager),
+  inject: [SubjectResourceRepository, SubjectGetter, FileManager],
+};
+
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
@@ -228,4 +241,5 @@ export const handlers = [
   editExaminationCallHandler,
   createTitleHandler,
   deleteExaminationCall,
+  uploadResourceHandler,
 ];

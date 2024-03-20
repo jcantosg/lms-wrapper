@@ -7,6 +7,7 @@ import { EvaluationTypeNotFoundException } from '#shared/domain/exception/academ
 import { SubjectBelowZeroHoursException } from '#shared/domain/exception/academic-offering/subject.below-zero-hours.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 
 export class Subject extends BaseEntity {
   private constructor(
@@ -27,6 +28,7 @@ export class Subject extends BaseEntity {
     private _updatedBy: AdminUser,
     private _isRegulated: boolean = true,
     private _isCore: boolean = true,
+    private _resources: SubjectResource[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -135,12 +137,20 @@ export class Subject extends BaseEntity {
     this._createdBy = value;
   }
 
-  get updatedBy(): AdminUser {
+  public get updatedBy(): AdminUser {
     return this._updatedBy;
   }
 
-  set updatedBy(value: AdminUser) {
+  public set updatedBy(value: AdminUser) {
     this._updatedBy = value;
+  }
+
+  public get resources(): SubjectResource[] {
+    return this._resources;
+  }
+
+  public set resources(value: SubjectResource[]) {
+    this._resources = value;
   }
 
   static create(
@@ -186,6 +196,7 @@ export class Subject extends BaseEntity {
       user,
       isRegulated,
       isCore,
+      [],
     );
   }
 
