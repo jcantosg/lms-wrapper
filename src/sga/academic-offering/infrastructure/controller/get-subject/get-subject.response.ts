@@ -2,6 +2,7 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
+import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 
 export interface SubjectBusinessUnitResponse {
   id: string;
@@ -21,6 +22,13 @@ export interface TeacherSubjectResponse {
   avatar: string | null;
 }
 
+export interface SubjectResourceResponse {
+  id: string;
+  name: string;
+  url: string;
+  size: number;
+}
+
 export interface SubjectResponse {
   id: string;
   name: string;
@@ -35,6 +43,7 @@ export interface SubjectResponse {
   teachers: TeacherSubjectResponse[];
   hours: number;
   isCore: boolean;
+  resources: SubjectResourceResponse[];
 }
 
 export class GetSubjectResponse {
@@ -67,6 +76,16 @@ export class GetSubjectResponse {
       })),
       hours: subject.hours,
       isCore: subject.isCore,
+      resources: subject.resources.map(
+        (subjectResource: SubjectResource): SubjectResourceResponse => {
+          return {
+            id: subjectResource.id,
+            name: subjectResource.name,
+            url: subjectResource.url,
+            size: subjectResource.size,
+          };
+        },
+      ),
     };
   }
 }
