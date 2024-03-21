@@ -35,6 +35,7 @@ export class UploadSubjectResourceE2eSeed implements E2eSeed {
   public static subjectType = SubjectType.SUBJECT;
   public static subjectIsRegulated = true;
   public static subjectIsCore = true;
+  public static subjectOfficialRegionalCode = 'MUR';
 
   public static subjectResourceId = '7320aeec-5238-4ac0-9b52-7fcad902f31e';
 
@@ -105,6 +106,7 @@ export class UploadSubjectResourceE2eSeed implements E2eSeed {
       UploadSubjectResourceE2eSeed.subjectIsRegulated,
       UploadSubjectResourceE2eSeed.subjectIsCore,
       this.superAdminUser,
+      UploadSubjectResourceE2eSeed.subjectOfficialRegionalCode,
     );
     await this.subjectRepository.save(this.subject);
   }

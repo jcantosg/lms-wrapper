@@ -56,6 +56,7 @@ export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
   public static thirdEdaeUserId = uuid();
   public static thirdEdaeName = 'Profesor Murcia';
   public static thirdEdaeUserEmail = 'profesor_murcia@universae.com';
+  public static subjectRegionalCode = 'MUR';
 
   private subject: Subject;
   private businessUnit: BusinessUnit;
@@ -155,6 +156,7 @@ export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
       AddEdaeUsersToSubjectE2eSeed.subjectIsRegulated,
       AddEdaeUsersToSubjectE2eSeed.subjectIsCore,
       this.superAdminUser,
+      AddEdaeUsersToSubjectE2eSeed.subjectRegionalCode,
     );
     await this.subjectRepository.save(this.subject);
 

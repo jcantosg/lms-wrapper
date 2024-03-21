@@ -16,6 +16,7 @@ export class GetAllSubjectsE2eSeedDataConfig {
       businessUnit: 'Madrid',
       isRegulated: true,
       isCore: true,
+      officialRegionalCode: 'MAD',
     },
     {
       id: 'a7f3274f-b3b1-4c6f-8448-437ad613ba4b',
@@ -30,6 +31,7 @@ export class GetAllSubjectsE2eSeedDataConfig {
       businessUnit: 'Murcia',
       isRegulated: true,
       isCore: true,
+      officialRegionalCode: 'MUR',
     },
     {
       id: '1facba7c-486d-4b63-acfb-a1f2ac00fe3f',
@@ -44,6 +46,7 @@ export class GetAllSubjectsE2eSeedDataConfig {
       businessUnit: 'Madrid',
       isRegulated: true,
       isCore: true,
+      officialRegionalCode: 'MAD',
     },
   ];
 }

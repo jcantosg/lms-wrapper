@@ -157,6 +157,7 @@ export const getASubject = (id: string = uuid()): Subject => {
     true,
     true,
     getAnAdminUser(),
+    'MUR',
   );
 };
 

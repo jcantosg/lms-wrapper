@@ -62,6 +62,7 @@ describe('/subject (POST)', () => {
         businessUnit: CreateSubjectE2eSeed.businessUnitId,
         isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
         isCore: CreateSubjectE2eSeed.subjectIsCore,
+        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
       })
       .expect(201);
   });
@@ -82,6 +83,7 @@ describe('/subject (POST)', () => {
         businessUnit: CreateSubjectE2eSeed.businessUnitId,
         isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
         isCore: CreateSubjectE2eSeed.subjectIsCore,
+        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
       })
       .expect(409);
     expect(response.body.message).toBe('sga.subject.duplicated-code');
@@ -103,6 +105,7 @@ describe('/subject (POST)', () => {
         businessUnit: CreateSubjectE2eSeed.businessUnitId,
         isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
         isCore: CreateSubjectE2eSeed.subjectIsCore,
+        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
       })
       .expect(404);
     expect(response.body.message).toBe('sga.evaluation-type.not-found');
@@ -124,6 +127,7 @@ describe('/subject (POST)', () => {
         businessUnit: '46785f83-8f4b-4e3c-974f-3fea1f87d4b7',
         isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
         isCore: CreateSubjectE2eSeed.subjectIsCore,
+        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
       })
       .expect(404);
     expect(response.body.message).toBe('sga.business-unit.not-found');

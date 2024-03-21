@@ -41,9 +41,10 @@ export interface SubjectResponse {
   businessUnit: SubjectBusinessUnitResponse;
   isRegulated: boolean;
   teachers: TeacherSubjectResponse[];
-  hours: number;
+  hours: number | null;
   isCore: boolean;
   resources: SubjectResourceResponse[];
+  officialRegionalCode: string | null;
 }
 
 export class GetSubjectResponse {
@@ -86,6 +87,7 @@ export class GetSubjectResponse {
           };
         },
       ),
+      officialRegionalCode: subject.officialRegionalCode,
     };
   }
 }

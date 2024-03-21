@@ -35,6 +35,7 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   public static subjectIsCore = true;
   public static secondSubjectId = '720d2d75-baea-4705-b926-6f004bf26192';
   public static secondSubjectCode = 'code';
+  public static subjectOfficialRegionalCode = 'MUR';
 
   private businessUnit: BusinessUnit;
   private superAdminUser: AdminUser;

@@ -19,6 +19,7 @@ export class GetSubjectDetailE2eSeed implements E2eSeed {
   public static subjectModality = SubjectModality.ELEARNING;
   public static subjectType = SubjectType.SUBJECT;
   public static subjectIsRegulated = true;
+  public static subjectOfficialRegionalCode = 'MUR';
 
   public static superAdminId = '91a46e8d-b032-488a-8ba3-322de1b20dc6';
   public static superAdminEmail = 'superadmin@email.com';
@@ -104,6 +105,7 @@ export class GetSubjectDetailE2eSeed implements E2eSeed {
         GetSubjectDetailE2eSeed.subjectIsRegulated,
         true,
         this.superAdminUser,
+        GetSubjectDetailE2eSeed.subjectOfficialRegionalCode,
       ),
     );
   }

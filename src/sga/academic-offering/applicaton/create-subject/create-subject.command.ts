@@ -10,13 +10,14 @@ export class CreateSubjectCommand implements Command {
     public readonly code: string,
     public readonly image: string | null,
     public readonly officialCode: string | null,
-    public readonly hours: number,
+    public readonly hours: number | null,
     public readonly modality: SubjectModality,
-    public readonly evaluationTypeId: string | null,
+    public readonly evaluationTypeId: string,
     public readonly type: SubjectType,
     public readonly businessUnitId: string,
     public readonly isRegulated: boolean,
     public readonly isCore: boolean,
     public readonly adminUser: AdminUser,
+    public readonly officialRegionalCode: string | null,
   ) {}
 }

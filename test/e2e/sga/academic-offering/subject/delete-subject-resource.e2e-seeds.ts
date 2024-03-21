@@ -106,6 +106,7 @@ export class DeleteSubjectResourceE2eSeed implements E2eSeed {
       DeleteSubjectResourceE2eSeed.subjectIsRegulated,
       DeleteSubjectResourceE2eSeed.subjectIsCore,
       this.superAdminUser,
+      null,
     );
     await this.subjectRepository.save(this.subject);
 

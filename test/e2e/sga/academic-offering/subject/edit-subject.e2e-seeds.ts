@@ -35,6 +35,7 @@ export class EditSubjectE2eSeed implements E2eSeed {
   public static secondSubjectType = SubjectType.SUBJECT;
   public static secondSubjectIsRegulated = true;
   public static secondSubjectIsCore = true;
+  public static subjectOfficialRegionalCode = 'MUR';
 
   public static superAdminUserEmail = 'super-edit-subject@email.com';
   public static superAdminUserPassword = 'pass123';
@@ -116,6 +117,7 @@ export class EditSubjectE2eSeed implements E2eSeed {
       EditSubjectE2eSeed.subjectIsRegulated,
       EditSubjectE2eSeed.subjectIsCore,
       this.superAdminUser,
+      EditSubjectE2eSeed.subjectOfficialRegionalCode,
     );
 
     await this.subjectRepository.save(this.firstSubject);
@@ -134,6 +136,7 @@ export class EditSubjectE2eSeed implements E2eSeed {
       EditSubjectE2eSeed.secondSubjectIsRegulated,
       EditSubjectE2eSeed.secondSubjectIsCore,
       this.superAdminUser,
+      EditSubjectE2eSeed.subjectOfficialRegionalCode,
     );
 
     await this.subjectRepository.save(this.secondSubject);
