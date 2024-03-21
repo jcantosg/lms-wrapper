@@ -38,6 +38,8 @@ import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
 import { AddEdaeUsersToSubjectHandler } from '#academic-offering/applicaton/add-edae-users-to-subject/add-edae-users-to-subject.handler';
+import { DeleteSubjectResourceHandler } from '#academic-offering/applicaton/delete-subject-resource/delete-subject-resource.handler';
+import { SubjectResourceGetter } from '#academic-offering/domain/service/subject-resource-getter.service';
 import { DeleteTitleHandler } from '#academic-offering/applicaton/delete-title/delete-title.handler';
 
 const createAcademicPeriodHandler = {
@@ -278,6 +280,28 @@ const addEdaeUsersToSubjectHandler = {
   ],
 };
 
+const deleteResourceHandler = {
+  provide: DeleteSubjectResourceHandler,
+  useFactory: (
+    repository: SubjectResourceRepository,
+    subjectGetter: SubjectGetter,
+    subjectResourceGetter: SubjectResourceGetter,
+    fileManager: FileManager,
+  ) =>
+    new DeleteSubjectResourceHandler(
+      repository,
+      subjectGetter,
+      subjectResourceGetter,
+      fileManager,
+    ),
+  inject: [
+    SubjectResourceRepository,
+    SubjectGetter,
+    SubjectResourceGetter,
+    FileManager,
+  ],
+};
+
 const deleteTitleHandler = {
   provide: DeleteTitleHandler,
   useFactory: (
@@ -308,6 +332,7 @@ export const handlers = [
   getAllTitlesPlainHandler,
   uploadResourceHandler,
   addEdaeUsersToSubjectHandler,
+  deleteResourceHandler,
   deleteExaminationCallHandler,
   deleteTitleHandler,
 ];

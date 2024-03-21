@@ -5,4 +5,6 @@ export class SubjectResourceMockRepository
 {
   save = jest.fn();
   existsById = jest.fn();
+  get = jest.fn();
+  delete = jest.fn();
 }

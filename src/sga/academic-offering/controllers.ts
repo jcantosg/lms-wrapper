@@ -19,6 +19,7 @@ import { CreateAcademicProgramController } from '#academic-offering/infrastructu
 import { GetAllTitlesPlainController } from '#academic-offering/infrastructure/controller/get-all-titles-plain/get-all-titles-plain.controller';
 import { UploadSubjectResourceController } from '#academic-offering/infrastructure/controller/upload-subject-resource.controller';
 import { AddEdaeUsersToSubjectController } from '#academic-offering/infrastructure/controller/add-edae-users-to-subject.controller';
+import { DeleteSubjectResourceController } from '#academic-offering/infrastructure/controller/delete-subject-resource.controller';
 import { DeleteTitleController } from '#academic-offering/infrastructure/controller/delete-title.controller';
 
 export const controllers = [
@@ -43,5 +44,6 @@ export const controllers = [
   CreateAcademicProgramController,
   GetAllTitlesPlainController,
   AddEdaeUsersToSubjectController,
+  DeleteSubjectResourceController,
   DeleteTitleController,
 ];

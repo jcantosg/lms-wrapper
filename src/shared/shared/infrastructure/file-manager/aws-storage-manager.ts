@@ -1,7 +1,12 @@
 import { File } from '#shared/domain/file-manager/file';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { UploadFileException } from '#shared/domain/exception/shared/upload-file.exception';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
+import { DeleteFileException } from '#shared/domain/exception/shared/delete-file.exception';
 
 export class AWSStorageManager implements FileManager {
   private s3;
@@ -38,5 +43,26 @@ export class AWSStorageManager implements FileManager {
     }
 
     return `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${file.directory}/${file.fileName}`;
+  }
+
+  public async deleteFile(url: string): Promise<void> {
+    const key = this.getKeyFromUrl(url);
+
+    const command = new DeleteObjectCommand({
+      Bucket: this.bucketName,
+      Key: key,
+    });
+
+    try {
+      await this.s3.send(command);
+    } catch (e) {
+      throw new DeleteFileException();
+    }
+  }
+
+  private getKeyFromUrl(url: string) {
+    const parts = url.split('.amazonaws.com/');
+
+    return parts[1];
   }
 }

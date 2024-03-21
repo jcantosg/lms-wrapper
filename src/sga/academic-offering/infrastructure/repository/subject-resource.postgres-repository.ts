@@ -35,4 +35,12 @@ export class SubjectResourcePostgresRepository
 
     return !!result;
   }
+
+  async get(id: string): Promise<SubjectResource | null> {
+    return await this.repository.findOne({ where: { id } });
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
+  }
 }

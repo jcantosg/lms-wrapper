@@ -19,6 +19,7 @@ import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/ser
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
 import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
+import { SubjectResourceGetter } from '#academic-offering/domain/service/subject-resource-getter.service';
 import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
@@ -127,6 +128,11 @@ export function getAnExaminationCallGetterMock(): ExaminationCallGetter {
 
 export function getAFileManagerMock(): FileManager {
   return (FileManager as jest.Mocked<typeof FileManager>).prototype;
+}
+
+export function getASubjectResourceGetterMock(): SubjectResourceGetter {
+  return (SubjectResourceGetter as jest.Mocked<typeof SubjectResourceGetter>)
+    .prototype;
 }
 
 export function getATitleGetterMock(): TitleGetter {
