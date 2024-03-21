@@ -49,6 +49,11 @@ jobs:
             aws configure set default.region > echo $AWS_REGION
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
             docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-            docker container stop universae-api-sga || true && cd /srv/www/api-sga/current/ && docker run -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga $ECR_REGISTRY/$ECR_REPOSITORY
+            docker container stop universae-api-sga || true
+            while docker ps -a | grep -w universae-api-sga; do
+              echo "Waiting stop container..."
+              sleep 1
+            done
+            cd /srv/www/api-sga/current/ && docker run -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga $ECR_REGISTRY/$ECR_REPOSITORY
 
 

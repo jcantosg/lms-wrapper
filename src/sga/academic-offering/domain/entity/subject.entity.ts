@@ -4,7 +4,6 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { EvaluationTypeNotFoundException } from '#shared/domain/exception/academic-offering/evaluation-type.not-found.exception';
-import { SubjectBelowZeroHoursException } from '#shared/domain/exception/academic-offering/subject.below-zero-hours.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
@@ -17,7 +16,7 @@ export class Subject extends BaseEntity {
     private _name: string,
     private _code: string,
     private _officialCode: string | null,
-    private _hours: number,
+    private _hours: number | null,
     private _modality: SubjectModality,
     private _evaluationType: EvaluationType | null,
     private _type: SubjectType,
@@ -30,6 +29,7 @@ export class Subject extends BaseEntity {
     private _isRegulated: boolean = true,
     private _isCore: boolean = true,
     private _resources: SubjectResource[],
+    private _officialRegionalCode: string | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -66,11 +66,11 @@ export class Subject extends BaseEntity {
     this._officialCode = value;
   }
 
-  public get hours(): number {
+  public get hours(): number | null {
     return this._hours;
   }
 
-  public set hours(value: number) {
+  public set hours(value: number | null) {
     this._hours = value;
   }
 
@@ -154,13 +154,21 @@ export class Subject extends BaseEntity {
     this._resources = value;
   }
 
+  public get officialRegionalCode(): string | null {
+    return this._officialRegionalCode;
+  }
+
+  public set officialRegionalCode(value: string | null) {
+    this._officialRegionalCode = value;
+  }
+
   static create(
     id: string,
     imageUrl: string | null,
     name: string,
     code: string,
     officialCode: string | null,
-    hours: number,
+    hours: number | null,
     modality: SubjectModality,
     evaluationType: EvaluationType | null,
     type: SubjectType,
@@ -168,13 +176,12 @@ export class Subject extends BaseEntity {
     isRegulated: boolean,
     isCore: boolean,
     user: AdminUser,
+    officialRegionalCode: string | null,
   ) {
     if (isRegulated && !evaluationType) {
       throw new EvaluationTypeNotFoundException();
     }
-    if (hours <= 0) {
-      throw new SubjectBelowZeroHoursException();
-    }
+
     const assignedEvaluationType: EvaluationType | null = isRegulated
       ? evaluationType
       : null;
@@ -198,6 +205,7 @@ export class Subject extends BaseEntity {
       isRegulated,
       isCore,
       [],
+      officialRegionalCode,
     );
   }
 
@@ -217,9 +225,7 @@ export class Subject extends BaseEntity {
     if (isRegulated && !evaluationType) {
       throw new EvaluationTypeNotFoundException();
     }
-    if (hours <= 0) {
-      throw new SubjectBelowZeroHoursException();
-    }
+
     const assignedEvaluationType: EvaluationType | null = isRegulated
       ? evaluationType
       : null;

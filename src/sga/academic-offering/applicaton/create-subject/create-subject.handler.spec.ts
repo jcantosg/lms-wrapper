@@ -50,6 +50,7 @@ const command = new CreateSubjectCommand(
   true,
   true,
   getAnAdminUser(),
+  'MUR',
 );
 
 describe('Create Subject Handler', () => {

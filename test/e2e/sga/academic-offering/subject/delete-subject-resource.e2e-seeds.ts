@@ -15,13 +15,14 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 
-export class UploadSubjectResourceE2eSeed implements E2eSeed {
-  public static superAdminUserEmail = 'super-upload-subject-resource@email.com';
+export class DeleteSubjectResourceE2eSeed implements E2eSeed {
+  public static superAdminUserEmail = 'super-delete-subject-resource@email.com';
   public static superAdminUserPassword = 'pass123';
   public static superAdminUserId = uuid();
-  public static adminUserEmail = 'upload-subject-resource@email.com';
+  public static adminUserEmail = 'delete-subject-resource@email.com';
   public static adminUserPassword = 'pass123';
   public static adminUserId = uuid();
+
   public static businessUnitId = '35637f98-af93-456d-bde4-811ec48d4814';
   public static businessUnitName = 'Murcia';
   public static businessUnitCode = 'MUR';
@@ -35,13 +36,12 @@ export class UploadSubjectResourceE2eSeed implements E2eSeed {
   public static subjectType = SubjectType.SUBJECT;
   public static subjectIsRegulated = true;
   public static subjectIsCore = true;
-  public static subjectOfficialRegionalCode = 'MUR';
 
   public static subjectResourceId = '7320aeec-5238-4ac0-9b52-7fcad902f31e';
 
   private businessUnit: BusinessUnit;
   private superAdminUser: AdminUser;
-  private secretaryUser: AdminUser;
+  private adminUser: AdminUser;
   private subject: Subject;
 
   private businessUnitRepository: Repository<BusinessUnit>;
@@ -63,9 +63,9 @@ export class UploadSubjectResourceE2eSeed implements E2eSeed {
       name: 'España',
     });
     this.businessUnit = BusinessUnit.create(
-      UploadSubjectResourceE2eSeed.businessUnitId,
-      UploadSubjectResourceE2eSeed.businessUnitName,
-      UploadSubjectResourceE2eSeed.businessUnitCode,
+      DeleteSubjectResourceE2eSeed.businessUnitId,
+      DeleteSubjectResourceE2eSeed.businessUnitName,
+      DeleteSubjectResourceE2eSeed.businessUnitCode,
       country,
       this.superAdminUser,
     );
@@ -74,50 +74,58 @@ export class UploadSubjectResourceE2eSeed implements E2eSeed {
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
-      UploadSubjectResourceE2eSeed.superAdminUserId,
-      UploadSubjectResourceE2eSeed.superAdminUserEmail,
-      UploadSubjectResourceE2eSeed.superAdminUserPassword,
+      DeleteSubjectResourceE2eSeed.superAdminUserId,
+      DeleteSubjectResourceE2eSeed.superAdminUserEmail,
+      DeleteSubjectResourceE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
       [this.businessUnit],
     );
 
-    this.secretaryUser = await createAdminUser(
+    this.adminUser = await createAdminUser(
       this.datasource,
-      UploadSubjectResourceE2eSeed.adminUserId,
-      UploadSubjectResourceE2eSeed.adminUserEmail,
-      UploadSubjectResourceE2eSeed.adminUserPassword,
+      DeleteSubjectResourceE2eSeed.adminUserId,
+      DeleteSubjectResourceE2eSeed.adminUserEmail,
+      DeleteSubjectResourceE2eSeed.adminUserPassword,
       [AdminUserRoles.SECRETARIA],
       [this.businessUnit],
     );
     const evaluationType = await this.evaluationTypeRepository.findOneByOrFail({
-      id: UploadSubjectResourceE2eSeed.subjectEvaluationType,
+      id: DeleteSubjectResourceE2eSeed.subjectEvaluationType,
     });
     this.subject = Subject.create(
-      UploadSubjectResourceE2eSeed.subjectId,
+      DeleteSubjectResourceE2eSeed.subjectId,
       null,
-      UploadSubjectResourceE2eSeed.subjectName,
-      UploadSubjectResourceE2eSeed.subjectCode,
+      DeleteSubjectResourceE2eSeed.subjectName,
+      DeleteSubjectResourceE2eSeed.subjectCode,
       null,
-      UploadSubjectResourceE2eSeed.subjectHours,
-      UploadSubjectResourceE2eSeed.subjectModality,
+      DeleteSubjectResourceE2eSeed.subjectHours,
+      DeleteSubjectResourceE2eSeed.subjectModality,
       evaluationType,
-      UploadSubjectResourceE2eSeed.subjectType,
+      DeleteSubjectResourceE2eSeed.subjectType,
       this.businessUnit,
-      UploadSubjectResourceE2eSeed.subjectIsRegulated,
-      UploadSubjectResourceE2eSeed.subjectIsCore,
+      DeleteSubjectResourceE2eSeed.subjectIsRegulated,
+      DeleteSubjectResourceE2eSeed.subjectIsCore,
       this.superAdminUser,
-      UploadSubjectResourceE2eSeed.subjectOfficialRegionalCode,
+      null,
     );
     await this.subjectRepository.save(this.subject);
+
+    await this.subjectResourceRepository.save(
+      SubjectResource.create(
+        DeleteSubjectResourceE2eSeed.subjectResourceId,
+        'name',
+        'url',
+        10,
+        this.subject,
+        this.superAdminUser,
+      ),
+    );
   }
 
   async clear(): Promise<void> {
-    await this.subjectResourceRepository.delete(
-      UploadSubjectResourceE2eSeed.subjectResourceId,
-    );
-    await this.subjectRepository.delete(UploadSubjectResourceE2eSeed.subjectId);
+    await this.subjectRepository.delete(DeleteSubjectResourceE2eSeed.subjectId);
     await removeAdminUser(this.datasource, this.superAdminUser);
-    await removeAdminUser(this.datasource, this.secretaryUser);
+    await removeAdminUser(this.datasource, this.adminUser);
     await this.businessUnitRepository.delete(this.businessUnit.id);
   }
 }

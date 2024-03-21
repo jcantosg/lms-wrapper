@@ -67,6 +67,17 @@ async function createEvaluationTypes(logger: Logger) {
       spanishBusinessUnits,
     ),
   );
+  await evaluationTypeRepository.save(
+    EvaluationType.create(
+      '7a84a7a1-772f-46a8-8d7b-7a167298a854',
+      'No Evaluable',
+      0,
+      0,
+      0,
+      false,
+      spanishBusinessUnits,
+    ),
+  );
 }
 
 async function bootstrap() {

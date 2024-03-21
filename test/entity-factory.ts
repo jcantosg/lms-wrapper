@@ -23,6 +23,7 @@ import { ExaminationCall } from '#academic-offering/domain/entity/examination-ca
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { File } from '#shared/domain/file-manager/file';
+import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -156,6 +157,7 @@ export const getASubject = (id: string = uuid()): Subject => {
     true,
     true,
     getAnAdminUser(),
+    'MUR',
   );
 };
 
@@ -183,6 +185,17 @@ export const getAnAcademicProgram = (id: string = uuid()): AcademicProgram => {
 
 export const getAFile = (): File => {
   return new File('test', 'test', Buffer.from('test'));
+};
+
+export const getASubjectResource = (id: string = uuid()): SubjectResource => {
+  return SubjectResource.create(
+    id,
+    'name',
+    'url',
+    10,
+    getASubject(),
+    getAnAdminUser(),
+  );
 };
 
 export const getATitle = (id: string = uuid()): Title => {

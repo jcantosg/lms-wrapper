@@ -8,4 +8,11 @@ export class LocalStorageManager implements FileManager {
 
     return `files/${file.directory}/${file.fileName}`;
   }
+  async deleteFile(url: string): Promise<void> {
+    try {
+      fs.unlinkSync(url);
+    } catch (e) {
+      console.log('Local file not found.');
+    }
+  }
 }

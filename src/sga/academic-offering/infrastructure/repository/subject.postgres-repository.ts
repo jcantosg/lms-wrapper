@@ -50,6 +50,7 @@ export class SubjectPostgresRepository
       isCore: subject.isCore,
       image: subject.image,
       resources: subject.resources,
+      officialRegionalCode: subject.officialRegionalCode,
     });
   }
 

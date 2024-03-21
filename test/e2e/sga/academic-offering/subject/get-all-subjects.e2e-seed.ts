@@ -1,4 +1,4 @@
-import { Repository, DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
@@ -110,6 +110,7 @@ export class GetAllSubjectsE2eSeed implements E2eSeed {
           subject.isRegulated,
           subject.isCore,
           this.superAdminUser,
+          subject.officialRegionalCode,
         ),
       ),
     );

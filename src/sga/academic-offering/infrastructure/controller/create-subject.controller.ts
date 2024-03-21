@@ -23,14 +23,15 @@ interface CreateSubjectBody {
   image: string | null;
   name: string;
   code: string;
-  hours: number;
+  hours: number | null;
   officialCode: string | null;
   modality: SubjectModality;
-  evaluationType: string | null;
+  evaluationType: string;
   type: SubjectType;
   businessUnit: string;
   isRegulated: boolean;
   isCore: boolean;
+  officialRegionalCode: string | null;
 }
 
 @Controller('subject')
@@ -63,6 +64,7 @@ export class CreateSubjectController {
       body.isRegulated,
       body.isCore,
       request.user,
+      body.officialRegionalCode,
     );
     await this.handler.handle(command);
   }

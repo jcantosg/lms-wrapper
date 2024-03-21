@@ -33,7 +33,7 @@ export const subjectSchema = new EntitySchema<Subject>({
     },
     hours: {
       type: 'int',
-      nullable: false,
+      nullable: true,
     },
     modality: {
       type: 'enum',
@@ -56,6 +56,11 @@ export const subjectSchema = new EntitySchema<Subject>({
       type: Boolean,
       nullable: false,
       default: true,
+    },
+    officialRegionalCode: {
+      name: 'official_regional_code',
+      type: String,
+      nullable: true,
     },
   },
   relations: {
