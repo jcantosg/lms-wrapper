@@ -21,6 +21,7 @@ import { ExaminationCallGetter } from '#academic-offering/domain/service/examina
 import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { SubjectResourceGetter } from '#academic-offering/domain/service/subject-resource-getter.service';
 import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
+import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -137,4 +138,9 @@ export function getASubjectResourceGetterMock(): SubjectResourceGetter {
 
 export function getATitleGetterMock(): TitleGetter {
   return (TitleGetter as jest.Mocked<typeof TitleGetter>).prototype;
+}
+
+export function getAnAcademicProgramGetterMock(): AcademicProgramGetter {
+  return (AcademicProgramGetter as jest.Mocked<typeof AcademicProgramGetter>)
+    .prototype;
 }

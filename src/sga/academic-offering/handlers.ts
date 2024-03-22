@@ -41,6 +41,9 @@ import { AddEdaeUsersToSubjectHandler } from '#academic-offering/applicaton/add-
 import { DeleteSubjectResourceHandler } from '#academic-offering/applicaton/delete-subject-resource/delete-subject-resource.handler';
 import { SubjectResourceGetter } from '#academic-offering/domain/service/subject-resource-getter.service';
 import { DeleteTitleHandler } from '#academic-offering/applicaton/delete-title/delete-title.handler';
+import { GetAcademicProgramHandler } from '#academic-offering/applicaton/get-academic-program/get-academic-program.handler';
+import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program-getter.service';
+import { RemoveEdaeUserFromSubjectHandler } from '#academic-offering/applicaton/remove-edae-from-subject/remove-edae-user-from-subject.handler';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -311,6 +314,30 @@ const deleteTitleHandler = {
   inject: [TitleRepository, TitleGetter],
 };
 
+const getAcademicProgramHandler = {
+  provide: GetAcademicProgramHandler,
+  useFactory: (getter: AcademicProgramGetter) => {
+    return new GetAcademicProgramHandler(getter);
+  },
+  inject: [AcademicProgramGetter],
+};
+
+const removeEdaeUsersFromSubjectHandler = {
+  provide: RemoveEdaeUserFromSubjectHandler,
+  useFactory: (
+    subjectRepository: SubjectRepository,
+    subjectGetter: SubjectGetter,
+    edaeUserGetter: EdaeUserGetter,
+  ) => {
+    return new RemoveEdaeUserFromSubjectHandler(
+      subjectRepository,
+      subjectGetter,
+      edaeUserGetter,
+    );
+  },
+  inject: [SubjectRepository, SubjectGetter, EdaeUserGetter],
+};
+
 export const handlers = [
   createAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
@@ -335,4 +362,6 @@ export const handlers = [
   deleteResourceHandler,
   deleteExaminationCallHandler,
   deleteTitleHandler,
+  getAcademicProgramHandler,
+  removeEdaeUsersFromSubjectHandler,
 ];
