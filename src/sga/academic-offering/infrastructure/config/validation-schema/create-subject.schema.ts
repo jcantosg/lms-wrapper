@@ -5,7 +5,7 @@ import { getAllSubjectTypes } from '#academic-offering/domain/enum/subject-type.
 export const createSubjectSchema = Joi.object({
   id: Joi.string().guid().required(),
   name: Joi.string().required(),
-  image: Joi.string().base64().optional(),
+  image: Joi.string().optional(),
   code: Joi.string().required(),
   hours: Joi.number().optional(),
   officialCode: Joi.string().optional(),
