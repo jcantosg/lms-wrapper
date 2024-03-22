@@ -1,7 +1,7 @@
 export enum SubjectModality {
-  ELEARNING = 'e-learning',
-  MIXED = 'mixta',
-  PRESENCIAL = 'presencial',
+  ELEARNING = 'E-Learning',
+  MIXED = 'Mixta',
+  PRESENCIAL = 'Presencial',
 }
 
 export const getAllSubjectModalities = (): SubjectModality[] =>

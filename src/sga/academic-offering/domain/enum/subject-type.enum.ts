@@ -1,7 +1,7 @@
 export enum SubjectType {
-  SUBJECT = 'asignatura',
+  SUBJECT = 'Asignatura',
   TFG = 'Trabajo Fin de Grado/Máster',
-  PRACTICE = 'practica',
+  PRACTICE = 'Practica',
 }
 
 export const getAllSubjectTypes = (): SubjectType[] =>
