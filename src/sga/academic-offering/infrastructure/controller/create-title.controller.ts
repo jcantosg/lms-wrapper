@@ -19,7 +19,7 @@ import { CreateTitleHandler } from '#academic-offering/applicaton/create-title/c
 interface CreateTitleBody {
   id: string;
   name: string;
-  officialCode: string;
+  officialCode: string | null;
   officialTitle: string;
   officialProgram: string;
   businessUnit: string;

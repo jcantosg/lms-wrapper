@@ -96,4 +96,21 @@ export class Title extends BaseEntity {
       user,
     );
   }
+
+  public update(
+    name: string,
+    officialCode: string | null,
+    officialTitle: string,
+    officialProgram: string,
+    businessUnit: BusinessUnit,
+    user: AdminUser,
+  ) {
+    this._name = name;
+    this._officialCode = officialCode;
+    this._officialTitle = officialTitle;
+    this._officialProgram = officialProgram;
+    this._businessUnit = businessUnit;
+    this.updatedAt = new Date();
+    this.updatedBy = user;
+  }
 }
