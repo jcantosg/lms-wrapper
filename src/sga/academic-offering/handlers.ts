@@ -28,6 +28,8 @@ import { ExaminationCallGetter } from '#academic-offering/domain/service/examina
 import { CreateTitleHandler } from '#academic-offering/applicaton/create-title/create-title.handler';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { DeleteExaminationCallHandler } from '#academic-offering/applicaton/delete-examination-call/delete-examination-call.handler';
+import { GetTitleListHandler } from '#academic-offering/applicaton/get-all-titles/get-title-list.handler';
+import { SearchTitleHandler } from '#academic-offering/applicaton/search-title/search-title.handler';
 import { CreateAcademicProgramHandler } from '#academic-offering/applicaton/create-academic-program/create-academic-program.handler';
 import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
@@ -226,6 +228,20 @@ const deleteExaminationCallHandler = {
   inject: [ExaminationCallRepository, ExaminationCallGetter],
 };
 
+const getAllTitlesHandler = {
+  provide: GetTitleListHandler,
+  useFactory: (repository: TitleRepository) =>
+    new GetTitleListHandler(repository),
+  inject: [TitleRepository],
+};
+
+const searchTitlesHandler = {
+  provide: SearchTitleHandler,
+  useFactory: (repository: TitleRepository) =>
+    new SearchTitleHandler(repository),
+  inject: [TitleRepository],
+};
+
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
   useFactory: (
@@ -355,6 +371,8 @@ export const handlers = [
   editSubjectHandler,
   editExaminationCallHandler,
   createTitleHandler,
+  getAllTitlesHandler,
+  searchTitlesHandler,
   createAcademicProgramHandler,
   getAllTitlesPlainHandler,
   uploadResourceHandler,

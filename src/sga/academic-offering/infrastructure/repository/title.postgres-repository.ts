@@ -5,6 +5,7 @@ import { Title } from '#academic-offering/domain/entity/title.entity';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 
 export class TitlePostgresRepository
   extends TypeOrmRepository<Title>
@@ -38,15 +39,60 @@ export class TitlePostgresRepository
     });
   }
 
-  async delete(title: Title): Promise<void> {
-    await this.repository.delete(title.id);
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'title';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
   }
 
-  async get(id: string): Promise<Title | null> {
-    return await this.repository.findOne({
-      where: { id },
-      relations: { businessUnit: true },
-    });
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<Title[]> {
+    const aliasQuery = 'title';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 
   private initializeQueryBuilder(aliasQuery: string) {
@@ -58,6 +104,17 @@ export class TitlePostgresRepository
     );
 
     return queryBuilder;
+  }
+
+  async delete(title: Title): Promise<void> {
+    await this.repository.delete(title.id);
+  }
+
+  async get(id: string): Promise<Title | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: { businessUnit: true },
+    });
   }
 
   async getByAdminUser(

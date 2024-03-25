@@ -21,3 +21,26 @@ export function expectSubjects(
     }),
   );
 }
+
+export function expectTitles(
+  titlesSeed: {
+    id: string;
+    name: string;
+    officialCode: string;
+    officialTitle: string;
+    officialProgram: string;
+  }[],
+) {
+  return titlesSeed.map((title) =>
+    expect.objectContaining({
+      id: title.id,
+      name: title.name,
+      officialCode: title.officialCode,
+      officialTitle: title.officialTitle,
+      officialProgram: title.officialProgram,
+      businessUnit: expect.objectContaining({
+        name: 'Shanghai',
+      }),
+    }),
+  );
+}
