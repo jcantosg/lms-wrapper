@@ -249,7 +249,7 @@ export class Subject extends BaseEntity {
       throw new SubjectInvalidEdaeUserRoleException();
     }
 
-    if (!this._teachers.find((teacher) => teacher.id === teacher.id)) {
+    if (!this._teachers.find((teachEdae) => teachEdae.id === teacher.id)) {
       this._teachers.push(teacher);
     }
   }
