@@ -86,4 +86,17 @@ export class AcademicProgram extends BaseEntity {
   public set updatedBy(value: AdminUser) {
     this._updatedBy = value;
   }
+
+  public update(
+    name: string,
+    code: string,
+    title: Title,
+    updatedBy: AdminUser,
+  ): void {
+    this.name = name;
+    this.code = code;
+    this.title = title;
+    this.updatedBy = updatedBy;
+    this.updatedAt = new Date();
+  }
 }

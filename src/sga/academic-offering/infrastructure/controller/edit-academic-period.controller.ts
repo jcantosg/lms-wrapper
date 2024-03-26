@@ -16,6 +16,8 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { editAcademicPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-academic-period.schema';
 import { EditAcademicPeriodCommand } from '#academic-offering/applicaton/edit-academic-period/edit-academic-period.command';
 import { EditAcademicPeriodHandler } from '#academic-offering/applicaton/edit-academic-period/edit-academic-period.handler';
+import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
+import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 
 interface EditAcademicPeriodBody {
   name: string;
@@ -30,7 +32,10 @@ export class EditAcademicPeriodController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UsePipes(new JoiRequestBodyValidationPipe(editAcademicPeriodSchema))
+  @UsePipes(
+    new JoiRequestParamIdValidationPipeService(uuidSchema),
+    new JoiRequestBodyValidationPipe(editAcademicPeriodSchema),
+  )
   @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
   async createAcademicPeriod(
     @Param('id') id: string,
