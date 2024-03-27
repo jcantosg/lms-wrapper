@@ -30,6 +30,7 @@ interface EditSubjectBody {
   type: SubjectType;
   isRegulated: boolean;
   isCore: boolean;
+  officialRegionalCode: string | null;
 }
 
 @Controller('subject')
@@ -62,6 +63,7 @@ export class EditSubjectController {
       body.isRegulated,
       body.isCore,
       req.user,
+      body.officialRegionalCode,
     );
 
     await this.handler.handle(command);

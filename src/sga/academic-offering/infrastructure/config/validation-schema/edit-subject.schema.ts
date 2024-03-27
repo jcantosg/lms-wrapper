@@ -17,4 +17,5 @@ export const editSubjectSchema = Joi.object({
     .required(),
   isRegulated: Joi.boolean().required(),
   isCore: Joi.boolean().required(),
+  officialRegionalCode: Joi.string().optional(),
 });

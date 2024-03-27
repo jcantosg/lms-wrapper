@@ -57,6 +57,7 @@ export class EditSubjectHandler implements CommandHandler {
       command.isRegulated,
       command.isCore,
       command.adminUser,
+      command.officialRegionalCode,
     );
 
     await this.repository.save(subject);

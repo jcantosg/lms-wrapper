@@ -221,6 +221,7 @@ export class Subject extends BaseEntity {
     isRegulated: boolean,
     isCore: boolean,
     user: AdminUser,
+    officialRegionalCode: string | null,
   ) {
     if (isRegulated && !evaluationType) {
       throw new EvaluationTypeNotFoundException();
@@ -240,6 +241,7 @@ export class Subject extends BaseEntity {
     this.type = type;
     this.isRegulated = isRegulated;
     this.isCore = isCore;
+    this.officialRegionalCode = officialRegionalCode;
     this.updatedBy = user;
     this.updatedAt = new Date();
   }

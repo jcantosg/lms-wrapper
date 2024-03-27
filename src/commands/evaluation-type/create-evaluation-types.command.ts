@@ -23,6 +23,8 @@ async function createEvaluationTypes(logger: Logger) {
     where: { country: { name: 'España' } },
   });
 
+  const allBusinessUnits = await businessUnitRepository.find();
+
   await evaluationTypeRepository.save(
     EvaluationType.create(
       '8adeb962-3669-4c37-ada0-01328ef74c00',
@@ -75,7 +77,7 @@ async function createEvaluationTypes(logger: Logger) {
       0,
       0,
       false,
-      spanishBusinessUnits,
+      allBusinessUnits,
     ),
   );
 }

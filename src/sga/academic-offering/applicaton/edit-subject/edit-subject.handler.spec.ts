@@ -55,6 +55,7 @@ const command = new EditSubjectCommand(
   true,
   true,
   adminUser,
+  null,
 );
 
 describe('Edit Subject Handler Unit Test', () => {

@@ -17,5 +17,6 @@ export class EditSubjectCommand implements Command {
     public readonly isRegulated: boolean,
     public readonly isCore: boolean,
     public readonly adminUser: AdminUser,
+    public readonly officialRegionalCode: string | null,
   ) {}
 }
