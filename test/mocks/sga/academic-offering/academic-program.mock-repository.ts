@@ -8,4 +8,6 @@ export class AcademicProgramMockRepository
   getByAdminUser = jest.fn();
   existsById = jest.fn();
   existsByCode = jest.fn();
+  count = jest.fn();
+  matching = jest.fn();
 }

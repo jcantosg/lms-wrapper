@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 @Injectable()
 export class AcademicProgramPostgresRepository
@@ -87,5 +89,59 @@ export class AcademicProgramPostgresRepository
         ids: adminUserBusinessUnits,
       })
       .getOne();
+  }
+
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'academicProgram';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
+  }
+
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicProgram[]> {
+    const aliasQuery = 'academicProgram';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 }

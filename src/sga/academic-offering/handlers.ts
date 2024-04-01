@@ -46,6 +46,8 @@ import { DeleteTitleHandler } from '#academic-offering/applicaton/delete-title/d
 import { GetAcademicProgramHandler } from '#academic-offering/applicaton/get-academic-program/get-academic-program.handler';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program-getter.service';
 import { RemoveEdaeUserFromSubjectHandler } from '#academic-offering/applicaton/remove-edae-from-subject/remove-edae-user-from-subject.handler';
+import { GetAllAcademicProgramsHandler } from '#academic-offering/applicaton/get-all-academic-programs/get-all-academic-programs.handler';
+import { SearchAcademicProgramsHandler } from '#academic-offering/applicaton/search-academic-programs/search-academic-programs.handler';
 import { EditTitleHandler } from '#academic-offering/applicaton/edit-title/edit-title.handler';
 import { GetTitleDetailHandler } from '#academic-offering/applicaton/get-title-detail/get-title-detail.handler';
 import { EditAcademicProgramHandler } from '#academic-offering/applicaton/edit-academic-program/edit-academic-program.handler';
@@ -357,6 +359,20 @@ const removeEdaeUsersFromSubjectHandler = {
   inject: [SubjectRepository, SubjectGetter, EdaeUserGetter],
 };
 
+const getAllAcademicProgramsHandler = {
+  provide: GetAllAcademicProgramsHandler,
+  useFactory: (repository: AcademicProgramRepository) =>
+    new GetAllAcademicProgramsHandler(repository),
+  inject: [AcademicProgramRepository],
+};
+
+const searchAcademicProgramsHandler = {
+  provide: SearchAcademicProgramsHandler,
+  useFactory: (repository: AcademicProgramRepository) =>
+    new SearchAcademicProgramsHandler(repository),
+  inject: [AcademicProgramRepository],
+};
+
 const editTitleHandler = {
   provide: EditTitleHandler,
   useFactory: (
@@ -379,7 +395,7 @@ const getTitleDetailHandler = {
     return new GetTitleDetailHandler(titleGetter);
   },
   inject: [TitleGetter],
-}
+};
 
 const editAcademicProgramHandler = {
   provide: EditAcademicProgramHandler,
@@ -425,6 +441,8 @@ export const handlers = [
   deleteTitleHandler,
   getAcademicProgramHandler,
   removeEdaeUsersFromSubjectHandler,
+  getAllAcademicProgramsHandler,
+  searchAcademicProgramsHandler,
   editTitleHandler,
   getTitleDetailHandler,
   editAcademicProgramHandler,
