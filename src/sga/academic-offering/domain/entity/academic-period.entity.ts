@@ -3,6 +3,7 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 
 const MIN_BLOCK_NUMBER = 1;
 
@@ -20,6 +21,7 @@ export class AcademicPeriod extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _academicPrograms: AcademicProgram[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -51,6 +53,7 @@ export class AcademicPeriod extends BaseEntity {
       new Date(),
       user,
       user,
+      [],
     );
   }
 
@@ -124,5 +127,13 @@ export class AcademicPeriod extends BaseEntity {
 
   public set updatedBy(value: AdminUser) {
     this._updatedBy = value;
+  }
+
+  public get academicPrograms(): AcademicProgram[] {
+    return this._academicPrograms;
+  }
+
+  public set academicPrograms(value: AcademicProgram[]) {
+    this._academicPrograms = value;
   }
 }

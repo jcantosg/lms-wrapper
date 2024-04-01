@@ -13,11 +13,14 @@ import { AcademicPeriodNotExaminationCallsException } from '#shared/domain/excep
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: CreateAcademicPeriodHandler;
 let repository: AcademicPeriodRepository;
 let examinationCallRepository: ExaminationCallRepository;
 let businessUnitGetter: BusinessUnitGetter;
+let eventDispatcher: EventDispatcher;
 const businessUnit = getABusinessUnit();
 const command = new CreateAcademicPeriodCommand(
   uuid(),
@@ -73,25 +76,29 @@ const wrongCommandBlockNumber = new CreateAcademicPeriodCommand(
   getAnAdminUser(),
 );
 
-let existsByCodeSpy: any;
-let saveAcademicPeriodSpy: any;
-let saveExaminationCallSpy: any;
-let getBusinessUnitSpy: any;
+let existsByCodeSpy: jest.SpyInstance;
+let saveAcademicPeriodSpy: jest.SpyInstance;
+let saveExaminationCallSpy: jest.SpyInstance;
+let getBusinessUnitSpy: jest.SpyInstance;
+let dispatchEventSpy: jest.SpyInstance;
 
 describe('Create Academic Period Handler test', () => {
   beforeAll(() => {
     repository = new AcademicPeriodMockRepository();
     examinationCallRepository = new ExaminationCallMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
+    eventDispatcher = new EventDispatcherMock();
     handler = new CreateAcademicPeriodHandler(
       repository,
       examinationCallRepository,
       businessUnitGetter,
+      eventDispatcher,
     );
     existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     saveAcademicPeriodSpy = jest.spyOn(repository, 'save');
     saveExaminationCallSpy = jest.spyOn(examinationCallRepository, 'save');
+    dispatchEventSpy = jest.spyOn(eventDispatcher, 'dispatch');
   });
   it('should throw a duplicated code exception', async () => {
     existsByCodeSpy.mockImplementation((): Promise<boolean> => {
@@ -136,6 +143,7 @@ describe('Create Academic Period Handler test', () => {
         _businessUnit: businessUnit,
       }),
     );
+    expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
   });
 
   afterAll(() => {

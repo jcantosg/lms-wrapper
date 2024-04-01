@@ -9,12 +9,15 @@ import { ExaminationCallDuplicatedException } from '#shared/domain/exception/aca
 import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicPeriodNotExaminationCallsException } from '#shared/domain/exception/academic-offering/academic-period.not-examination-calls.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { AcademicPeriodCreatedEvent } from '#academic-offering/domain/event/academic-period/academic-period-created.event';
 
 export class CreateAcademicPeriodHandler implements CommandHandler {
   constructor(
     private readonly repository: AcademicPeriodRepository,
     private readonly examinationCallRepository: ExaminationCallRepository,
     private readonly businessUnitGetter: BusinessUnitGetter,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: CreateAcademicPeriodCommand): Promise<void> {
@@ -45,6 +48,13 @@ export class CreateAcademicPeriodHandler implements CommandHandler {
     );
     await this.repository.save(academicPeriod);
     await this.createExaminationCalls(academicPeriod, command);
+    await this.eventDispatcher.dispatch(
+      new AcademicPeriodCreatedEvent(
+        academicPeriod.id,
+        businessUnit.id,
+        command.adminUser,
+      ),
+    );
   }
 
   private async createExaminationCalls(

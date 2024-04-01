@@ -11,6 +11,9 @@ import { ConfigService } from '@nestjs/config';
 import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
 import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
 import { EdaeUserModule } from '#edae-user/edae-user.module';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
+import { listeners } from '#academic-offering/listeners';
 
 const fileManager: FactoryProvider = {
   provide: FileManager,
@@ -37,7 +40,17 @@ const fileManager: FactoryProvider = {
     BusinessUnitModule,
     EdaeUserModule,
   ],
-  providers: [...repositories, ...handlers, ...services, fileManager],
+  providers: [
+    ...repositories,
+    ...handlers,
+    ...services,
+    fileManager,
+    {
+      provide: EventDispatcher,
+      useClass: NestEventDispatcher,
+    },
+    ...listeners,
+  ],
   controllers: [...controllers],
   exports: [...services],
 })

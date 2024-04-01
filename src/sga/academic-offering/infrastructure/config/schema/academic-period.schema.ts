@@ -50,5 +50,18 @@ export const academicPeriodSchema = new EntitySchema<AcademicPeriod>({
       target: 'ExaminationCall',
       inverseSide: 'academicPeriod',
     },
+    academicPrograms: {
+      type: 'many-to-many',
+      target: 'AcademicProgram',
+      joinTable: {
+        name: 'academic_periods_academic_programs',
+        joinColumn: {
+          name: 'academic_period_id',
+        },
+        inverseJoinColumn: {
+          name: 'academic_program_id',
+        },
+      },
+    },
   },
 });

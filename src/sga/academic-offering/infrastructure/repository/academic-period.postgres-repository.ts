@@ -50,6 +50,7 @@ export class AcademicPeriodPostgresRepository
       createdBy: academicPeriod.createdBy,
       updatedAt: academicPeriod.updatedAt,
       updatedBy: academicPeriod.updatedBy,
+      academicPrograms: academicPeriod.academicPrograms,
     });
   }
 
@@ -62,8 +63,12 @@ export class AcademicPeriodPostgresRepository
     );
 
     queryBuilder.leftJoinAndSelect(
-      `academicPeriod.examinationCalls`,
+      `${aliasQuery}.examinationCalls`,
       'examination_calls',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPrograms`,
+      'academic_periods',
     );
 
     return queryBuilder;

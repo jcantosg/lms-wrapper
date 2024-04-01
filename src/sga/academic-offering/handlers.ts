@@ -51,6 +51,7 @@ import { SearchAcademicProgramsHandler } from '#academic-offering/applicaton/sea
 import { EditTitleHandler } from '#academic-offering/applicaton/edit-title/edit-title.handler';
 import { GetTitleDetailHandler } from '#academic-offering/applicaton/get-title-detail/get-title-detail.handler';
 import { EditAcademicProgramHandler } from '#academic-offering/applicaton/edit-academic-program/edit-academic-program.handler';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -58,17 +59,20 @@ const createAcademicPeriodHandler = {
     repository: AcademicPeriodRepository,
     examinationCallRepository: ExaminationCallRepository,
     businessUnitGetter: BusinessUnitGetter,
+    eventDispatcher: EventDispatcher,
   ) => {
     return new CreateAcademicPeriodHandler(
       repository,
       examinationCallRepository,
       businessUnitGetter,
+      eventDispatcher,
     );
   },
   inject: [
     AcademicPeriodRepository,
     ExaminationCallRepository,
     BusinessUnitGetter,
+    EventDispatcher,
   ],
 };
 
