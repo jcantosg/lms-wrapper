@@ -19,10 +19,14 @@ import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { uploadSubjectResourceSchema } from '#academic-offering/infrastructure/config/validation-schema/upload-subject-resource.schema';
 import { File } from '#shared/domain/file-manager/file';
-import { UploadSubjectResourceCommand } from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.command';
+import {
+  ResourceFile,
+  UploadSubjectResourceCommand,
+} from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.command';
+import { SubjectIdsFilesWrongLengthException } from '#shared/domain/exception/academic-offering/subject-ids-files-wrong-length.exception';
 
 interface UploadSubjectResourceBody {
-  id: string;
+  ids: string[];
 }
 
 @Controller('subject')
@@ -44,18 +48,24 @@ export class UploadSubjectResourceController {
     @UploadedFiles() files: Express.Multer.File[],
     @Request() req: AuthRequest,
   ) {
-    const uploadedFiles = files.map((file: Express.Multer.File): File => {
-      return new File(
-        'uploads/subject-resources',
-        `${body.id}-${file.originalname}`,
-        file.buffer,
-        file.mimetype,
-      );
+    if (body.ids.length !== files.length) {
+      throw new SubjectIdsFilesWrongLengthException();
+    }
+    const uploadedFiles: ResourceFile[] = [];
+    files.forEach((file, index) => {
+      uploadedFiles.push({
+        id: body.ids[index],
+        file: new File(
+          'uploads/subject-resources',
+          `${file.originalname}`,
+          file.buffer,
+          file.mimetype,
+        ),
+      });
     });
     const command = new UploadSubjectResourceCommand(
-      body.id,
-      id,
       uploadedFiles,
+      id,
       req.user,
     );
 

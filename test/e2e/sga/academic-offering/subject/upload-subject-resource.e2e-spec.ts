@@ -48,7 +48,7 @@ describe('/subject/:id/resource', () => {
     await supertest(httpServer)
       .post(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
-      .field('id', UploadSubjectResourceE2eSeed.subjectResourceId)
+      .field('ids[]', UploadSubjectResourceE2eSeed.subjectResourceId)
       .attach('files', `test/universae.jpeg`)
       .expect(201);
 
@@ -62,7 +62,7 @@ describe('/subject/:id/resource', () => {
     await supertest(httpServer)
       .post(wrongPath)
       .auth(superAdminAccessToken, { type: 'bearer' })
-      .field('id', '62c67162-93f0-4a23-bf5e-73d27d2e6b6e')
+      .field('ids[]', '62c67162-93f0-4a23-bf5e-73d27d2e6b6e')
       .attach('files', `test/universae.jpeg`)
       .expect(404);
   });

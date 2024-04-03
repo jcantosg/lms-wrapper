@@ -1,5 +1,5 @@
 import Joi from 'joi';
 
 export const uploadSubjectResourceSchema = Joi.object({
-  id: Joi.string().guid().required(),
+  ids: Joi.array().items(Joi.string().guid().required()),
 });

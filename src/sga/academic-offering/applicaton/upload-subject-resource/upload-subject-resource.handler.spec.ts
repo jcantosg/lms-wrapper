@@ -23,9 +23,8 @@ let uploadFileSpy: jest.SpyInstance;
 
 const subject = getASubject();
 const command = new UploadSubjectResourceCommand(
-  uuid(),
+  [{ id: uuid(), file: getAFile() }],
   subject.id,
-  [getAFile()],
   getAnAdminUser(),
 );
 
@@ -58,10 +57,10 @@ describe('Upload Subject Resource Handler', () => {
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: command.id,
-        name: command.files[0].fileName,
+        id: command.resourceFiles[0].id,
+        name: command.resourceFiles[0].file.fileName,
         url: 'test',
-        size: command.files[0].content.length,
+        size: command.resourceFiles[0].file.content.length,
         subject: subject,
       }),
     );

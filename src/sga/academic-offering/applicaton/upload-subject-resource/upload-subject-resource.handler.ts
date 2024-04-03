@@ -1,6 +1,9 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
-import { UploadSubjectResourceCommand } from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.command';
+import {
+  ResourceFile,
+  UploadSubjectResourceCommand,
+} from '#academic-offering/applicaton/upload-subject-resource/upload-subject-resource.command';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
@@ -16,9 +19,12 @@ export class UploadSubjectResourceHandler implements CommandHandler {
   ) {}
 
   async handle(command: UploadSubjectResourceCommand): Promise<void> {
-    if (await this.repository.existsById(command.id)) {
-      throw new SubjectResourceDuplicatedException();
-    }
+    command.resourceFiles.map(async (resourceFile: ResourceFile) => {
+      if (await this.repository.existsById(resourceFile.id)) {
+        throw new SubjectResourceDuplicatedException();
+      }
+    });
+
     const subject = await this.subjectGetter.getByAdminUser(
       command.subjectId,
       command.adminUser.businessUnits.map(
@@ -26,10 +32,11 @@ export class UploadSubjectResourceHandler implements CommandHandler {
       ),
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
-    for (const file of command.files) {
+    for (const resourceFile of command.resourceFiles) {
+      const file = resourceFile.file;
       const fileUrl = await this.fileManager.uploadFile(file);
       const subjectResource = SubjectResource.create(
-        command.id,
+        resourceFile.id,
         file.fileName,
         fileUrl,
         file.content.length,
