@@ -12,7 +12,7 @@ import { GetAllTitlesPlainHandler } from '#academic-offering/applicaton/get-all-
 export class GetAllTitlesPlainController {
   constructor(private readonly handler: GetAllTitlesPlainHandler) {}
 
-  @Get()
+  @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllTitlesPlain(
     @Query('businessUnit') businessUnitId: string,
