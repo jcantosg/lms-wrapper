@@ -52,6 +52,8 @@ import { EditTitleHandler } from '#academic-offering/applicaton/edit-title/edit-
 import { GetTitleDetailHandler } from '#academic-offering/applicaton/get-title-detail/get-title-detail.handler';
 import { EditAcademicProgramHandler } from '#academic-offering/applicaton/edit-academic-program/edit-academic-program.handler';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { GetAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/get-academic-programs-by-title/get-academic-programs-by-title.handler';
+import { SearchAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/search-academic-programs-by-title/search-academic-programs-by-title.handler';
 import { GetAllAcademicProgramsPlainHandler } from '#academic-offering/applicaton/get-all-academic-programs-plain/get-all-academic-programs-plain.handler';
 import { AddAcademicProgramToAcademicPeriodHandler } from '#academic-offering/applicaton/add-academic-program-to-academic-period/add-academic-program-to-academic-period.handler';
 
@@ -419,6 +421,24 @@ const editAcademicProgramHandler = {
   inject: [AcademicProgramRepository, AcademicProgramGetter, TitleGetter],
 };
 
+const getAcademicProgramsByTitleHandler = {
+  provide: GetAcademicProgramsByTitleHandler,
+  useFactory: (
+    repository: AcademicProgramRepository,
+    titleRepository: TitleRepository,
+  ) => new GetAcademicProgramsByTitleHandler(repository, titleRepository),
+  inject: [AcademicProgramRepository, TitleRepository],
+};
+
+const searchAcademicProgramsByTitleHandler = {
+  provide: SearchAcademicProgramsByTitleHandler,
+  useFactory: (
+    repository: AcademicProgramRepository,
+    titleRepository: TitleRepository,
+  ) => new SearchAcademicProgramsByTitleHandler(repository, titleRepository),
+  inject: [AcademicProgramRepository, TitleRepository],
+};
+
 const getAllAcademicProgramsPlainHandler = {
   provide: GetAllAcademicProgramsPlainHandler,
   useFactory: (academicProgramRepository: AcademicProgramRepository) =>
@@ -478,6 +498,8 @@ export const handlers = [
   editTitleHandler,
   getTitleDetailHandler,
   editAcademicProgramHandler,
+  getAcademicProgramsByTitleHandler,
+  searchAcademicProgramsByTitleHandler,
   getAllAcademicProgramsPlainHandler,
   addAcademicProgramsToAcademicPeriodHandler,
 ];

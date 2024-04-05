@@ -19,3 +19,15 @@ export function expectAcademicPrograms(
     }),
   );
 }
+
+export function expectAcademicProgramsByTitle(
+  academicProgramsConfig: typeof GetAllAcademicProgramsE2eSeedDataConfig.academicPrograms,
+) {
+  return academicProgramsConfig.map((academicProgram) =>
+    expect.objectContaining({
+      id: academicProgram.id,
+      name: academicProgram.name,
+      code: academicProgram.code,
+    }),
+  );
+}

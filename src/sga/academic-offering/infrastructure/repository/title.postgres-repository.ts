@@ -148,4 +148,28 @@ export class TitlePostgresRepository
       },
     });
   }
+
+  async existsByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<boolean> {
+    if (isSuperAdmin) {
+      return await this.exists(id);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('title');
+
+    const result = await queryBuilder
+      .where('title.id = :id', { id: id })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+
+    return !!result;
+  }
 }
