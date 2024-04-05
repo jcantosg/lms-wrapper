@@ -68,7 +68,7 @@ export class AcademicPeriodPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPrograms`,
-      'academic_periods',
+      'academic_programs',
     );
 
     return queryBuilder;
@@ -133,7 +133,11 @@ export class AcademicPeriodPostgresRepository
   async get(id: string): Promise<AcademicPeriod | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnit: true, examinationCalls: true },
+      relations: {
+        businessUnit: true,
+        examinationCalls: true,
+        academicPrograms: true,
+      },
     });
   }
 
@@ -169,6 +173,7 @@ export class AcademicPeriodPostgresRepository
       businessUnit: academicPeriod.businessUnit,
       examinationCalls: academicPeriod.examinationCalls,
       blocksNumber: academicPeriod.blocksNumber,
+      academicPrograms: academicPeriod.academicPrograms,
       createdAt: academicPeriod.createdAt,
       updatedAt: academicPeriod.updatedAt,
     });

@@ -136,4 +136,14 @@ export class AcademicPeriod extends BaseEntity {
   public set academicPrograms(value: AcademicProgram[]) {
     this._academicPrograms = value;
   }
+
+  public addAcademicProgram(academicProgram: AcademicProgram) {
+    if (
+      !this._academicPrograms.find(
+        (acadProgram) => acadProgram.id === academicProgram.id,
+      )
+    ) {
+      this._academicPrograms.push(academicProgram);
+    }
+  }
 }
