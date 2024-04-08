@@ -52,6 +52,7 @@ import { EditTitleHandler } from '#academic-offering/applicaton/edit-title/edit-
 import { GetTitleDetailHandler } from '#academic-offering/applicaton/get-title-detail/get-title-detail.handler';
 import { EditAcademicProgramHandler } from '#academic-offering/applicaton/edit-academic-program/edit-academic-program.handler';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { RemoveAcademicProgramFromAcademicPeriodHandler } from '#academic-offering/applicaton/remove-academic-program-from-academic-period/remove-academic-program-from-academic-period.handler';
 import { GetAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/get-academic-programs-by-title/get-academic-programs-by-title.handler';
 import { SearchAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/search-academic-programs-by-title/search-academic-programs-by-title.handler';
 import { GetAllAcademicProgramsPlainHandler } from '#academic-offering/applicaton/get-all-academic-programs-plain/get-all-academic-programs-plain.handler';
@@ -421,6 +422,26 @@ const editAcademicProgramHandler = {
   inject: [AcademicProgramRepository, AcademicProgramGetter, TitleGetter],
 };
 
+const removeAcademicProgramFromAcademicPeriodHandler = {
+  provide: RemoveAcademicProgramFromAcademicPeriodHandler,
+  useFactory: (
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    repository: AcademicPeriodRepository,
+  ) => {
+    return new RemoveAcademicProgramFromAcademicPeriodHandler(
+      academicPeriodGetter,
+      academicProgramGetter,
+      repository,
+    );
+  },
+  inject: [
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    AcademicPeriodRepository,
+  ],
+};
+
 const getAcademicProgramsByTitleHandler = {
   provide: GetAcademicProgramsByTitleHandler,
   useFactory: (
@@ -498,6 +519,7 @@ export const handlers = [
   editTitleHandler,
   getTitleDetailHandler,
   editAcademicProgramHandler,
+  removeAcademicProgramFromAcademicPeriodHandler,
   getAcademicProgramsByTitleHandler,
   searchAcademicProgramsByTitleHandler,
   getAllAcademicProgramsPlainHandler,

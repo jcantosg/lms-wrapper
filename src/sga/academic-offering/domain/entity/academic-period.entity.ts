@@ -137,6 +137,12 @@ export class AcademicPeriod extends BaseEntity {
     this._academicPrograms = value;
   }
 
+  public removeAcademicProgram(academicProgram: AcademicProgram) {
+    this._academicPrograms = this._academicPrograms.filter(
+      (ap) => ap.id !== academicProgram.id,
+    );
+  }
+
   public addAcademicProgram(academicProgram: AcademicProgram) {
     if (
       !this._academicPrograms.find(

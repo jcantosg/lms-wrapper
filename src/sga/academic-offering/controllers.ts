@@ -30,6 +30,7 @@ import { SearchAcademicProgramsController } from '#academic-offering/infrastruct
 import { EditTitleController } from '#academic-offering/infrastructure/controller/edit-title.controller';
 import { GetTitleDetailController } from '#academic-offering/infrastructure/controller/get-title-detail/get-title-detail.controller';
 import { EditAcademicProgramController } from '#academic-offering/infrastructure/controller/edit-academic-program.controller';
+import { RemoveAcademicProgramFromAcademicPeriodController } from '#academic-offering/infrastructure/controller/remove-academic-program-from-academic-period.controller';
 import { GetAcademicProgramsByTitleController } from '#academic-offering/infrastructure/controller/get-academic-programs-by-title/get-academic-programs-by-title.controller';
 import { SearchAcademicProgramsByTitleController } from '#academic-offering/infrastructure/controller/search-academic-programs-by-title/search-academic-programs-by-title.controller';
 import { GetAllAcademicProgramsPlainController } from '#academic-offering/infrastructure/controller/get-all-academic-programs-plain/get-all-academic-programs-plain.controller';
@@ -70,6 +71,7 @@ export const controllers = [
   GetTitleDetailController,
   EditAcademicProgramController,
   RemoveEdaeUserFromSubjectController,
+  RemoveAcademicProgramFromAcademicPeriodController,
   GetAcademicProgramsByTitleController,
   SearchAcademicProgramsByTitleController,
   AddAcademicProgramToAcademicPeriodController,
