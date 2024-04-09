@@ -5,7 +5,7 @@ import { AcademicPeriodCreatedEvent } from '#academic-offering/domain/event/acad
 import { OnEvent } from '@nestjs/event-emitter';
 import { GetAcademicProgramsByBusinessUnitCriteria } from '#academic-offering/infrastructure/listener/get-academic-programs-by-business-unit.criteria';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 @Injectable()

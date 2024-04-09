@@ -12,16 +12,16 @@ import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-rol
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserBusinessUnitChecker } from '#edae-user/domain/service/edae-user-business-unitChecker.service';
-import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
-import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
-import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
-import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
-import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
-import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
+import { EvaluationTypeGetter } from '#academic-offering/domain/service/examination-type/evaluation-type-getter.service';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
+import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
+import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
+import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject/subject-business-unit-checker.service';
+import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call/examination-call-getter.service';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
-import { SubjectResourceGetter } from '#academic-offering/domain/service/subject-resource-getter.service';
-import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
-import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program-getter.service';
+import { SubjectResourceGetter } from '#academic-offering/domain/service/subject/subject-resource-getter.service';
+import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
+import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;

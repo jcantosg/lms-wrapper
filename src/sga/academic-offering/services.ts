@@ -1,18 +1,18 @@
-import { EvaluationTypeGetter } from '#academic-offering/domain/service/evaluation-type-getter.service';
+import { EvaluationTypeGetter } from '#academic-offering/domain/service/examination-type/evaluation-type-getter.service';
 import { EvaluationTypeRepository } from '#academic-offering/domain/repository/evaluation-type.repository';
-import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period-getter.service';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
-import { SubjectGetter } from '#academic-offering/domain/service/subject-getter.service';
+import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
-import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/evaluation-type-business-unit-checker.service';
-import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject-business-unit-checker.service';
-import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call-getter.service';
+import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
+import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject/subject-business-unit-checker.service';
+import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call/examination-call-getter.service';
 import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
-import { SubjectResourceGetter } from '#academic-offering/domain/service/subject-resource-getter.service';
+import { SubjectResourceGetter } from '#academic-offering/domain/service/subject/subject-resource-getter.service';
 import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
-import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program-getter.service';
+import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
-import { TitleGetter } from '#academic-offering/domain/service/title-getter.service';
+import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 
 const evaluationTypeGetter = {
