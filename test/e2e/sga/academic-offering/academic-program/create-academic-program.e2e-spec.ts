@@ -5,6 +5,7 @@ import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
 import { CreateAcademicProgramE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/create-academic-program.e2e-seeds';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 const path = '/academic-program';
 
@@ -57,6 +58,7 @@ describe('/academic-program (POST)', () => {
         code: 'code',
         title: CreateAcademicProgramE2eSeed.titleId,
         businessUnit: CreateAcademicProgramE2eSeed.businessUnitId,
+        structureType: ProgramBlockStructureType.CUSTOM,
       })
       .expect(201);
   });
@@ -70,6 +72,7 @@ describe('/academic-program (POST)', () => {
         code: 'code',
         title: CreateAcademicProgramE2eSeed.titleId,
         businessUnit: CreateAcademicProgramE2eSeed.businessUnitId,
+        structureType: ProgramBlockStructureType.CUSTOM,
       })
       .expect(409);
     expect(response.body.message).toEqual('sga.academic-program.duplicated');
@@ -84,6 +87,7 @@ describe('/academic-program (POST)', () => {
         code: 'code',
         title: CreateAcademicProgramE2eSeed.titleId,
         businessUnit: CreateAcademicProgramE2eSeed.businessUnitId,
+        structureType: ProgramBlockStructureType.CUSTOM,
       })
       .expect(409);
     expect(response.body.message).toEqual(

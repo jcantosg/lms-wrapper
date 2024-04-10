@@ -12,6 +12,8 @@ import { TitleRepository } from '#academic-offering/domain/repository/title.repo
 import { TitlePostgresRepository } from '#academic-offering/infrastructure/repository/title.postgres-repository';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { AcademicProgramPostgresRepository } from '#academic-offering/infrastructure/repository/academic-program.postgres-repository';
+import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { ProgramBlockPostgresRepository } from '#academic-offering/infrastructure/repository/program-block.postgres-repository';
 
 export const repositories = [
   {
@@ -41,5 +43,9 @@ export const repositories = [
   {
     provide: AcademicProgramRepository,
     useClass: AcademicProgramPostgresRepository,
+  },
+  {
+    provide: ProgramBlockRepository,
+    useClass: ProgramBlockPostgresRepository,
   },
 ];

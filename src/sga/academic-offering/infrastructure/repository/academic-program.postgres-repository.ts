@@ -47,6 +47,7 @@ export class AcademicProgramPostgresRepository
       createdBy: academicProgram.createdBy,
       updatedAt: academicProgram.updatedAt,
       updatedBy: academicProgram.updatedBy,
+      structureType: academicProgram.structureType,
     });
   }
 
@@ -58,6 +59,10 @@ export class AcademicProgramPostgresRepository
       'business_unit',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.title`, 'title');
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.programBlocks`,
+      'program_block',
+    );
 
     return queryBuilder;
   }
@@ -65,7 +70,7 @@ export class AcademicProgramPostgresRepository
   async get(id: string): Promise<AcademicProgram | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnit: true, title: true },
+      relations: { businessUnit: true, title: true, programBlocks: true },
     });
   }
 

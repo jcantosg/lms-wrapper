@@ -8,6 +8,7 @@ import { AddAcademicProgramToAcademicPeriodController } from '#academic-offering
 import { CreateAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/create-academic-program.controller';
 import { EditAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/edit-academic-program.controller';
 import { RemoveAcademicProgramFromAcademicPeriodController } from '#academic-offering/infrastructure/controller/academic-program/remove-academic-program-from-academic-period.controller';
+import { GetAllProgramBlockStructureTypesController } from '#academic-offering/infrastructure/controller/academic-program/get-all-program-block-structure-types.controller';
 
 export const academicProgramControllers = [
   GetAcademicProgramsByTitleController,
@@ -20,4 +21,5 @@ export const academicProgramControllers = [
   CreateAcademicProgramController,
   EditAcademicProgramController,
   RemoveAcademicProgramFromAcademicPeriodController,
+  GetAllProgramBlockStructureTypesController,
 ];

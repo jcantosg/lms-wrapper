@@ -16,6 +16,7 @@ import { GetAllAcademicProgramsPlainResponse } from '#academic-offering/infrastr
 
 interface GetAllAcademicProgramPlainQueryParams {
   businessUnit: string;
+  blocksNumber: number;
 }
 
 @Controller('academic-program/all')
@@ -35,6 +36,7 @@ export class GetAllAcademicProgramsPlainController {
   ): Promise<any> {
     const query = new GetAllAcademicProgramsPlainQuery(
       queryParams.businessUnit,
+      queryParams.blocksNumber,
       req.user,
     );
 

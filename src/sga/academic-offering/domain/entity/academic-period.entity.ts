@@ -4,6 +4,7 @@ import { ExaminationCall } from '#academic-offering/domain/entity/examination-ca
 import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import { AcademicProgramWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-program.wrong-block-number.exception';
 
 const MIN_BLOCK_NUMBER = 1;
 
@@ -144,6 +145,10 @@ export class AcademicPeriod extends BaseEntity {
   }
 
   public addAcademicProgram(academicProgram: AcademicProgram) {
+    if (academicProgram.programBlocks.length !== this._blocksNumber) {
+      throw new AcademicProgramWrongBlockNumberException();
+    }
+
     if (
       !this._academicPrograms.find(
         (acadProgram) => acadProgram.id === academicProgram.id,

@@ -4,6 +4,7 @@ import { evaluationTypeHandlers } from '#academic-offering/applicaton/evaluation
 import { examinationCallHandlers } from '#academic-offering/applicaton/examination-call/handlers';
 import { subjectHandlers } from '#academic-offering/applicaton/subject/handlers';
 import { titleHandlers } from '#academic-offering/applicaton/title/handlers';
+import { programBlockHandlers } from '#academic-offering/applicaton/program-block/handlers';
 
 export const handlers = [
   ...academicPeriodHandlers,
@@ -12,4 +13,5 @@ export const handlers = [
   ...examinationCallHandlers,
   ...subjectHandlers,
   ...titleHandlers,
+  ...programBlockHandlers,
 ];

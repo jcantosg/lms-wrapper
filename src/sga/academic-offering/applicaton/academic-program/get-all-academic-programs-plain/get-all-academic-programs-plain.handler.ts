@@ -15,10 +15,15 @@ export class GetAllAcademicProgramsPlainHandler implements QueryHandler {
   ): Promise<AcademicProgram[]> {
     const criteria = new GetAllAcademicProgramsPlainCriteria(query);
 
-    return await this.academicProgramRepository.matching(
+    const academicPrograms = await this.academicProgramRepository.matching(
       criteria,
       query.adminUser.businessUnits,
       query.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+    );
+
+    return academicPrograms.filter(
+      (academicProgram) =>
+        academicProgram.programBlocks.length === query.blocksNumber,
     );
   }
 }

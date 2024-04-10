@@ -11,6 +11,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 export class GetAcademicProgramsByTitleE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-academic-program@email.com';
@@ -90,6 +91,7 @@ export class GetAcademicProgramsByTitleE2eSeed implements E2eSeed {
         this.title,
         this.businessUnit,
         this.superAdmin,
+        ProgramBlockStructureType.CUSTOM,
       ),
     );
     await this.academicProgramRepository.save(
@@ -100,6 +102,7 @@ export class GetAcademicProgramsByTitleE2eSeed implements E2eSeed {
         this.title,
         this.businessUnit,
         this.superAdmin,
+        ProgramBlockStructureType.CUSTOM,
       ),
     );
   }

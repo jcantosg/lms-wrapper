@@ -4,6 +4,7 @@ import {
   BaseSchemaRelations,
 } from '#shared/infrastructure/config/schema/base.schema';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 export const academicProgramSchema = new EntitySchema<AcademicProgram>({
   name: 'AcademicProgram',
@@ -19,6 +20,11 @@ export const academicProgramSchema = new EntitySchema<AcademicProgram>({
       type: String,
       nullable: false,
       unique: true,
+    },
+    structureType: {
+      type: 'enum',
+      enum: ProgramBlockStructureType,
+      nullable: false,
     },
   },
   relations: {
@@ -36,6 +42,11 @@ export const academicProgramSchema = new EntitySchema<AcademicProgram>({
       joinColumn: {
         name: 'title_id',
       },
+    },
+    programBlocks: {
+      type: 'one-to-many',
+      target: 'ProgramBlock',
+      inverseSide: 'academicProgram',
     },
   },
 });

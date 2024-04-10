@@ -15,6 +15,7 @@ import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-re
 import { createAcademicProgramSchema } from '#academic-offering/infrastructure/config/validation-schema/create-academic-program.schema';
 import { CreateAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/create-academic-program/create-academic-program.handler';
 import { CreateAcademicProgramCommand } from '#academic-offering/applicaton/academic-program/create-academic-program/create-academic-program.command';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 interface CreateAcademicProgramBody {
   id: string;
@@ -22,6 +23,7 @@ interface CreateAcademicProgramBody {
   code: string;
   title: string;
   businessUnit: string;
+  structureType: ProgramBlockStructureType;
 }
 
 @Controller('academic-program')
@@ -47,6 +49,7 @@ export class CreateAcademicProgramController {
       body.title,
       body.businessUnit,
       request.user,
+      body.structureType,
     );
     await this.handler.handle(command);
   }

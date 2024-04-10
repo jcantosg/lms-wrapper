@@ -24,6 +24,8 @@ import { AcademicProgram } from '#academic-offering/domain/entity/academic-progr
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { File } from '#shared/domain/file-manager/file';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -180,6 +182,7 @@ export const getAnAcademicProgram = (id: string = uuid()): AcademicProgram => {
     getATitle(),
     getABusinessUnit(),
     getAnAdminUser(),
+    ProgramBlockStructureType.CUSTOM,
   );
 };
 
@@ -206,6 +209,15 @@ export const getATitle = (id: string = uuid()): Title => {
     'officialTitle',
     'officialProgram',
     getABusinessUnit(),
+    getAnAdminUser(),
+  );
+};
+
+export const getAProgramBlock = (id: string = uuid()): ProgramBlock => {
+  return ProgramBlock.create(
+    id,
+    'name',
+    getAnAcademicProgram(),
     getAnAdminUser(),
   );
 };

@@ -12,6 +12,7 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 export class RemoveAcademicProgramFromAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-edit-academic-period@email.com';
@@ -115,6 +116,7 @@ export class RemoveAcademicProgramFromAcademicPeriodE2eSeed implements E2eSeed {
         this.title,
         this.businessUnit,
         this.superAdminUser,
+        ProgramBlockStructureType.CUSTOM,
       ),
     );
 

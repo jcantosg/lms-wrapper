@@ -17,6 +17,7 @@ import {
 import { AcademicProgramDuplicatedCodeException } from '#shared/domain/exception/academic-offering/academic-program.duplicated-code.exception';
 import { TitleNotFoundException } from '#shared/domain/exception/academic-offering/title-not-found.exception';
 import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 let handler: CreateAcademicProgramHandler;
 let repository: AcademicProgramRepository;
@@ -38,6 +39,7 @@ const command = new CreateAcademicProgramCommand(
   title.id,
   businessUnit.id,
   getAnAdminUser(),
+  ProgramBlockStructureType.CUSTOM,
 );
 describe('Create Academic Program Handler test', () => {
   beforeAll(async () => {

@@ -2,6 +2,8 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export class AcademicProgram extends BaseEntity {
   private constructor(
@@ -14,6 +16,8 @@ export class AcademicProgram extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _structureType: ProgramBlockStructureType,
+    private _programBlocks: ProgramBlock[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -25,6 +29,7 @@ export class AcademicProgram extends BaseEntity {
     title: Title,
     businessUnit: BusinessUnit,
     user: AdminUser,
+    structureType: ProgramBlockStructureType,
   ): AcademicProgram {
     return new AcademicProgram(
       id,
@@ -36,6 +41,8 @@ export class AcademicProgram extends BaseEntity {
       new Date(),
       user,
       user,
+      structureType,
+      [],
     );
   }
 
@@ -85,6 +92,22 @@ export class AcademicProgram extends BaseEntity {
 
   public set updatedBy(value: AdminUser) {
     this._updatedBy = value;
+  }
+
+  public get structureType(): ProgramBlockStructureType {
+    return this._structureType;
+  }
+
+  public set structureType(value: ProgramBlockStructureType) {
+    this._structureType = value;
+  }
+
+  public get programBlocks(): ProgramBlock[] {
+    return this._programBlocks;
+  }
+
+  public set programBlocks(value: ProgramBlock[]) {
+    this._programBlocks = value;
   }
 
   public update(

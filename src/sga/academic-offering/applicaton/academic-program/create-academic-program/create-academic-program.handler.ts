@@ -46,6 +46,7 @@ export class CreateAcademicProgramHandler implements CommandHandler {
       title,
       businessUnit,
       command.adminUser,
+      command.structureType,
     );
 
     await this.repository.save(academicProgram);

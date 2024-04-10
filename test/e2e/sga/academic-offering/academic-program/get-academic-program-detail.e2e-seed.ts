@@ -7,6 +7,7 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { Country } from '#shared/domain/entity/country.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 export class GetAcademicProgramDetailE2eSeed implements E2eSeed {
   public static academicProgramId = '83670209-9598-41d5-9c57-a393493f1b98';
@@ -91,6 +92,7 @@ export class GetAcademicProgramDetailE2eSeed implements E2eSeed {
         this.title,
         this.businessUnit,
         this.superAdminUser,
+        ProgramBlockStructureType.CUSTOM,
       ),
     );
   }

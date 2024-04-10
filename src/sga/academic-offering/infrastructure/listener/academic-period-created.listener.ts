@@ -26,7 +26,7 @@ export class AcademicPeriodCreatedListener {
       payload.adminUser.businessUnits,
       payload.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
-    /*@TODO filter by block number*/
+
     const academicPeriod = await this.academicPeriodGetter.getByAdminUser(
       payload.academicPeriodId,
       payload.adminUser.businessUnits.map(
@@ -34,7 +34,11 @@ export class AcademicPeriodCreatedListener {
       ),
       payload.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
-    academicPeriod.academicPrograms = academicPrograms;
+
+    academicPeriod.academicPrograms = academicPrograms.filter(
+      (academicProgram) =>
+        academicProgram.programBlocks.length === academicPeriod.blocksNumber,
+    );
     await this.academicPeriodRepository.save(academicPeriod);
   }
 }
