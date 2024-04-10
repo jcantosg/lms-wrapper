@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Request,
   UploadedFiles,
@@ -45,7 +47,14 @@ export class UploadSubjectResourceController {
   async uploadSubjectResource(
     @Body() body: UploadSubjectResourceBody,
     @Param('id') id: string,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '/(docx?)|(pdf)|(jpe?g)|(png)' }),
+        ],
+      }),
+    )
+    files: Express.Multer.File[],
     @Request() req: AuthRequest,
   ) {
     if (body.ids.length !== files.length) {
