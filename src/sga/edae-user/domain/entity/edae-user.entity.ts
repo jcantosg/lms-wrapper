@@ -172,13 +172,14 @@ export class EdaeUser extends BaseEntity {
   ) {
     this.name = name;
     this.surname1 = surname1;
-    this.surname2 = surname2;
+    this.surname2 = surname2 ?? null;
     this.identityDocument = this.identityDocument;
     this.roles = roles;
     this.timeZone = timeZone;
     this.isRemote = isRemote;
     this.location = location;
     this.avatar = avatar;
+    this.identityDocument = identityDocument;
     this.updatedAt = new Date();
   }
 

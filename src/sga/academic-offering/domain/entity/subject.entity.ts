@@ -234,14 +234,14 @@ export class Subject extends BaseEntity {
     this.name = name;
     this.code = code;
     this.hours = hours;
-    this.officialCode = officialCode;
+    this.officialCode = officialCode ?? null;
     this.image = image;
     this.modality = modality;
     this.evaluationType = assignedEvaluationType;
     this.type = type;
     this.isRegulated = isRegulated;
     this.isCore = isCore;
-    this.officialRegionalCode = officialRegionalCode;
+    this.officialRegionalCode = officialRegionalCode ?? null;
     this.updatedBy = user;
     this.updatedAt = new Date();
   }
