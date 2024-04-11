@@ -11,12 +11,18 @@ export interface AcademicProgramTitleResponse {
   officialCode: string;
 }
 
+export interface ProgramBlockResponse {
+  id: string;
+  name: string;
+}
+
 export interface AcademicProgramResponse {
   id: string;
   name: string;
   code: string;
   title: AcademicProgramTitleResponse;
   businessUnit: AcademicProgramBusinessUnitResponse;
+  programBlocks: ProgramBlockResponse[];
 }
 
 export class GetAcademicProgramResponse {
@@ -34,6 +40,10 @@ export class GetAcademicProgramResponse {
         id: academicProgram.businessUnit.id,
         name: academicProgram.businessUnit.name,
       },
+      programBlocks: academicProgram.programBlocks.map((programBlock) => ({
+        id: programBlock.id,
+        name: programBlock.name,
+      })),
     };
   }
 }

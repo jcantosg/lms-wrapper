@@ -57,6 +57,7 @@ describe('Get Academic Program Detail (GET)', () => {
           id: GetAcademicProgramDetailE2eSeed.businessUnitId,
           name: GetAcademicProgramDetailE2eSeed.businessUnitName,
         },
+        programBlocks: [],
       }),
     );
   });
