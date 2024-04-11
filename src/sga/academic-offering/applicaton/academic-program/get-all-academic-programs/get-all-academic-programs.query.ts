@@ -15,7 +15,6 @@ export class GetAllAcademicProgramsQuery
     public readonly name: string | null,
     public readonly title: string | null,
     public readonly code: string | null,
-    public readonly titleOfficialCode: string | null,
     public readonly businessUnit: string | null,
     public readonly adminUserBusinessUnits: BusinessUnit[],
     public readonly isSuperAdmin: boolean,

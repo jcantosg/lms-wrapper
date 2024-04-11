@@ -199,8 +199,8 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
       let orderBy;
       if (criteria.order.orderBy === 'country') {
         orderBy = 'country.name';
-      } else if (criteria.order.orderBy === 'officialCode') {
-        orderBy = 'title.officialCode';
+      } else if (criteria.order.orderBy === 'title') {
+        orderBy = 'title.name';
       } else if (criteria.order.orderBy === 'businessUnit') {
         orderBy = 'business_unit.name';
       } else {

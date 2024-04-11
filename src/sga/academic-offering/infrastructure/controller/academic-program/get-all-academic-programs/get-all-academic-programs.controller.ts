@@ -24,7 +24,6 @@ interface GetAllAcademicProgramQueryParams {
   name: string | null;
   code: string | null;
   title: string | null;
-  titleOfficialCode: string | null;
   businessUnit: string | null;
 }
 
@@ -49,7 +48,6 @@ export class GetAllAcademicProgramsController {
       queryParams.name,
       queryParams.title,
       queryParams.code,
-      queryParams.titleOfficialCode,
       queryParams.businessUnit,
       req.user.businessUnits,
       req.user.roles.includes(AdminUserRoles.SUPERADMIN),

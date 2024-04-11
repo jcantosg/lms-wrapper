@@ -29,13 +29,6 @@ export class GetAllAcademicsProgramsCriteria extends Criteria {
       ),
       new Filter('code', query.code, FilterOperators.LIKE, GroupOperator.AND),
       new Filter(
-        'code',
-        query.titleOfficialCode,
-        FilterOperators.LIKE,
-        GroupOperator.AND,
-        'title',
-      ),
-      new Filter(
         'id',
         query.businessUnit,
         FilterOperators.LIKE,
