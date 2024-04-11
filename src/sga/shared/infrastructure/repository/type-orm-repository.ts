@@ -196,10 +196,16 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     aliasQuery: string,
   ): TypeOrmRepository<T> {
     if (criteria.order.hasOrderType() && criteria.order.hasOrderBy()) {
-      const orderBy =
-        criteria.order.orderBy === 'country'
-          ? 'country.name'
-          : `${aliasQuery}.${criteria.order.orderBy}`;
+      let orderBy;
+      if (criteria.order.orderBy === 'country') {
+        orderBy = 'country.name';
+      } else if (criteria.order.orderBy === 'officialCode') {
+        orderBy = 'title.officialCode';
+      } else if (criteria.order.orderBy === 'businessUnit') {
+        orderBy = 'business_unit.name';
+      } else {
+        orderBy = `${aliasQuery}.${criteria.order.orderBy}`;
+      }
       queryBuilder.addOrderBy(
         orderBy,
         criteria.order.orderType === OrderTypes.NONE
