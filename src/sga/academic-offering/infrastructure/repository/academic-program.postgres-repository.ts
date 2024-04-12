@@ -48,6 +48,7 @@ export class AcademicProgramPostgresRepository
       updatedAt: academicProgram.updatedAt,
       updatedBy: academicProgram.updatedBy,
       structureType: academicProgram.structureType,
+      programBlocks: academicProgram.programBlocks,
     });
   }
 

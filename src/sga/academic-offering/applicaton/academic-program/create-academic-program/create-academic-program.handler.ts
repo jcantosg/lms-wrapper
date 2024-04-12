@@ -8,19 +8,29 @@ import { AcademicProgram } from '#academic-offering/domain/entity/academic-progr
 import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { CreateAcademicProgramCommand } from '#academic-offering/applicaton/academic-program/create-academic-program/create-academic-program.command';
+import { ProgramBlockDuplicatedException } from '#shared/domain/exception/academic-offering/program-block.duplicated.exception';
+import { getBlockPrefix } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 
 export class CreateAcademicProgramHandler implements CommandHandler {
   constructor(
-    private readonly repository: AcademicProgramRepository,
+    private readonly academicProgramRepository: AcademicProgramRepository,
+    private readonly programBlockRepository: ProgramBlockRepository,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly titleGetter: TitleGetter,
   ) {}
 
   async handle(command: CreateAcademicProgramCommand): Promise<void> {
-    if (await this.repository.existsById(command.id)) {
+    if (await this.academicProgramRepository.existsById(command.id)) {
       throw new AcademicProgramDuplicatedException();
     }
-    if (await this.repository.existsByCode(command.id, command.code)) {
+    if (
+      await this.academicProgramRepository.existsByCode(
+        command.id,
+        command.code,
+      )
+    ) {
       throw new AcademicProgramDuplicatedCodeException();
     }
 
@@ -49,6 +59,39 @@ export class CreateAcademicProgramHandler implements CommandHandler {
       command.structureType,
     );
 
-    await this.repository.save(academicProgram);
+    academicProgram.programBlocks = await this.createProgramBlocks(
+      command,
+      academicProgram,
+    );
+    await this.academicProgramRepository.save(academicProgram);
+  }
+
+  private async createProgramBlocks(
+    command: CreateAcademicProgramCommand,
+    academicProgram: AcademicProgram,
+  ) {
+    const uniqueBlocksIds = new Set(command.programBlocks);
+    if (uniqueBlocksIds.size !== command.programBlocks.length) {
+      throw new ProgramBlockDuplicatedException();
+    }
+
+    const blockPrefix = getBlockPrefix(command.structureType);
+    const programBlocksToAdd: ProgramBlock[] = [];
+
+    for (const [index, block] of command.programBlocks.entries()) {
+      if (await this.programBlockRepository.existsById(block)) {
+        throw new ProgramBlockDuplicatedException();
+      }
+
+      const programBlock = ProgramBlock.create(
+        block,
+        `${blockPrefix} ${index + 1}`,
+        academicProgram,
+        command.adminUser,
+      );
+      programBlocksToAdd.push(programBlock);
+    }
+
+    return programBlocksToAdd;
   }
 }

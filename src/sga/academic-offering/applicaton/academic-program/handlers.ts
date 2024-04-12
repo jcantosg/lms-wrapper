@@ -15,20 +15,28 @@ import { SearchAcademicProgramsByTitleHandler } from '#academic-offering/applica
 import { GetAllAcademicProgramsPlainHandler } from '#academic-offering/applicaton/academic-program/get-all-academic-programs-plain/get-all-academic-programs-plain.handler';
 import { AddAcademicProgramToAcademicPeriodHandler } from '#academic-offering/applicaton/academic-program/add-academic-program-to-academic-period/add-academic-program-to-academic-period.handler';
 import { GetAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.handler';
+import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
   useFactory: (
-    repository: AcademicProgramRepository,
+    academicProgramRepository: AcademicProgramRepository,
+    programBlockRepository: ProgramBlockRepository,
     businessUnitGetter: BusinessUnitGetter,
     titleGetter: TitleGetter,
   ) =>
     new CreateAcademicProgramHandler(
-      repository,
+      academicProgramRepository,
+      programBlockRepository,
       businessUnitGetter,
       titleGetter,
     ),
-  inject: [AcademicProgramRepository, BusinessUnitGetter, TitleGetter],
+  inject: [
+    AcademicProgramRepository,
+    ProgramBlockRepository,
+    BusinessUnitGetter,
+    TitleGetter,
+  ],
 };
 const getAcademicProgramHandler = {
   provide: GetAcademicProgramHandler,

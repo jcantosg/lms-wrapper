@@ -18,9 +18,12 @@ import { AcademicProgramDuplicatedCodeException } from '#shared/domain/exception
 import { TitleNotFoundException } from '#shared/domain/exception/academic-offering/title-not-found.exception';
 import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { ProgramBlockMockRepository } from '#test/mocks/sga/academic-offering/program-block.mock-repository';
 
 let handler: CreateAcademicProgramHandler;
-let repository: AcademicProgramRepository;
+let academicProgramRepository: AcademicProgramRepository;
+let programBlockRepository: ProgramBlockRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let titleGetter: TitleGetter;
 
@@ -40,22 +43,25 @@ const command = new CreateAcademicProgramCommand(
   businessUnit.id,
   getAnAdminUser(),
   ProgramBlockStructureType.CUSTOM,
+  [],
 );
 describe('Create Academic Program Handler test', () => {
   beforeAll(async () => {
-    repository = new AcademicProgramMockRepository();
+    academicProgramRepository = new AcademicProgramMockRepository();
+    programBlockRepository = new ProgramBlockMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     titleGetter = getATitleGetterMock();
     handler = new CreateAcademicProgramHandler(
-      repository,
+      academicProgramRepository,
+      programBlockRepository,
       businessUnitGetter,
       titleGetter,
     );
-    saveSpy = jest.spyOn(repository, 'save');
+    saveSpy = jest.spyOn(academicProgramRepository, 'save');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     getTitleSpy = jest.spyOn(titleGetter, 'getByAdminUser');
-    existsByIdSpy = jest.spyOn(repository, 'existsById');
-    existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
+    existsByIdSpy = jest.spyOn(academicProgramRepository, 'existsById');
+    existsByCodeSpy = jest.spyOn(academicProgramRepository, 'existsByCode');
   });
 
   it('should save an academic program', async () => {

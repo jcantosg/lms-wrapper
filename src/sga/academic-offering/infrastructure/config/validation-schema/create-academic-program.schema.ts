@@ -10,4 +10,5 @@ export const createAcademicProgramSchema = Joi.object({
   structureType: Joi.string()
     .valid(...Object.values(ProgramBlockStructureType))
     .required(),
+  programBlocks: Joi.array().items(Joi.string().guid()).optional().default([]),
 });

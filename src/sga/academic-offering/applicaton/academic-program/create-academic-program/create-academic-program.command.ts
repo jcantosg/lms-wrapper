@@ -11,5 +11,6 @@ export class CreateAcademicProgramCommand implements Command {
     public readonly businessUnitId: string,
     public readonly adminUser: AdminUser,
     public readonly structureType: ProgramBlockStructureType,
+    public readonly programBlocks: string[],
   ) {}
 }

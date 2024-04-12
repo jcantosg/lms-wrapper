@@ -24,6 +24,7 @@ interface CreateAcademicProgramBody {
   title: string;
   businessUnit: string;
   structureType: ProgramBlockStructureType;
+  programBlocks: string[];
 }
 
 @Controller('academic-program')
@@ -50,6 +51,7 @@ export class CreateAcademicProgramController {
       body.businessUnit,
       request.user,
       body.structureType,
+      body.programBlocks,
     );
     await this.handler.handle(command);
   }
