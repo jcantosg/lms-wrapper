@@ -6,7 +6,7 @@ export const editSubjectSchema = Joi.object({
   name: Joi.string().required(),
   code: Joi.string().required(),
   hours: Joi.number().required(),
-  officialCode: Joi.string().optional(),
+  officialCode: Joi.string().optional().allow(''),
   image: Joi.string().optional(),
   modality: Joi.string()
     .valid(...getAllSubjectModalities())
@@ -17,5 +17,5 @@ export const editSubjectSchema = Joi.object({
     .required(),
   isRegulated: Joi.boolean().required(),
   isCore: Joi.boolean().required(),
-  officialRegionalCode: Joi.string().optional(),
+  officialRegionalCode: Joi.string().optional().allow(''),
 });
