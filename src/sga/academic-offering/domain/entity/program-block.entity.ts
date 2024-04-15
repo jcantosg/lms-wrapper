@@ -74,4 +74,10 @@ export class ProgramBlock extends BaseEntity {
       user,
     );
   }
+
+  public update(name: string, user: AdminUser): void {
+    this.name = name;
+    this.updatedBy = user;
+    this.updatedAt = new Date();
+  }
 }

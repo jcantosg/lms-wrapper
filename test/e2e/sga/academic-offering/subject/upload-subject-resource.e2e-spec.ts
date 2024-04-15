@@ -69,7 +69,7 @@ describe('/subject/:id/resource', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
     await datasource.destroy();
+    await app.close();
   });
 });

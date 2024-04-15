@@ -64,7 +64,16 @@ export class ProgramBlockPostgresRepository
       .getOne();
   }
 
-  async save(programBlock: ProgramBlock[]): Promise<void> {
-    await this.repository.save(programBlock);
+  async save(programBlock: ProgramBlock): Promise<void> {
+    await this.repository.save({
+      id: programBlock.id,
+      name: programBlock.name,
+      academicProgram: programBlock.academicProgram,
+      subjects: programBlock.subjects,
+      createdAt: programBlock.createdAt,
+      updatedAt: programBlock.updatedAt,
+      createdBy: programBlock.createdBy,
+      updatedBy: programBlock.updatedBy,
+    });
   }
 }

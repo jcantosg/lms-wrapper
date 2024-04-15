@@ -27,8 +27,6 @@ export class CreateProgramBlockHandler implements CommandHandler {
 
     const blockPrefix = getBlockPrefix(command.structureType);
 
-    const programBlocksToAdd: ProgramBlock[] = [];
-
     for (const [index, block] of command.blocks.entries()) {
       if (await this.programBlockRepository.existsById(block)) {
         throw new ProgramBlockDuplicatedException();
@@ -40,9 +38,7 @@ export class CreateProgramBlockHandler implements CommandHandler {
         academicProgram,
         command.adminUser,
       );
-      programBlocksToAdd.push(programBlock);
+      await this.programBlockRepository.save(programBlock);
     }
-
-    await this.programBlockRepository.save(programBlocksToAdd);
   }
 }

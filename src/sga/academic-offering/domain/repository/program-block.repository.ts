@@ -3,7 +3,7 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 export abstract class ProgramBlockRepository {
   abstract existsById(id: string): Promise<boolean>;
 
-  abstract save(programBlock: ProgramBlock[]): Promise<void>;
+  abstract save(programBlock: ProgramBlock): Promise<void>;
 
   abstract get(id: string): Promise<ProgramBlock | null>;
 

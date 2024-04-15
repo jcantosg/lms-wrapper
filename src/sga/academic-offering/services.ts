@@ -14,6 +14,8 @@ import { AcademicProgramGetter } from '#academic-offering/domain/service/academi
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
+import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
+import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 
 const evaluationTypeGetter = {
   provide: EvaluationTypeGetter,
@@ -64,6 +66,13 @@ const titleGetter = {
   inject: [TitleRepository],
 };
 
+const programBlockGetter = {
+  provide: ProgramBlockGetter,
+  useFactory: (repository: ProgramBlockRepository): ProgramBlockGetter =>
+    new ProgramBlockGetter(repository),
+  inject: [ProgramBlockRepository],
+};
+
 export const services = [
   evaluationTypeGetter,
   subjectGetter,
@@ -74,4 +83,5 @@ export const services = [
   subjectResourceGetter,
   academicProgramGetter,
   titleGetter,
+  programBlockGetter,
 ];

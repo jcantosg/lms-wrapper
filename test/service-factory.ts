@@ -22,6 +22,7 @@ import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { SubjectResourceGetter } from '#academic-offering/domain/service/subject/subject-resource-getter.service';
 import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
+import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -142,5 +143,10 @@ export function getATitleGetterMock(): TitleGetter {
 
 export function getAnAcademicProgramGetterMock(): AcademicProgramGetter {
   return (AcademicProgramGetter as jest.Mocked<typeof AcademicProgramGetter>)
+    .prototype;
+}
+
+export function getAProgramBlockGetterMock(): ProgramBlockGetter {
+  return (ProgramBlockGetter as jest.Mocked<typeof ProgramBlockGetter>)
     .prototype;
 }

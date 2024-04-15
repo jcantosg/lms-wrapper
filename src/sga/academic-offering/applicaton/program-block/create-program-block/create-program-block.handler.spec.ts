@@ -81,12 +81,10 @@ describe('CreateProgramBlockHandler', () => {
     await handler.handle(command);
     expect(saveProgramBlockSpy).toHaveBeenCalledTimes(1);
     expect(saveProgramBlockSpy).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: command.blocks[0],
-          name: 'Bloque 1',
-        }),
-      ]),
+      expect.objectContaining({
+        id: command.blocks[0],
+        name: 'Bloque 1',
+      }),
     );
   });
 
