@@ -5,10 +5,9 @@ import { startApp } from '#test/e2e/e2e-helper';
 import { CreateProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/create-program-block.e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
-import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
-import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
-import { AcademicProgramPostgresRepository } from '#academic-offering/infrastructure/repository/academic-program.postgres-repository';
-import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { ProgramBlockPostgresRepository } from '#academic-offering/infrastructure/repository/program-block.postgres-repository';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 const path = '/program-block';
 
@@ -19,7 +18,7 @@ describe('/program-block (POST)', () => {
   let superAdminAccessToken: string;
   let gestor360AccessToken: string;
   let secretariaAccessToken: string;
-  let academicProgramRepository: AcademicProgramRepository;
+  let programBlockRepository: ProgramBlockRepository;
 
   beforeAll(async () => {
     app = await startApp();
@@ -69,26 +68,23 @@ describe('/program-block (POST)', () => {
       .post(path)
       .auth(gestor360AccessToken, { type: 'bearer' })
       .send({
+        id: CreateProgramBlockE2eSeed.programBlockId,
+        name: 'Bloque 2',
         academicProgramId: CreateProgramBlockE2eSeed.academicProgramId,
-        structureType: ProgramBlockStructureType.CUSTOM,
-        blocks: ['f21a8bdf-e93d-4c1c-8a9f-6b07b36a0596'],
       })
       .expect(404);
 
     expect(response.body.message).toBe('sga.academic-program.not-found');
   });
 
-  it('should return 409 when block ids are equals', async () => {
+  it('should return 409 when block is duplicated', async () => {
     const response = await supertest(httpServer)
       .post(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
+        id: CreateProgramBlockE2eSeed.programBlockId,
+        name: 'Bloque 2',
         academicProgramId: CreateProgramBlockE2eSeed.academicProgramId,
-        structureType: ProgramBlockStructureType.CUSTOM,
-        blocks: [
-          'f21a8bdf-e93d-4c1c-8a9f-6b07b36a0596',
-          'f21a8bdf-e93d-4c1c-8a9f-6b07b36a0596',
-        ],
       })
       .expect(409);
 
@@ -96,32 +92,29 @@ describe('/program-block (POST)', () => {
   });
 
   it('should create a program block', async () => {
-    academicProgramRepository = new AcademicProgramPostgresRepository(
-      datasource.getRepository(academicProgramSchema),
+    programBlockRepository = new ProgramBlockPostgresRepository(
+      datasource.getRepository(programBlockSchema),
     );
 
     await supertest(httpServer)
       .post(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
+        id: '7d404f6e-cf40-4a78-87d1-db3b5c002b4a',
+        name: 'Bloque 2',
         academicProgramId: CreateProgramBlockE2eSeed.academicProgramId,
-        structureType: ProgramBlockStructureType.CUSTOM,
-        blocks: ['f21a8bdf-e93d-4c1c-8a9f-6b07b36a0596'],
       })
       .expect(201);
 
-    const academicProgram = await academicProgramRepository.get(
-      CreateProgramBlockE2eSeed.academicProgramId,
+    const programBlock = await programBlockRepository.get(
+      '7d404f6e-cf40-4a78-87d1-db3b5c002b4a',
     );
 
-    expect(academicProgram?.programBlocks).toHaveLength(1);
-    expect(academicProgram?.programBlocks).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: 'f21a8bdf-e93d-4c1c-8a9f-6b07b36a0596',
-          name: 'Bloque 1',
-        }),
-      ]),
+    expect(programBlock).toEqual(
+      expect.objectContaining({
+        id: '7d404f6e-cf40-4a78-87d1-db3b5c002b4a',
+        name: 'Bloque 2',
+      }),
     );
   });
 

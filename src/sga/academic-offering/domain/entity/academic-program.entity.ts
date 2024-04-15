@@ -2,9 +2,9 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
-import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 
 export class AcademicProgram extends BaseEntity {
   private constructor(
@@ -17,9 +17,9 @@ export class AcademicProgram extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
-    private _academicPeriods: AcademicPeriod[],
     private _structureType: ProgramBlockStructureType,
     private _programBlocks: ProgramBlock[],
+    private _academicPeriods: AcademicPeriod[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -43,8 +43,8 @@ export class AcademicProgram extends BaseEntity {
       new Date(),
       user,
       user,
-      [],
       structureType,
+      [],
       [],
     );
   }
@@ -119,6 +119,10 @@ export class AcademicProgram extends BaseEntity {
 
   public set programBlocks(value: ProgramBlock[]) {
     this._programBlocks = value;
+  }
+
+  public isRelatedToAcademicPeriod(): boolean {
+    return this._academicPeriods.length > 0;
   }
 
   public update(

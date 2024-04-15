@@ -42,8 +42,12 @@ export class CreateProgramBlockE2eSeed implements E2eSeed {
     'Desarrollo de aplicaciones multiplatorma';
   public static academicProgramCode2 = 'DAM';
 
+  public static programBlockId = uuid();
+  public static programBlockName = 'Bloque 1';
+
   private academicProgram: AcademicProgram;
   private secondAcademicProgram: AcademicProgram;
+  private programBlock: ProgramBlock;
   private title: Title;
   private secondTitle: Title;
   private businessUnit: BusinessUnit;
@@ -164,6 +168,15 @@ export class CreateProgramBlockE2eSeed implements E2eSeed {
     );
 
     await this.academicProgramRepository.save(this.secondAcademicProgram);
+
+    this.programBlock = ProgramBlock.create(
+      CreateProgramBlockE2eSeed.programBlockId,
+      CreateProgramBlockE2eSeed.programBlockName,
+      this.academicProgram,
+      this.superAdminUser,
+    );
+
+    await this.programBlockRepository.save(this.programBlock);
   }
 
   async clear(): Promise<void> {

@@ -3,9 +3,9 @@ import { ProgramBlockRepository } from '#academic-offering/domain/repository/pro
 import { CreateProgramBlockCommand } from '#academic-offering/applicaton/program-block/create-program-block/create-program-block.command';
 import { ProgramBlockDuplicatedException } from '#shared/domain/exception/academic-offering/program-block.duplicated.exception';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { getBlockPrefix } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
+import { AcademicProgramHasRelatedAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.has-related-academic-period.exception';
 
 export class CreateProgramBlockHandler implements CommandHandler {
   constructor(
@@ -20,25 +20,21 @@ export class CreateProgramBlockHandler implements CommandHandler {
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
 
-    const uniqueBlocksIds = new Set(command.blocks);
-    if (uniqueBlocksIds.size !== command.blocks.length) {
+    if (academicProgram.isRelatedToAcademicPeriod()) {
+      throw new AcademicProgramHasRelatedAcademicPeriodException();
+    }
+
+    if (await this.programBlockRepository.existsById(command.id)) {
       throw new ProgramBlockDuplicatedException();
     }
 
-    const blockPrefix = getBlockPrefix(command.structureType);
+    const programBlockToAdd = ProgramBlock.create(
+      command.id,
+      command.name,
+      academicProgram,
+      command.adminUser,
+    );
 
-    for (const [index, block] of command.blocks.entries()) {
-      if (await this.programBlockRepository.existsById(block)) {
-        throw new ProgramBlockDuplicatedException();
-      }
-
-      const programBlock = ProgramBlock.create(
-        block,
-        `${blockPrefix} ${index + 1}`,
-        academicProgram,
-        command.adminUser,
-      );
-      await this.programBlockRepository.save(programBlock);
-    }
+    await this.programBlockRepository.save(programBlockToAdd);
   }
 }

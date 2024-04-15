@@ -14,13 +14,12 @@ import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { CreateProgramBlockHandler } from '#academic-offering/applicaton/program-block/create-program-block/create-program-block.handler';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { CreateProgramBlockCommand } from '#academic-offering/applicaton/program-block/create-program-block/create-program-block.command';
-import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { createProgramBlockSchema } from '#academic-offering/infrastructure/config/validation-schema/create-program-block.schema';
 
 interface CreateProgramBlockBody {
+  id: string;
+  name: string;
   academicProgramId: string;
-  structureType: ProgramBlockStructureType;
-  blocks: string[];
 }
 
 @Controller('program-block')
@@ -40,9 +39,9 @@ export class CreateProgramBlockController {
     @Request() req: AuthRequest,
   ) {
     const command = new CreateProgramBlockCommand(
+      body.id,
+      body.name,
       body.academicProgramId,
-      body.structureType,
-      body.blocks,
       req.user,
     );
 

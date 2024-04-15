@@ -23,6 +23,7 @@ export interface AcademicProgramResponse {
   title: AcademicProgramTitleResponse;
   businessUnit: AcademicProgramBusinessUnitResponse;
   programBlocks: ProgramBlockResponse[];
+  isRelatedToAcademicPeriod: boolean;
 }
 
 export class GetAcademicProgramResponse {
@@ -44,6 +45,7 @@ export class GetAcademicProgramResponse {
         id: programBlock.id,
         name: programBlock.name,
       })),
+      isRelatedToAcademicPeriod: academicProgram.isRelatedToAcademicPeriod(),
     };
   }
 }
