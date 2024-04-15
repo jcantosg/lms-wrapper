@@ -7,8 +7,8 @@ import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
-import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 import { AcademicProgramPostgresRepository } from '#academic-offering/infrastructure/repository/academic-program.postgres-repository';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 
 const path = '/program-block';
 

@@ -3,8 +3,8 @@ import { ExaminationCall } from '#academic-offering/domain/entity/examination-ca
 import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { examinationCallSchema } from '#academic-offering/infrastructure/config/schema/examination-call.schema';
 import { Repository } from 'typeorm';
+import { examinationCallSchema } from '#academic-offering/infrastructure/config/schema/examination-call.schema';
 
 @Injectable()
 export class ExaminationCallPostgresRepository

@@ -2,9 +2,9 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { EvaluationTypeRepository } from '#academic-offering/domain/repository/evaluation-type.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 import { Repository } from 'typeorm';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 
 export class EvaluationTypePostgresRepository
   extends TypeOrmRepository<EvaluationType>

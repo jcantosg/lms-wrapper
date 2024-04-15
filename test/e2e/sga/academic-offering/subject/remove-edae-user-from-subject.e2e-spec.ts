@@ -6,8 +6,8 @@ import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
-import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
 
 const path = `/subject/${RemoveEdaeUserFromSubjectE2eSeed.subjectId}/remove-edae-user`;
 
@@ -17,7 +17,7 @@ describe('/subjects/:id/remove-edae-user (PUT)', () => {
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let gestor360AccessToken: string;
-  let secretariaAccessToken: string;
+  let adminUserToken: string;
   let subjectRepository: SubjectRepository;
 
   beforeAll(async () => {
@@ -37,7 +37,7 @@ describe('/subjects/:id/remove-edae-user (PUT)', () => {
       RemoveEdaeUserFromSubjectE2eSeed.adminUserGestor360Password,
     );
 
-    secretariaAccessToken = await login(
+    adminUserToken = await login(
       httpServer,
       RemoveEdaeUserFromSubjectE2eSeed.adminUserSecretariaEmail,
       RemoveEdaeUserFromSubjectE2eSeed.adminUserSecretariaPassword,
@@ -59,7 +59,7 @@ describe('/subjects/:id/remove-edae-user (PUT)', () => {
   it('should return forbidden', async () => {
     await supertest(httpServer)
       .put(path)
-      .auth(secretariaAccessToken, { type: 'bearer' })
+      .auth(adminUserToken, { type: 'bearer' })
       .expect(403);
   });
 

@@ -13,9 +13,9 @@ import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-re
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { editExaminationCallSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-examination-call.schema';
 import { EditExaminationCallCommand } from '#academic-offering/applicaton/examination-call/edit-examination-call/edit-examination-call.command';
 import { EditExaminationCallHandler } from '#academic-offering/applicaton/examination-call/edit-examination-call/edit-examination-call.handler';
+import { editExaminationCallSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-examination-call.schema';
 
 interface EditExaminationCallBody {
   name: string;

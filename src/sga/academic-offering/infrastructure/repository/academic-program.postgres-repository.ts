@@ -4,9 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
-import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 
 @Injectable()
 export class AcademicProgramPostgresRepository
@@ -58,6 +58,10 @@ export class AcademicProgramPostgresRepository
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.businessUnit`,
       'business_unit',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPeriods`,
+      'academicPeriods',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.title`, 'title');
     queryBuilder.leftJoinAndSelect(

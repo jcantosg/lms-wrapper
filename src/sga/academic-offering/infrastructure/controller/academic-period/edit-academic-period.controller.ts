@@ -13,11 +13,11 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { editAcademicPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-academic-period.schema';
 import { EditAcademicPeriodCommand } from '#academic-offering/applicaton/academic-period/edit-academic-period/edit-academic-period.command';
 import { EditAcademicPeriodHandler } from '#academic-offering/applicaton/academic-period/edit-academic-period/edit-academic-period.handler';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
+import { editAcademicPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-academic-period.schema';
 
 interface EditAcademicPeriodBody {
   name: string;

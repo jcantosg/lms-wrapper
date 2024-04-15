@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
-import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 @Injectable()
 export class ProgramBlockPostgresRepository

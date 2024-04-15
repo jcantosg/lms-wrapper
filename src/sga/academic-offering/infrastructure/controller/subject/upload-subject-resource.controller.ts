@@ -19,13 +19,13 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import { uploadSubjectResourceSchema } from '#academic-offering/infrastructure/config/validation-schema/upload-subject-resource.schema';
 import { File } from '#shared/domain/file-manager/file';
 import {
   ResourceFile,
   UploadSubjectResourceCommand,
 } from '#academic-offering/applicaton/subject/upload-subject-resource/upload-subject-resource.command';
 import { SubjectIdsFilesWrongLengthException } from '#shared/domain/exception/academic-offering/subject-ids-files-wrong-length.exception';
+import { uploadSubjectResourceSchema } from '#academic-offering/infrastructure/config/validation-schema/upload-subject-resource.schema';
 
 interface UploadSubjectResourceBody {
   ids: string[];

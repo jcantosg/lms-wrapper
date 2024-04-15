@@ -15,9 +15,9 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { editSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-subject.schema';
 import { EditSubjectHandler } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.handler';
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
+import { editSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-subject.schema';
 
 interface EditSubjectBody {
   name: string;

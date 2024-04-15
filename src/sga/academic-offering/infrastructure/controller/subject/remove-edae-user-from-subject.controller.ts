@@ -15,9 +15,9 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import { removeEdaeUserFromSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/remove-edae-user-from-subject.schema';
 import { RemoveEdaeUserFromSubjectHandler } from '#academic-offering/applicaton/subject/remove-edae-from-subject/remove-edae-user-from-subject.handler';
 import { RemoveEdaeUserFromSubjectCommand } from '#academic-offering/applicaton/subject/remove-edae-from-subject/remove-edae-user-from-subject.command';
+import { removeEdaeUserFromSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/remove-edae-user-from-subject.schema';
 
 interface RemoveEdaeUserFromSubjectEndpointBody {
   edaeUser: string;

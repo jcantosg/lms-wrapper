@@ -13,11 +13,11 @@ import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import { editAcademicProgramSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-academic-program.schema';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 import { EditAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/edit-academic-program/edit-academic-program.handler';
 import { EditAcademicProgramCommand } from '#academic-offering/applicaton/academic-program/edit-academic-program/edit-academic-program.command';
+import { editAcademicProgramSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-academic-program.schema';
 
 interface EditAcademicProgramBody {
   name: string;

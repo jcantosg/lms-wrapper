@@ -14,9 +14,9 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { TitleResponse } from '#academic-offering/infrastructure/controller/title/get-all-titles-list/get-title-list.response';
 import { GetAllTitlesResponse } from '#academic-offering/infrastructure/controller/title/get-all-titles-list/get-all-title-list.response';
-import { getAllTitlesSchema } from '#academic-offering/infrastructure/config/validation-schema/get-all-title-list.schema';
 import { GetTitleListHandler } from '#academic-offering/applicaton/title/get-all-titles/get-title-list.handler';
 import { GetAllTitlesListQuery } from '#academic-offering/applicaton/title/get-all-titles/get-title-list.query';
+import { getAllTitlesSchema } from '#academic-offering/infrastructure/config/validation-schema/get-all-title-list.schema';
 
 type GetTitleListQueryParams = {
   page: number;

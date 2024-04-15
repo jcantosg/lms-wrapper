@@ -15,9 +15,9 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
-import { editTitleSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-title.schema';
 import { EditTitleHandler } from '#academic-offering/applicaton/title/edit-title/edit-title.handler';
 import { EditTitleCommand } from '#academic-offering/applicaton/title/edit-title/edit-title.command';
+import { editTitleSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-title.schema';
 
 interface EditTitleBody {
   name: string;

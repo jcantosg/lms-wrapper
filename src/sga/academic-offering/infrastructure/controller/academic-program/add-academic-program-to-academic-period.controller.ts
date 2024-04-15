@@ -15,9 +15,9 @@ import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/p
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { AuthRequest } from '#shared/infrastructure/http/request';
-import { addAcademicProgramsToAcademicPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/add-academic-programs-to-academic-period.schema';
 import { AddAcademicProgramToAcademicPeriodHandler } from '#academic-offering/applicaton/academic-program/add-academic-program-to-academic-period/add-academic-program-to-academic-period.handler';
 import { AddAcademicProgramToAcademicPeriodCommand } from '#academic-offering/applicaton/academic-program/add-academic-program-to-academic-period/add-academic-program-to-academic-period.command';
+import { addAcademicProgramsToAcademicPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/add-academic-programs-to-academic-period.schema';
 
 interface AddAcademicProgramToAcademicPeriodBody {
   academicProgramId: string;

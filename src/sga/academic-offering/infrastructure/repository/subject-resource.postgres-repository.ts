@@ -2,8 +2,8 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { subjectResourceSchema } from '#academic-offering/infrastructure/config/schema/subject-resource.schema';
 import { Repository } from 'typeorm';
+import { subjectResourceSchema } from '#academic-offering/infrastructure/config/schema/subject-resource.schema';
 
 export class SubjectResourcePostgresRepository
   extends TypeOrmRepository<SubjectResource>

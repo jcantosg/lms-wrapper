@@ -15,6 +15,8 @@ import { SearchAcademicProgramsByTitleHandler } from '#academic-offering/applica
 import { GetAllAcademicProgramsPlainHandler } from '#academic-offering/applicaton/academic-program/get-all-academic-programs-plain/get-all-academic-programs-plain.handler';
 import { AddAcademicProgramToAcademicPeriodHandler } from '#academic-offering/applicaton/academic-program/add-academic-program-to-academic-period/add-academic-program-to-academic-period.handler';
 import { GetAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.handler';
+import { GetAllAcademicProgramByAcademicPeriodHandler } from '#academic-offering/applicaton/get-all-academic-programs-by-period/get-all-academic-programs-by-period.handler';
+import { SearchAcademicProgramByAcademicPeriodHandler } from '#academic-offering/applicaton/search-academic-program-by-period/search-academic-program-by-period.handler';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 
 const createAcademicProgramHandler = {
@@ -140,6 +142,32 @@ const addAcademicProgramsToAcademicPeriodHandler = {
   ],
 };
 
+const getAllAcademicProgramByAcademicPeriodHandler = {
+  provide: GetAllAcademicProgramByAcademicPeriodHandler,
+  useFactory: (
+    academicProgramRepository: AcademicProgramRepository,
+    academicPeriodRepository: AcademicPeriodRepository,
+  ) =>
+    new GetAllAcademicProgramByAcademicPeriodHandler(
+      academicProgramRepository,
+      academicPeriodRepository,
+    ),
+  inject: [AcademicProgramRepository, AcademicPeriodRepository],
+};
+
+const searchAcademicProgramByAcademicPeriodHandler = {
+  provide: SearchAcademicProgramByAcademicPeriodHandler,
+  useFactory: (
+    academicProgramRepository: AcademicProgramRepository,
+    academicPeriodRepository: AcademicPeriodRepository,
+  ) =>
+    new SearchAcademicProgramByAcademicPeriodHandler(
+      academicProgramRepository,
+      academicPeriodRepository,
+    ),
+  inject: [AcademicProgramRepository, AcademicPeriodRepository],
+};
+
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -151,4 +179,6 @@ export const academicProgramHandlers = [
   getAcademicProgramsByTitleHandler,
   searchAcademicProgramsByTitleHandler,
   addAcademicProgramsToAcademicPeriodHandler,
+  getAllAcademicProgramByAcademicPeriodHandler,
+  searchAcademicProgramByAcademicPeriodHandler,
 ];

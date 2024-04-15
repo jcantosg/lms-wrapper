@@ -14,9 +14,9 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { SubjectResponse } from '#academic-offering/infrastructure/controller/subject/get-all-subjects/get-subject.response';
 import { GetAllSubjectsResponse } from '#academic-offering/infrastructure/controller/subject/get-all-subjects/get-all-subject.response';
-import { getAllSubjectsSchema } from '#academic-offering/infrastructure/config/validation-schema/get-all-subjects.schema';
 import { GetAllSubjectsHandler } from '#academic-offering/applicaton/subject/get-all-subjects/get-all-subjects.handler';
 import { GetAllSubjectsQuery } from '#academic-offering/applicaton/subject/get-all-subjects/get-all-subjects.query';
+import { getAllSubjectsSchema } from '#academic-offering/infrastructure/config/validation-schema/get-all-subjects.schema';
 
 type GetAllSubjectsQueryParams = {
   page: number;

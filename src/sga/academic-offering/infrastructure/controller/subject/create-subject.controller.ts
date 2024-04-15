@@ -14,9 +14,9 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import { createSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/create-subject.schema';
 import { CreateSubjectHandler } from '#academic-offering/applicaton/subject/create-subject/create-subject.handler';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
+import { createSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/create-subject.schema';
 
 interface CreateSubjectBody {
   id: string;

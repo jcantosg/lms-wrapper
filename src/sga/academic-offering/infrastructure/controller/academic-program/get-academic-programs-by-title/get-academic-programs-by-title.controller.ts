@@ -10,15 +10,16 @@ import {
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
-import {
-  getAcademicProgramsByTitleIdSchema,
-  getAcademicProgramsByTitleSchema,
-} from '#academic-offering/infrastructure/config/validation-schema/get-academic-programs-by-title.schema';
-import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
+
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { GetAcademicProgramsByTitleResponse } from '#academic-offering/infrastructure/controller/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.response';
 import { GetAcademicProgramsByTitleHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.handler';
 import { GetAcademicProgramsByTitleQuery } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.query';
+import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
+import {
+  getAcademicProgramsByTitleIdSchema,
+  getAcademicProgramsByTitleSchema,
+} from '#academic-offering/infrastructure/config/validation-schema/get-academic-programs-by-title.schema';
 
 interface GetAcademicProgramsByTitleQueryParams {
   page: number;

@@ -3,10 +3,10 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
 import { Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
 
 @Injectable()
 export class AcademicPeriodPostgresRepository

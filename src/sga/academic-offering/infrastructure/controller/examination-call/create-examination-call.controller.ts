@@ -2,20 +2,20 @@ import {
   Body,
   Controller,
   Post,
+  Request,
   UseGuards,
   UsePipes,
-  Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import { createExaminationCallSchema } from '#academic-offering/infrastructure/config/validation-schema/create-examination-call.schema';
 import { CreateExaminationCallHandler } from '#academic-offering/applicaton/examination-call/create-examination-call/create-examination-call.handler';
 import { CreateExaminationCallCommand } from '#academic-offering/applicaton/examination-call/create-examination-call/create-examination-call.command';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import { AuthRequest } from '#shared/infrastructure/http/request';
+import { createExaminationCallSchema } from '#academic-offering/infrastructure/config/validation-schema/create-examination-call.schema';
 
 interface CreateExaminationCallBody {
   id: string;

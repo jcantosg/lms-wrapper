@@ -12,13 +12,13 @@ import { SearchAcademicProgramsByTitleHandler } from '#academic-offering/applica
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
+import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
+import { GetAcademicProgramsByTitleResponse } from '#academic-offering/infrastructure/controller/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.response';
+import { SearchAcademicProgramsByTitleQuery } from '#academic-offering/applicaton/academic-program/search-academic-programs-by-title/search-academic-programs-by-title.query';
 import {
   searchAcademicProgramByTitleIdSchema,
   searchAcademicProgramByTitleSchema,
 } from '#academic-offering/infrastructure/config/validation-schema/search-academic-programs-by-titl.schema';
-import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
-import { GetAcademicProgramsByTitleResponse } from '#academic-offering/infrastructure/controller/academic-program/get-academic-programs-by-title/get-academic-programs-by-title.response';
-import { SearchAcademicProgramsByTitleQuery } from '#academic-offering/applicaton/academic-program/search-academic-programs-by-title/search-academic-programs-by-title.query';
 
 interface SearchAcademicProgramasByTitleQueryParams {
   page: number;

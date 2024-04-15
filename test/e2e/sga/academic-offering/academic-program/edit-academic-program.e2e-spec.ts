@@ -4,7 +4,6 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
-
 import { EditAcademicProgramE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/edit-academic-program.e2e-seed';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { AcademicProgramPostgresRepository } from '#academic-offering/infrastructure/repository/academic-program.postgres-repository';

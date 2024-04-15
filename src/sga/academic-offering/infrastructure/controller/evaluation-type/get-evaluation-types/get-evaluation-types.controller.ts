@@ -10,9 +10,9 @@ import { GetEvaluationTypesHandler } from '#academic-offering/applicaton/evaluat
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { GetEvaluationTypesQuery } from '#academic-offering/applicaton/evaluation-type/get-evaluation-types/get-evaluation-types.query';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
-import { getEvaluationTypesSchema } from '#academic-offering/infrastructure/config/validation-schema/get-evaluation-types.schema';
 import { GetEvaluationTypesResponse } from '#academic-offering/infrastructure/controller/evaluation-type/get-evaluation-types/get-evaluation-types.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
+import { getEvaluationTypesSchema } from '#academic-offering/infrastructure/config/validation-schema/get-evaluation-types.schema';
 
 @Controller('subject')
 export class GetEvaluationTypesController {

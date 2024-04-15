@@ -14,9 +14,9 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriodResponse } from '#academic-offering/infrastructure/controller/academic-period/get-academic-period.response';
 import { GetAllAcademicPeriodsResponse } from '#academic-offering/infrastructure/controller/academic-period/get-all-academic-periods/get-all-academic-periods.response';
-import { getAllAcademicPeriodsSchema } from '#academic-offering/infrastructure/config/validation-schema/get-all-academic-periods.schema';
 import { GetAllAcademicPeriodsQuery } from '#academic-offering/applicaton/academic-period/get-all-academic-periods/get-all-academic-periods.query';
 import { GetAllAcademicPeriodsHandler } from '#academic-offering/applicaton/academic-period/get-all-academic-periods/get-all-academic-periods.handler';
+import { getAllAcademicPeriodsSchema } from '#academic-offering/infrastructure/config/validation-schema/get-all-academic-periods.schema';
 
 type GetAllAcademicPeriodsQueryParams = {
   page: number;

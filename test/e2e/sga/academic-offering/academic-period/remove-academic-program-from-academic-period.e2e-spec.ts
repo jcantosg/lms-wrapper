@@ -6,8 +6,8 @@ import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { AcademicPeriodPostgresRepository } from '#academic-offering/infrastructure/repository/academic-period.postgres-repository';
-import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
 import { RemoveAcademicProgramFromAcademicPeriodE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/remove-academic-program-from-academic-period.e2e-seed';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
 
 const path =
   '/academic-period/7baf9fc5-8976-4780-aa07-c0dfb420e230/remove-academic-program';

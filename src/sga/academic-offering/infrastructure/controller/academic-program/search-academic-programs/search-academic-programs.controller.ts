@@ -13,10 +13,10 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
-import { searchAcademicProgramsSchema } from '#academic-offering/infrastructure/config/validation-schema/search-academic-programs.schema';
 import { SearchAcademicProgramsQuery } from '#academic-offering/applicaton/academic-program/search-academic-programs/search-academic-programs.query';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { GetAllAcademicProgramsResponse } from '#academic-offering/infrastructure/controller/academic-program/get-all-academic-programs/get-all-academic-programs.response';
+import { searchAcademicProgramsSchema } from '#academic-offering/infrastructure/config/validation-schema/search-academic-programs.schema';
 
 interface SearchAcademyQueryParams {
   page: number;

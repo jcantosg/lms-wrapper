@@ -2,6 +2,7 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
+import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
@@ -16,6 +17,7 @@ export class AcademicProgram extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _academicPeriods: AcademicPeriod[],
     private _structureType: ProgramBlockStructureType,
     private _programBlocks: ProgramBlock[],
   ) {
@@ -41,6 +43,7 @@ export class AcademicProgram extends BaseEntity {
       new Date(),
       user,
       user,
+      [],
       structureType,
       [],
     );
@@ -92,6 +95,14 @@ export class AcademicProgram extends BaseEntity {
 
   public set updatedBy(value: AdminUser) {
     this._updatedBy = value;
+  }
+
+  public get academicPeriods(): AcademicPeriod[] {
+    return this._academicPeriods;
+  }
+
+  public set academicPeriods(value: AcademicPeriod[]) {
+    this._academicPeriods = value;
   }
 
   public get structureType(): ProgramBlockStructureType {

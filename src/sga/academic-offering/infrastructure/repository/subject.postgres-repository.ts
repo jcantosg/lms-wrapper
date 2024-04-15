@@ -2,10 +2,10 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 import { Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
 export class SubjectPostgresRepository
   extends TypeOrmRepository<Subject>

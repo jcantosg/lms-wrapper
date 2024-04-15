@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
-import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 
 export class TitlePostgresRepository
   extends TypeOrmRepository<Title>
