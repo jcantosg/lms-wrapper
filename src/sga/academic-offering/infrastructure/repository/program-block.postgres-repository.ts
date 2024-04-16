@@ -27,7 +27,7 @@ export class ProgramBlockPostgresRepository
   async get(id: string): Promise<ProgramBlock | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { academicProgram: true },
+      relations: { academicProgram: true, subjects: true },
     });
   }
 
@@ -38,6 +38,7 @@ export class ProgramBlockPostgresRepository
       `${aliasQuery}.academicProgram`,
       'academic_program',
     );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.subjects`, 'subject');
 
     return queryBuilder;
   }
@@ -54,7 +55,7 @@ export class ProgramBlockPostgresRepository
     adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
       adminUserBusinessUnits,
     );
-    const queryBuilder = this.initializeQueryBuilder('examinationCall');
+    const queryBuilder = this.initializeQueryBuilder('programBlock');
 
     return await queryBuilder
       .where('examinationCall.id = :id', { id: programBlockId })

@@ -3,6 +3,7 @@ import { ProgramBlockRepository } from '#academic-offering/domain/repository/pro
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { EditProgramBlockHandler } from '#academic-offering/applicaton/program-block/edit-program-block/edit-program-block.handler';
 import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
+import { GetSubjectsByProgramBlockHandler } from '#academic-offering/applicaton/program-block/get-subjects-by-program-block/get-subjects-by-program-block.handler';
 
 const createProgramBlockHandler = {
   provide: CreateProgramBlockHandler,
@@ -26,7 +27,15 @@ const editProgramBlockHandler = {
   inject: [ProgramBlockRepository, ProgramBlockGetter],
 };
 
+const getSubjectsByProgramBlockHandler = {
+  provide: GetSubjectsByProgramBlockHandler,
+  useFactory: (programBlockGetter: ProgramBlockGetter) =>
+    new GetSubjectsByProgramBlockHandler(programBlockGetter),
+  inject: [ProgramBlockGetter],
+};
+
 export const programBlockHandlers = [
   createProgramBlockHandler,
   editProgramBlockHandler,
+  getSubjectsByProgramBlockHandler,
 ];
