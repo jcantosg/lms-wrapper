@@ -23,6 +23,9 @@ import { SubjectResourceGetter } from '#academic-offering/domain/service/subject
 import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
+import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
+import { JwtService } from '@nestjs/jwt';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -149,4 +152,20 @@ export function getAnAcademicProgramGetterMock(): AcademicProgramGetter {
 export function getAProgramBlockGetterMock(): ProgramBlockGetter {
   return (ProgramBlockGetter as jest.Mocked<typeof ProgramBlockGetter>)
     .prototype;
+}
+
+export function getAJwtTokenGeneratorMock(): JwtTokenGenerator {
+  return (JwtTokenGenerator as jest.Mocked<typeof JwtTokenGenerator>).prototype;
+}
+
+export function getRecoveryPasswordTokenGetterMock(): RecoveryPasswordTokenGetter {
+  return (
+    RecoveryPasswordTokenGetter as jest.Mocked<
+      typeof RecoveryPasswordTokenGetter
+    >
+  ).prototype;
+}
+
+export function getAJwtServiceMock(): JwtService {
+  return (JwtService as jest.Mocked<typeof JwtService>).prototype;
 }

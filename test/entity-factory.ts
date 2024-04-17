@@ -26,6 +26,7 @@ import { File } from '#shared/domain/file-manager/file';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -219,5 +220,14 @@ export const getAProgramBlock = (id: string = uuid()): ProgramBlock => {
     'name',
     getAnAcademicProgram(),
     getAnAdminUser(),
+  );
+};
+
+export const getARecoveryPasswordToken = (): RecoveryPasswordToken => {
+  return RecoveryPasswordToken.createForUser(
+    uuid(),
+    getAnAdminUser(),
+    'token',
+    999,
   );
 };

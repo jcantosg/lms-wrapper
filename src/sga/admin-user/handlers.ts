@@ -20,6 +20,14 @@ import { GetAdminUserDetailHandler } from '#admin-user/application/get-admin-use
 import { EditAdminUserHandler } from '#admin-user/application/edit-admin-user/edit-admin-user.handler';
 import { RemoveBusinessUnitFromAdminUserHandler } from '#admin-user/application/remove-business-unit-from-admin-user/remove-business-unit-from-admin-user.handler';
 import { AddBusinessUnitsToAdminUserHandler } from '#admin-user/application/add-business-units-to-admin-user/add-business-units-to-admin-user.handler';
+import { GenerateRecoveryPasswordTokenHandler } from '#admin-user/application/generate-recovery-password-token/generate-recovery-password-token.handler';
+import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
+import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { ConfigService } from '@nestjs/config';
+import { UpdatePasswordHandler } from '#admin-user/application/update-password/update-password.handler';
+import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
+import { JwtService } from '@nestjs/jwt';
+import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
 
 const getIdentityDocumentTypesHandler = {
   provide: GetIdentityDocumentTypesHandler,
@@ -216,6 +224,61 @@ const removeBusinessUnitFromAdminUserHandler = {
   ],
 };
 
+const generateRecoveryPasswordTokenHandler = {
+  provide: GenerateRecoveryPasswordTokenHandler,
+  useFactory: (
+    adminUserGetter: AdminUserGetter,
+    recoveryPasswordTokenRepository: RecoveryPasswordTokenRepository,
+    jwtTokenGenerator: JwtTokenGenerator,
+    eventDispatcher: EventDispatcher,
+    configService: ConfigService,
+  ) => {
+    return new GenerateRecoveryPasswordTokenHandler(
+      adminUserGetter,
+      recoveryPasswordTokenRepository,
+      jwtTokenGenerator,
+      eventDispatcher,
+      configService.get<number>('RECOVERY_TOKEN_TTL')!,
+    );
+  },
+  inject: [
+    AdminUserGetter,
+    RecoveryPasswordTokenRepository,
+    JwtTokenGenerator,
+    EventDispatcher,
+    ConfigService,
+  ],
+};
+
+const updatePasswordHandler = {
+  provide: UpdatePasswordHandler,
+  useFactory: (
+    adminUserGetter: AdminUserGetter,
+    adminUserRepository: AdminUserRepository,
+    recoveryPasswordTokenRepository: RecoveryPasswordTokenRepository,
+    recoveryPasswordTokenGetter: RecoveryPasswordTokenGetter,
+    jwtService: JwtService,
+    passwordEncoder: PasswordEncoder,
+  ) => {
+    return new UpdatePasswordHandler(
+      adminUserGetter,
+      adminUserRepository,
+      recoveryPasswordTokenRepository,
+      recoveryPasswordTokenGetter,
+      jwtService,
+      passwordEncoder,
+    );
+  },
+  inject: [
+    AdminUserGetter,
+    AdminUserRepository,
+    RecoveryPasswordTokenRepository,
+    RecoveryPasswordTokenGetter,
+    JwtService,
+    PasswordEncoder,
+  ],
+};
+
 export const handlers = [
   registerUserHandler,
   createRefreshTokenHandler,
@@ -230,4 +293,6 @@ export const handlers = [
   editAdminUserHandler,
   addBusinessUnitsToAdminUserHandler,
   removeBusinessUnitFromAdminUserHandler,
+  generateRecoveryPasswordTokenHandler,
+  updatePasswordHandler,
 ];

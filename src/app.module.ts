@@ -49,6 +49,7 @@ const configModule = ConfigModule.forRoot({
     AWS_SECRET_KEY: Joi.string().required(),
     AWS_BUCKET_NAME: Joi.string().required(),
     AWS_REGION: Joi.string().required(),
+    RECOVERY_TOKEN_TTL: Joi.number().required(),
   }),
 });
 

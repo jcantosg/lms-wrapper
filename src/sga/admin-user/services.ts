@@ -13,6 +13,8 @@ import { ConfigService } from '@nestjs/config';
 import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
 import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-roles-checker.service';
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
+import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
+import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
 
 const adminUserGetter = {
   provide: AdminUserGetter,
@@ -50,6 +52,16 @@ const passwordChecker = {
   useClass: BcryptPasswordChecker,
 };
 
+const recoveryPasswordTokenGetter = {
+  provide: RecoveryPasswordTokenGetter,
+  useFactory: (
+    recoveryPasswordTokenRepository: RecoveryPasswordTokenRepository,
+  ) => {
+    return new RecoveryPasswordTokenGetter(recoveryPasswordTokenRepository);
+  },
+  inject: [RecoveryPasswordTokenRepository],
+};
+
 export const services = [
   adminUserGetter,
   authenticator,
@@ -62,4 +74,5 @@ export const services = [
   AdminUserPasswordGenerator,
   AdminUserRolesChecker,
   AdminUserBusinessUnitsChecker,
+  recoveryPasswordTokenGetter,
 ];
