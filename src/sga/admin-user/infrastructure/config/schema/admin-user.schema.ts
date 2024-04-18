@@ -60,6 +60,12 @@ export const adminUserSchema = new EntitySchema<AdminUser>({
       enum: AdminUserStatus,
       default: AdminUserStatus.ACTIVE,
     },
+    loginAttempts: {
+      name: 'login_attempts',
+      type: Number,
+      nullable: false,
+      default: 0,
+    },
   },
   relations: {
     businessUnits: {

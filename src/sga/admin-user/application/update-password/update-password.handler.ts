@@ -34,6 +34,8 @@ export class UpdatePasswordHandler implements CommandHandler {
     adminUser.password = await this.passwordEncoder.encodePassword(
       command.newPassword,
     );
+    adminUser.activateUser();
+    adminUser.resetLoginAttempts();
     await this.adminUserRepository.save(adminUser);
 
     recoveryPasswordToken.expiresAt = getNow();

@@ -4,7 +4,10 @@ import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { UpdatePasswordE2eSeed } from '#test/e2e/sga/admin-user/update-password.e2e-seed';
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import {
+  AdminUser,
+  AdminUserStatus,
+} from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserPostgresRepository } from '#admin-user/infrastructure/repository/admin-user.postgres-repository';
 import { RecoveryPasswordTokenPostgresRepository } from '#admin-user/infrastructure/repository/recovery-password-token.postgres-repository';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
@@ -63,6 +66,8 @@ describe('/update-password (PUT)', () => {
     );
 
     expect(adminUser?.password).not.toBe(UpdatePasswordE2eSeed.userPassword);
+    expect(adminUser?.loginAttempts).toBe(0);
+    expect(adminUser?.status).toEqual(AdminUserStatus.ACTIVE);
   });
 
   afterAll(async () => {

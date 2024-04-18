@@ -49,6 +49,7 @@ const configModule = ConfigModule.forRoot({
     AWS_SECRET_KEY: Joi.string().required(),
     AWS_BUCKET_NAME: Joi.string().required(),
     AWS_REGION: Joi.string().required(),
+    APP_URL: Joi.string().required(),
     RECOVERY_TOKEN_TTL: Joi.number().required(),
   }),
 });
@@ -111,7 +112,7 @@ const mailerModule = MailerModule.forRootAsync({
       from: configService.getOrThrow<string>('FROM_EMAIL'),
     },
     template: {
-      dir: __dirname + '/templates',
+      dir: __dirname + '/../templates',
       adapter: new PugAdapter(),
       options: {
         strict: true,

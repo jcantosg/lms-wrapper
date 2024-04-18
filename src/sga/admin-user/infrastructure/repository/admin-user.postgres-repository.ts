@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Not, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import {
@@ -27,7 +27,7 @@ export class AdminUserPostgresRepository
     return await this.repository.findOne({
       where: {
         id,
-        status: Not(AdminUserStatus.DELETED),
+        status: AdminUserStatus.ACTIVE,
       },
       relations: { businessUnits: { country: true } },
     });
@@ -35,7 +35,9 @@ export class AdminUserPostgresRepository
 
   async getByEmail(email: string): Promise<AdminUser | null> {
     return await this.repository.findOne({
-      where: { email, status: Not(AdminUserStatus.DELETED) },
+      where: {
+        email,
+      },
       relations: { businessUnits: true },
     });
   }
@@ -55,6 +57,7 @@ export class AdminUserPostgresRepository
       surname2: adminUser.surname2,
       identityDocument: adminUser.identityDocument,
       status: adminUser.status,
+      loginAttempts: adminUser.loginAttempts,
     });
   }
 
@@ -77,7 +80,7 @@ export class AdminUserPostgresRepository
       'business_units',
     );
 
-    queryBuilder.where(`${aliasQuery}.status != 'deleted'`);
+    queryBuilder.where(`${aliasQuery}.status = 'active'`);
 
     const baseRepository = await this.filterBusinessUnits(
       queryBuilder,
@@ -107,7 +110,7 @@ export class AdminUserPostgresRepository
       `${aliasQuery}.businessUnits`,
       'business_units',
     );
-    queryBuilder.where(`${aliasQuery}.status != 'deleted'`);
+    queryBuilder.where(`${aliasQuery}.status = 'active'`);
 
     const baseRepository = await this.filterBusinessUnits(
       queryBuilder,

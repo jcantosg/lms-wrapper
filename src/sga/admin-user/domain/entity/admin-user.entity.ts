@@ -11,6 +11,7 @@ export enum AdminUserStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
   DELETED = 'deleted',
+  BLOCKED = 'blocked',
 }
 
 const DELETED_USER_NAME = 'deleted';
@@ -18,6 +19,8 @@ const DELETED_IDENTITY_DOCUMENT: IdentityDocumentValues = {
   identityDocumentType: IdentityDocumentType.DNI,
   identityDocumentNumber: '87296079Q',
 };
+
+export const MAXIMUM_LOGIN_ATTEMPTS = 5;
 
 export class AdminUser extends BaseEntity {
   static readonly passwordPattern = '^\\S{6,}$';
@@ -36,6 +39,7 @@ export class AdminUser extends BaseEntity {
     private _surname2: string | null,
     private _identityDocument: IdentityDocument,
     private _status: AdminUserStatus,
+    private _loginAttempts: number,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -66,6 +70,7 @@ export class AdminUser extends BaseEntity {
       surname2,
       identityDocument,
       AdminUserStatus.ACTIVE,
+      0,
     );
   }
 
@@ -188,6 +193,14 @@ export class AdminUser extends BaseEntity {
     this._identityDocument = value;
   }
 
+  public get loginAttempts(): number {
+    return this._loginAttempts;
+  }
+
+  public set loginAttempts(value: number) {
+    this._loginAttempts = value;
+  }
+
   public update(
     name: string,
     surname: string,
@@ -203,5 +216,24 @@ export class AdminUser extends BaseEntity {
     this._roles = roles;
     this._avatar = avatar;
     this.updatedAt = new Date();
+  }
+
+  public addLoginAttempt(): void {
+    this.loginAttempts += 1;
+    if (this.loginAttempts >= MAXIMUM_LOGIN_ATTEMPTS) {
+      this.status = AdminUserStatus.BLOCKED;
+    }
+  }
+
+  public resetLoginAttempts(): void {
+    this.loginAttempts = 0;
+  }
+
+  public isBlocked(): boolean {
+    return this.status === AdminUserStatus.BLOCKED;
+  }
+
+  public activateUser(): void {
+    this.status = AdminUserStatus.ACTIVE;
   }
 }
