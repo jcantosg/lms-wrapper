@@ -18,24 +18,28 @@ import { GetAcademicProgramsByTitleHandler } from '#academic-offering/applicaton
 import { GetAllAcademicProgramByAcademicPeriodHandler } from '#academic-offering/applicaton/get-all-academic-programs-by-period/get-all-academic-programs-by-period.handler';
 import { SearchAcademicProgramByAcademicPeriodHandler } from '#academic-offering/applicaton/search-academic-program-by-period/search-academic-program-by-period.handler';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
   useFactory: (
     academicProgramRepository: AcademicProgramRepository,
     programBlockRepository: ProgramBlockRepository,
+    transactionalService: TransactionalService,
     businessUnitGetter: BusinessUnitGetter,
     titleGetter: TitleGetter,
   ) =>
     new CreateAcademicProgramHandler(
       academicProgramRepository,
       programBlockRepository,
+      transactionalService,
       businessUnitGetter,
       titleGetter,
     ),
   inject: [
     AcademicProgramRepository,
     ProgramBlockRepository,
+    TransactionalService,
     BusinessUnitGetter,
     TitleGetter,
   ],

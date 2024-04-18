@@ -115,6 +115,8 @@ export class GetSubjectsByProgramBlockE2eSeed implements E2eSeed {
       this.superAdminUser,
       ProgramBlockStructureType.SEMESTER,
     );
+    await this.academicProgramRepository.save(this.academicProgram);
+
     const evaluationType = await this.evaluationTypeRepository.findOneByOrFail({
       name: 'Proyecto',
     });
@@ -134,6 +136,8 @@ export class GetSubjectsByProgramBlockE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
+    await this.subjectRepository.save(this.subject);
+
     this.programBlock = ProgramBlock.create(
       GetSubjectsByProgramBlockE2eSeed.programBlockId,
       'Bloque 1',
@@ -141,9 +145,7 @@ export class GetSubjectsByProgramBlockE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     this.programBlock.subjects.push(this.subject);
-    this.academicProgram.programBlocks.push(this.programBlock);
-    await this.subjectRepository.save(this.subject);
-    await this.academicProgramRepository.save(this.academicProgram);
+    await this.programBlockRepository.save(this.programBlock);
   }
 
   async clear() {

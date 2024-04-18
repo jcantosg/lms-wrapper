@@ -1,7 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
-import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { AcademicProgramDuplicatedException } from '#shared/domain/exception/academic-offering/academic-program.duplicated.exception';
 import { AcademicProgramDuplicatedCodeException } from '#shared/domain/exception/academic-offering/academic-program.duplicated-code.exception';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
@@ -11,12 +10,15 @@ import { CreateAcademicProgramCommand } from '#academic-offering/applicaton/acad
 import { ProgramBlockDuplicatedException } from '#shared/domain/exception/academic-offering/program-block.duplicated.exception';
 import { getBlockPrefix } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 
 export class CreateAcademicProgramHandler implements CommandHandler {
   constructor(
     private readonly academicProgramRepository: AcademicProgramRepository,
     private readonly programBlockRepository: ProgramBlockRepository,
+    private readonly transactionalService: TransactionalService,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly titleGetter: TitleGetter,
   ) {}
@@ -59,11 +61,14 @@ export class CreateAcademicProgramHandler implements CommandHandler {
       command.structureType,
     );
 
-    academicProgram.programBlocks = await this.createProgramBlocks(
+    const programBlocks = await this.createProgramBlocks(
       command,
       academicProgram,
     );
-    await this.academicProgramRepository.save(academicProgram);
+    await this.transactionalService.execute({
+      academicProgram: academicProgram,
+      programBlocks: programBlocks,
+    });
   }
 
   private async createProgramBlocks(

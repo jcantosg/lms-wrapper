@@ -20,9 +20,12 @@ import { BusinessUnitNotFoundException } from '#shared/domain/exception/business
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { ProgramBlockMockRepository } from '#test/mocks/sga/academic-offering/program-block.mock-repository';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { TransactionalServiceMock } from '#test/mocks/shared/transactional-service-mock';
 
 let handler: CreateAcademicProgramHandler;
 let academicProgramRepository: AcademicProgramRepository;
+let transactionalService: TransactionalService;
 let programBlockRepository: ProgramBlockRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let titleGetter: TitleGetter;
@@ -49,15 +52,17 @@ describe('Create Academic Program Handler test', () => {
   beforeAll(async () => {
     academicProgramRepository = new AcademicProgramMockRepository();
     programBlockRepository = new ProgramBlockMockRepository();
+    transactionalService = new TransactionalServiceMock();
     businessUnitGetter = getBusinessUnitGetterMock();
     titleGetter = getATitleGetterMock();
     handler = new CreateAcademicProgramHandler(
       academicProgramRepository,
       programBlockRepository,
+      transactionalService,
       businessUnitGetter,
       titleGetter,
     );
-    saveSpy = jest.spyOn(academicProgramRepository, 'save');
+    saveSpy = jest.spyOn(transactionalService, 'execute');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     getTitleSpy = jest.spyOn(titleGetter, 'getByAdminUser');
     existsByIdSpy = jest.spyOn(academicProgramRepository, 'existsById');
@@ -73,11 +78,13 @@ describe('Create Academic Program Handler test', () => {
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: command.id,
-        name: command.name,
-        code: command.code,
-        businessUnit: businessUnit,
-        title: title,
+        academicProgram: expect.objectContaining({
+          id: command.id,
+          name: command.name,
+          code: command.code,
+          businessUnit: businessUnit,
+          title: title,
+        }),
       }),
     );
   });

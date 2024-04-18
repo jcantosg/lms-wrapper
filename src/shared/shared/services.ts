@@ -18,4 +18,5 @@ const imageUploader = {
   },
   inject: [FileManager],
 };
+
 export const services = [countryGetter, imageUploader];

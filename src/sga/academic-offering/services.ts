@@ -16,6 +16,9 @@ import { TitleGetter } from '#academic-offering/domain/service/title/title-gette
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { CreateAcademicProgramTransactionService } from '#academic-offering/infrastructure/service/create-academic-program-transaction.service';
+import datasource from '#config/ormconfig';
 
 const evaluationTypeGetter = {
   provide: EvaluationTypeGetter,
@@ -73,6 +76,12 @@ const programBlockGetter = {
   inject: [ProgramBlockRepository],
 };
 
+const createAcademicProgramTransactionalService = {
+  provide: TransactionalService,
+  useFactory: (): CreateAcademicProgramTransactionService =>
+    new CreateAcademicProgramTransactionService(datasource),
+};
+
 export const services = [
   evaluationTypeGetter,
   subjectGetter,
@@ -84,4 +93,5 @@ export const services = [
   academicProgramGetter,
   titleGetter,
   programBlockGetter,
+  createAcademicProgramTransactionalService,
 ];

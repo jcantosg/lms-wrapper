@@ -47,7 +47,6 @@ export const academicProgramSchema = new EntitySchema<AcademicProgram>({
       type: 'one-to-many',
       target: 'ProgramBlock',
       inverseSide: 'academicProgram',
-      cascade: ['insert'],
     },
     academicPeriods: {
       type: 'many-to-many',
