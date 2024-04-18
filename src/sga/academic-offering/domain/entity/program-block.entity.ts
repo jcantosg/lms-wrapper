@@ -75,10 +75,23 @@ export class ProgramBlock extends BaseEntity {
     );
   }
 
-  public update(name: string, user: AdminUser): void {
-    this.name = name;
+  public updateByInfo(user: AdminUser) {
     this.updatedBy = user;
     this.updatedAt = new Date();
+  }
+
+  public update(name: string, user: AdminUser): void {
+    this.name = name;
+    this.updateByInfo(user);
+  }
+
+  public addSubject(subject: Subject, user: AdminUser): void {
+    if (
+      !this._subjects.find((subjectToFind) => subject.id === subjectToFind.id)
+    ) {
+      this._subjects.push(subject);
+      this.updateByInfo(user);
+    }
   }
 
   public hasSubjects(): boolean {

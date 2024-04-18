@@ -26,4 +26,6 @@ export abstract class SubjectRepository {
     adminUserBusinessUnits: any[],
     isSuperAdmin: boolean,
   ): Promise<number>;
+
+  abstract getByBusinessUnit(businessUnitId: string): Promise<Subject[]>;
 }

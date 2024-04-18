@@ -8,4 +8,5 @@ export class SubjectMockRepository implements SubjectRepository {
   getByAdminUser = jest.fn();
   matching = jest.fn();
   count = jest.fn();
+  getByBusinessUnit = jest.fn();
 }

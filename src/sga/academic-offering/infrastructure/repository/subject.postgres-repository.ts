@@ -163,4 +163,12 @@ export class SubjectPostgresRepository
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
   }
+
+  async getByBusinessUnit(businessUnitId: string): Promise<Subject[]> {
+    return await this.repository.findBy({
+      businessUnit: {
+        id: businessUnitId,
+      },
+    });
+  }
 }

@@ -9,6 +9,7 @@ import { SearchSubjectsController } from '#academic-offering/infrastructure/cont
 import { UploadSubjectResourceController } from '#academic-offering/infrastructure/controller/subject/upload-subject-resource.controller';
 import { RemoveEdaeUserFromSubjectController } from '#academic-offering/infrastructure/controller/subject/remove-edae-user-from-subject.controller';
 import { GetSubjectController } from '#academic-offering/infrastructure/controller/subject/get-subject/get-subject.controller';
+import { GetSubjectByBusinessUnitController } from '#academic-offering/infrastructure/controller/subject/get-subjects-by-business-unit/get-subject-by-business-unit.controller';
 
 export const subjectControllers = [
   GetAllSubjectModalitiesController,
@@ -21,5 +22,6 @@ export const subjectControllers = [
   SearchSubjectsController,
   UploadSubjectResourceController,
   RemoveEdaeUserFromSubjectController,
+  GetSubjectByBusinessUnitController,
   GetSubjectController,
 ];

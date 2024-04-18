@@ -21,6 +21,7 @@ import { DeleteSubjectResourceHandler } from '#academic-offering/applicaton/subj
 import { RemoveEdaeUserFromSubjectHandler } from '#academic-offering/applicaton/subject/remove-edae-from-subject/remove-edae-user-from-subject.handler';
 import { GetAllSubjectsModalitiesHandler } from '#academic-offering/applicaton/subject/get-all-subject-modalities/get-all-subjects-modalities.handler';
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/subject/get-all-subject-types/get-all-subject-types.handler';
+import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/subject/get-subjects-by-business-unit/get-subjects-by-business-unit.handler';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -167,6 +168,13 @@ const removeEdaeUsersFromSubjectHandler = {
   inject: [SubjectRepository, SubjectGetter, EdaeUserGetter],
 };
 
+const getSubjectsByBusinessUnit = {
+  provide: GetSubjectsByBusinessUnitHandler,
+  useFactory: (repository: SubjectRepository) =>
+    new GetSubjectsByBusinessUnitHandler(repository),
+  inject: [SubjectRepository],
+};
+
 export const subjectHandlers = [
   createSubjectHandler,
   getSubjectHandler,
@@ -179,4 +187,5 @@ export const subjectHandlers = [
   removeEdaeUsersFromSubjectHandler,
   GetAllSubjectsModalitiesHandler,
   GetAllSubjectTypesHandler,
+  getSubjectsByBusinessUnit,
 ];

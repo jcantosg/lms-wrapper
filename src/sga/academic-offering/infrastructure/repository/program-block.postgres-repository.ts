@@ -40,8 +40,6 @@ export class ProgramBlockPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subjects`, 'subject');
 
-    queryBuilder.leftJoinAndSelect(`${aliasQuery}.subjects`, 'subjects');
-
     return queryBuilder;
   }
 
