@@ -28,6 +28,7 @@ import { UpdatePasswordHandler } from '#admin-user/application/update-password/u
 import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { EditProfileHandler } from '#admin-user/application/edit-profile/edit-profile.handler';
 
 const getIdentityDocumentTypesHandler = {
   provide: GetIdentityDocumentTypesHandler,
@@ -279,6 +280,15 @@ const updatePasswordHandler = {
   ],
 };
 
+const editProfileHandler = {
+  provide: EditProfileHandler,
+  useFactory: (
+    repository: AdminUserRepository,
+    imageUploader: ImageUploader,
+  ): EditProfileHandler => new EditProfileHandler(repository, imageUploader),
+  inject: [AdminUserRepository, ImageUploader],
+};
+
 export const handlers = [
   registerUserHandler,
   createRefreshTokenHandler,
@@ -295,4 +305,5 @@ export const handlers = [
   removeBusinessUnitFromAdminUserHandler,
   generateRecoveryPasswordTokenHandler,
   updatePasswordHandler,
+  editProfileHandler,
 ];
