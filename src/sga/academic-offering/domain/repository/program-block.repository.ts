@@ -12,4 +12,6 @@ export abstract class ProgramBlockRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<ProgramBlock | null>;
+
+  abstract delete(programBlock: ProgramBlock): Promise<void>;
 }

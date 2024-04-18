@@ -40,6 +40,8 @@ export class ProgramBlockPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subjects`, 'subject');
 
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.subjects`, 'subjects');
+
     return queryBuilder;
   }
 
@@ -58,8 +60,8 @@ export class ProgramBlockPostgresRepository
     const queryBuilder = this.initializeQueryBuilder('programBlock');
 
     return await queryBuilder
-      .where('examinationCall.id = :id', { id: programBlockId })
-      .andWhere('academic_period.businessUnit.id IN(:...ids)', {
+      .where('programBlock.id = :id', { id: programBlockId })
+      .andWhere('academic_program.businessUnit.id IN(:...ids)', {
         ids: adminUserBusinessUnits,
       })
       .getOne();
@@ -76,5 +78,9 @@ export class ProgramBlockPostgresRepository
       updatedBy: programBlock.updatedBy,
       updatedAt: programBlock.updatedAt,
     });
+  }
+
+  async delete(programBlock: ProgramBlock): Promise<void> {
+    await this.repository.delete(programBlock.id);
   }
 }

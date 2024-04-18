@@ -80,4 +80,8 @@ export class ProgramBlock extends BaseEntity {
     this.updatedBy = user;
     this.updatedAt = new Date();
   }
+
+  public hasSubjects(): boolean {
+    return this.subjects.length > 0;
+  }
 }
