@@ -106,7 +106,7 @@ export class Title extends BaseEntity {
     user: AdminUser,
   ) {
     this._name = name;
-    this._officialCode = officialCode;
+    this._officialCode = officialCode ?? null;
     this._officialTitle = officialTitle;
     this._officialProgram = officialProgram;
     this._businessUnit = businessUnit;
