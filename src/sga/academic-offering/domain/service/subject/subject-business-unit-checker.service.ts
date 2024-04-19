@@ -1,6 +1,6 @@
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject-not-found.exception';
+import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject.not-found.exception';
 
 export class SubjectBusinessUnitChecker {
   checkSubjectBusinessUnit(subject: Subject, businessUnits: BusinessUnit[]) {

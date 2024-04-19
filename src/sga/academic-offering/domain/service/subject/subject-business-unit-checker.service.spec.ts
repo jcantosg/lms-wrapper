@@ -1,6 +1,6 @@
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject/subject-business-unit-checker.service';
 import { getABusinessUnit, getASubject } from '#test/entity-factory';
-import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject-not-found.exception';
+import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject.not-found.exception';
 import clearAllMocks = jest.clearAllMocks;
 
 let service: SubjectBusinessUnitChecker;

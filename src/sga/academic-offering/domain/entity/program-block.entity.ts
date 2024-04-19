@@ -94,6 +94,12 @@ export class ProgramBlock extends BaseEntity {
     }
   }
 
+  public removeSubject(subject: Subject): void {
+    this._subjects = this._subjects.filter(
+      (subjectToCompare: Subject) => subject.id !== subjectToCompare.id,
+    );
+  }
+
   public hasSubjects(): boolean {
     return this.subjects.length > 0;
   }
