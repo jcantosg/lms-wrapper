@@ -12,6 +12,7 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export class EditAcademicProgramE2eSeed implements E2eSeed {
   public static academicProgramId = uuid();
@@ -21,6 +22,9 @@ export class EditAcademicProgramE2eSeed implements E2eSeed {
   public static academicProgramId2 = uuid();
   public static academicProgramName2 = 'Academic Program 2';
   public static academicProgramCode2 = 'OC2';
+
+  public static programBlockId = uuid();
+  public static programBlockName = 'Program Block 1';
 
   public static titleId = uuid();
   public static titleName = 'Title 1';
@@ -49,6 +53,7 @@ export class EditAcademicProgramE2eSeed implements E2eSeed {
 
   private academicProgram: AcademicProgram;
   private secondAcademicProgram: AcademicProgram;
+  private programBlock: ProgramBlock;
   private title: Title;
   private secondTitle: Title;
   private businessUnit: BusinessUnit;
@@ -61,12 +66,14 @@ export class EditAcademicProgramE2eSeed implements E2eSeed {
   private businessUnitRepository: Repository<BusinessUnit>;
   private countryRepository: Repository<Country>;
   private academicProgramRepository: Repository<AcademicProgram>;
+  private programBlockRepository: Repository<ProgramBlock>;
 
   constructor(private dataSource: DataSource) {
     this.businessUnitRepository = dataSource.getRepository(BusinessUnit);
     this.countryRepository = dataSource.getRepository(Country);
     this.titleRepository = dataSource.getRepository(Title);
     this.academicProgramRepository = dataSource.getRepository(AcademicProgram);
+    this.programBlockRepository = dataSource.getRepository(ProgramBlock);
   }
 
   async arrange(): Promise<void> {
@@ -163,9 +170,19 @@ export class EditAcademicProgramE2eSeed implements E2eSeed {
       ProgramBlockStructureType.CUSTOM,
     );
     await this.academicProgramRepository.save(this.secondAcademicProgram);
+
+    this.programBlock = ProgramBlock.create(
+      EditAcademicProgramE2eSeed.programBlockId,
+      EditAcademicProgramE2eSeed.programBlockName,
+      this.academicProgram,
+      this.superAdminUser,
+    );
+
+    await this.programBlockRepository.save(this.programBlock);
   }
 
   async clear(): Promise<void> {
+    await this.programBlockRepository.delete(this.programBlock.id);
     await this.academicProgramRepository.delete(this.academicProgram.id);
     await this.academicProgramRepository.delete(this.secondAcademicProgram.id);
     await this.titleRepository.delete(this.title.id);

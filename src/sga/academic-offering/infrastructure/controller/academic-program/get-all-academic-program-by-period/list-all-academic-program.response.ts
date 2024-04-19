@@ -25,7 +25,7 @@ export class ListAcademicProgramsByPeriodResponse {
         return {
           id: academicProgram.id,
           name: academicProgram.name,
-          officialCode: academicProgram.code,
+          officialCode: academicProgram.title.officialCode ?? '',
           code: academicProgram.code,
         };
       }),

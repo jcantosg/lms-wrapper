@@ -13,6 +13,13 @@ import {
 } from '#/sga/shared/domain/criteria/filter';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
+const fieldOrderByMapping: Record<string, string> = {
+  country: 'country.name',
+  title: 'title.name',
+  businessUnit: 'business_unit.name',
+  officialCode: 'title.officialCode',
+};
+
 export class TypeOrmRepository<T extends ObjectLiteral> {
   async convertCriteriaToQueryBuilder(
     criteria: Criteria,
@@ -196,16 +203,10 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     aliasQuery: string,
   ): TypeOrmRepository<T> {
     if (criteria.order.hasOrderType() && criteria.order.hasOrderBy()) {
-      let orderBy;
-      if (criteria.order.orderBy === 'country') {
-        orderBy = 'country.name';
-      } else if (criteria.order.orderBy === 'title') {
-        orderBy = 'title.name';
-      } else if (criteria.order.orderBy === 'businessUnit') {
-        orderBy = 'business_unit.name';
-      } else {
-        orderBy = `${aliasQuery}.${criteria.order.orderBy}`;
-      }
+      const orderByField = criteria.order.orderBy;
+      const orderBy =
+        fieldOrderByMapping[orderByField] || `${aliasQuery}.${orderByField}`;
+
       queryBuilder.addOrderBy(
         orderBy,
         criteria.order.orderType === OrderTypes.NONE
