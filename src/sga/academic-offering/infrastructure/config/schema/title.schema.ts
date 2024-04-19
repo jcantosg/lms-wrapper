@@ -40,5 +40,10 @@ export const titleSchema = new EntitySchema<Title>({
         name: 'business_unit_id',
       },
     },
+    academicPrograms: {
+      type: 'one-to-many',
+      target: 'AcademicProgram',
+      inverseSide: 'title',
+    },
   },
 });

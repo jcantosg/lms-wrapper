@@ -1,6 +1,7 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 
 export class Title extends BaseEntity {
   private constructor(
@@ -14,6 +15,7 @@ export class Title extends BaseEntity {
     updateAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _academicPrograms: AcademicProgram[],
   ) {
     super(id, createdAt, updateAt);
   }
@@ -74,6 +76,14 @@ export class Title extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get academicPrograms(): AcademicProgram[] {
+    return this._academicPrograms;
+  }
+
+  public set academicPrograms(value: AcademicProgram[]) {
+    this._academicPrograms = value;
+  }
+
   static create(
     id: string,
     name: string,
@@ -94,6 +104,7 @@ export class Title extends BaseEntity {
       new Date(),
       user,
       user,
+      [],
     );
   }
 
@@ -112,5 +123,9 @@ export class Title extends BaseEntity {
     this._businessUnit = businessUnit;
     this.updatedAt = new Date();
     this.updatedBy = user;
+  }
+
+  public hasAcademicPrograms(): boolean {
+    return this.academicPrograms.length > 0;
   }
 }

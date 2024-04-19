@@ -102,6 +102,10 @@ export class TitlePostgresRepository
       `${aliasQuery}.businessUnit`,
       'business_unit',
     );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPrograms`,
+      'academic_program',
+    );
 
     return queryBuilder;
   }
@@ -113,7 +117,7 @@ export class TitlePostgresRepository
   async get(id: string): Promise<Title | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { businessUnit: true },
+      relations: { businessUnit: true, academicPrograms: true },
     });
   }
 

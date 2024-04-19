@@ -2,6 +2,7 @@ import { DeleteTitleCommand } from './delete-title.command';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
+import { TitleHasAcademicProgramsException } from '#shared/domain/exception/academic-offering/title-has-academic-programs.exception';
 
 export class DeleteTitleHandler implements CommandHandler {
   constructor(
@@ -15,7 +16,9 @@ export class DeleteTitleHandler implements CommandHandler {
       command.adminUserBusinessUnits,
       command.isSuperAdmin,
     );
-    /*@TODO check if has academic programs */
+    if (title.hasAcademicPrograms()) {
+      throw new TitleHasAcademicProgramsException();
+    }
 
     await this.repository.delete(title);
   }
