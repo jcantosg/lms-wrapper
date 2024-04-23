@@ -6,6 +6,7 @@ export enum FilterOperators {
   IN = 'IN',
   ANY = 'ANY',
   IS_CONTAINED = '<@',
+  COUNT = 'COUNT',
 }
 
 export enum GroupOperator {

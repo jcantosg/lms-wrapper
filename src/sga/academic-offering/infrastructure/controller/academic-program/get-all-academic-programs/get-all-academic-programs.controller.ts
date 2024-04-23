@@ -25,6 +25,8 @@ interface GetAllAcademicProgramQueryParams {
   code: string | null;
   title: string | null;
   businessUnit: string | null;
+  structureType: string | null;
+  programBlocksNumber: number | null;
 }
 
 @Controller('academic-program')
@@ -51,6 +53,8 @@ export class GetAllAcademicProgramsController {
       queryParams.businessUnit,
       req.user.businessUnits,
       req.user.roles.includes(AdminUserRoles.SUPERADMIN),
+      queryParams.structureType,
+      queryParams.programBlocksNumber,
     );
 
     const response = await this.handler.handle(query);

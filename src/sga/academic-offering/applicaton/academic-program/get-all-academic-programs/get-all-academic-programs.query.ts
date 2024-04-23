@@ -18,6 +18,8 @@ export class GetAllAcademicProgramsQuery
     public readonly businessUnit: string | null,
     public readonly adminUserBusinessUnits: BusinessUnit[],
     public readonly isSuperAdmin: boolean,
+    public readonly structureType: string | null,
+    public readonly programBlocksNumber: number | null,
   ) {
     super(page, limit, orderBy, orderType);
   }

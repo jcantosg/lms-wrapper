@@ -10,5 +10,7 @@ export const getAllAcademicProgramsSchema = createCollectionSchema(
     code: Joi.string().optional(),
     title: Joi.string().optional(),
     businessUnit: Joi.string().guid().optional(),
+    structureType: Joi.string().optional(),
+    programBlocksNumber: Joi.number().optional(),
   },
 );

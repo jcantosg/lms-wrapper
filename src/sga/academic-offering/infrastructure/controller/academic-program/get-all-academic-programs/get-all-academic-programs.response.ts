@@ -1,5 +1,6 @@
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
+import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 interface GetAllAcademicProgramResponse {
   id: string;
@@ -14,6 +15,8 @@ interface GetAllAcademicProgramResponse {
     id: string;
     name: string;
   };
+  structureType: ProgramBlockStructureType;
+  programBlocksNumber: number;
 }
 
 export class GetAllAcademicProgramsResponse {
@@ -39,6 +42,8 @@ export class GetAllAcademicProgramsResponse {
               id: academicProgram.businessUnit.id,
               name: academicProgram.businessUnit.name,
             },
+            structureType: academicProgram.structureType,
+            programBlocksNumber: academicProgram.programBlocks.length,
           };
         },
       ),

@@ -35,6 +35,20 @@ export class GetAllAcademicsProgramsCriteria extends Criteria {
         GroupOperator.AND,
         'business_unit',
       ),
+      new Filter(
+        'structureType',
+        query.structureType,
+        FilterOperators.LIKE,
+        GroupOperator.AND,
+      ),
+      new Filter(
+        'academic_program_id',
+        query.programBlocksNumber,
+        FilterOperators.COUNT,
+        GroupOperator.AND,
+        'programBlocks',
+        'program_blocks',
+      ),
     ].filter((filter: Filter) => filter.value !== undefined);
   }
 }
