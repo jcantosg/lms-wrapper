@@ -15,6 +15,7 @@ import { RemoveBusinessUnitFromAdminUserController } from '#admin-user/infrastru
 import { GenerateRecoveryPasswordTokenController } from '#admin-user/infrastructure/controller/auth/generate-recovery-password-token.controller';
 import { UpdatePasswordController } from '#admin-user/infrastructure/controller/auth/update-password.controller';
 import { EditProfileController } from '#admin-user/infrastructure/controller/edit-profile/edit-profile.controller';
+import { ChangePasswordController } from '#admin-user/infrastructure/controller/edit-profile/change-password.controller';
 
 export const controllers = [
   RegisterAdminUserController,
@@ -34,4 +35,5 @@ export const controllers = [
   GenerateRecoveryPasswordTokenController,
   UpdatePasswordController,
   EditProfileController,
+  ChangePasswordController,
 ];

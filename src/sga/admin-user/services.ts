@@ -15,6 +15,7 @@ import { AdminUserRolesChecker } from '#admin-user/domain/service/admin-user-rol
 import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-user-business-units.checker.service';
 import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
+import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
 
 const adminUserGetter = {
   provide: AdminUserGetter,
@@ -75,4 +76,5 @@ export const services = [
   AdminUserRolesChecker,
   AdminUserBusinessUnitsChecker,
   recoveryPasswordTokenGetter,
+  PasswordFormatChecker,
 ];

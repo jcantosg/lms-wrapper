@@ -29,6 +29,9 @@ import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery
 import { JwtService } from '@nestjs/jwt';
 import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
 import { EditProfileHandler } from '#admin-user/application/edit-profile/edit-profile.handler';
+import { ChangePasswordHandler } from '#admin-user/application/change-password/change-password.handler';
+import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
+import { PasswordChecker } from '#admin-user/domain/service/password-checker.service';
 
 const getIdentityDocumentTypesHandler = {
   provide: GetIdentityDocumentTypesHandler,
@@ -289,6 +292,28 @@ const editProfileHandler = {
   inject: [AdminUserRepository, ImageUploader],
 };
 
+const changePasswordHandler = {
+  provide: ChangePasswordHandler,
+  useFactory: (
+    repository: AdminUserRepository,
+    passwordEncoder: PasswordEncoder,
+    passwordChecker: PasswordChecker,
+    passwordFormatChecker: PasswordFormatChecker,
+  ): ChangePasswordHandler =>
+    new ChangePasswordHandler(
+      repository,
+      passwordEncoder,
+      passwordChecker,
+      passwordFormatChecker,
+    ),
+  inject: [
+    AdminUserRepository,
+    PasswordEncoder,
+    PasswordChecker,
+    PasswordFormatChecker,
+  ],
+};
+
 export const handlers = [
   registerUserHandler,
   createRefreshTokenHandler,
@@ -306,4 +331,5 @@ export const handlers = [
   generateRecoveryPasswordTokenHandler,
   updatePasswordHandler,
   editProfileHandler,
+  changePasswordHandler,
 ];
