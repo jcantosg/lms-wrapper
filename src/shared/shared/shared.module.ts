@@ -7,14 +7,13 @@ import { repositories } from '#shared/repositories';
 import { sharedSchemas } from '#shared/schemas';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
-import { HealthController } from '#shared/infrastructure/controller/health.controller';
 import { services } from '#shared/services';
 import { handlers } from '#shared/handlers';
-import { GetCountryController } from '#shared/infrastructure/controller/country/get-countries.controller';
 import { ConfigService } from '@nestjs/config';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
 import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
+import { controllers } from '#shared/controllers';
 
 const fileManager: FactoryProvider = {
   provide: FileManager,
@@ -57,7 +56,7 @@ const providers: Provider[] = [
     TypeOrmModule.forFeature(sharedSchemas),
   ],
   providers,
-  controllers: [HealthController, GetCountryController],
+  controllers: [...controllers],
   exports: [...repositories, ...services],
 })
 export class SharedModule {}

@@ -8,7 +8,7 @@ export const ValueObjectTransformer = <T extends Primitives>(
   valueObject: ValueObjectClass<ValueObject<any>>,
 ) => {
   return {
-    to: (value: ValueObject<T>): Primitives => value.value,
+    to: (value: ValueObject<T>): Primitives => value?.value,
     from: (value: Primitives): ValueObject<T> | null => {
       if (!value) {
         return null;

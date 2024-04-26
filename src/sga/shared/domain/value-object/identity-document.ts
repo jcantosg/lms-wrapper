@@ -22,10 +22,12 @@ const letters = 'TRWAGMYFPDXBNJZSQVHLCKET';
 export class IdentityDocument extends ValueObject<IdentityDocumentValues> {
   constructor(identityDocument: IdentityDocumentValues) {
     super(identityDocument);
-    this.checkValue(
-      identityDocument.identityDocumentType,
-      identityDocument.identityDocumentNumber,
-    );
+    if (Object.keys(identityDocument).length !== 0) {
+      this.checkValue(
+        identityDocument.identityDocumentType,
+        identityDocument.identityDocumentNumber,
+      );
+    }
   }
 
   public get identityDocumentType(): string {
