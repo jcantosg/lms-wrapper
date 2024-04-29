@@ -26,7 +26,7 @@ interface EditAdminUserBody {
   surname2: string | null;
   identityDocument: IdentityDocumentValues;
   roles: AdminUserRoles[];
-  avatar: string | undefined;
+  avatar: string;
 }
 
 @Controller('admin-user')

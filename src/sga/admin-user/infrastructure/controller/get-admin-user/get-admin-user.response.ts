@@ -17,6 +17,8 @@ export class GetAdminUserDetailResponse {
     return {
       id: adminUser.id,
       name: adminUser.name,
+      surname: adminUser.surname,
+      surname2: adminUser.surname2,
       roles: adminUser.roles,
       businessUnits: adminUser.businessUnits.map(
         (businessUnit: BusinessUnit): GetBusinessUnitByUserResponse => {

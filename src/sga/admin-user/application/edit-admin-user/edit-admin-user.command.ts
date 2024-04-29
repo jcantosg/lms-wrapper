@@ -12,6 +12,6 @@ export class EditAdminUserCommand implements Command {
     readonly identityDocument: IdentityDocumentValues,
     readonly roles: AdminUserRoles[],
     readonly user: AdminUser,
-    readonly avatar?: string,
+    readonly avatar: string,
   ) {}
 }

@@ -27,13 +27,13 @@ export class EditAdminUserHandler implements CommandHandler {
     this.adminUserRolesChecker.checkRoles(command.user.roles, userToEdit.roles);
     this.adminUserRolesChecker.checkRoles(command.user.roles, command.roles);
 
-    const avatarUrl = command.avatar
-      ? await this.imageUploader.uploadImage(
+    const avatarUrl = this.matchUrl(command.avatar)
+      ? userToEdit.avatar
+      : await this.imageUploader.uploadImage(
           command.avatar,
           command.name,
           'admin-user-avatar',
-        )
-      : userToEdit.avatar;
+        );
 
     const identityDocument = new IdentityDocument(command.identityDocument);
 
@@ -47,5 +47,12 @@ export class EditAdminUserHandler implements CommandHandler {
     );
 
     await this.adminUserRepository.save(userToEdit);
+  }
+
+  private matchUrl(url: string): boolean {
+    const regex =
+      /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+
+    return regex.test(url);
   }
 }

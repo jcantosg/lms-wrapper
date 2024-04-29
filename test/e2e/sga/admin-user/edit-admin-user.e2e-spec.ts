@@ -80,6 +80,7 @@ describe('Edit Admin User (PUT)', () => {
           identityDocumentNumber: '74700994F',
         },
         roles: ['supervisor_jefatura'],
+        avatar: 'http://www.test.com',
       })
       .expect(403);
 
@@ -106,6 +107,7 @@ describe('Edit Admin User (PUT)', () => {
           identityDocumentNumber: '74700994F',
         },
         roles: ['supervisor_jefatura'],
+        avatar: 'http://www.test.com',
       })
       .expect(200);
 
