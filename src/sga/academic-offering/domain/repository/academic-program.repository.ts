@@ -28,4 +28,8 @@ export abstract class AcademicProgramRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<AcademicProgram[]>;
+
+  abstract getByAcademicPeriod(
+    academicPeriodId: string,
+  ): Promise<AcademicProgram[]>;
 }

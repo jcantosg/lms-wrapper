@@ -11,6 +11,7 @@ import { RemoveAcademicProgramFromAcademicPeriodController } from '#academic-off
 import { GetAllProgramBlockStructureTypesController } from '#academic-offering/infrastructure/controller/academic-program/get-all-program-block-structure-types.controller';
 import { GetAllAcademicProgramByAcademicPeriodController } from '#academic-offering/infrastructure/controller/academic-program/get-all-academic-program-by-period/get-all-academic-program-by-period.controller';
 import { SearchAcademicProgramByAcademicPeriodController } from '#academic-offering/infrastructure/controller/academic-program/search-academic-program-by-period/search-academic-program-by-period.controller';
+import { GetAcademicProgramsPlainByPeriodController } from '#academic-offering/infrastructure/controller/academic-program/get-academic-programs-plain-by-period/get-academic-programs-plain-by-period.controller';
 
 export const academicProgramControllers = [
   GetAcademicProgramsByTitleController,
@@ -26,4 +27,5 @@ export const academicProgramControllers = [
   GetAllProgramBlockStructureTypesController,
   GetAllAcademicProgramByAcademicPeriodController,
   SearchAcademicProgramByAcademicPeriodController,
+  GetAcademicProgramsPlainByPeriodController,
 ];

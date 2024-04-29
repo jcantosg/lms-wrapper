@@ -9,6 +9,9 @@ export class GetAllBusinessUnitsPlainHandler implements QueryHandler {
   ) {}
 
   async handle(query: GetAllBusinessUnitsPlainQuery): Promise<BusinessUnit[]> {
-    return this.businessUnitRepository.getAll(query.adminUserBusinessUnits);
+    return this.businessUnitRepository.getAll(
+      query.adminUserBusinessUnits,
+      query.hasAcademicPeriods,
+    );
   }
 }

@@ -30,4 +30,6 @@ export abstract class AcademicPeriodRepository {
   ): Promise<AcademicPeriod | null>;
 
   abstract update(academicPeriod: AcademicPeriod): Promise<void>;
+
+  abstract getByBusinessUnit(businessUnitId: string): Promise<AcademicPeriod[]>;
 }

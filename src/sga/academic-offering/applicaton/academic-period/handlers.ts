@@ -8,6 +8,7 @@ import { SearchAcademicPeriodsHandler } from '#academic-offering/applicaton/acad
 import { EditAcademicPeriodHandler } from '#academic-offering/applicaton/academic-period/edit-academic-period/edit-academic-period.handler';
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { GetAcademicPeriodHandler } from '#academic-offering/applicaton/academic-period/get-academic-period/get-academic-period.handler';
+import { GetAcademicPeriodsByBusinessUnitHandler } from '#academic-offering/applicaton/academic-period/get-academic-periods-by-business-unit/get-academic-periods-by-business-unit.handler';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -66,6 +67,14 @@ const getAcademicPeriodHandler = {
   inject: [AcademicPeriodGetter],
 };
 
+const getAcademicPeriodsByBusinessUnitHandler = {
+  provide: GetAcademicPeriodsByBusinessUnitHandler,
+  useFactory: (repository: AcademicPeriodRepository) => {
+    return new GetAcademicPeriodsByBusinessUnitHandler(repository);
+  },
+  inject: [AcademicPeriodRepository],
+};
+
 export const academicPeriodHandlers = [
   createAcademicPeriodHandler,
   getAcademicPeriodHandler,
@@ -73,4 +82,5 @@ export const academicPeriodHandlers = [
   getAcademicPeriodHandler,
   getAllAcademicPeriodsHandler,
   searchAcademicPeriodsHandler,
+  getAcademicPeriodsByBusinessUnitHandler,
 ];

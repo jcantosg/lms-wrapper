@@ -29,5 +29,8 @@ export abstract class BusinessUnitRepository {
 
   abstract update(businessUnit: BusinessUnit): Promise<void>;
 
-  abstract getAll(adminUserBusinessUnits: string[]): Promise<BusinessUnit[]>;
+  abstract getAll(
+    adminUserBusinessUnits: string[],
+    hasAcademicPeriods: boolean,
+  ): Promise<BusinessUnit[]>;
 }

@@ -57,4 +57,14 @@ export class VirtualCampusPostgresRepository
 
     return result === null ? false : result.id !== id;
   }
+
+  async getByBusinessUnit(businessUnitId: string): Promise<VirtualCampus[]> {
+    return await this.repository.find({
+      where: {
+        businessUnit: {
+          id: businessUnitId,
+        },
+      },
+    });
+  }
 }

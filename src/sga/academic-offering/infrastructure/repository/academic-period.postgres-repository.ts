@@ -178,4 +178,21 @@ export class AcademicPeriodPostgresRepository
       updatedAt: academicPeriod.updatedAt,
     });
   }
+
+  async getByBusinessUnit(businessUnitId: string): Promise<AcademicPeriod[]> {
+    const academicPeriods = await this.repository.find({
+      where: {
+        businessUnit: {
+          id: businessUnitId,
+        },
+      },
+      relations: {
+        academicPrograms: true,
+      },
+    });
+
+    return academicPeriods.filter((academicPeriod) =>
+      academicPeriod.hasAcademicPrograms(),
+    );
+  }
 }

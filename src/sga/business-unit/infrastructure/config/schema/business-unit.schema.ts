@@ -55,5 +55,10 @@ export const businessUnitSchema = new EntitySchema<BusinessUnit>({
         },
       },
     },
+    academicPeriods: {
+      type: 'one-to-many',
+      target: 'AcademicPeriod',
+      inverseSide: 'businessUnit',
+    },
   },
 });

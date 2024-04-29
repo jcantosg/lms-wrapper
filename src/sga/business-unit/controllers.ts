@@ -21,6 +21,7 @@ import { AddExaminationCentersToBusinessUnitController } from '#business-unit/in
 import { RemoveExaminationCenterFromBusinessUnitController } from '#business-unit/infrastructure/controller/business-unit/remove-examination-center-from-business.unit.controller';
 import { AddBusinessUnitsToExaminationCenterController } from '#business-unit/infrastructure/controller/examination-center/add-business-units-to-examination-center.controller';
 import { RemoveBusinessUnitFromExaminationCenterController } from '#business-unit/infrastructure/controller/examination-center/remove-business-unit-from-examination-center.controller';
+import { GetVirtualCampusByBusinessUnitController } from '#business-unit/infrastructure/controller/virtual-campus/get-virtual-campus-by-business-unit/get-virtual-campus-by-business-unit.controller';
 
 export const controllers = [
   SearchBusinessUnitsController,
@@ -46,4 +47,5 @@ export const controllers = [
   RemoveExaminationCenterFromBusinessUnitController,
   AddBusinessUnitsToExaminationCenterController,
   RemoveBusinessUnitFromExaminationCenterController,
+  GetVirtualCampusByBusinessUnitController,
 ];

@@ -16,4 +16,6 @@ export class AcademicPeriodMockRepository implements AcademicPeriodRepository {
   getByAdminUser = jest.fn();
 
   update = jest.fn();
+
+  getByBusinessUnit = jest.fn();
 }

@@ -143,13 +143,23 @@ export class BusinessUnitPostgresRepository
     });
   }
 
-  async getAll(adminUserBusinessUnits: string[]): Promise<BusinessUnit[]> {
+  async getAll(
+    adminUserBusinessUnits: string[],
+    hasAcademicPeriods: boolean,
+  ): Promise<BusinessUnit[]> {
     adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
       adminUserBusinessUnits,
     );
 
-    return await this.repository.find({
+    const academicPeriods = await this.repository.find({
       where: { id: In(adminUserBusinessUnits), isActive: true },
+      relations: {
+        academicPeriods: true,
+      },
     });
+
+    return academicPeriods.filter((businessUnit) =>
+      hasAcademicPeriods ? businessUnit.academicPeriods.length > 0 : true,
+    );
   }
 }

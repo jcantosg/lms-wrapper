@@ -19,6 +19,7 @@ import { GetAllAcademicProgramByAcademicPeriodHandler } from '#academic-offering
 import { SearchAcademicProgramByAcademicPeriodHandler } from '#academic-offering/applicaton/search-academic-program-by-period/search-academic-program-by-period.handler';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { GetAcademicProgramsPlainByPeriodHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-plain-by-period/get-academic-programs-plain-by-period.handler';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -172,6 +173,19 @@ const searchAcademicProgramByAcademicPeriodHandler = {
   inject: [AcademicProgramRepository, AcademicPeriodRepository],
 };
 
+const getAcademicProgramsPlainByPeriodHandler = {
+  provide: GetAcademicProgramsPlainByPeriodHandler,
+  useFactory: (
+    academicProgramRepository: AcademicProgramRepository,
+    academicPeriodGetter: AcademicPeriodGetter,
+  ) =>
+    new GetAcademicProgramsPlainByPeriodHandler(
+      academicProgramRepository,
+      academicPeriodGetter,
+    ),
+  inject: [AcademicProgramRepository, AcademicPeriodGetter],
+};
+
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -185,4 +199,5 @@ export const academicProgramHandlers = [
   addAcademicProgramsToAcademicPeriodHandler,
   getAllAcademicProgramByAcademicPeriodHandler,
   searchAcademicProgramByAcademicPeriodHandler,
+  getAcademicProgramsPlainByPeriodHandler,
 ];

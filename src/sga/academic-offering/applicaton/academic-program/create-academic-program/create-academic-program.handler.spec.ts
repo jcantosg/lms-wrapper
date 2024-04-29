@@ -74,6 +74,8 @@ describe('Create Academic Program Handler test', () => {
     existsByIdSpy.mockImplementation(() => Promise.resolve(false));
     getBusinessUnitSpy.mockImplementation(() => Promise.resolve(businessUnit));
     getTitleSpy.mockImplementation(() => Promise.resolve(title));
+
+    title.businessUnit = businessUnit;
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(

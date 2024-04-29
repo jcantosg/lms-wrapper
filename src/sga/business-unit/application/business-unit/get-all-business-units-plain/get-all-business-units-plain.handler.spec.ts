@@ -10,7 +10,7 @@ let businessUnitRepository: BusinessUnitRepository;
 let getAllBusinessUnitSpy: any;
 const businessUnits = [getABusinessUnit(), getABusinessUnit()];
 
-const query = new GetAllBusinessUnitsPlainQuery(['businessUnitId']);
+const query = new GetAllBusinessUnitsPlainQuery(['businessUnitId'], false);
 
 describe('Get All Business Units Handler', () => {
   beforeAll(() => {

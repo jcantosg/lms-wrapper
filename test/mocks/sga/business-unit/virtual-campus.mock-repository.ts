@@ -7,4 +7,5 @@ export class VirtualCampusMockRepository implements VirtualCampusRepository {
   update = jest.fn();
   existsByCode = jest.fn();
   existsByName = jest.fn();
+  getByBusinessUnit = jest.fn();
 }

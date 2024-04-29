@@ -164,4 +164,15 @@ export class AcademicProgramPostgresRepository
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
   }
+
+  async getByAcademicPeriod(academicPeriodId: string) {
+    return await this.repository.find({
+      relations: { academicPeriods: true },
+      where: {
+        academicPeriods: {
+          id: academicPeriodId,
+        },
+      },
+    });
+  }
 }

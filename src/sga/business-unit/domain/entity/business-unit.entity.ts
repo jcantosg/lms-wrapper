@@ -5,6 +5,7 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { ExaminationCenterMainException } from '#shared/domain/exception/business-unit/examination-center/examination-center-main.exception';
 import { ExaminationCenterAlreadyAddedException } from '#shared/domain/exception/business-unit/examination-center/examination-center-already-added.exception';
+import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 
 export class BusinessUnit extends BaseEntity {
   private constructor(
@@ -19,6 +20,7 @@ export class BusinessUnit extends BaseEntity {
     private _updatedBy: AdminUser,
     private _virtualCampuses: VirtualCampus[],
     private _examinationCenters: ExaminationCenter[],
+    private _academicPeriods: AcademicPeriod[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -87,6 +89,14 @@ export class BusinessUnit extends BaseEntity {
     this._examinationCenters = value;
   }
 
+  public get academicPeriods(): AcademicPeriod[] {
+    return this._academicPeriods;
+  }
+
+  public set academicPeriods(value: AcademicPeriod[]) {
+    this._academicPeriods = value;
+  }
+
   static create(
     id: string,
     name: string,
@@ -104,6 +114,7 @@ export class BusinessUnit extends BaseEntity {
       country,
       user,
       user,
+      [],
       [],
       [],
     );

@@ -13,6 +13,7 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { TitleNotFoundException } from '#shared/domain/exception/academic-offering/title-not-found.exception';
 
 export class CreateAcademicProgramHandler implements CommandHandler {
   constructor(
@@ -50,6 +51,10 @@ export class CreateAcademicProgramHandler implements CommandHandler {
       adminUserBusinessUnitsId,
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
+
+    if (title.businessUnit.id !== businessUnit.id) {
+      throw new TitleNotFoundException();
+    }
 
     const academicProgram = AcademicProgram.create(
       command.id,

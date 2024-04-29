@@ -31,6 +31,7 @@ import { RemoveExaminationCentersFromBusinessUnitHandler } from '#business-unit/
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AddBusinessUnitsToExaminationCenterHandler } from '#business-unit/application/examination-center/add-business-units-to-examination-center/add-business-units-to-examination-center.handler';
 import { RemoveBusinessUnitFromExaminationCenterHandler } from '#business-unit/application/examination-center/remove-business-unit-from-examination-center/remove-business-unit-from-examination-center.handler';
+import { GetVirtualCampusByBusinessUnitHandler } from '#business-unit/application/virtual-campus/get-virtual-campus-by-business-unit/get-virtual-campus-by-business-unit.handler';
 
 const createBusinessUnitHandler = {
   provide: CreateBusinessUnitHandler,
@@ -337,6 +338,14 @@ const removeBusinessUnitFromExaminationCenterHandler = {
   ],
 };
 
+const getVirtualCampusByBusinessUnitHandler = {
+  provide: GetVirtualCampusByBusinessUnitHandler,
+  useFactory: (repository: VirtualCampusRepository) => {
+    return new GetVirtualCampusByBusinessUnitHandler(repository);
+  },
+  inject: [VirtualCampusRepository],
+};
+
 export const handlers = [
   createBusinessUnitHandler,
   editBusinessUnitHandler,
@@ -363,4 +372,5 @@ export const handlers = [
   removeExaminationCentersFromBusinessUnitHandler,
   addBusinessUnitsToExaminationCenterHandler,
   removeBusinessUnitFromExaminationCenterHandler,
+  getVirtualCampusByBusinessUnitHandler,
 ];

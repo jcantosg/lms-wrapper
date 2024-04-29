@@ -157,4 +157,8 @@ export class AcademicPeriod extends BaseEntity {
       this._academicPrograms.push(academicProgram);
     }
   }
+
+  public hasAcademicPrograms(): boolean {
+    return this._academicPrograms.length > 0;
+  }
 }

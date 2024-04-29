@@ -12,4 +12,6 @@ export abstract class VirtualCampusRepository {
   abstract existsByName(id: string, name: string): Promise<boolean>;
 
   abstract existsByCode(id: string, code: string): Promise<boolean>;
+
+  abstract getByBusinessUnit(businessUnit: string): Promise<VirtualCampus[]>;
 }

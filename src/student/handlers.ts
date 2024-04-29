@@ -5,6 +5,7 @@ import { EditStudentHandler } from '#/student/application/edit-student/edit-stud
 import { StudentGetter } from '#/student/domain/service/student-getter.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { academicRecordHandlers } from '#/student/application/academic-record/handlers';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -40,4 +41,5 @@ export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
   editStudentHandler,
+  ...academicRecordHandlers,
 ];
