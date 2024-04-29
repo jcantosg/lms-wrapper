@@ -10,13 +10,16 @@ export class EditProfileHandler implements CommandHandler {
   ) {}
 
   async handle(command: EditProfileCommand): Promise<void> {
-    const avatarUrl = command.avatar
-      ? await this.imageUploader.uploadImage(
-          command.avatar,
-          command.name,
-          'admin-user-avatar',
-        )
-      : '';
+    const avatarUrl =
+      command.avatar && command.avatar !== ''
+        ? this.matchUrl(command.avatar)
+          ? command.adminUser.avatar
+          : await this.imageUploader.uploadImage(
+              command.avatar,
+              command.name,
+              'admin-user-avatar',
+            )
+        : '';
     const userToUpdate = command.adminUser;
     userToUpdate.update(
       command.name,
@@ -27,5 +30,12 @@ export class EditProfileHandler implements CommandHandler {
       avatarUrl,
     );
     await this.repository.save(userToUpdate);
+  }
+
+  private matchUrl(url: string): boolean {
+    const regex =
+      /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+
+    return regex.test(url);
   }
 }
