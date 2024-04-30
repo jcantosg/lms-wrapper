@@ -14,6 +14,9 @@ export class GetAcademicProgramsByTitleQuery
     orderType: OrderTypes,
     public readonly titleId: string,
     public readonly adminUser: AdminUser,
+    public readonly name: string | null,
+    public readonly code: string | null,
+    public readonly officialCode: string | null,
   ) {
     super(page, limit, orderBy, orderType);
   }

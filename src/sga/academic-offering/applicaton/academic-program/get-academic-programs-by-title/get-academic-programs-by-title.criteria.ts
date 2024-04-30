@@ -28,6 +28,17 @@ export class GetAcademicProgramsByTitleCriteria extends Criteria {
         GroupOperator.AND,
         'title',
       ),
-    ];
+      new Filter('name', query.name, FilterOperators.LIKE, GroupOperator.AND),
+      new Filter('code', query.code, FilterOperators.LIKE, GroupOperator.AND),
+      new Filter(
+        'officialCode',
+        query.officialCode,
+        FilterOperators.LIKE,
+        GroupOperator.AND,
+        'title',
+      ),
+    ].filter((filter) => {
+      return filter.value !== undefined;
+    });
   }
 }

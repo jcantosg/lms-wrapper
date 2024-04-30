@@ -26,6 +26,9 @@ interface GetAcademicProgramsByTitleQueryParams {
   limit: number;
   orderBy: string;
   orderType: OrderTypes;
+  name: string | null;
+  code: string | null;
+  officialCode: string | null;
 }
 
 @Controller('title')
@@ -54,6 +57,9 @@ export class GetAcademicProgramsByTitleController {
       queryParams.orderType,
       id,
       req.user,
+      queryParams.name,
+      queryParams.code,
+      queryParams.officialCode,
     );
 
     const result = await this.handler.handle(query);
