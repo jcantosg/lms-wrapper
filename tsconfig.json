@@ -35,6 +35,9 @@
       "#academic-offering/*": [
         "src/sga/academic-offering/*"
       ],
+      "#student/*": [
+        "src/sga/student/*"
+      ],
       "#commands/*": [
         "src/commands/*"
       ],

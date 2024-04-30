@@ -27,7 +27,7 @@ import { SubjectResource } from '#academic-offering/domain/entity/subject-resour
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
-import { Student } from '#/student/domain/entity/student.entity';
+import { Student } from '#student/domain/entity/student.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');

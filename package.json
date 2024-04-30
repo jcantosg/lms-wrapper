@@ -128,6 +128,7 @@
       "^#business-unit/(.*)$": "<rootDir>/sga/business-unit/$1",
       "^#edae-user/(.*)$": "<rootDir>/sga/edae-user/$1",
       "^#academic-offering/(.*)$": "<rootDir>/sga/academic-offering/$1",
+      "^#student/(.*)$": "<rootDir>/sga/student/$1",
       "^#commands/(.*)$": "<rootDir>/commands/$1",
       "^#config/(.*)$": "<rootDir>/../config/$1",
       "^#test/(.*)$": "<rootDir>/../test/$1",

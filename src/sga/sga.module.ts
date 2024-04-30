@@ -3,6 +3,7 @@ import { BusinessUnitModule } from '#business-unit/business-unit.module';
 import { Module } from '@nestjs/common';
 import { EdaeUserModule } from '#edae-user/edae-user.module';
 import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
+import { StudentModule } from '#student/student.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { AcademicOfferingModule } from '#academic-offering/academic-offering.mod
     AdminUserModule,
     EdaeUserModule,
     AcademicOfferingModule,
+    StudentModule,
   ],
 })
 export class SGAModule {}

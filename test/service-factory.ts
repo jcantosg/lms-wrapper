@@ -26,7 +26,7 @@ import { ProgramBlockGetter } from '#academic-offering/domain/service/program-bl
 import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
 import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
 import { JwtService } from '@nestjs/jwt';
-import { StudentGetter } from '#/student/domain/service/student-getter.service';
+import { StudentGetter } from '#student/domain/service/student-getter.service';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
 
 export function getCountryGetterMock(): CountryGetter {
