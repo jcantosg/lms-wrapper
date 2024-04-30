@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import {
   AdminUser,
   MAXIMUM_LOGIN_ATTEMPTS,
@@ -8,6 +9,9 @@ import { Injectable } from '@nestjs/common';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AdminUserBlockedEvent } from '#admin-user/domain/event/admin-user-blocked.event';
 import { MaximumLoginAttemptsException } from '#shared/domain/exception/admin-user/maximum-login-attempts.exception';
+import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
+import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
 
 @Injectable()
 export class CredentialsChecker {
@@ -15,6 +19,9 @@ export class CredentialsChecker {
     private readonly adminUserRepository: AdminUserRepository,
     private readonly passwordChecker: PasswordChecker,
     private readonly eventDispatcher: EventDispatcher,
+    private readonly recoveryPasswordTokenRepository: RecoveryPasswordTokenRepository,
+    private readonly jwtTokenGenerator: JwtTokenGenerator,
+    private readonly ttl: number,
   ) {}
 
   public async checkCredentials(
@@ -36,8 +43,23 @@ export class CredentialsChecker {
         adminUser.addLoginAttempt();
         await this.adminUserRepository.save(adminUser);
         if (adminUser.loginAttempts >= MAXIMUM_LOGIN_ATTEMPTS) {
+          const token = this.jwtTokenGenerator.generateToken(
+            adminUser.id,
+            adminUser.email,
+          );
+
+          const recoveryPasswordToken = RecoveryPasswordToken.createForUser(
+            uuid(),
+            adminUser,
+            token,
+            this.ttl,
+          );
+
+          await this.recoveryPasswordTokenRepository.save(
+            recoveryPasswordToken,
+          );
           await this.eventDispatcher.dispatch(
-            new AdminUserBlockedEvent(adminUser.id, adminUser.email),
+            new AdminUserBlockedEvent(adminUser.id, adminUser.email, token),
           );
           throw new MaximumLoginAttemptsException();
         }

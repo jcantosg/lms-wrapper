@@ -16,6 +16,7 @@ import { AdminUserBusinessUnitsChecker } from '#admin-user/domain/service/admin-
 import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const adminUserGetter = {
   provide: AdminUserGetter,
@@ -63,13 +64,42 @@ const recoveryPasswordTokenGetter = {
   inject: [RecoveryPasswordTokenRepository],
 };
 
+const credentialsChecker = {
+  provide: CredentialsChecker,
+  useFactory: (
+    adminUserRepository: AdminUserRepository,
+    passwordChecker: PasswordChecker,
+    eventDispatcher: EventDispatcher,
+    recoveryPasswordTokenRepository: RecoveryPasswordTokenRepository,
+    jwtTokenGenerator: JwtTokenGenerator,
+    configService: ConfigService,
+  ) => {
+    return new CredentialsChecker(
+      adminUserRepository,
+      passwordChecker,
+      eventDispatcher,
+      recoveryPasswordTokenRepository,
+      jwtTokenGenerator,
+      configService.get<number>('RECOVERY_TOKEN_TTL')!,
+    );
+  },
+  inject: [
+    AdminUserRepository,
+    PasswordChecker,
+    EventDispatcher,
+    RecoveryPasswordTokenRepository,
+    JwtTokenGenerator,
+    ConfigService,
+  ],
+};
+
 export const services = [
   adminUserGetter,
   authenticator,
   passwordEncoder,
   JwtTokenGenerator,
   RefreshTokenGenerator,
-  CredentialsChecker,
+  credentialsChecker,
   passwordChecker,
   AccessTokenRefresherService,
   AdminUserPasswordGenerator,

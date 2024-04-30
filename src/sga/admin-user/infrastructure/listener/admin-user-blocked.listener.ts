@@ -12,10 +12,12 @@ export class AdminUserBlockedListener {
   ) {}
 
   @OnEvent('admin-user-blocked')
-  async handleEvent(payload: AdminUserBlockedEvent) {
-    const url = this.configService.getOrThrow('APP_URL') + '/reset-password';
+  async handleEvent(event: AdminUserBlockedEvent) {
+    const url = `${this.configService.getOrThrow('APP_URL')}/new-password/${
+      event.token
+    }`;
     this.mailerService.sendMail({
-      to: payload.userEmail,
+      to: event.userEmail,
       template: './admin-blocked',
       subject: 'Account Blocked',
       context: {

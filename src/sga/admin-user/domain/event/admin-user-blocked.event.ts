@@ -6,5 +6,6 @@ export class AdminUserBlockedEvent implements ApplicationEvent {
   constructor(
     readonly userId: string,
     readonly userEmail: string,
+    readonly token: string,
   ) {}
 }
