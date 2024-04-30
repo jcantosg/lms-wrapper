@@ -9,6 +9,7 @@ import {
   IdentityDocumentValues,
 } from '#/sga/shared/domain/value-object/identity-document';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { AcademicRecord } from '#academic-offering/domain/entity/academic-record.entity';
 
 export class Student extends BaseEntity {
   private constructor(
@@ -42,6 +43,7 @@ export class Student extends BaseEntity {
     private _guardianSurname: string | null,
     private _guardianEmail: string | null,
     private _guardianPhone: string | null,
+    private _academicRecords: AcademicRecord[],
   ) {
     super(id, new Date(), new Date());
   }
@@ -278,6 +280,14 @@ export class Student extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get academicRecords(): AcademicRecord[] {
+    return this._academicRecords;
+  }
+
+  public set academicRecords(value: AcademicRecord[]) {
+    this._academicRecords = value;
+  }
+
   static createFromSGA(
     id: string,
     name: string,
@@ -318,6 +328,7 @@ export class Student extends BaseEntity {
       null,
       null,
       null,
+      [],
     );
   }
 

@@ -131,6 +131,14 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
             groupOperator,
           );
           break;
+        case FilterOperators.JSON_VALUE:
+          this.addWhereCondition(
+            queryBuilder,
+            `${fieldPath} ${filter.operator} '${filter.relationObject}' LIKE :${paramName} `,
+            parameter,
+            groupOperator,
+          );
+          break;
         default:
           this.addWhereCondition(
             queryBuilder,

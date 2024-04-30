@@ -153,5 +153,10 @@ export const studentSchema = new EntitySchema<Student>({
       },
       nullable: true,
     },
+    academicRecords: {
+      type: 'one-to-many',
+      target: 'AcademicRecord',
+      inverseSide: 'student',
+    },
   },
 });

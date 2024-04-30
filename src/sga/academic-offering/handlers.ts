@@ -5,6 +5,7 @@ import { examinationCallHandlers } from '#academic-offering/applicaton/examinati
 import { subjectHandlers } from '#academic-offering/applicaton/subject/handlers';
 import { titleHandlers } from '#academic-offering/applicaton/title/handlers';
 import { programBlockHandlers } from '#academic-offering/applicaton/program-block/handlers';
+import { academicRecordHandlers } from '#academic-offering/applicaton/academic-record/handlers';
 
 export const handlers = [
   ...academicPeriodHandlers,
@@ -14,4 +15,5 @@ export const handlers = [
   ...subjectHandlers,
   ...titleHandlers,
   ...programBlockHandlers,
+  ...academicRecordHandlers,
 ];

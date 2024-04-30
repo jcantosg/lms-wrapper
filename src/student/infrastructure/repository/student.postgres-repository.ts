@@ -4,6 +4,8 @@ import { StudentRepository } from '#/student/domain/repository/student.repositor
 import { InjectRepository } from '@nestjs/typeorm';
 import { studentSchema } from '#/student/infrastructure/config/schema/student.schema';
 import { Repository } from 'typeorm';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 export class StudentPostgresRepository
   extends TypeOrmRepository<Student>
@@ -47,6 +49,7 @@ export class StudentPostgresRepository
       guardianPhone: student.guardianPhone,
       createdBy: student.createdBy,
       updatedBy: student.updatedBy,
+      academicRecords: student.academicRecords,
     });
   }
 
@@ -75,5 +78,78 @@ export class StudentPostgresRepository
 
   async get(id: string): Promise<Student | null> {
     return await this.repository.findOne({ where: { id: id } });
+  }
+
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'student';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
+  }
+
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<Student[]> {
+    const aliasQuery = 'student';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicRecords`,
+      'academicRecords',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicRecords.academicProgram',
+      'academic_record_academic_program',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicRecords.businessUnit',
+      'academic_record_business_unit',
+    );
+
+    return queryBuilder;
   }
 }

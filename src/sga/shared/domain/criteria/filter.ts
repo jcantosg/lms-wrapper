@@ -7,6 +7,7 @@ export enum FilterOperators {
   ANY = 'ANY',
   IS_CONTAINED = '<@',
   COUNT = 'COUNT',
+  JSON_VALUE = '->>',
 }
 
 export enum GroupOperator {

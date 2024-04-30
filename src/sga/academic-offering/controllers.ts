@@ -5,6 +5,7 @@ import { subjectControllers } from '#academic-offering/infrastructure/controller
 import { titleControllers } from '#academic-offering/infrastructure/controller/title/controllers';
 import { examinationCallControllers } from '#academic-offering/infrastructure/controller/examination-call/controllers';
 import { programBlockControllers } from '#academic-offering/infrastructure/controller/program-block/controllers';
+import { academicRecordControllers } from '#academic-offering/infrastructure/controller/academic-record/controllers';
 
 export const controllers = [
   ...academicPeriodControllers,
@@ -14,4 +15,5 @@ export const controllers = [
   ...subjectControllers,
   ...titleControllers,
   ...programBlockControllers,
+  ...academicRecordControllers,
 ];
