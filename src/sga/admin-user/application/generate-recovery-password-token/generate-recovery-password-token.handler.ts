@@ -38,7 +38,11 @@ export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
     await this.recoveryPasswordTokenRepository.save(recoveryPasswordToken);
 
     await this.eventDispatcher.dispatch(
-      new RecoveryPasswordTokenGeneratedEvent(adminUser.email, token),
+      new RecoveryPasswordTokenGeneratedEvent(
+        adminUser.email,
+        adminUser.name,
+        token,
+      ),
     );
   }
 }

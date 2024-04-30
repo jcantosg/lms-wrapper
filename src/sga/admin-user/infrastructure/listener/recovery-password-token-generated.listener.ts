@@ -16,9 +16,12 @@ export class RecoveryPasswordTokenGeneratedListener {
   ) {
     this.mailer.sendMail({
       to: event.userEmail,
-      subject: 'Testing',
-      text: `Access this link to recover your password ${this.url}/${event.token}`,
-      html: `Access this link to recover your password ${this.url}/${event.token}`,
+      template: './recovery-token-password',
+      subject: 'Recuperar contraseña',
+      context: {
+        url: `${this.url}/${event.token}`,
+        name: event.userName,
+      },
     });
   }
 }

@@ -5,6 +5,7 @@ export class RecoveryPasswordTokenGeneratedEvent implements ApplicationEvent {
 
   constructor(
     readonly userEmail: string,
+    readonly userName: string,
     readonly token: string,
   ) {}
 }
