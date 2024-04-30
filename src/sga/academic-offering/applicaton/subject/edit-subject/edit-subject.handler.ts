@@ -41,7 +41,7 @@ export class EditSubjectHandler implements CommandHandler {
       ? await this.imageUploader.uploadImage(
           command.image,
           command.name,
-          'subjects',
+          'subject',
         )
       : null;
 

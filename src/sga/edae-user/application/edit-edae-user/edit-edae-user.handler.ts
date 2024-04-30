@@ -27,7 +27,7 @@ export class EditEdaeUserHandler implements CommandHandler {
       ? await this.imageUploader.uploadImage(
           command.avatar,
           command.name,
-          'edae-user-avatars',
+          'edae-user-avatar',
         )
       : edaeUser.avatar;
     edaeUser.update(
