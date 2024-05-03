@@ -4,8 +4,8 @@ import {
   BaseSchemaRelations,
 } from '#shared/infrastructure/config/schema/base.schema';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
-import { AcademicRecordModalityEnum } from '#academic-offering/domain/enum/academic-record-modality.enum';
-import { AcademicRecordStatusEnum } from '#academic-offering/domain/enum/academic-record-status.enum';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
 export const academicRecordSchema = new EntitySchema<AcademicRecord>({
   name: 'AcademicRecord',

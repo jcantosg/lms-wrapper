@@ -28,6 +28,7 @@ import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery
 import { JwtService } from '@nestjs/jwt';
 import { StudentGetter } from '#student/domain/service/student-getter.service';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
+import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -178,4 +179,9 @@ export function getAStudentGetterMock(): StudentGetter {
 
 export class PasswordFormatCheckerMock implements PasswordFormatChecker {
   check = jest.fn();
+}
+
+export function getAnAcademicRecordGetterMock(): AcademicRecordGetter {
+  return (AcademicRecordGetter as jest.Mocked<typeof AcademicRecordGetter>)
+    .prototype;
 }

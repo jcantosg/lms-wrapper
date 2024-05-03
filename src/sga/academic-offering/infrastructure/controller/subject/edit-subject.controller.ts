@@ -18,6 +18,8 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 import { EditSubjectHandler } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.handler';
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
 import { editSubjectSchema } from '#academic-offering/infrastructure/config/validation-schema/edit-subject.schema';
+import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
+import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 
 interface EditSubjectBody {
   name: string;
@@ -44,7 +46,10 @@ export class EditSubjectController {
     AdminUserRoles.GESTOR_360,
     AdminUserRoles.SUPERVISOR_360,
   )
-  @UsePipes(new JoiRequestBodyValidationPipe(editSubjectSchema))
+  @UsePipes(
+    new JoiRequestParamIdValidationPipeService(uuidSchema),
+    new JoiRequestBodyValidationPipe(editSubjectSchema),
+  )
   async editSubject(
     @Param('id') id: string,
     @Body() body: EditSubjectBody,

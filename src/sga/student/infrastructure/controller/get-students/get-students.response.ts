@@ -1,7 +1,7 @@
 import { Student } from '#student/domain/entity/student.entity';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { IdentityDocumentValues } from '#/sga/shared/domain/value-object/identity-document';
-import { AcademicRecord } from '#academic-offering/domain/entity/academic-record.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export interface GetStudentResponse {
   id: string;

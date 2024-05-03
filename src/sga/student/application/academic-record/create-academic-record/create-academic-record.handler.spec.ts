@@ -22,7 +22,7 @@ import {
   getAVirtualCampus,
 } from '#test/entity-factory';
 import { CreateAcademicRecordCommand } from '#student/application/academic-record/create-academic-record/create-academic-record.command';
-import { AcademicRecordModalityEnum } from '#academic-offering/domain/enum/academic-record-modality.enum';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { VirtualCampusNotFoundException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-not-found.exception';
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';

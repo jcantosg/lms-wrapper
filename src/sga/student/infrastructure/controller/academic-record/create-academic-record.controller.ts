@@ -6,7 +6,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { AcademicRecordModalityEnum } from '#academic-offering/domain/enum/academic-record-modality.enum';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';

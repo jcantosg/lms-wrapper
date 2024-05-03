@@ -4,8 +4,8 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
-import { AcademicRecordModalityEnum } from '#academic-offering/domain/enum/academic-record-modality.enum';
-import { AcademicRecordStatusEnum } from '#academic-offering/domain/enum/academic-record-status.enum';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { Student } from '#student/domain/entity/student.entity';
 
 export class AcademicRecord extends BaseEntity {
@@ -133,5 +133,18 @@ export class AcademicRecord extends BaseEntity {
       user,
       user,
     );
+  }
+
+  update(
+    status: AcademicRecordStatusEnum,
+    modality: AcademicRecordModalityEnum,
+    isModular: boolean,
+    adminUser: AdminUser,
+  ) {
+    this._status = status;
+    this._modality = modality;
+    this._isModular = isModular;
+    this.updatedAt = new Date();
+    this._updatedBy = adminUser;
   }
 }

@@ -5,7 +5,6 @@ import { Student } from '#student/domain/entity/student.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
-import { AcademicRecord } from '#academic-offering/domain/entity/academic-record.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
@@ -16,8 +15,9 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
-import { AcademicRecordModalityEnum } from '#academic-offering/domain/enum/academic-record-modality.enum';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export class GetSearchStudentsE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-get-search-students@universae.com';

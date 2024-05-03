@@ -1,16 +1,13 @@
 import { Command } from '#shared/domain/bus/command';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 
-export class CreateAcademicRecordCommand implements Command {
+export class EditAcademicRecordCommand implements Command {
   constructor(
     public readonly id: string,
-    public readonly businessUnitId: string,
-    public readonly virtualCampusId: string,
-    public readonly studentId: string,
-    public readonly academicPeriodId: string,
-    public readonly academicProgramId: string,
-    public readonly academicRecordModality: AcademicRecordModalityEnum,
+    public readonly status: AcademicRecordStatusEnum,
+    public readonly modality: AcademicRecordModalityEnum,
     public readonly isModular: boolean,
     public readonly adminUser: AdminUser,
   ) {}

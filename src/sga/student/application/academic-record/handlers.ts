@@ -6,6 +6,8 @@ import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campu
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { StudentGetter } from '#student/domain/service/student-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
+import { EditAcademicRecordHandler } from '#student/application/academic-record/edit-academic-record/edit-academic-record.handler';
+import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -35,7 +37,18 @@ const createAcademicRecordHandler = {
   ],
 };
 
+const editAcademicRecordHandler = {
+  provide: EditAcademicRecordHandler,
+  useFactory: (
+    repository: AcademicRecordRepository,
+    academicRecordGetter: AcademicRecordGetter,
+  ): EditAcademicRecordHandler =>
+    new EditAcademicRecordHandler(repository, academicRecordGetter),
+  inject: [AcademicRecordRepository, AcademicRecordGetter],
+};
+
 export const academicRecordHandlers = [
   GetAllAcademicRecordModalitiesHandler,
   createAcademicRecordHandler,
+  editAcademicRecordHandler,
 ];

@@ -43,4 +43,39 @@ export class AcademicRecordPostgresRepository
 
     return !!academicRecord;
   }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnit`,
+      'business_unit',
+    );
+
+    return queryBuilder;
+  }
+
+  async getByAdminUser(
+    academicRecordId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicRecord | null> {
+    if (isSuperAdmin) {
+      return await this.repository.findOne({
+        relations: { businessUnit: true },
+        where: { id: academicRecordId },
+      });
+    }
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('academicRecord');
+
+    return await queryBuilder
+      .where('academicRecord.id = :id', { id: academicRecordId })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
 }

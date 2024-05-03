@@ -9,7 +9,7 @@ import {
   IdentityDocumentValues,
 } from '#/sga/shared/domain/value-object/identity-document';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
-import { AcademicRecord } from '#academic-offering/domain/entity/academic-record.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export class Student extends BaseEntity {
   private constructor(

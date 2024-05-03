@@ -5,7 +5,7 @@ import { startApp } from '#test/e2e/e2e-helper';
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { CreateAcademicRecordE2eSeed } from '#test/e2e/sga/student/academic-record/create-academic-record.e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { AcademicRecordModalityEnum } from '#academic-offering/domain/enum/academic-record-modality.enum';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 const path = '/academic-record';

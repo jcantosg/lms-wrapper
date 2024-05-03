@@ -28,6 +28,8 @@ import { ProgramBlockStructureType } from '#academic-offering/domain/enum/progra
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
 import { Student } from '#student/domain/entity/student.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -241,6 +243,20 @@ export const getASGAStudent = (): Student => {
     'test',
     'test@test.org',
     'test@universae.com',
+    getAnAdminUser(),
+  );
+};
+
+export const getAnAcademicRecord = (): AcademicRecord => {
+  return AcademicRecord.create(
+    uuid(),
+    getABusinessUnit(),
+    getAVirtualCampus(),
+    getASGAStudent(),
+    getAnAcademicPeriod(),
+    getAnAcademicProgram(),
+    AcademicRecordModalityEnum.PRESENCIAL,
+    false,
     getAnAdminUser(),
   );
 };

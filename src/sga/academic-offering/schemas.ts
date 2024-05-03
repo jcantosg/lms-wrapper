@@ -6,7 +6,6 @@ import { subjectResourceSchema } from '#academic-offering/infrastructure/config/
 import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
-import { academicRecordSchema } from '#academic-offering/infrastructure/config/schema/academic-record.schema';
 
 export const academicPeriodSchemas = [
   examinationCallSchema,
@@ -17,5 +16,4 @@ export const academicPeriodSchemas = [
   titleSchema,
   academicProgramSchema,
   programBlockSchema,
-  academicRecordSchema,
 ];

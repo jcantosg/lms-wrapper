@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { getAllAcademicRecordModalities } from '#academic-offering/domain/enum/academic-record-modality.enum';
+import { getAllAcademicRecordModalities } from '#student/domain/enum/academic-record-modality.enum';
 
 export const createAcademicRecordSchema = Joi.object({
   id: Joi.string().guid().required(),
