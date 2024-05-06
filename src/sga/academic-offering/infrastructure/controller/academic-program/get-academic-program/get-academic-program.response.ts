@@ -41,10 +41,12 @@ export class GetAcademicProgramResponse {
         id: academicProgram.businessUnit.id,
         name: academicProgram.businessUnit.name,
       },
-      programBlocks: academicProgram.programBlocks.map((programBlock) => ({
-        id: programBlock.id,
-        name: programBlock.name,
-      })),
+      programBlocks: academicProgram.programBlocks
+        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        .map((programBlock) => ({
+          id: programBlock.id,
+          name: programBlock.name,
+        })),
       isRelatedToAcademicPeriod: academicProgram.isRelatedToAcademicPeriod(),
     };
   }
