@@ -22,6 +22,7 @@ import { RemoveEdaeUserFromSubjectHandler } from '#academic-offering/applicaton/
 import { GetAllSubjectsModalitiesHandler } from '#academic-offering/applicaton/subject/get-all-subject-modalities/get-all-subjects-modalities.handler';
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/subject/get-all-subject-types/get-all-subject-types.handler';
 import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/subject/get-subjects-by-business-unit/get-subjects-by-business-unit.handler';
+import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -175,6 +176,22 @@ const getSubjectsByBusinessUnit = {
   inject: [SubjectRepository],
 };
 
+const setDefaultTeacherToSubjectHandler = {
+  provide: SetDefaultTeacherToSubjectHandler,
+  useFactory: (
+    repository: SubjectRepository,
+    subjectGetter: SubjectGetter,
+    edaeUserGetter: EdaeUserGetter,
+  ) => {
+    return new SetDefaultTeacherToSubjectHandler(
+      repository,
+      subjectGetter,
+      edaeUserGetter,
+    );
+  },
+  inject: [SubjectRepository, SubjectGetter, EdaeUserGetter],
+};
+
 export const subjectHandlers = [
   createSubjectHandler,
   getSubjectHandler,
@@ -188,4 +205,5 @@ export const subjectHandlers = [
   GetAllSubjectsModalitiesHandler,
   GetAllSubjectTypesHandler,
   getSubjectsByBusinessUnit,
+  setDefaultTeacherToSubjectHandler,
 ];

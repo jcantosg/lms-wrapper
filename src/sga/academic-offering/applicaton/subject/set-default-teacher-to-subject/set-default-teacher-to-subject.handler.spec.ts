@@ -1,60 +1,59 @@
+import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
+import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import {
-  getABusinessUnit,
   getAnAdminUser,
   getAnEdaeUser,
   getASubject,
 } from '#test/entity-factory';
+import { SetDefaultTeacherToSubjectCommand } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.command';
 import { SubjectMockRepository } from '#test/mocks/sga/academic-offering/subject.mock-repository';
 import {
   getASubjectGetterMock,
   getEdaeUserGetterMock,
 } from '#test/service-factory';
-import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
-import { RemoveEdaeUserFromSubjectCommand } from '#academic-offering/applicaton/subject/remove-edae-from-subject/remove-edae-user-from-subject.command';
-import { RemoveEdaeUserFromSubjectHandler } from '#academic-offering/applicaton/subject/remove-edae-from-subject/remove-edae-user-from-subject.handler';
+import { SubjectInvalidDefaultTeacherException } from '#shared/domain/exception/academic-offering/subject.invalid-default-teacher.exception';
 
-let handler: RemoveEdaeUserFromSubjectHandler;
+let handler: SetDefaultTeacherToSubjectHandler;
 let subjectRepository: SubjectRepository;
 let subjectGetter: SubjectGetter;
 let edaeUserGetter: EdaeUserGetter;
 
-let getSubjectByAdminUserSpy: any;
-let getEdaeUserGetterSpy: any;
-let updateSpy: any;
+let getSubjectByAdminUserSpy: jest.SpyInstance;
+let getEdaeUserGetterSpy: jest.SpyInstance;
+let updateSpy: jest.SpyInstance;
 
 const subject = getASubject();
 const edaeUser = getAnEdaeUser();
 const user = getAnAdminUser();
-const businessUnit = getABusinessUnit();
-user.addBusinessUnit(businessUnit);
 
-const command = new RemoveEdaeUserFromSubjectCommand(
+const command = new SetDefaultTeacherToSubjectCommand(
   subject.id,
   edaeUser.id,
   user,
 );
 
-describe('Remove Edae User from Subject', () => {
+describe('Set Default Teacher to Subject', () => {
   beforeAll(() => {
     subjectRepository = new SubjectMockRepository();
     subjectGetter = getASubjectGetterMock();
     edaeUserGetter = getEdaeUserGetterMock();
+
     getSubjectByAdminUserSpy = jest.spyOn(subjectGetter, 'getByAdminUser');
     getEdaeUserGetterSpy = jest.spyOn(edaeUserGetter, 'get');
     updateSpy = jest.spyOn(subjectRepository, 'save');
 
-    handler = new RemoveEdaeUserFromSubjectHandler(
+    handler = new SetDefaultTeacherToSubjectHandler(
       subjectRepository,
       subjectGetter,
       edaeUserGetter,
     );
   });
 
-  it('should remove an edae user from a subject', async () => {
+  it('should throw an invalid default teacher error', async () => {
     getSubjectByAdminUserSpy.mockImplementation((): Promise<Subject> => {
       return Promise.resolve(subject);
     });
@@ -62,29 +61,23 @@ describe('Remove Edae User from Subject', () => {
       return Promise.resolve(edaeUser);
     });
 
-    await handler.handle(command);
-    expect(updateSpy).toHaveBeenCalledTimes(1);
-    expect(updateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        _code: 'code',
-        _name: 'name',
-        _teachers: [],
-      }),
+    await expect(handler.handle(command)).rejects.toThrow(
+      SubjectInvalidDefaultTeacherException,
     );
   });
 
-  it('should throw an error if remove default teacher', async () => {
+  it('should set default teacher', async () => {
     getSubjectByAdminUserSpy.mockImplementation((): Promise<Subject> => {
       return Promise.resolve(subject);
     });
     getEdaeUserGetterSpy.mockImplementation((): Promise<EdaeUser> => {
       return Promise.resolve(edaeUser);
     });
+    subject.teachers = [edaeUser];
 
-    subject.addDefaultTeacher(edaeUser);
-    await expect(handler.handle(command)).rejects.toThrow(
-      'sga.subject.default-teacher',
-    );
+    await handler.handle(command);
+    expect(updateSpy).toHaveBeenCalledTimes(1);
+    expect(updateSpy).toHaveBeenCalledWith(subject);
   });
 
   afterAll(() => {

@@ -20,6 +20,7 @@ export interface TeacherSubjectResponse {
   surname1: string;
   surname2: string | null;
   avatar: string | null;
+  isDefault: boolean;
 }
 
 export interface SubjectResourceResponse {
@@ -74,6 +75,7 @@ export class GetSubjectResponse {
         surname1: teacher.surname1,
         surname2: teacher.surname2,
         avatar: teacher.avatar,
+        isDefault: subject.isDefaultTeacher(teacher),
       })),
       hours: subject.hours,
       isCore: subject.isCore,

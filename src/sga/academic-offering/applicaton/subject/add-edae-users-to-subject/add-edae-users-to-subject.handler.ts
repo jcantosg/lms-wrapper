@@ -33,10 +33,14 @@ export class AddEdaeUsersToSubjectHandler implements CommandHandler {
       ),
     );
 
-    edaeUsersToAdd.forEach((edaeUser) => {
+    edaeUsersToAdd.forEach((edaeUser, index) => {
       const edaeUsersBusinessUnits = edaeUser.businessUnits.map((bu) => bu.id);
       if (!edaeUsersBusinessUnits.includes(subject.businessUnit.id)) {
         throw new EdaeUserNotFoundException();
+      }
+
+      if (subject.teachers.length === 0 && index === 0) {
+        subject.addDefaultTeacher(edaeUser);
       }
 
       subject.addTeacher(edaeUser);

@@ -30,6 +30,7 @@ export class Subject extends BaseEntity {
     private _isCore: boolean = true,
     private _resources: SubjectResource[],
     private _officialRegionalCode: string | null,
+    private _defaultTeacher: EdaeUser | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -162,6 +163,14 @@ export class Subject extends BaseEntity {
     this._officialRegionalCode = value;
   }
 
+  public get defaultTeacher(): EdaeUser | null {
+    return this._defaultTeacher;
+  }
+
+  public set defaultTeacher(value: EdaeUser | null) {
+    this._defaultTeacher = value;
+  }
+
   static create(
     id: string,
     imageUrl: string | null,
@@ -206,6 +215,7 @@ export class Subject extends BaseEntity {
       isCore,
       [],
       officialRegionalCode,
+      null,
     );
   }
 
@@ -260,7 +270,19 @@ export class Subject extends BaseEntity {
     }
   }
 
+  addDefaultTeacher(teacher: EdaeUser) {
+    if (!teacher.isTeacher()) {
+      throw new SubjectInvalidEdaeUserRoleException();
+    }
+
+    this._defaultTeacher = teacher;
+  }
+
   removeTeacher(teacher: EdaeUser) {
     this._teachers = this._teachers.filter((t) => t.id !== teacher.id);
+  }
+
+  isDefaultTeacher(teacher: EdaeUser): boolean {
+    return this._defaultTeacher?.id === teacher.id;
   }
 }

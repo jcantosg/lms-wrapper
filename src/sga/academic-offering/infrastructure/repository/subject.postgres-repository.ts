@@ -42,6 +42,7 @@ export class SubjectPostgresRepository
       type: subject.type,
       businessUnit: subject.businessUnit,
       teachers: subject.teachers,
+      defaultTeacher: subject.defaultTeacher,
       createdAt: subject.createdAt,
       updatedAt: subject.updatedAt,
       createdBy: subject.createdBy,
@@ -61,6 +62,7 @@ export class SubjectPostgresRepository
         businessUnit: true,
         evaluationType: true,
         teachers: true,
+        defaultTeacher: true,
         resources: true,
       },
     });
@@ -82,6 +84,11 @@ export class SubjectPostgresRepository
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.resources`, 'resources');
 
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.teachers`, 'teachers');
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.defaultTeacher`,
+      'default_teacher',
+    );
 
     return queryBuilder;
   }

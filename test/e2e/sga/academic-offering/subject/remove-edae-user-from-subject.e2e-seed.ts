@@ -176,8 +176,8 @@ export class RemoveEdaeUserFromSubjectE2eSeed implements E2eSeed {
   }
 
   async clear(): Promise<void> {
-    await this.edaeUserRepository.delete(this.edaeUser.id);
     await this.subjectRepository.delete(this.subject.id);
+    await this.edaeUserRepository.delete(this.edaeUser.id);
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await this.businessUnitRepository.delete(this.secondBusinessUnit.id);
     await removeAdminUser(this.dataSource, this.secretaryUser);

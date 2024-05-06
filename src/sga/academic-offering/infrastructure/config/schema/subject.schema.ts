@@ -98,5 +98,12 @@ export const subjectSchema = new EntitySchema<Subject>({
       target: 'SubjectResource',
       inverseSide: 'subject',
     },
+    defaultTeacher: {
+      type: 'many-to-one',
+      target: 'EdaeUser',
+      joinColumn: {
+        name: 'default_teacher_id',
+      },
+    },
   },
 });

@@ -4,6 +4,7 @@ import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.servi
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { RemoveEdaeUserFromSubjectCommand } from '#academic-offering/applicaton/subject/remove-edae-from-subject/remove-edae-user-from-subject.command';
+import { SubjectDefaultTeacherException } from '#shared/domain/exception/academic-offering/subject.default-teacher.exception';
 
 export class RemoveEdaeUserFromSubjectHandler implements CommandHandler {
   constructor(
@@ -20,6 +21,9 @@ export class RemoveEdaeUserFromSubjectHandler implements CommandHandler {
     );
 
     const edaeToRemove = await this.edaeUserGetter.get(command.edaeUser);
+    if (subject.defaultTeacher?.id === command.edaeUser) {
+      throw new SubjectDefaultTeacherException();
+    }
     subject.removeTeacher(edaeToRemove);
     await this.subjectRepository.save(subject);
   }

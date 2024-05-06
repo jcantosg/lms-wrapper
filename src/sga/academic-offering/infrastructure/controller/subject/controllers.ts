@@ -10,6 +10,7 @@ import { UploadSubjectResourceController } from '#academic-offering/infrastructu
 import { RemoveEdaeUserFromSubjectController } from '#academic-offering/infrastructure/controller/subject/remove-edae-user-from-subject.controller';
 import { GetSubjectController } from '#academic-offering/infrastructure/controller/subject/get-subject/get-subject.controller';
 import { GetSubjectByBusinessUnitController } from '#academic-offering/infrastructure/controller/subject/get-subjects-by-business-unit/get-subject-by-business-unit.controller';
+import { SetDefaultTeacherToSubjectController } from '#academic-offering/infrastructure/controller/subject/set-default-teacher-to-subject.controller';
 
 export const subjectControllers = [
   GetAllSubjectModalitiesController,
@@ -24,4 +25,5 @@ export const subjectControllers = [
   RemoveEdaeUserFromSubjectController,
   GetSubjectByBusinessUnitController,
   GetSubjectController,
+  SetDefaultTeacherToSubjectController,
 ];
