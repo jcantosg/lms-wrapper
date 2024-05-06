@@ -5,6 +5,7 @@ interface AcademicProgramByTitleResponse {
   id: string;
   name: string;
   code: string;
+  officialCode: string | null;
 }
 
 export class GetAcademicProgramsByTitleResponse {
@@ -25,6 +26,7 @@ export class GetAcademicProgramsByTitleResponse {
           id: academicProgram.id,
           name: academicProgram.name,
           code: academicProgram.code,
+          officialCode: academicProgram.title.officialCode,
         }),
       ),
     };
