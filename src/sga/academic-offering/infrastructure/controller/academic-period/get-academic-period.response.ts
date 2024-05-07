@@ -1,6 +1,12 @@
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { formatDate } from '#shared/domain/service/date-formatter.service';
 
+export interface PeriodBlockResponse {
+  id: string;
+  startDate: Date;
+  endDate: Date;
+}
+
 export interface AcademicPeriodResponse {
   id: string;
   name: string;
@@ -8,6 +14,7 @@ export interface AcademicPeriodResponse {
   startDate: string;
   endDate: string;
   businessUnit: AcademicPeriodBusinessUnitResponse;
+  periodBlocks: PeriodBlockResponse[];
   blocksNumber: number;
 }
 
@@ -28,7 +35,12 @@ export class GetAcademicPeriodResponse {
         id: academicPeriod.businessUnit.id,
         name: academicPeriod.businessUnit.name,
       },
-      blocksNumber: academicPeriod.blocksNumber,
+      periodBlocks: academicPeriod.periodBlocks.map((pb) => ({
+        id: pb.id,
+        startDate: pb.startDate,
+        endDate: pb.endDate,
+      })),
+      blocksNumber: academicPeriod.periodBlocks.length,
     };
   }
 }

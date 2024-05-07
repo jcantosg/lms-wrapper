@@ -187,6 +187,7 @@ export class AcademicPeriodPostgresRepository
       },
       relations: {
         academicPrograms: true,
+        periodBlocks: true,
       },
     });
 
