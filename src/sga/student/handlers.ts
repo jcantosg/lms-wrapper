@@ -8,6 +8,7 @@ import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { GetStudentsHandler } from '#student/application/get-students/get-students.handler';
 import { SearchStudentsHandler } from '#student/application/search-students/search-students.handler';
 import { academicRecordHandlers } from '#student/application/academic-record/handlers';
+import { GetStudentHandler } from '#student/application/get-student/get-student.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -53,11 +54,19 @@ const searchStudentHandler = {
   inject: [StudentRepository],
 };
 
+const getStudentHandler = {
+  provide: GetStudentHandler,
+  useFactory: (studentGetter: StudentGetter): GetStudentHandler =>
+    new GetStudentHandler(studentGetter),
+  inject: [StudentGetter],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
   editStudentHandler,
   getStudentsHandler,
   searchStudentHandler,
+  getStudentHandler,
   ...academicRecordHandlers,
 ];
