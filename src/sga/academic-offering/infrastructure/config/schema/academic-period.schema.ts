@@ -45,11 +45,6 @@ export const academicPeriodSchema = new EntitySchema<AcademicPeriod>({
         name: 'business_unit_id',
       },
     },
-    examinationCalls: {
-      type: 'one-to-many',
-      target: 'ExaminationCall',
-      inverseSide: 'academicPeriod',
-    },
     academicPrograms: {
       type: 'many-to-many',
       target: 'AcademicProgram',
@@ -62,6 +57,11 @@ export const academicPeriodSchema = new EntitySchema<AcademicPeriod>({
           name: 'academic_program_id',
         },
       },
+    },
+    periodBlocks: {
+      type: 'one-to-many',
+      target: 'PeriodBlock',
+      inverseSide: 'academicPeriod',
     },
   },
 });

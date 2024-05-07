@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
@@ -58,37 +59,22 @@ describe('/academic-period (POST)', () => {
         startDate: CreateAcademicPeriodE2eSeed.academicPeriodStartDate,
         endDate: CreateAcademicPeriodE2eSeed.academicPeriodEndDate,
         businessUnit: CreateAcademicPeriodE2eSeed.businessUnitId,
-        examinationCalls: [
+        periodBlocks: [
           {
-            id: CreateAcademicPeriodE2eSeed.examinationCallId,
-            name: CreateAcademicPeriodE2eSeed.examinationCallName,
-            startDate: CreateAcademicPeriodE2eSeed.examinationCallStartDate,
-            endDate: CreateAcademicPeriodE2eSeed.examinationCallEndDate,
-            timezone: CreateAcademicPeriodE2eSeed.examinationCallTimeZone,
+            id: uuid(),
+            name: 'name1',
+            startDate: new Date(),
+            endDate: new Date(),
+          },
+          {
+            id: uuid(),
+            name: 'name2',
+            startDate: new Date(),
+            endDate: new Date(),
           },
         ],
-        blocksNumber: 2,
       })
       .expect(201);
-  });
-  it('should have at least one examination call on the body', async () => {
-    const response = await supertest(httpServer)
-      .post(path)
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .send({
-        id: CreateAcademicPeriodE2eSeed.secondAcademicPeriodId,
-        name: CreateAcademicPeriodE2eSeed.academicPeriodName,
-        code: CreateAcademicPeriodE2eSeed.secondAcademicPeriodCode,
-        startDate: CreateAcademicPeriodE2eSeed.academicPeriodStartDate,
-        endDate: CreateAcademicPeriodE2eSeed.academicPeriodEndDate,
-        businessUnit: CreateAcademicPeriodE2eSeed.businessUnitId,
-        examinationCalls: [],
-        blocksNumber: 2,
-      })
-      .expect(409);
-    expect(response.body.message).toEqual(
-      'sga.academic-period.not-examination-calls',
-    );
   });
   it('should throw a duplicated code error', async () => {
     const response = await supertest(httpServer)
@@ -101,16 +87,20 @@ describe('/academic-period (POST)', () => {
         startDate: CreateAcademicPeriodE2eSeed.academicPeriodStartDate,
         endDate: CreateAcademicPeriodE2eSeed.academicPeriodEndDate,
         businessUnit: CreateAcademicPeriodE2eSeed.businessUnitId,
-        examinationCalls: [
+        periodBlocks: [
           {
-            id: CreateAcademicPeriodE2eSeed.examinationCallId,
-            name: CreateAcademicPeriodE2eSeed.examinationCallName,
-            startDate: CreateAcademicPeriodE2eSeed.examinationCallStartDate,
-            endDate: CreateAcademicPeriodE2eSeed.examinationCallEndDate,
-            timezone: CreateAcademicPeriodE2eSeed.examinationCallTimeZone,
+            id: uuid(),
+            name: 'name5',
+            startDate: new Date(),
+            endDate: new Date(),
+          },
+          {
+            id: uuid(),
+            name: 'name6',
+            startDate: new Date(),
+            endDate: new Date(),
           },
         ],
-        blocksNumber: 2,
       })
       .expect(409);
     expect(response.body.message).toEqual(

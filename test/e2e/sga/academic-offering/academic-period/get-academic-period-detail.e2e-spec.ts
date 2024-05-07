@@ -72,7 +72,6 @@ describe('Get Academic Period Detail (GET)', () => {
           id: GetAcademicPeriodDetailE2eSeed.businessUnitId,
           name: GetAcademicPeriodDetailE2eSeed.businessUnitName,
         },
-        examinationCalls: [],
       }),
     );
   });

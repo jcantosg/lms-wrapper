@@ -1,10 +1,10 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AcademicProgramWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-program.wrong-block-number.exception';
+import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 
 const MIN_BLOCK_NUMBER = 1;
 
@@ -16,13 +16,13 @@ export class AcademicPeriod extends BaseEntity {
     private _startDate: Date,
     private _endDate: Date,
     private _businessUnit: BusinessUnit,
-    private _examinationCalls: ExaminationCall[],
     private _blocksNumber: number,
     createdAt: Date,
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
     private _academicPrograms: AcademicProgram[],
+    private _periodBlocks: PeriodBlock[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -48,12 +48,12 @@ export class AcademicPeriod extends BaseEntity {
       startDate,
       endDate,
       businessUnit,
-      [],
       blocksNumber,
       new Date(),
       new Date(),
       user,
       user,
+      [],
       [],
     );
   }
@@ -98,14 +98,6 @@ export class AcademicPeriod extends BaseEntity {
     this._businessUnit = value;
   }
 
-  public get examinationCalls(): ExaminationCall[] {
-    return this._examinationCalls;
-  }
-
-  public set examinationCalls(value: ExaminationCall[]) {
-    this._examinationCalls = value;
-  }
-
   public get blocksNumber(): number {
     return this._blocksNumber;
   }
@@ -136,6 +128,20 @@ export class AcademicPeriod extends BaseEntity {
 
   public set academicPrograms(value: AcademicProgram[]) {
     this._academicPrograms = value;
+  }
+
+  public get periodBlocks(): PeriodBlock[] {
+    return this._periodBlocks;
+  }
+
+  public set periodBlocks(value: PeriodBlock[]) {
+    this._periodBlocks = value;
+  }
+
+  public addPeriodBlocks(blocks: PeriodBlock[]) {
+    for (const block of blocks) {
+      this._periodBlocks.push(block);
+    }
   }
 
   public removeAcademicProgram(academicProgram: AcademicProgram) {

@@ -17,11 +17,14 @@ import { AcademicProgramNotFoundException } from '#shared/domain/exception/acade
 import { AddAcademicProgramToAcademicPeriodCommand } from '#academic-offering/applicaton/academic-program/add-academic-program-to-academic-period/add-academic-program-to-academic-period.command';
 import { AddAcademicProgramToAcademicPeriodHandler } from '#academic-offering/applicaton/academic-program/add-academic-program-to-academic-period/add-academic-program-to-academic-period.handler';
 import { AcademicProgramWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-program.wrong-block-number.exception';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { BlockRelationMockRepository } from '#test/mocks/sga/academic-offering/block-relation.mock-repository';
 
 let handler: AddAcademicProgramToAcademicPeriodHandler;
 let academicPeriodRepository: AcademicPeriodRepository;
 let academicPeriodGetter: AcademicPeriodGetter;
 let academicProgramGetter: AcademicProgramGetter;
+let blockRelationRepository: BlockRelationRepository;
 
 let getAcademicPeriodByAdminUserSpy: any;
 let getAcademicProgramByAdminUserSpy: any;
@@ -41,6 +44,7 @@ const command = new AddAcademicProgramToAcademicPeriodCommand(
 describe('Add Academic Programs to Academic Period', () => {
   beforeAll(() => {
     academicPeriodRepository = new AcademicPeriodMockRepository();
+    blockRelationRepository = new BlockRelationMockRepository();
     academicPeriodGetter = getAnAcademicPeriodGetterMock();
     academicProgramGetter = getAnAcademicProgramGetterMock();
 
@@ -58,6 +62,7 @@ describe('Add Academic Programs to Academic Period', () => {
       academicPeriodRepository,
       academicPeriodGetter,
       academicProgramGetter,
+      blockRelationRepository,
     );
   });
 

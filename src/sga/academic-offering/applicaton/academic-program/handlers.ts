@@ -20,6 +20,7 @@ import { SearchAcademicProgramByAcademicPeriodHandler } from '#academic-offering
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 import { GetAcademicProgramsPlainByPeriodHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-plain-by-period/get-academic-programs-plain-by-period.handler';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -134,16 +135,19 @@ const addAcademicProgramsToAcademicPeriodHandler = {
     academicPeriodRepository: AcademicPeriodRepository,
     academicPeriodGetter: AcademicPeriodGetter,
     academicProgramGetter: AcademicProgramGetter,
+    blockRelationRepository: BlockRelationRepository,
   ) =>
     new AddAcademicProgramToAcademicPeriodHandler(
       academicPeriodRepository,
       academicPeriodGetter,
       academicProgramGetter,
+      blockRelationRepository,
     ),
   inject: [
     AcademicPeriodRepository,
     AcademicPeriodGetter,
     AcademicProgramGetter,
+    BlockRelationRepository,
   ],
 };
 

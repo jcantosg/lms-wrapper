@@ -6,8 +6,6 @@ import { SubjectGetter } from '#academic-offering/domain/service/subject/subject
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject/subject-business-unit-checker.service';
-import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call/examination-call-getter.service';
-import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
 import { SubjectResourceGetter } from '#academic-offering/domain/service/subject/subject-resource-getter.service';
 import { SubjectResourceRepository } from '#academic-offering/domain/repository/subject-resource.repository';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
@@ -39,13 +37,6 @@ const subjectGetter = {
   useFactory: (repository: SubjectRepository): SubjectGetter =>
     new SubjectGetter(repository),
   inject: [SubjectRepository],
-};
-
-const examinationCallGetter = {
-  provide: ExaminationCallGetter,
-  useFactory: (repository: ExaminationCallRepository): ExaminationCallGetter =>
-    new ExaminationCallGetter(repository),
-  inject: [ExaminationCallRepository],
 };
 
 const subjectResourceGetter = {
@@ -88,7 +79,6 @@ export const services = [
   EvaluationTypeBusinessUnitChecker,
   SubjectBusinessUnitChecker,
   academicPeriodGetter,
-  examinationCallGetter,
   subjectResourceGetter,
   academicProgramGetter,
   titleGetter,

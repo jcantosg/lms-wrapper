@@ -1,6 +1,5 @@
 import { CreateAcademicPeriodHandler } from '#academic-offering/applicaton/academic-period/create-academic-period/create-academic-period.handler';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
-import { ExaminationCallRepository } from '#academic-offering/domain/repository/examination-call.repository';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { GetAllAcademicPeriodsHandler } from '#academic-offering/applicaton/academic-period/get-all-academic-periods/get-all-academic-periods.handler';
@@ -9,27 +8,28 @@ import { EditAcademicPeriodHandler } from '#academic-offering/applicaton/academi
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { GetAcademicPeriodHandler } from '#academic-offering/applicaton/academic-period/get-academic-period/get-academic-period.handler';
 import { GetAcademicPeriodsByBusinessUnitHandler } from '#academic-offering/applicaton/academic-period/get-academic-periods-by-business-unit/get-academic-periods-by-business-unit.handler';
+import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
   useFactory: (
     repository: AcademicPeriodRepository,
-    examinationCallRepository: ExaminationCallRepository,
     businessUnitGetter: BusinessUnitGetter,
     eventDispatcher: EventDispatcher,
+    periodBlockRepository: PeriodBlockRepository,
   ) => {
     return new CreateAcademicPeriodHandler(
       repository,
-      examinationCallRepository,
       businessUnitGetter,
       eventDispatcher,
+      periodBlockRepository,
     );
   },
   inject: [
     AcademicPeriodRepository,
-    ExaminationCallRepository,
     BusinessUnitGetter,
     EventDispatcher,
+    PeriodBlockRepository,
   ],
 };
 const getAllAcademicPeriodsHandler = {

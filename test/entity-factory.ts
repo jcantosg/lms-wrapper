@@ -19,7 +19,6 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
-import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { File } from '#shared/domain/file-manager/file';
@@ -27,6 +26,7 @@ import { SubjectResource } from '#academic-offering/domain/entity/subject-resour
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
+import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { Student } from '#student/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
@@ -167,17 +167,6 @@ export const getASubject = (id: string = uuid()): Subject => {
   );
 };
 
-export const getAnExaminationCall = (id: string = uuid()): ExaminationCall => {
-  return ExaminationCall.create(
-    id,
-    'name',
-    new Date('2024-12-12'),
-    new Date('2025-12-12'),
-    TimeZoneEnum.GMT,
-    getAnAcademicPeriod(),
-  );
-};
-
 export const getAnAcademicProgram = (id: string = uuid()): AcademicProgram => {
   return AcademicProgram.create(
     id,
@@ -232,6 +221,16 @@ export const getARecoveryPasswordToken = (): RecoveryPasswordToken => {
     getAnAdminUser(),
     'token',
     999,
+  );
+};
+
+export const getAPeriodBlock = (id: string = uuid()): PeriodBlock => {
+  return PeriodBlock.create(
+    id,
+    getAnAcademicPeriod(),
+    new Date(),
+    new Date(),
+    getAnAdminUser(),
   );
 };
 

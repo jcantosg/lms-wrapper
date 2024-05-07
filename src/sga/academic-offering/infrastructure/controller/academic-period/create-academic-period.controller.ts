@@ -12,13 +12,17 @@ import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import {
-  CreateAcademicPeriodCommand,
-  ExaminationCallValues,
-} from '#academic-offering/applicaton/academic-period/create-academic-period/create-academic-period.command';
+import { CreateAcademicPeriodCommand } from '#academic-offering/applicaton/academic-period/create-academic-period/create-academic-period.command';
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { createAcademicPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/create-academic-period.schema';
+
+export interface PeriodBlockBody {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+}
 
 interface CreateAcademicPeriodBody {
   id: string;
@@ -27,8 +31,7 @@ interface CreateAcademicPeriodBody {
   startDate: Date;
   endDate: Date;
   businessUnit: string;
-  examinationCalls: ExaminationCallValues[];
-  blocksNumber: number;
+  periodBlocks: PeriodBlockBody[];
 }
 
 @Controller('academic-period')
@@ -50,12 +53,11 @@ export class CreateAcademicPeriodController {
       body.startDate,
       body.endDate,
       body.businessUnit,
-      body.examinationCalls,
-      body.blocksNumber,
       req.user.businessUnits.map(
         (businessUnit: BusinessUnit) => businessUnit.id,
       ),
       req.user,
+      body.periodBlocks,
     );
 
     await this.handler.handle(command);

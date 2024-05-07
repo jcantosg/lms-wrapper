@@ -17,7 +17,6 @@ import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
 import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/subject/subject-business-unit-checker.service';
-import { ExaminationCallGetter } from '#academic-offering/domain/service/examination-call/examination-call-getter.service';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { SubjectResourceGetter } from '#academic-offering/domain/service/subject/subject-resource-getter.service';
 import { TitleGetter } from '#academic-offering/domain/service/title/title-getter.service';
@@ -127,11 +126,6 @@ export function getASubjectBusinessUnitCheckerMock(): SubjectBusinessUnitChecker
   return (
     SubjectBusinessUnitChecker as jest.Mocked<typeof SubjectBusinessUnitChecker>
   ).prototype;
-}
-
-export function getAnExaminationCallGetterMock(): ExaminationCallGetter {
-  return (ExaminationCallGetter as jest.Mocked<typeof ExaminationCallGetter>)
-    .prototype;
 }
 
 export function getAFileManagerMock(): FileManager {

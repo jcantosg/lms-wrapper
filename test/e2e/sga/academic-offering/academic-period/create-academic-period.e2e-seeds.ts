@@ -10,8 +10,7 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
-import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
-import { ExaminationCall } from '#academic-offering/domain/entity/examination-call.entity';
+import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 
 export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-academic-period@email.com';
@@ -36,12 +35,6 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   public static secondAcademicPeriodCode = 'FEB2024';
   public static thirdAcademicPeriodId = '6b52876d-c7e8-4b50-952b-441142e6dfa0';
 
-  public static examinationCallId = '2adcb996-00c0-41bc-ab37-e1468843ce1e';
-  public static examinationCallName = 'NAME';
-  public static examinationCallStartDate = new Date(2022, 10, 12);
-  public static examinationCallEndDate = new Date(2023, 10, 12);
-  public static examinationCallTimeZone = TimeZoneEnum.GMT_PLUS_1;
-
   private adminUser: AdminUser;
   private superAdminUser: AdminUser;
   private businessUnit: BusinessUnit;
@@ -50,13 +43,13 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   private readonly businessUnitRepository: Repository<BusinessUnit>;
   private readonly countryRepository: Repository<Country>;
   private readonly academicPeriodRepository: Repository<AcademicPeriod>;
-  private readonly examinationCallRepository: Repository<ExaminationCall>;
+  private readonly periodBlockRepository: Repository<PeriodBlock>;
 
   constructor(private datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(BusinessUnit);
     this.countryRepository = datasource.getRepository(Country);
     this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.examinationCallRepository = datasource.getRepository(ExaminationCall);
+    this.periodBlockRepository = datasource.getRepository(PeriodBlock);
   }
 
   async arrange(): Promise<void> {
@@ -96,9 +89,7 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   }
 
   async clear(): Promise<void> {
-    await this.examinationCallRepository.delete(
-      CreateAcademicPeriodE2eSeed.examinationCallId,
-    );
+    await this.periodBlockRepository.delete({});
     await this.academicPeriodRepository.delete(
       CreateAcademicPeriodE2eSeed.academicPeriodId,
     );

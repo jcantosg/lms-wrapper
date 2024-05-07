@@ -44,13 +44,13 @@ export class AcademicPeriodPostgresRepository
       startDate: academicPeriod.startDate,
       endDate: academicPeriod.endDate,
       businessUnit: academicPeriod.businessUnit,
-      examinationCalls: academicPeriod.examinationCalls,
       blocksNumber: academicPeriod.blocksNumber,
       createdAt: academicPeriod.createdAt,
       createdBy: academicPeriod.createdBy,
       updatedAt: academicPeriod.updatedAt,
       updatedBy: academicPeriod.updatedBy,
       academicPrograms: academicPeriod.academicPrograms,
+      periodBlocks: academicPeriod.periodBlocks,
     });
   }
 
@@ -61,14 +61,13 @@ export class AcademicPeriodPostgresRepository
       `${aliasQuery}.businessUnit`,
       'business_unit',
     );
-
-    queryBuilder.leftJoinAndSelect(
-      `${aliasQuery}.examinationCalls`,
-      'examination_calls',
-    );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPrograms`,
       'academic_programs',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.periodBlocks`,
+      'period_blocks',
     );
 
     return queryBuilder;
@@ -135,8 +134,8 @@ export class AcademicPeriodPostgresRepository
       where: { id },
       relations: {
         businessUnit: true,
-        examinationCalls: true,
         academicPrograms: true,
+        periodBlocks: true,
       },
     });
   }
@@ -171,11 +170,11 @@ export class AcademicPeriodPostgresRepository
       startDate: academicPeriod.startDate,
       endDate: academicPeriod.endDate,
       businessUnit: academicPeriod.businessUnit,
-      examinationCalls: academicPeriod.examinationCalls,
       blocksNumber: academicPeriod.blocksNumber,
       academicPrograms: academicPeriod.academicPrograms,
       createdAt: academicPeriod.createdAt,
       updatedAt: academicPeriod.updatedAt,
+      periodBlocks: academicPeriod.periodBlocks,
     });
   }
 

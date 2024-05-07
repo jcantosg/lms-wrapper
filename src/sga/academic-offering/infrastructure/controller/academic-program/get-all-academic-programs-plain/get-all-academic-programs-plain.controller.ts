@@ -19,11 +19,11 @@ interface GetAllAcademicProgramPlainQueryParams {
   blocksNumber: number;
 }
 
-@Controller('academic-program/all')
+@Controller('academic-program')
 export class GetAllAcademicProgramsPlainController {
   constructor(private readonly handler: GetAllAcademicProgramsPlainHandler) {}
 
-  @Get()
+  @Get('all')
   @UseGuards(JwtAuthGuard)
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(
