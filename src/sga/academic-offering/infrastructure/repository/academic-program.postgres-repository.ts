@@ -50,6 +50,7 @@ export class AcademicProgramPostgresRepository
       structureType: academicProgram.structureType,
       programBlocks: academicProgram.programBlocks,
       academicPeriods: academicProgram.academicPeriods,
+      programBlocksNumber: academicProgram.programBlocksNumber,
     });
   }
 

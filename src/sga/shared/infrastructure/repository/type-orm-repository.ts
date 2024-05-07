@@ -12,7 +12,6 @@ import {
   GroupOperator,
 } from '#/sga/shared/domain/criteria/filter';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import datasource from '#config/ormconfig';
 
 const fieldOrderByMapping: Record<string, string> = {
   country: 'country.name',
@@ -112,22 +111,6 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
             queryBuilder,
             `:${paramName} = ANY(${fieldPath})`,
             parameter,
-            groupOperator,
-          );
-          break;
-        case FilterOperators.COUNT:
-          const subQuery = datasource.manager
-            .createQueryBuilder()
-            .subQuery()
-            .select(`relation.${filter.field}`)
-            .from(`${filter.relationObject}`, 'relation')
-            .groupBy(`relation.${filter.field}`)
-            .having(`COUNT(relation.${filter.field}) = ${filter.value}`)
-            .getQuery();
-          this.addWhereCondition(
-            queryBuilder,
-            `${aliasQuery}.id IN ${subQuery}`,
-            FilterOperators.COUNT,
             groupOperator,
           );
           break;

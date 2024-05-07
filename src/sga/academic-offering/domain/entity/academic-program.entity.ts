@@ -7,6 +7,8 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 
 export class AcademicProgram extends BaseEntity {
+  private _programBlocksNumber: number;
+
   private constructor(
     id: string,
     private _name: string,
@@ -33,7 +35,7 @@ export class AcademicProgram extends BaseEntity {
     user: AdminUser,
     structureType: ProgramBlockStructureType,
   ): AcademicProgram {
-    return new AcademicProgram(
+    const academicProgram = new AcademicProgram(
       id,
       name,
       code,
@@ -47,6 +49,10 @@ export class AcademicProgram extends BaseEntity {
       [],
       [],
     );
+    academicProgram._programBlocksNumber =
+      academicProgram._programBlocks.length;
+
+    return academicProgram;
   }
 
   public get name(): string {
@@ -119,10 +125,19 @@ export class AcademicProgram extends BaseEntity {
 
   public set programBlocks(value: ProgramBlock[]) {
     this._programBlocks = value;
+    this._programBlocksNumber = value.length;
   }
 
   public isRelatedToAcademicPeriod(): boolean {
     return this._academicPeriods.length > 0;
+  }
+
+  public get programBlocksNumber(): number {
+    return this._programBlocksNumber;
+  }
+
+  public set programBlocksNumber(value: number) {
+    this._programBlocksNumber = value;
   }
 
   public update(
@@ -136,5 +151,15 @@ export class AcademicProgram extends BaseEntity {
     this.title = title;
     this.updatedBy = updatedBy;
     this.updatedAt = new Date();
+  }
+
+  public addProgramBlock(programBlock: ProgramBlock) {
+    this.programBlocks = [...this._programBlocks, programBlock];
+  }
+
+  public removeProgramBlock(programBlock: ProgramBlock) {
+    this.programBlocks = this._programBlocks.filter(
+      (pb: ProgramBlock) => pb.id !== programBlock.id,
+    );
   }
 }

@@ -26,6 +26,12 @@ export const academicProgramSchema = new EntitySchema<AcademicProgram>({
       enum: ProgramBlockStructureType,
       nullable: false,
     },
+    programBlocksNumber: {
+      type: Number,
+      name: 'program_blocks_number',
+      nullable: false,
+      default: 0,
+    },
   },
   relations: {
     ...BaseSchemaRelations,

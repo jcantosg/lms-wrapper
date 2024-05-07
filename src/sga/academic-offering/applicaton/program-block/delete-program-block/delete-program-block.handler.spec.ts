@@ -17,12 +17,16 @@ import {
 } from '#test/service-factory';
 import { ProgramBlockHasSubjectsException } from '#shared/domain/exception/academic-offering/program-block.has-subjects.exception';
 import { AcademicProgramHasRelatedAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.has-related-academic-period.exception';
+import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
+import { AcademicProgramMockRepository } from '#test/mocks/sga/academic-offering/academic-program.mock-repository';
 
 let handler: DeleteProgramBlockHandler;
 let programBlockRepository: ProgramBlockRepository;
 let academicProgramGetter: AcademicProgramGetter;
+let academicProgramRepository: AcademicProgramRepository;
 let programBlockGetter: ProgramBlockGetter;
 let deleteProgramBlockSpy: jest.SpyInstance;
+let saveAcademicProgramSpy: jest.SpyInstance;
 let getByAdminUserSpy: jest.SpyInstance;
 let getAcademicProgramSpy: jest.SpyInstance;
 
@@ -42,16 +46,19 @@ describe('DeleteProgramBlockHandler', () => {
     programBlockRepository = new ProgramBlockMockRepository();
     academicProgramGetter = getAnAcademicProgramGetterMock();
     programBlockGetter = getAProgramBlockGetterMock();
+    academicProgramRepository = new AcademicProgramMockRepository();
 
     handler = new DeleteProgramBlockHandler(
       programBlockRepository,
       programBlockGetter,
       academicProgramGetter,
+      academicProgramRepository,
     );
 
     deleteProgramBlockSpy = jest.spyOn(programBlockRepository, 'delete');
     getByAdminUserSpy = jest.spyOn(programBlockGetter, 'getByAdminUser');
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
+    saveAcademicProgramSpy = jest.spyOn(academicProgramRepository, 'save');
   });
 
   it('should return 409 if the program block does not exist', async () => {
@@ -83,11 +90,23 @@ describe('DeleteProgramBlockHandler', () => {
     getAcademicProgramSpy.mockImplementation(() =>
       Promise.resolve(academicProgram),
     );
+    const previousProgramBlocksNumber = academicProgram.programBlocksNumber;
+    const newProgramBlocksNumber = previousProgramBlocksNumber;
 
     programBlock.subjects = [];
     academicProgram.academicPeriods = [];
 
     await handler.handle(command);
+
+    expect(previousProgramBlocksNumber).toBeGreaterThanOrEqual(
+      newProgramBlocksNumber,
+    );
+    expect(saveAcademicProgramSpy).toHaveBeenCalledTimes(1);
+    expect(saveAcademicProgramSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        programBlocksNumber: newProgramBlocksNumber,
+      }),
+    );
 
     expect(deleteProgramBlockSpy).toHaveBeenCalledTimes(1);
   });

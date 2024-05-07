@@ -42,12 +42,10 @@ export class GetAllAcademicsProgramsCriteria extends Criteria {
         GroupOperator.AND,
       ),
       new Filter(
-        'academic_program_id',
+        'programBlocksNumber',
         query.programBlocksNumber,
-        FilterOperators.COUNT,
+        FilterOperators.EQUALS,
         GroupOperator.AND,
-        'programBlocks',
-        'program_blocks',
       ),
     ].filter((filter: Filter) => filter.value !== undefined);
   }

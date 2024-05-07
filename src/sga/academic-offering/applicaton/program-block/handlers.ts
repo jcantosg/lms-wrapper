@@ -8,19 +8,26 @@ import { SubjectGetter } from '#academic-offering/domain/service/subject/subject
 import { DeleteProgramBlockHandler } from '#academic-offering/applicaton/program-block/delete-program-block/delete-program-block.handler';
 import { GetSubjectsByProgramBlockHandler } from '#academic-offering/applicaton/program-block/get-subjects-by-program-block/get-subjects-by-program-block.handler';
 import { RemoveSubjectFromProgramBlockHandler } from '#academic-offering/applicaton/program-block/remove-subject-from-program-block/remove-subject-from-program-block.handler';
+import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 
 const createProgramBlockHandler = {
   provide: CreateProgramBlockHandler,
   useFactory: (
     programBlockRepository: ProgramBlockRepository,
     academicProgramGetter: AcademicProgramGetter,
+    academicProgramRepository: AcademicProgramRepository,
   ) => {
     return new CreateProgramBlockHandler(
       programBlockRepository,
       academicProgramGetter,
+      academicProgramRepository,
     );
   },
-  inject: [ProgramBlockRepository, AcademicProgramGetter],
+  inject: [
+    ProgramBlockRepository,
+    AcademicProgramGetter,
+    AcademicProgramRepository,
+  ],
 };
 const editProgramBlockHandler = {
   provide: EditProgramBlockHandler,
@@ -37,13 +44,20 @@ const deleteProgramBlockHandler = {
     programBlockRepository: ProgramBlockRepository,
     programBlockGetter: ProgramBlockGetter,
     academicProgramGetter: AcademicProgramGetter,
+    academicProgramRepository: AcademicProgramRepository,
   ) =>
     new DeleteProgramBlockHandler(
       programBlockRepository,
       programBlockGetter,
       academicProgramGetter,
+      academicProgramRepository,
     ),
-  inject: [ProgramBlockRepository, ProgramBlockGetter, AcademicProgramGetter],
+  inject: [
+    ProgramBlockRepository,
+    ProgramBlockGetter,
+    AcademicProgramGetter,
+    AcademicProgramRepository,
+  ],
 };
 
 const getSubjectsByProgramBlockHandler = {

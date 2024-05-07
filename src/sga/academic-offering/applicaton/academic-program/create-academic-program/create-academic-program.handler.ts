@@ -70,6 +70,7 @@ export class CreateAcademicProgramHandler implements CommandHandler {
       command,
       academicProgram,
     );
+    academicProgram.programBlocks = programBlocks;
     await this.transactionalService.execute({
       academicProgram: academicProgram,
       programBlocks: programBlocks,

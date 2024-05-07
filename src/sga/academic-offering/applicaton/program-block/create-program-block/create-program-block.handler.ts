@@ -6,11 +6,13 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { AcademicProgramHasRelatedAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.has-related-academic-period.exception';
+import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 
 export class CreateProgramBlockHandler implements CommandHandler {
   constructor(
     private programBlockRepository: ProgramBlockRepository,
     private academicProgramGetter: AcademicProgramGetter,
+    private academicProgramRepository: AcademicProgramRepository,
   ) {}
 
   async handle(command: CreateProgramBlockCommand): Promise<void> {
@@ -34,6 +36,9 @@ export class CreateProgramBlockHandler implements CommandHandler {
       academicProgram,
       command.adminUser,
     );
+    academicProgram.addProgramBlock(programBlockToAdd);
+
+    await this.academicProgramRepository.save(academicProgram);
 
     await this.programBlockRepository.save(programBlockToAdd);
   }
