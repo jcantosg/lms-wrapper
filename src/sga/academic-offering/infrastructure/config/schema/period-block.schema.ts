@@ -11,6 +11,11 @@ export const periodBlockSchema = new EntitySchema<PeriodBlock>({
   target: PeriodBlock,
   columns: {
     ...BaseSchemaColumns,
+    name: {
+      type: String,
+      nullable: false,
+      default: 'Block',
+    },
     startDate: {
       type: Date,
       nullable: false,

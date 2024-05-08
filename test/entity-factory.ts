@@ -228,6 +228,7 @@ export const getAPeriodBlock = (id: string = uuid()): PeriodBlock => {
   return PeriodBlock.create(
     id,
     getAnAcademicPeriod(),
+    'name',
     new Date(),
     new Date(),
     getAnAdminUser(),

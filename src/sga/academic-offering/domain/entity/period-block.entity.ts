@@ -8,6 +8,7 @@ export class PeriodBlock extends BaseEntity {
     createdAt: Date,
     updatedAt: Date,
     private _academicPeriod: AcademicPeriod,
+    private _name: string,
     private _startDate: Date,
     private _endDate: Date,
     private _createdBy: AdminUser,
@@ -56,9 +57,18 @@ export class PeriodBlock extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get name(): string {
+    return this._name;
+  }
+
+  public set name(value: string) {
+    this._name = value;
+  }
+
   public static create(
     id: string,
     academicPeriod: AcademicPeriod,
+    name: string,
     startDate: Date,
     endDate: Date,
     user: AdminUser,
@@ -68,6 +78,7 @@ export class PeriodBlock extends BaseEntity {
       new Date(),
       new Date(),
       academicPeriod,
+      name,
       startDate,
       endDate,
       user,

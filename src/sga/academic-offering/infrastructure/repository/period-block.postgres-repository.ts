@@ -68,6 +68,7 @@ export class PeriodBlockPostgresRepository
     await this.repository.save({
       id: periodBlock.id,
       academicPeriod: periodBlock.academicPeriod,
+      name: periodBlock.name,
       startDate: periodBlock.startDate,
       endDate: periodBlock.endDate,
       createdBy: periodBlock.createdBy,

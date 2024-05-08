@@ -37,6 +37,7 @@ export class GetAcademicPeriodResponse {
       },
       periodBlocks: academicPeriod.periodBlocks.map((pb) => ({
         id: pb.id,
+        name: pb.name,
         startDate: pb.startDate,
         endDate: pb.endDate,
       })),

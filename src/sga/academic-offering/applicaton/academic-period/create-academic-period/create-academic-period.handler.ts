@@ -47,6 +47,7 @@ export class CreateAcademicPeriodHandler implements CommandHandler {
         PeriodBlock.create(
           periodBlock.id,
           academicPeriod,
+          periodBlock.name,
           periodBlock.startDate,
           periodBlock.endDate,
           command.adminUser,
