@@ -61,6 +61,7 @@ export class PeriodBlockPostgresRepository
       .andWhere('academic_period.businessUnit.id IN(:...ids)', {
         ids: adminUserBusinessUnits,
       })
+      .orderBy('periodBlock.startDate', 'ASC')
       .getOne();
   }
 
@@ -86,6 +87,7 @@ export class PeriodBlockPostgresRepository
     return await this.repository.find({
       where: { academicPeriod: { id: academicPeriodId } },
       relations: { academicPeriod: true },
+      order: { startDate: 'ASC' },
     });
   }
 }

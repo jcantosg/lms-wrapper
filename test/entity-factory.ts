@@ -224,13 +224,17 @@ export const getARecoveryPasswordToken = (): RecoveryPasswordToken => {
   );
 };
 
-export const getAPeriodBlock = (id: string = uuid()): PeriodBlock => {
+export const getAPeriodBlock = (
+  id: string = uuid(),
+  startDate: Date = new Date(),
+  enddate: Date = new Date(),
+): PeriodBlock => {
   return PeriodBlock.create(
     id,
     getAnAcademicPeriod(),
     'name',
-    new Date(),
-    new Date(),
+    startDate,
+    enddate,
     getAnAdminUser(),
   );
 };

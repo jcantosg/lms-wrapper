@@ -28,6 +28,7 @@ import { JwtService } from '@nestjs/jwt';
 import { StudentGetter } from '#student/domain/service/student-getter.service';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -178,4 +179,8 @@ export class PasswordFormatCheckerMock implements PasswordFormatChecker {
 export function getAnAcademicRecordGetterMock(): AcademicRecordGetter {
   return (AcademicRecordGetter as jest.Mocked<typeof AcademicRecordGetter>)
     .prototype;
+}
+
+export function getAPeriodBlockGetterMock(): PeriodBlockGetter {
+  return (PeriodBlockGetter as jest.Mocked<typeof PeriodBlockGetter>).prototype;
 }

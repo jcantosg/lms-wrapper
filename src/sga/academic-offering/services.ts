@@ -17,6 +17,8 @@ import { ProgramBlockRepository } from '#academic-offering/domain/repository/pro
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 import { CreateAcademicProgramTransactionService } from '#academic-offering/infrastructure/service/create-academic-program-transaction.service';
 import datasource from '#config/ormconfig';
+import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
+import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
 
 const evaluationTypeGetter = {
   provide: EvaluationTypeGetter,
@@ -73,6 +75,13 @@ const createAcademicProgramTransactionalService = {
     new CreateAcademicProgramTransactionService(datasource),
 };
 
+const periodBlockGetterService = {
+  provide: PeriodBlockGetter,
+  useFactory: (repository: PeriodBlockRepository): PeriodBlockGetter =>
+    new PeriodBlockGetter(repository),
+  inject: [PeriodBlockRepository],
+};
+
 export const services = [
   evaluationTypeGetter,
   subjectGetter,
@@ -84,4 +93,5 @@ export const services = [
   titleGetter,
   programBlockGetter,
   createAcademicProgramTransactionalService,
+  periodBlockGetterService,
 ];
