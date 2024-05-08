@@ -11,7 +11,9 @@ export const editStudentSchema = Joi.object({
   isActive: Joi.boolean().required(),
   avatar: Joi.string().optional,
   birthDate: Joi.date().optional(),
-  gender: Joi.string().valid(...getAllStudentGenders()).optional,
+  gender: Joi.string()
+    .valid(...getAllStudentGenders())
+    .optional(),
   country: Joi.string().guid().optional(),
   citizenship: Joi.string().guid().optional(),
   identityDocument: Joi.object({
