@@ -4,6 +4,7 @@ export interface SubjectByBusinessUnitResponse {
   id: string;
   name: string;
   code: string;
+  avatar: string | null;
 }
 
 export class GetSubjectsByBusinessUnitResponse {
@@ -14,6 +15,7 @@ export class GetSubjectsByBusinessUnitResponse {
           id: subject.id,
           name: subject.name,
           code: subject.code,
+          avatar: subject.image,
         };
       },
     );
