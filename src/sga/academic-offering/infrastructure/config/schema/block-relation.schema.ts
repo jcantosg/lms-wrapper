@@ -14,14 +14,14 @@ export const blockRelationSchema = new EntitySchema<BlockRelation>({
   },
   relations: {
     periodBlock: {
-      type: 'one-to-one',
+      type: 'many-to-one',
       target: 'PeriodBlock',
       joinColumn: {
         name: 'period_block',
       },
     },
     programBlock: {
-      type: 'one-to-one',
+      type: 'many-to-one',
       target: 'ProgramBlock',
       joinColumn: {
         name: 'program_block',
