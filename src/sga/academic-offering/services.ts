@@ -14,11 +14,13 @@ import { TitleGetter } from '#academic-offering/domain/service/title/title-gette
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
-import { TransactionalService } from '#shared/domain/service/transactional-service.service';
-import { CreateAcademicProgramTransactionService } from '#academic-offering/infrastructure/service/create-academic-program-transaction.service';
+import { CreateAcademicProgramTyperomTransactionService } from '#academic-offering/infrastructure/service/create-academic-program-transaction.service';
 import datasource from '#config/ormconfig';
 import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
 import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
+import { CreateAcademicPeriodTyperomTransactionService } from '#academic-offering/infrastructure/service/create-academic-period-transaction.service';
+import { CreateAcademicProgramTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-program.transactional-service';
+import { CreateAcademicPeriodTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-period.transactional-service';
 
 const evaluationTypeGetter = {
   provide: EvaluationTypeGetter,
@@ -70,9 +72,9 @@ const programBlockGetter = {
 };
 
 const createAcademicProgramTransactionalService = {
-  provide: TransactionalService,
-  useFactory: (): CreateAcademicProgramTransactionService =>
-    new CreateAcademicProgramTransactionService(datasource),
+  provide: CreateAcademicProgramTransactionService,
+  useFactory: (): CreateAcademicProgramTyperomTransactionService =>
+    new CreateAcademicProgramTyperomTransactionService(datasource),
 };
 
 const periodBlockGetterService = {
@@ -80,6 +82,12 @@ const periodBlockGetterService = {
   useFactory: (repository: PeriodBlockRepository): PeriodBlockGetter =>
     new PeriodBlockGetter(repository),
   inject: [PeriodBlockRepository],
+};
+
+const createAcademicPeriodTransactionalService = {
+  provide: CreateAcademicPeriodTransactionService,
+  useFactory: (): CreateAcademicPeriodTyperomTransactionService =>
+    new CreateAcademicPeriodTyperomTransactionService(datasource),
 };
 
 export const services = [
@@ -94,4 +102,5 @@ export const services = [
   programBlockGetter,
   createAcademicProgramTransactionalService,
   periodBlockGetterService,
+  createAcademicPeriodTransactionalService,
 ];

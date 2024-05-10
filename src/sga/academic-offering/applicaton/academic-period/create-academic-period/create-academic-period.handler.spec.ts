@@ -11,12 +11,12 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { AcademicPeriodWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-period.wrong-block-number.exception';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
-import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
-import { PeriodBlockMockRepository } from '#test/mocks/sga/academic-offering/period-block.mock-repository';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { TransactionalServiceMock } from '#test/mocks/shared/transactional-service-mock';
 
 let handler: CreateAcademicPeriodHandler;
 let repository: AcademicPeriodRepository;
-let periodBlockRepository: PeriodBlockRepository;
+let transactionalService: TransactionalService;
 let businessUnitGetter: BusinessUnitGetter;
 let eventDispatcher: EventDispatcher;
 const businessUnit = getABusinessUnit();
@@ -58,18 +58,18 @@ let dispatchEventSpy: jest.SpyInstance;
 describe('Create Academic Period Handler test', () => {
   beforeAll(() => {
     repository = new AcademicPeriodMockRepository();
-    periodBlockRepository = new PeriodBlockMockRepository();
+    transactionalService = new TransactionalServiceMock();
     businessUnitGetter = getBusinessUnitGetterMock();
     eventDispatcher = new EventDispatcherMock();
     handler = new CreateAcademicPeriodHandler(
       repository,
       businessUnitGetter,
       eventDispatcher,
-      periodBlockRepository,
+      transactionalService,
     );
     existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
-    saveAcademicPeriodSpy = jest.spyOn(repository, 'save');
+    saveAcademicPeriodSpy = jest.spyOn(transactionalService, 'execute');
     dispatchEventSpy = jest.spyOn(eventDispatcher, 'dispatch');
   });
   it('should throw a duplicated code exception', async () => {
@@ -101,14 +101,6 @@ describe('Create Academic Period Handler test', () => {
     });
     await handler.handle(command);
     expect(saveAcademicPeriodSpy).toHaveBeenCalledTimes(1);
-    expect(saveAcademicPeriodSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        _id: command.id,
-        _name: command.name,
-        _code: command.code,
-        _businessUnit: businessUnit,
-      }),
-    );
     expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
   });
 

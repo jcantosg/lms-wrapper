@@ -11,6 +11,7 @@ import { GetAcademicPeriodsByBusinessUnitHandler } from '#academic-offering/appl
 import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
 import { EditPeriodBlockHandler } from '#academic-offering/applicaton/academic-period/edit-period-block/edit-period-block.handler';
 import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
+import { CreateAcademicPeriodTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-period.transactional-service';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -18,20 +19,20 @@ const createAcademicPeriodHandler = {
     repository: AcademicPeriodRepository,
     businessUnitGetter: BusinessUnitGetter,
     eventDispatcher: EventDispatcher,
-    periodBlockRepository: PeriodBlockRepository,
+    transactionalService: CreateAcademicPeriodTransactionService,
   ) => {
     return new CreateAcademicPeriodHandler(
       repository,
       businessUnitGetter,
       eventDispatcher,
-      periodBlockRepository,
+      transactionalService,
     );
   },
   inject: [
     AcademicPeriodRepository,
     BusinessUnitGetter,
     EventDispatcher,
-    PeriodBlockRepository,
+    CreateAcademicPeriodTransactionService,
   ],
 };
 const getAllAcademicPeriodsHandler = {

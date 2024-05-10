@@ -8,14 +8,14 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AcademicPeriodCreatedEvent } from '#academic-offering/domain/event/academic-period/academic-period-created.event';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
-import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 
 export class CreateAcademicPeriodHandler implements CommandHandler {
   constructor(
     private readonly repository: AcademicPeriodRepository,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly eventDispatcher: EventDispatcher,
-    private readonly periodBlockRepository: PeriodBlockRepository,
+    private readonly transactionalService: TransactionalService,
   ) {}
 
   async handle(command: CreateAcademicPeriodCommand): Promise<void> {
@@ -56,10 +56,11 @@ export class CreateAcademicPeriodHandler implements CommandHandler {
     }
     academicPeriod.periodBlocks = periodBlocks;
 
-    await this.repository.save(academicPeriod);
-    for (const periodBlock of periodBlocks) {
-      await this.periodBlockRepository.save(periodBlock);
-    }
+    await this.transactionalService.execute({
+      academicPeriod,
+      periodBlocks,
+    });
+
     await this.eventDispatcher.dispatch(
       new AcademicPeriodCreatedEvent(
         academicPeriod.id,

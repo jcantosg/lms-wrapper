@@ -1,18 +1,10 @@
-import {
-  TransactionalService,
-  TransactionParams,
-} from '#shared/domain/service/transactional-service.service';
-import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
-import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { DataSource } from 'typeorm';
+import {
+  CreateAcademicProgramTransactionParams,
+  CreateAcademicProgramTransactionService,
+} from '#academic-offering/domain/service/academic-program/create-academic-program.transactional-service';
 
-export interface CreateAcademicProgramTransactionParams
-  extends TransactionParams {
-  academicProgram: AcademicProgram;
-  programBlocks: ProgramBlock[];
-}
-
-export class CreateAcademicProgramTransactionService extends TransactionalService {
+export class CreateAcademicProgramTyperomTransactionService extends CreateAcademicProgramTransactionService {
   constructor(private readonly datasource: DataSource) {
     super();
   }
