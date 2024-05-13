@@ -1,4 +1,9 @@
 import { studentSchema } from '#student/infrastructure/config/schema/student.schema';
 import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
+import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 
-export const studentSchemas = [studentSchema, academicRecordSchema];
+export const studentSchemas = [
+  studentSchema,
+  academicRecordSchema,
+  internalGroupSchema,
+];

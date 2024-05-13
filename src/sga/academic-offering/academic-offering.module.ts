@@ -52,6 +52,6 @@ const fileManager: FactoryProvider = {
     ...listeners,
   ],
   controllers: [...controllers],
-  exports: [...services],
+  exports: [...services, ...repositories],
 })
 export class AcademicOfferingModule {}

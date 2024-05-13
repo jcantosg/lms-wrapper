@@ -9,6 +9,12 @@ import { GetStudentsHandler } from '#student/application/get-students/get-studen
 import { SearchStudentsHandler } from '#student/application/search-students/search-students.handler';
 import { academicRecordHandlers } from '#student/application/academic-record/handlers';
 import { GetStudentHandler } from '#student/application/get-student/get-student.handler';
+import { CreateInternalGroupsBatchHandler } from '#student/application/create-internal-group-batch/create-internal-group-batch.handler';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
+import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -61,6 +67,31 @@ const getStudentHandler = {
   inject: [StudentGetter],
 };
 
+const createInternalGroupsBatchHandler = {
+  provide: CreateInternalGroupsBatchHandler,
+  useFactory: (
+    repository: InternalGroupRepository,
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    blockRelationRepository: BlockRelationRepository,
+    uuidGenerator: UUIDGeneratorService,
+  ): CreateInternalGroupsBatchHandler =>
+    new CreateInternalGroupsBatchHandler(
+      repository,
+      academicPeriodGetter,
+      academicProgramGetter,
+      blockRelationRepository,
+      uuidGenerator,
+    ),
+  inject: [
+    InternalGroupRepository,
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    BlockRelationRepository,
+    UUIDGeneratorService,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -69,4 +100,5 @@ export const handlers = [
   searchStudentHandler,
   getStudentHandler,
   ...academicRecordHandlers,
+  createInternalGroupsBatchHandler,
 ];

@@ -32,22 +32,22 @@ const rightCommand = new EditPeriodBlockCommand(
 );
 
 const firstPeriodBlock = getAPeriodBlock(
-  uuid(),
   new Date('2025-01-01'),
   new Date('2025-02-01'),
+  uuid(),
 );
 
 const secondPeriodBlock = getAPeriodBlock(
-  uuid(),
   new Date('2025-02-01'),
   new Date('2025-03-01'),
+  uuid(),
 );
 
 const periodBlockList = [
   firstPeriodBlock,
   secondPeriodBlock,
-  getAPeriodBlock(uuid(), new Date('2025-03-01'), new Date('2025-04-01')),
-  getAPeriodBlock(uuid(), new Date('2025-04-01'), new Date('2025-05-01')),
+  getAPeriodBlock(new Date('2025-03-01'), new Date('2025-04-01'), uuid()),
+  getAPeriodBlock(new Date('2025-04-01'), new Date('2025-05-01'), uuid()),
 ];
 
 describe('Edit Period Block Handler', () => {

@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { GeonamesProvinceGetter } from '#shared/infrastructure/service/geonames-province-getter.service';
 import { GeonamesWrapper } from '#shared/infrastructure/clients/geonames/geonames.wrapper';
 import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -36,4 +38,14 @@ const provinceGetter = {
   inject: [ConfigService],
 };
 
-export const services = [countryGetter, imageUploader, provinceGetter];
+const uuidService = {
+  provide: UUIDGeneratorService,
+  useClass: UUIDv4GeneratorService,
+};
+
+export const services = [
+  countryGetter,
+  imageUploader,
+  provinceGetter,
+  uuidService,
+];

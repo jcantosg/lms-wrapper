@@ -30,6 +30,8 @@ import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entit
 import { Student } from '#student/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
+import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -206,13 +208,11 @@ export const getATitle = (id: string = uuid()): Title => {
   );
 };
 
-export const getAProgramBlock = (id: string = uuid()): ProgramBlock => {
-  return ProgramBlock.create(
-    id,
-    'name',
-    getAnAcademicProgram(),
-    getAnAdminUser(),
-  );
+export const getAProgramBlock = (
+  id: string = uuid(),
+  academicProgram: AcademicProgram = getAnAcademicProgram(),
+): ProgramBlock => {
+  return ProgramBlock.create(id, 'name', academicProgram, getAnAdminUser());
 };
 
 export const getARecoveryPasswordToken = (): RecoveryPasswordToken => {
@@ -225,13 +225,14 @@ export const getARecoveryPasswordToken = (): RecoveryPasswordToken => {
 };
 
 export const getAPeriodBlock = (
-  id: string = uuid(),
   startDate: Date = new Date(),
   enddate: Date = new Date(),
+  id: string = uuid(),
+  academicPeriod: AcademicPeriod = getAnAcademicPeriod(),
 ): PeriodBlock => {
   return PeriodBlock.create(
     id,
-    getAnAcademicPeriod(),
+    academicPeriod,
     'name',
     startDate,
     enddate,
@@ -261,6 +262,39 @@ export const getAnAcademicRecord = (): AcademicRecord => {
     getAnAcademicProgram(),
     AcademicRecordModalityEnum.PRESENCIAL,
     false,
+    getAnAdminUser(),
+  );
+};
+
+export const getABlockRelation = (
+  periodBlock: PeriodBlock,
+  programBlock: ProgramBlock,
+): BlockRelation => {
+  return BlockRelation.create(
+    uuid(),
+    periodBlock,
+    programBlock,
+    getAnAdminUser(),
+  );
+};
+
+export const getAnInternalGroup = (
+  academicPeriod: AcademicPeriod,
+  academicProgram: AcademicProgram,
+  periodBlock: PeriodBlock,
+  subject: Subject,
+): InternalGroup => {
+  return InternalGroup.create(
+    uuid(),
+    'code',
+    [],
+    [],
+    academicPeriod,
+    academicProgram,
+    periodBlock,
+    subject,
+    getABusinessUnit(),
+    true,
     getAnAdminUser(),
   );
 };

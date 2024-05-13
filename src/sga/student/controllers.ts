@@ -5,6 +5,7 @@ import { GetStudentsController } from '#student/infrastructure/controller/get-st
 import { SearchStudentsController } from '#student/infrastructure/controller/search-students/search-students.controller';
 import { academicRecordControllers } from '#student/infrastructure/controller/academic-record/controllers';
 import { GetStudentController } from '#student/infrastructure/controller/get-student/get-student.controller';
+import { CreateInternalGroupsBatchController } from '#student/infrastructure/controller/create-internal-groups-batch.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -14,4 +15,5 @@ export const controllers = [
   SearchStudentsController,
   GetStudentController,
   ...academicRecordControllers,
+  CreateInternalGroupsBatchController,
 ];
