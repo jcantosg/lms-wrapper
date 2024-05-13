@@ -165,4 +165,8 @@ describe('Create Academic Record Handler', () => {
       }),
     );
   });
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
 });
