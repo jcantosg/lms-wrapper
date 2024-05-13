@@ -7,6 +7,7 @@ export interface GetStudentResponse {
   id: string;
   name: string;
   surname: string;
+  universaeEmail: string;
   identityDocument: IdentityDocumentValues | null;
   businessUnit: {
     id: string;
@@ -36,6 +37,7 @@ export class GetStudentsResponse {
           id: student.id,
           name: student.name,
           surname: student.surname,
+          universaeEmail: student.universaeEmail,
           identityDocument: student.identityDocument?.value ?? null,
           businessUnit: student.academicRecords.map(
             (academicRecord: AcademicRecord) => {
