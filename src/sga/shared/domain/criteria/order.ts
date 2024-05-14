@@ -10,6 +10,7 @@ export class Order {
   constructor(
     public readonly orderBy: string,
     public readonly orderType: OrderTypes = OrderTypes.NONE,
+    public readonly orderNested: boolean = false,
   ) {}
 
   public hasOrderType() {
@@ -18,5 +19,9 @@ export class Order {
 
   public hasOrderBy() {
     return this.orderBy !== '';
+  }
+
+  public hasOrderNested() {
+    return this.orderNested;
   }
 }

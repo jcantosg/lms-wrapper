@@ -11,7 +11,13 @@ export class GetStudentsCriteria extends Criteria {
   constructor(query: GetStudentsQuery) {
     super(
       GetStudentsCriteria.createFilters(query),
-      new Order(query.orderBy, query.orderType),
+      new Order(
+        query.orderBy === 'businessUnit'
+          ? 'academic_record_business_unit.name'
+          : query.orderBy,
+        query.orderType,
+        query.orderBy === 'businessUnit',
+      ),
       query.page,
       query.limit,
     );
@@ -33,6 +39,12 @@ export class GetStudentsCriteria extends Criteria {
         GroupOperator.AND,
         undefined,
         'identityDocumentNumber',
+      ),
+      new Filter(
+        'universaeEmail',
+        query.universaeEmail,
+        FilterOperators.LIKE,
+        GroupOperator.AND,
       ),
       new Filter(
         'name',

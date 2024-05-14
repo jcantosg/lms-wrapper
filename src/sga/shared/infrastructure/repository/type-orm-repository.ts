@@ -18,6 +18,8 @@ const fieldOrderByMapping: Record<string, string> = {
   title: 'title.name',
   businessUnit: 'business_unit.name',
   officialCode: 'title.officialCode',
+  subjectOfficialCode: 'subjects.officialCode',
+  identityDocumentNumber: `"student".identityDocument->>'identityDocumentNumber'`,
 };
 
 export class TypeOrmRepository<T extends ObjectLiteral> {
@@ -117,7 +119,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
         case FilterOperators.JSON_VALUE:
           this.addWhereCondition(
             queryBuilder,
-            `${fieldPath} ${filter.operator} '${filter.relationObject}' LIKE :${paramName} `,
+            `${fieldPath} ${filter.operator} '${filter.relationObject}' LIKE  '%' || :${paramName} || '%'`,
             parameter,
             groupOperator,
           );
@@ -212,8 +214,9 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
   ): TypeOrmRepository<T> {
     if (criteria.order.hasOrderType() && criteria.order.hasOrderBy()) {
       const orderByField = criteria.order.orderBy;
-      const orderBy =
-        fieldOrderByMapping[orderByField] || `${aliasQuery}.${orderByField}`;
+      const orderBy = !criteria.order.hasOrderNested()
+        ? fieldOrderByMapping[orderByField] || `${aliasQuery}.${orderByField}`
+        : fieldOrderByMapping[orderByField] || `${orderByField}`;
 
       queryBuilder.addOrderBy(
         orderBy,

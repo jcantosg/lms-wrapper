@@ -12,7 +12,7 @@ const orderByFields = [
 export const getStudentsSchema = createCollectionSchema(orderByFields, {
   name: Joi.string().optional(),
   surname: Joi.string().optional(),
-  email: Joi.string().optional(),
+  universaeEmail: Joi.string().optional(),
   identityDocumentNumber: Joi.string().optional(),
   businessUnit: Joi.string().optional(),
   academicProgram: Joi.string().optional(),

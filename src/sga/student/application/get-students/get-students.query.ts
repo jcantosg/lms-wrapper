@@ -10,6 +10,7 @@ export class GetStudentsQuery extends CollectionQuery implements Query {
     public readonly identityDocumentNumber: string | null,
     public readonly businessUnit: string | null,
     public readonly academicProgram: string | null,
+    public readonly universaeEmail: string | null,
     public readonly adminUser: AdminUser,
     page: number,
     limit: number,

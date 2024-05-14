@@ -26,6 +26,7 @@ interface GetStudentQueryParams {
   identityDocumentNumber: string | null;
   businessUnit: string | null;
   academicProgram: string | null;
+  universaeEmail: string | null;
 }
 
 @Controller('student')
@@ -45,6 +46,7 @@ export class GetStudentsController {
       params.identityDocumentNumber,
       params.businessUnit,
       params.academicProgram,
+      params.universaeEmail,
       request.user,
       params.page,
       params.limit,
