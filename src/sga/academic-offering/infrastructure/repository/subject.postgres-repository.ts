@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { Enrollment } from '#student/domain/entity/enrollment.entity';
 
 export class SubjectPostgresRepository
   extends TypeOrmRepository<Subject>
@@ -177,5 +179,23 @@ export class SubjectPostgresRepository
         id: businessUnitId,
       },
     });
+  }
+
+  async getSubjectsNotEnrolled(
+    academicRecord: AcademicRecord,
+  ): Promise<Subject[]> {
+    const aliasQuery = 'subjects';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery)
+      .leftJoinAndSelect(
+        Enrollment,
+        'enrollments',
+        'enrollments.subject_id = subjects.id',
+      )
+      .andWhere('enrollments.subject_id  IS NULL')
+      .andWhere('enrollments.academic_record_id = :id', {
+        id: academicRecord.id,
+      });
+
+    return await queryBuilder.getMany();
   }
 }

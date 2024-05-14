@@ -1,4 +1,5 @@
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export abstract class SubjectRepository {
   abstract existsByCode(id: string, code: string): Promise<boolean>;
@@ -28,4 +29,8 @@ export abstract class SubjectRepository {
   ): Promise<number>;
 
   abstract getByBusinessUnit(businessUnitId: string): Promise<Subject[]>;
+
+  abstract getSubjectsNotEnrolled(
+    academicRecord: AcademicRecord,
+  ): Promise<Subject[]>;
 }

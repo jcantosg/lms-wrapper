@@ -62,7 +62,14 @@ export class AcademicRecordPostgresRepository
   ): Promise<AcademicRecord | null> {
     if (isSuperAdmin) {
       return await this.repository.findOne({
-        relations: { businessUnit: true },
+        relations: {
+          businessUnit: true,
+          academicProgram: {
+            programBlocks: {
+              subjects: true,
+            },
+          },
+        },
         where: { id: academicRecordId },
       });
     }

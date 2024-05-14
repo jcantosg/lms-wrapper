@@ -9,6 +9,7 @@ import { GetStudentsHandler } from '#student/application/get-students/get-studen
 import { SearchStudentsHandler } from '#student/application/search-students/search-students.handler';
 import { academicRecordHandlers } from '#student/application/academic-record/handlers';
 import { GetStudentHandler } from '#student/application/get-student/get-student.handler';
+import { enrollmentHandlers } from '#student/application/enrollment/handlers';
 import { administrativeGroupHandlers } from '#student/application/administrative-group/handlers';
 import { CreateInternalGroupsBatchHandler } from '#student/application/create-internal-group-batch/create-internal-group-batch.handler';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
@@ -101,6 +102,7 @@ export const handlers = [
   searchStudentHandler,
   getStudentHandler,
   ...academicRecordHandlers,
+  ...enrollmentHandlers,
   ...administrativeGroupHandlers,
   createInternalGroupsBatchHandler,
 ];
