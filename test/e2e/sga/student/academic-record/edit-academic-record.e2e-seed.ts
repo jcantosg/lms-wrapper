@@ -49,6 +49,12 @@ export class EditAcademicRecordE2eSeed implements E2eSeed {
   public static virtualCampusName = 'Campus virtual de Madrid';
   public static virtualCampusCode = 'CVM';
 
+  public static titleId = uuid();
+  public static titleName = 'Ingenieria informatica';
+  public static titleOfficialCode = 'II';
+  public static titleOfficialTitle = 'Ingeniero informatico';
+  public static titleOfficialProgram = 'Ingenieria informatica';
+
   public static academicProgramId = uuid();
   public static academicProgramName =
     'Administración de sistemas informaticos en red';
@@ -65,6 +71,7 @@ export class EditAcademicRecordE2eSeed implements E2eSeed {
   public static universaeEmail = 'juan.ros@universae.com';
 
   public static academicRecordId = uuid();
+  public static academicRecordIsModular = false;
 
   private superAdminUser: AdminUser;
   private adminUserSecretaria: AdminUser;
@@ -160,11 +167,11 @@ export class EditAcademicRecordE2eSeed implements E2eSeed {
     );
 
     this.title = Title.create(
-      uuid(),
-      'title',
-      'officialCode',
-      'officialTitle',
-      'officialProgram',
+      EditAcademicRecordE2eSeed.titleId,
+      EditAcademicRecordE2eSeed.titleName,
+      EditAcademicRecordE2eSeed.titleOfficialCode,
+      EditAcademicRecordE2eSeed.titleOfficialTitle,
+      EditAcademicRecordE2eSeed.titleOfficialProgram,
       this.businessUnit,
       this.superAdminUser,
     );
@@ -222,7 +229,7 @@ export class EditAcademicRecordE2eSeed implements E2eSeed {
       this.academicPeriod,
       this.academicProgram,
       AcademicRecordModalityEnum.ELEARNING,
-      false,
+      EditAcademicRecordE2eSeed.academicRecordIsModular,
       this.superAdminUser,
     );
     await this.academicRecordRepository.save(this.academicRecord);

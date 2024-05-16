@@ -10,4 +10,6 @@ export abstract class AcademicRecordRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<AcademicRecord | null>;
+
+  abstract get(id: string): Promise<AcademicRecord | null>;
 }

@@ -61,17 +61,7 @@ export class AcademicRecordPostgresRepository
     isSuperAdmin: boolean,
   ): Promise<AcademicRecord | null> {
     if (isSuperAdmin) {
-      return await this.repository.findOne({
-        relations: {
-          businessUnit: true,
-          academicProgram: {
-            programBlocks: {
-              subjects: true,
-            },
-          },
-        },
-        where: { id: academicRecordId },
-      });
+      return await this.get(academicRecordId);
     }
     adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
       adminUserBusinessUnits,
@@ -84,5 +74,23 @@ export class AcademicRecordPostgresRepository
         ids: adminUserBusinessUnits,
       })
       .getOne();
+  }
+
+  async get(id: string): Promise<any> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: {
+        businessUnit: true,
+        student: true,
+        academicPeriod: true,
+        academicProgram: {
+          title: true,
+          programBlocks: {
+            subjects: true,
+          },
+        },
+        virtualCampus: true,
+      },
+    });
   }
 }

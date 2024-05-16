@@ -18,4 +18,13 @@ export class AcademicRecordGetter {
 
     return academicRecord;
   }
+
+  async get(id: string) {
+    const academicRecord = await this.repository.get(id);
+    if (!academicRecord) {
+      throw new AcademicRecordNotFoundException();
+    }
+
+    return academicRecord;
+  }
 }
