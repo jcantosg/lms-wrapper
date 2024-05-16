@@ -23,7 +23,7 @@ export class EditStudentHandler implements CommandHandler {
       ? await this.imageUploader.uploadImage(
           command.avatar,
           command.name,
-          'student-avatars',
+          'student-avatar',
         )
       : student.avatar;
     const newCountry = command.country

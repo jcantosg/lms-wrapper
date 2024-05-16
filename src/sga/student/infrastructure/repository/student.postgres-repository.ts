@@ -44,7 +44,7 @@ export class StudentPostgresRepository
       city: student.city,
       address: student.address,
       guardianName: student.guardianName,
-      guardianSurnam: student.guardianSurname,
+      guardianSurname: student.guardianSurname,
       guardianEmail: student.guardianEmail,
       guardianPhone: student.guardianPhone,
       createdBy: student.createdBy,

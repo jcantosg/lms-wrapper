@@ -9,29 +9,30 @@ export const editStudentSchema = Joi.object({
   email: Joi.string().email().required(),
   universaeEmail: Joi.string().email().required(),
   isActive: Joi.boolean().required(),
-  avatar: Joi.string().optional,
+  avatar: Joi.string().optional().allow(''),
   birthDate: Joi.date().optional(),
   gender: Joi.string()
     .valid(...getAllStudentGenders())
     .optional(),
   country: Joi.string().guid().optional(),
-  citizenship: Joi.string().guid().optional(),
+  citizenship: Joi.string().guid().optional().allow(''),
   identityDocument: Joi.object({
     identityDocumentType: Joi.string().required(),
     identityDocumentNumber: Joi.string().required(),
   }).optional(),
-  socialSecurityNumber: Joi.string().optional(),
+  socialSecurityNumber: Joi.string().optional().allow(''),
   accessQualification: Joi.string()
     .valid(...getAccessQualification())
-    .optional(),
-  niaIdalu: Joi.string().optional(),
-  phone: Joi.string().optional(),
+    .optional()
+    .allow(''),
+  niaIdalu: Joi.string().optional().allow(''),
+  phone: Joi.string().optional().allow(''),
   contactCountry: Joi.string().guid().optional(),
-  state: Joi.string().optional(),
-  city: Joi.string().optional(),
-  address: Joi.string().optional(),
-  guardianName: Joi.string().optional(),
-  guardianSurname: Joi.string().optional(),
-  guardianEmail: Joi.string().optional(),
-  guardianPhone: Joi.string().optional(),
+  state: Joi.string().optional().allow(''),
+  city: Joi.string().optional().allow(''),
+  address: Joi.string().optional().allow(''),
+  guardianName: Joi.string().optional().allow(''),
+  guardianSurname: Joi.string().optional().allow(''),
+  guardianEmail: Joi.string().optional().allow(''),
+  guardianPhone: Joi.string().optional().allow(''),
 });

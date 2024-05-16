@@ -8,6 +8,7 @@ export interface GetStudentResponse {
   name: string;
   surname: string;
   universaeEmail: string;
+  avatar: string | null;
   identityDocument: IdentityDocumentValues | null;
   businessUnit: {
     id: string;
@@ -38,6 +39,7 @@ export class GetStudentsResponse {
           name: student.name,
           surname: student.surname,
           universaeEmail: student.universaeEmail,
+          avatar: student.avatar,
           identityDocument: student.identityDocument?.value ?? null,
           businessUnit: student.academicRecords.map(
             (academicRecord: AcademicRecord) => {
