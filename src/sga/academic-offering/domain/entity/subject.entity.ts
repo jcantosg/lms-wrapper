@@ -8,6 +8,7 @@ import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 import { SubjectInvalidEdaeUserRoleException } from '#shared/domain/exception/academic-offering/subject.invalid-edae-user-role.exception';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export class Subject extends BaseEntity {
   private constructor(
@@ -31,6 +32,7 @@ export class Subject extends BaseEntity {
     private _resources: SubjectResource[],
     private _officialRegionalCode: string | null,
     private _defaultTeacher: EdaeUser | null,
+    private _programBlocks: ProgramBlock[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -171,6 +173,14 @@ export class Subject extends BaseEntity {
     this._defaultTeacher = value;
   }
 
+  public get programBlocks(): ProgramBlock[] {
+    return this._programBlocks;
+  }
+
+  public set programBlocks(value: ProgramBlock[]) {
+    this._programBlocks = value;
+  }
+
   static create(
     id: string,
     imageUrl: string | null,
@@ -216,6 +226,7 @@ export class Subject extends BaseEntity {
       [],
       officialRegionalCode,
       null,
+      [],
     );
   }
 

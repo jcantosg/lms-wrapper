@@ -16,6 +16,9 @@ export class GetSubjectsByBusinessUnitHandler implements QueryHandler {
       throw new BusinessUnitNotFoundException();
     }
 
-    return await this.repository.getByBusinessUnit(query.businessUnitId);
+    return await this.repository.getByBusinessUnit(
+      query.businessUnitId,
+      query.academicProgramId,
+    );
   }
 }

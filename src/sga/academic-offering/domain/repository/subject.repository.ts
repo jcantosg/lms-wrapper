@@ -28,7 +28,10 @@ export abstract class SubjectRepository {
     isSuperAdmin: boolean,
   ): Promise<number>;
 
-  abstract getByBusinessUnit(businessUnitId: string): Promise<Subject[]>;
+  abstract getByBusinessUnit(
+    businessUnitId: string,
+    academicProgramId: string,
+  ): Promise<Subject[]>;
 
   abstract getSubjectsNotEnrolled(
     academicRecord: AcademicRecord,

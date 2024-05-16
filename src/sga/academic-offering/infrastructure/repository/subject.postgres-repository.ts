@@ -2,7 +2,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
@@ -54,6 +54,7 @@ export class SubjectPostgresRepository
       image: subject.image,
       resources: subject.resources,
       officialRegionalCode: subject.officialRegionalCode,
+      programBlocks: subject.programBlocks,
     });
   }
 
@@ -173,10 +174,18 @@ export class SubjectPostgresRepository
       .getMany(queryBuilder);
   }
 
-  async getByBusinessUnit(businessUnitId: string): Promise<Subject[]> {
+  async getByBusinessUnit(
+    businessUnitId: string,
+    academicProgramId: string,
+  ): Promise<Subject[]> {
     return await this.repository.findBy({
       businessUnit: {
         id: businessUnitId,
+      },
+      programBlocks: {
+        academicProgram: {
+          id: Not(academicProgramId),
+        },
       },
     });
   }

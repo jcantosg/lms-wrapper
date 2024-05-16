@@ -19,6 +19,7 @@ import { AuthRequest } from '#shared/infrastructure/http/request';
 
 interface GetSubjectsByBusinessUnitQueryParams {
   businessUnit: string;
+  academicProgramId: string;
 }
 
 @Controller('subject')
@@ -38,6 +39,7 @@ export class GetSubjectByBusinessUnitController {
   ): Promise<SubjectByBusinessUnitResponse[]> {
     const query = new GetSubjectsByBusinessUnitQuery(
       queryParams.businessUnit,
+      queryParams.academicProgramId,
       request.user,
     );
     const response = await this.handler.handle(query);

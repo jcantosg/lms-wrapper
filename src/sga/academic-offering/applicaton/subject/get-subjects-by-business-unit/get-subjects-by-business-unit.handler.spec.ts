@@ -2,6 +2,7 @@ import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import {
   getABusinessUnit,
+  getAnAcademicProgram,
   getAnAdminUser,
   getASubject,
 } from '#test/entity-factory';
@@ -18,6 +19,7 @@ const adminUser = getAnAdminUser();
 adminUser.businessUnits = [getABusinessUnit()];
 const query = new GetSubjectsByBusinessUnitQuery(
   adminUser.businessUnits[0].id,
+  getAnAcademicProgram().id,
   adminUser,
 );
 

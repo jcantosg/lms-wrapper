@@ -105,5 +105,18 @@ export const subjectSchema = new EntitySchema<Subject>({
         name: 'default_teacher_id',
       },
     },
+    programBlocks: {
+      type: 'many-to-many',
+      target: 'ProgramBlock',
+      joinTable: {
+        name: 'program_block_subjects',
+        joinColumn: {
+          name: 'subject_id',
+        },
+        inverseJoinColumn: {
+          name: 'program_block_id',
+        },
+      },
+    },
   },
 });
