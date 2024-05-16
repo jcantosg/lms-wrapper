@@ -20,6 +20,12 @@ const fieldOrderByMapping: Record<string, string> = {
   officialCode: 'title.officialCode',
   subjectOfficialCode: 'subjects.officialCode',
   identityDocumentNumber: `"student".identityDocument->>'identityDocumentNumber'`,
+  subjectName: 'subject.name',
+  programBlock: 'programBlock.name',
+  hours: 'subject.hours',
+  callDate: 'subjectCall.callDate',
+  finalGrade: 'subjectCall.finalGrade',
+  status: 'subjectCall.status',
 };
 
 export class TypeOrmRepository<T extends ObjectLiteral> {
@@ -212,17 +218,17 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     queryBuilder: SelectQueryBuilder<T>,
     aliasQuery: string,
   ): TypeOrmRepository<T> {
-    if (criteria.order.hasOrderType() && criteria.order.hasOrderBy()) {
-      const orderByField = criteria.order.orderBy;
-      const orderBy = !criteria.order.hasOrderNested()
+    if (criteria.order!.hasOrderType() && criteria.order!.hasOrderBy()) {
+      const orderByField = criteria.order!.orderBy;
+      const orderBy = !criteria.order!.hasOrderNested()
         ? fieldOrderByMapping[orderByField] || `${aliasQuery}.${orderByField}`
         : fieldOrderByMapping[orderByField] || `${orderByField}`;
 
       queryBuilder.addOrderBy(
         orderBy,
-        criteria.order.orderType === OrderTypes.NONE
+        criteria.order!.orderType === OrderTypes.NONE
           ? undefined
-          : criteria.order.orderType,
+          : criteria.order!.orderType,
       );
     }
 
@@ -234,8 +240,8 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     queryBuilder: SelectQueryBuilder<T>,
   ): TypeOrmRepository<T> {
     queryBuilder
-      .skip((criteria.page - 1) * criteria.limit)
-      .take(criteria.limit);
+      .skip((criteria.page! - 1) * criteria.limit!)
+      .take(criteria.limit!);
 
     return this;
   }

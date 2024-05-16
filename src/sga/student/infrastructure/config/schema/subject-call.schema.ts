@@ -4,7 +4,7 @@ import {
   BaseSchemaColumns,
   BaseSchemaRelations,
 } from '#shared/infrastructure/config/schema/base.schema';
-import { SubjectFinalCallGradeEnum } from '#student/domain/enum/enrollment/subject-final-call-grade.enum';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 
 export const subjectCallSchema = new EntitySchema<SubjectCall>({
@@ -27,7 +27,7 @@ export const subjectCallSchema = new EntitySchema<SubjectCall>({
     finalGrade: {
       name: 'final_grade',
       type: String,
-      enum: SubjectFinalCallGradeEnum,
+      enum: SubjectCallFinalGradeEnum,
       nullable: false,
     },
     status: {

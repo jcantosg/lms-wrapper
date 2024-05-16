@@ -1,4 +1,4 @@
-export enum SubjectFinalCallGradeEnum {
+export enum SubjectCallFinalGradeEnum {
   NP = 'NP',
   RC = 'RC',
   ONE = '1',
@@ -13,5 +13,5 @@ export enum SubjectFinalCallGradeEnum {
   TEN = '10',
 }
 
-export const getAllSubjectFinalCallGrades = (): SubjectFinalCallGradeEnum[] =>
-  Object.values(SubjectFinalCallGradeEnum);
+export const getAllSubjectFinalCallGrades = (): SubjectCallFinalGradeEnum[] =>
+  Object.values(SubjectCallFinalGradeEnum);

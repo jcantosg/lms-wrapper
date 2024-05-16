@@ -16,6 +16,7 @@ function getDateWithinMilliseconds(milliseconds: number): Date {
 export function getDateSecondsAgo(seconds: number): Date {
   return getDateMillisecondsAgo(seconds * SECOND_IN_MS);
 }
+
 export function getDateDaysAgo(days: number): Date {
   return getDateMillisecondsAgo(days * DAY_IN_MS);
 }
@@ -37,4 +38,11 @@ export function getDateDiffInDays(date1: Date, date2: Date): number {
 
 export function getNow(): Date {
   return new Date(Date.now());
+}
+
+export function getDateFormattedMMYY(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear() % 100;
+
+  return `${month}/${year}`;
 }

@@ -4,9 +4,9 @@ import { Order } from '#/sga/shared/domain/criteria/order';
 export class Criteria {
   constructor(
     public readonly filters: Filter[] = [],
-    public readonly order: Order,
-    public page: number,
-    public limit: number,
+    public readonly order: Order | null = null,
+    public page: number | null = null,
+    public limit: number | null = null,
   ) {}
 
   public hasFilters(): boolean {

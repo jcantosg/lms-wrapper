@@ -5,6 +5,9 @@ import { CreateEnrollmentHandler } from '#student/application/enrollment/create-
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { CreateEnrollmentTransactionalService } from '#student/infrastructure/service/create-enrollment-transactional-service.service';
 import datasource from '#config/ormconfig';
+import { GetEnrollmentsByAcademicRecordHandler } from '#student/application/enrollment/get-enrollments-by-academic-record/get-enrollments-by-academic-record.handler';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 
 const getSubjectsNotEnrolledHandler = {
   provide: GetSubjectsNotEnrolledHandler,
@@ -35,7 +38,21 @@ const createEnrollmentHandler = {
   inject: [AcademicRecordGetter, SubjectGetter],
 };
 
+const getEnrollmentsByAcademicRecord = {
+  provide: GetEnrollmentsByAcademicRecordHandler,
+  useFactory: (
+    repository: EnrollmentRepository,
+    academicRecordRepository: AcademicRecordRepository,
+  ): GetEnrollmentsByAcademicRecordHandler =>
+    new GetEnrollmentsByAcademicRecordHandler(
+      repository,
+      academicRecordRepository,
+    ),
+  inject: [EnrollmentRepository, AcademicRecordRepository],
+};
+
 export const enrollmentHandlers = [
   getSubjectsNotEnrolledHandler,
   createEnrollmentHandler,
+  getEnrollmentsByAcademicRecord,
 ];

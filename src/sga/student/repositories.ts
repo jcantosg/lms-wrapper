@@ -6,6 +6,8 @@ import { AdministrativeGroupRepository } from '#student/domain/repository/admini
 import { AdministrativeGroupPostgresRepository } from '#student/infrastructure/repository/administrative-group.postgres-repository';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupPostgresRepository } from '#student/infrastructure/repository/internal-group.postgres-repository';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { EnrollmentPostgresRepository } from '#student/infrastructure/repository/enrollment.postgres-repository';
 
 export const repositories = [
   {
@@ -23,5 +25,9 @@ export const repositories = [
   {
     provide: InternalGroupRepository,
     useClass: InternalGroupPostgresRepository,
+  },
+  {
+    provide: EnrollmentRepository,
+    useClass: EnrollmentPostgresRepository,
   },
 ];

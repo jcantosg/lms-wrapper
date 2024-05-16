@@ -54,9 +54,7 @@ export const enrollmentSchema = new EntitySchema<Enrollment>({
     calls: {
       type: 'one-to-many',
       target: 'SubjectCall',
-      joinColumn: {
-        name: 'subject_call_id',
-      },
+      inverseSide: 'enrollment',
     },
   },
 });

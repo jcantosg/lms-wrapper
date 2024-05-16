@@ -10,7 +10,7 @@ import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { v4 as uuid } from 'uuid';
-import { SubjectFinalCallGradeEnum } from '#student/domain/enum/enrollment/subject-final-call-grade.enum';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 
@@ -57,7 +57,7 @@ export class CreateEnrollmentHandler implements CommandHandler {
         enrollment,
         1,
         new Date(),
-        SubjectFinalCallGradeEnum.NP,
+        SubjectCallFinalGradeEnum.NP,
         SubjectCallStatusEnum.NOT_STARTED,
         command.user,
       );

@@ -43,12 +43,15 @@ test-e2e: ## Run e2e tests
 	rm -rf dist
 	mkdir -p files/admin-user-avatar
 	mkdir -p files/edae-user-avatar
+	mkdir -p files/subject/avatar
 	mkdir -p files/uploads/subject-resources
 	make test-database-setup
 	@npm run test:e2e ; make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*
 	rm -rf files/edae-user/new-edae-user*
 	rm -rf files/uploads/subject-resources/*
+	rm -rf files/subject-avatar/*
+	rm -rf files/edae-user-avatar/*
 
 
 
@@ -57,10 +60,13 @@ test-e2e-ci: ## Run e2e tests
 	make test-database-setup
 	mkdir -p files/edae-user-avatar
 	mkdir -p files/uploads/subject-resources
+	mkdir -p files/subject-avatar
 	@npm run test:e2e
 	make test-database-drop
 	rm -rf files/admin-user-avatar/new-admin*
 	rm -rf files/edae-user/new-edae-user*
+	rm -rf files/subject-avatar/*
+	rm -rf files/edae-user-avatar/*
 	rm -rf files/uploads/subject-resources/*
 
 

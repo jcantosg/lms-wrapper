@@ -16,7 +16,7 @@ import {
   getASubjectGetterMock,
 } from '#test/service-factory';
 import { TransactionalServiceMock } from '#test/mocks/shared/transactional-service-mock';
-import { SubjectFinalCallGradeEnum } from '#student/domain/enum/enrollment/subject-final-call-grade.enum';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateEnrollmentHandler;
@@ -68,7 +68,7 @@ describe('Create Enrollment Unit Test', () => {
     expect(executeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         subjectCall: expect.objectContaining({
-          finalGrade: SubjectFinalCallGradeEnum.NP,
+          finalGrade: SubjectCallFinalGradeEnum.NP,
         }),
       }),
     );

@@ -4,6 +4,7 @@ import { EnrollmentRepository } from '#student/domain/repository/enrollment.repo
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 
 export class EnrollmentPostgresRepository
   extends TypeOrmRepository<Enrollment>
@@ -27,5 +28,43 @@ export class EnrollmentPostgresRepository
       calls: enrollment.calls,
       maxCalls: enrollment.maxCalls,
     });
+  }
+
+  async matching(criteria: Criteria): Promise<Enrollment[]> {
+    const queryBuilder = this.initializeQueryBuilder('enrollment');
+    let criteriaToQueryBuilder = await this.convertCriteriaToQueryBuilder(
+      criteria,
+      queryBuilder,
+      'enrollment',
+    );
+    if (criteria.page !== null && criteria.limit !== null) {
+      criteriaToQueryBuilder = criteriaToQueryBuilder.applyPagination(
+        criteria,
+        queryBuilder,
+      );
+    }
+    if (criteria.order !== null) {
+      criteriaToQueryBuilder.applyOrder(criteria, queryBuilder, 'enrollment');
+    }
+
+    return await this.getMany(queryBuilder);
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.calls`, 'subjectCall');
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicRecord`,
+      'academicRecord',
+    );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.subject`, 'subject');
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.programBlock`,
+      'programBlock',
+    );
+
+    return queryBuilder;
   }
 }

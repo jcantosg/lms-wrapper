@@ -1,6 +1,6 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
-import { SubjectFinalCallGradeEnum } from '#student/domain/enum/enrollment/subject-final-call-grade.enum';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 
@@ -10,7 +10,7 @@ export class SubjectCall extends BaseEntity {
     private _enrollment: Enrollment,
     private _callNumber: number,
     private _callDate: Date,
-    private _finalGrade: SubjectFinalCallGradeEnum,
+    private _finalGrade: SubjectCallFinalGradeEnum,
     private _status: SubjectCallStatusEnum,
     createdAt: Date,
     updatedAt: Date,
@@ -25,7 +25,7 @@ export class SubjectCall extends BaseEntity {
     enrollment: Enrollment,
     callNumber: number,
     callDate: Date,
-    finalGrade: SubjectFinalCallGradeEnum,
+    finalGrade: SubjectCallFinalGradeEnum,
     status: SubjectCallStatusEnum,
     user: AdminUser,
   ): SubjectCall {
@@ -67,11 +67,11 @@ export class SubjectCall extends BaseEntity {
     this._callDate = value;
   }
 
-  public get finalGrade(): SubjectFinalCallGradeEnum {
+  public get finalGrade(): SubjectCallFinalGradeEnum {
     return this._finalGrade;
   }
 
-  public set finalGrade(value: SubjectFinalCallGradeEnum) {
+  public set finalGrade(value: SubjectCallFinalGradeEnum) {
     this._finalGrade = value;
   }
 
