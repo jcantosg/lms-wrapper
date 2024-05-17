@@ -15,5 +15,5 @@ export const editAdminUserSchema: Joi.ObjectSchema = Joi.object({
   roles: Joi.array()
     .items(Joi.string().valid(...Object.values(AdminUserRoles)))
     .required(),
-  avatar: Joi.string(),
+  avatar: Joi.string().optional().allow(null),
 });

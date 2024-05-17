@@ -26,14 +26,16 @@ export class EditAdminUserHandler implements CommandHandler {
 
     this.adminUserRolesChecker.checkRoles(command.user.roles, userToEdit.roles);
     this.adminUserRolesChecker.checkRoles(command.user.roles, command.roles);
-
-    const avatarUrl = this.matchUrl(command.avatar)
-      ? userToEdit.avatar
-      : await this.imageUploader.uploadImage(
-          command.avatar,
-          command.name,
-          'admin-user-avatar',
-        );
+    let avatarUrl: string = userToEdit.avatar;
+    if (command.avatar) {
+      avatarUrl = this.matchUrl(command.avatar)
+        ? avatarUrl
+        : await this.imageUploader.uploadImage(
+            command.avatar,
+            command.name,
+            'admin-user-avatar',
+          );
+    }
 
     const identityDocument = new IdentityDocument(command.identityDocument);
 
