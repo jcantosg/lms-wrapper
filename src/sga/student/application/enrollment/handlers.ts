@@ -5,8 +5,12 @@ import { CreateEnrollmentHandler } from '#student/application/enrollment/create-
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { CreateEnrollmentTransactionalService } from '#student/infrastructure/service/create-enrollment-transactional-service.service';
 import datasource from '#config/ormconfig';
-import { GetEnrollmentsByAcademicRecordHandler } from '#student/application/enrollment/get-enrollments-by-academic-record/get-enrollments-by-academic-record.handler';
+import { GetEnrollmentVisibilityHandler } from '#student/application/enrollment/get-enrollment-visibility/get-enrollment-visibility.handler';
+import { GetEnrollmentTypeHandler } from '#student/application/enrollment/get-enrollment-type/get-enrollment-type.handler';
+import { EditEnrollmentHandler } from '#student/application/enrollment/edit-enrollment/edit-enrollment.handler';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { GetEnrollmentsByAcademicRecordHandler } from '#student/application/enrollment/get-enrollments-by-academic-record/get-enrollments-by-academic-record.handler';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 
 const getSubjectsNotEnrolledHandler = {
@@ -38,6 +42,16 @@ const createEnrollmentHandler = {
   inject: [AcademicRecordGetter, SubjectGetter],
 };
 
+const editEnrollmentHandler = {
+  provide: EditEnrollmentHandler,
+  useFactory: (
+    repository: EnrollmentRepository,
+    enrollmentGetter: EnrollmentGetter,
+  ): EditEnrollmentHandler =>
+    new EditEnrollmentHandler(repository, enrollmentGetter),
+  inject: [EnrollmentRepository, EnrollmentGetter],
+};
+
 const getEnrollmentsByAcademicRecord = {
   provide: GetEnrollmentsByAcademicRecordHandler,
   useFactory: (
@@ -54,5 +68,8 @@ const getEnrollmentsByAcademicRecord = {
 export const enrollmentHandlers = [
   getSubjectsNotEnrolledHandler,
   createEnrollmentHandler,
+  GetEnrollmentVisibilityHandler,
+  GetEnrollmentTypeHandler,
+  editEnrollmentHandler,
   getEnrollmentsByAcademicRecord,
 ];

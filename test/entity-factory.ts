@@ -32,6 +32,9 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { Enrollment } from '#student/domain/entity/enrollment.entity';
+import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
+import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -295,6 +298,18 @@ export const getAnInternalGroup = (
     subject,
     getABusinessUnit(),
     true,
+    getAnAdminUser(),
+  );
+};
+
+export const getAnEnrollment = (): Enrollment => {
+  return Enrollment.create(
+    uuid(),
+    getASubject(),
+    getAnAcademicRecord(),
+    EnrollmentVisibilityEnum.PD,
+    EnrollmentTypeEnum.UNIVERSAE,
+    getAProgramBlock(),
     getAnAdminUser(),
   );
 };

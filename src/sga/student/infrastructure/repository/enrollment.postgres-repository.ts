@@ -30,6 +30,10 @@ export class EnrollmentPostgresRepository
     });
   }
 
+  async get(id: string): Promise<Enrollment | null> {
+    return await this.repository.findOne({ where: { id } });
+  }
+
   async matching(criteria: Criteria): Promise<Enrollment[]> {
     const queryBuilder = this.initializeQueryBuilder('enrollment');
     let criteriaToQueryBuilder = await this.convertCriteriaToQueryBuilder(

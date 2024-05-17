@@ -148,4 +148,14 @@ export class Enrollment extends BaseEntity {
   public addSubjectCall(subjectCall: SubjectCall): void {
     this.calls.push(subjectCall);
   }
+
+  public update(
+    type: EnrollmentTypeEnum,
+    visibility: EnrollmentVisibilityEnum,
+    maxCalls: number,
+  ): void {
+    this.type = type;
+    this.visibility = visibility;
+    this.maxCalls = maxCalls;
+  }
 }
