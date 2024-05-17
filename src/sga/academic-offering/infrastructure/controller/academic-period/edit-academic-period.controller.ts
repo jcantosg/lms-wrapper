@@ -48,8 +48,7 @@ export class EditAcademicPeriodController {
       body.code,
       body.startDate,
       body.endDate,
-      req.user.businessUnits.map((bu) => bu.id),
-      req.user.roles.includes(AdminUserRoles.SUPERADMIN),
+      req.user,
     );
 
     await this.handler.handle(command);

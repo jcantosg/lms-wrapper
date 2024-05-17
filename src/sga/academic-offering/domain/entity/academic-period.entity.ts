@@ -58,14 +58,6 @@ export class AcademicPeriod extends BaseEntity {
     );
   }
 
-  public update(name: string, code: string, startDate: Date, endDate: Date) {
-    this._name = name;
-    this._code = code;
-    this._startDate = startDate;
-    this._endDate = endDate;
-    this.updated();
-  }
-
   public get name(): string {
     return this._name;
   }
@@ -174,5 +166,20 @@ export class AcademicPeriod extends BaseEntity {
 
   public hasAcademicPrograms(): boolean {
     return this._academicPrograms.length > 0;
+  }
+
+  public update(
+    name: string,
+    code: string,
+    startDate: Date,
+    endDate: Date,
+    adminUser: AdminUser,
+  ): void {
+    this._name = name;
+    this._code = code;
+    this._startDate = startDate;
+    this._endDate = endDate;
+    this._updatedBy = adminUser;
+    this.updated();
   }
 }

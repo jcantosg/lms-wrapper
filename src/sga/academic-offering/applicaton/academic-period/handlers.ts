@@ -56,10 +56,19 @@ const editAcademicPeriodHandler = {
   useFactory: (
     getter: AcademicPeriodGetter,
     repository: AcademicPeriodRepository,
+    periodBlockRepository: PeriodBlockRepository,
   ) => {
-    return new EditAcademicPeriodHandler(getter, repository);
+    return new EditAcademicPeriodHandler(
+      getter,
+      repository,
+      periodBlockRepository,
+    );
   },
-  inject: [AcademicPeriodGetter, AcademicPeriodRepository],
+  inject: [
+    AcademicPeriodGetter,
+    AcademicPeriodRepository,
+    PeriodBlockRepository,
+  ],
 };
 
 const getAcademicPeriodHandler = {

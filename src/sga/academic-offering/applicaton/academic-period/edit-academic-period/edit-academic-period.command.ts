@@ -1,3 +1,4 @@
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { Command } from '#shared/domain/bus/command';
 
 export class EditAcademicPeriodCommand implements Command {
@@ -7,7 +8,6 @@ export class EditAcademicPeriodCommand implements Command {
     public readonly code: string,
     public readonly startDate: Date,
     public readonly endDate: Date,
-    public readonly adminUsersBusinessUnits: string[],
-    public readonly isSuperAdmin: boolean,
+    public readonly adminUser: AdminUser,
   ) {}
 }
