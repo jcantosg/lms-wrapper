@@ -21,11 +21,12 @@ export class EditAcademicPeriodHandler implements CommandHandler {
       throw new AcademicPeriodDuplicatedCodeException();
     }
 
-    academicPeriod.name = command.name;
-    academicPeriod.code = command.code;
-    academicPeriod.startDate = command.startDate;
-    academicPeriod.endDate = command.endDate;
-    academicPeriod.updated();
+    academicPeriod.update(
+      command.name,
+      command.code,
+      command.startDate,
+      command.endDate,
+    );
 
     await this.repository.update(academicPeriod);
   }

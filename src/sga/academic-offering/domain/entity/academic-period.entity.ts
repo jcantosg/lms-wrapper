@@ -58,6 +58,14 @@ export class AcademicPeriod extends BaseEntity {
     );
   }
 
+  public update(name: string, code: string, startDate: Date, endDate: Date) {
+    this._name = name;
+    this._code = code;
+    this._startDate = startDate;
+    this._endDate = endDate;
+    this.updated();
+  }
+
   public get name(): string {
     return this._name;
   }

@@ -13,9 +13,13 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
+
 export class CreateAdministrativeGroupHandler implements CommandHandler {
   constructor(
     private readonly administrativeGroupRepository: AdministrativeGroupRepository,
+    private readonly blockRelationRepository: BlockRelationRepository,
     private businessUnitGetter: BusinessUnitGetter,
     private academicPeriodGetter: AcademicPeriodGetter,
     private academicProgramGetter: AcademicProgramGetter,
@@ -55,12 +59,12 @@ export class CreateAdministrativeGroupHandler implements CommandHandler {
         }
 
         administrativeGroups.push(
-          ...this.createAdministrativeGroups(
+          ...(await this.createAdministrativeGroups(
             academicPeriod,
             academicProgram,
             businessUnit,
             command.adminUser,
-          ),
+          )),
         );
       }),
     );
@@ -86,26 +90,39 @@ export class CreateAdministrativeGroupHandler implements CommandHandler {
     );
   }
 
-  private createAdministrativeGroups(
+  private async createAdministrativeGroups(
     academicPeriod: AcademicPeriod,
     academicProgram: AcademicProgram,
     businessUnit: BusinessUnit,
     adminUser: AdminUser,
-  ): AdministrativeGroup[] {
-    return academicProgram.programBlocks
-      .slice()
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
-      .map((programBlock, index) =>
-        AdministrativeGroup.create(
-          this.uuidService.generate(),
-          this.generateCode(academicPeriod.code, academicProgram.code, index),
-          businessUnit,
-          academicPeriod,
-          academicProgram,
-          programBlock,
-          adminUser,
-        ),
-      );
+  ): Promise<AdministrativeGroup[]> {
+    return Promise.all(
+      academicProgram.programBlocks
+        .slice()
+        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        .map(async (programBlock, index) => {
+          const blockRelation =
+            await this.blockRelationRepository.getByProgramBlockAndAcademicPeriod(
+              programBlock,
+              academicPeriod,
+            );
+
+          if (!blockRelation) {
+            throw new ProgramBlockNotFoundException();
+          }
+
+          return AdministrativeGroup.create(
+            this.uuidService.generate(),
+            this.generateCode(academicPeriod.code, academicProgram.code, index),
+            businessUnit,
+            academicPeriod,
+            academicProgram,
+            programBlock,
+            blockRelation.periodBlock,
+            adminUser,
+          );
+        }),
+    );
   }
   private generateCode(
     academicPeriod: string,

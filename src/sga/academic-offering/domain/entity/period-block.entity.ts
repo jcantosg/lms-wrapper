@@ -1,8 +1,15 @@
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
+import { MonthEnum } from '#/sga/shared/domain/enum/month.enum';
+import {
+  calculateAcademicYear,
+  calculateStartMonth,
+} from '#shared/domain/lib/date';
 
 export class PeriodBlock extends BaseEntity {
+  private _startMonth: MonthEnum;
+  private _academicYear: string;
   private constructor(
     id: string,
     createdAt: Date,
@@ -65,6 +72,22 @@ export class PeriodBlock extends BaseEntity {
     this._name = value;
   }
 
+  public get startMonth(): MonthEnum {
+    return this._startMonth;
+  }
+
+  public set startMonth(value: MonthEnum) {
+    this._startMonth = value;
+  }
+
+  public get academicYear(): string {
+    return this._academicYear;
+  }
+
+  public set academicYear(value: string) {
+    this._academicYear = value;
+  }
+
   public static create(
     id: string,
     academicPeriod: AcademicPeriod,
@@ -73,7 +96,7 @@ export class PeriodBlock extends BaseEntity {
     endDate: Date,
     user: AdminUser,
   ): PeriodBlock {
-    return new PeriodBlock(
+    const periodBlock = new PeriodBlock(
       id,
       new Date(),
       new Date(),
@@ -84,6 +107,11 @@ export class PeriodBlock extends BaseEntity {
       user,
       user,
     );
+
+    periodBlock._startMonth = calculateStartMonth(startDate);
+    periodBlock._academicYear = calculateAcademicYear(startDate);
+
+    return periodBlock;
   }
 
   public updateStartDate(date: Date, user: AdminUser) {

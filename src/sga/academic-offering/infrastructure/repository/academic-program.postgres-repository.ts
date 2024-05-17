@@ -61,10 +61,7 @@ export class AcademicProgramPostgresRepository
       `${aliasQuery}.businessUnit`,
       'business_unit',
     );
-    queryBuilder.leftJoinAndSelect(
-      `${aliasQuery}.academicPeriods`,
-      'academicPeriods',
-    );
+
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.title`, 'title');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.programBlocks`,
@@ -72,7 +69,7 @@ export class AcademicProgramPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPeriods`,
-      'academic_period',
+      'academicPeriods',
     );
 
     return queryBuilder;
@@ -146,6 +143,7 @@ export class AcademicProgramPostgresRepository
   ): Promise<AcademicProgram[]> {
     const aliasQuery = 'academicProgram';
     const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
     const baseRepository = isSuperAdmin
       ? this
       : await this.filterBusinessUnits(

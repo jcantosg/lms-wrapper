@@ -26,6 +26,10 @@ const fieldOrderByMapping: Record<string, string> = {
   callDate: 'subjectCall.callDate',
   finalGrade: 'subjectCall.finalGrade',
   status: 'subjectCall.status',
+  academicProgram: 'academic_program.name',
+  academicYear: 'period_block.academicYear',
+  startMonth: 'period_block.startMonth',
+  blockName: 'period_block.name',
 };
 
 export class TypeOrmRepository<T extends ObjectLiteral> {

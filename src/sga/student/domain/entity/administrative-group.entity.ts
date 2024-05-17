@@ -6,6 +6,7 @@ import { Student } from '#student/domain/entity/student.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
+import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 
 export class AdministrativeGroup extends BaseEntity {
   private constructor(
@@ -15,12 +16,14 @@ export class AdministrativeGroup extends BaseEntity {
     private _academicPeriod: AcademicPeriod,
     private _academicProgram: AcademicProgram,
     private _programBlock: ProgramBlock,
+    private _periodBlock: PeriodBlock,
     private _students: Student[],
     private _teachers: EdaeUser[],
     createdAt: Date,
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _studentsNumber: number,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -97,6 +100,22 @@ export class AdministrativeGroup extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get studentsNumber(): number {
+    return this._studentsNumber;
+  }
+
+  public set studentsNumber(value: number) {
+    this._studentsNumber = value;
+  }
+
+  public get periodBlock(): PeriodBlock {
+    return this._periodBlock;
+  }
+
+  public set periodBlock(value: PeriodBlock) {
+    this._periodBlock = value;
+  }
+
   static create(
     id: string,
     code: string,
@@ -104,6 +123,7 @@ export class AdministrativeGroup extends BaseEntity {
     academicPeriod: AcademicPeriod,
     academicProgram: AcademicProgram,
     programBlock: ProgramBlock,
+    periodBlock: PeriodBlock,
     user: AdminUser,
   ): AdministrativeGroup {
     return new AdministrativeGroup(
@@ -113,12 +133,18 @@ export class AdministrativeGroup extends BaseEntity {
       academicPeriod,
       academicProgram,
       programBlock,
+      periodBlock,
       [],
       [],
       new Date(),
       new Date(),
       user,
       user,
+      0,
     );
+  }
+
+  public hasDelayedStudents() {
+    return new Date() > this._periodBlock.endDate && this._students.length > 0;
   }
 }

@@ -16,6 +16,12 @@ export const administrativeGroupSchema = new EntitySchema<AdministrativeGroup>({
       nullable: false,
       unique: true,
     },
+    studentsNumber: {
+      name: 'students_number',
+      type: Number,
+      nullable: false,
+      default: 0,
+    },
   },
   relations: {
     ...BaseSchemaRelations,
@@ -45,6 +51,13 @@ export const administrativeGroupSchema = new EntitySchema<AdministrativeGroup>({
       target: 'ProgramBlock',
       joinColumn: {
         name: 'program_block_id',
+      },
+    },
+    periodBlock: {
+      type: 'many-to-one',
+      target: 'PeriodBlock',
+      joinColumn: {
+        name: 'period_block_id',
       },
     },
     students: {

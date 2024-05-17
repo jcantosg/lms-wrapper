@@ -1,3 +1,5 @@
+import { MonthEnum } from '#/sga/shared/domain/enum/month.enum';
+
 const SECOND_IN_MS = 1000;
 const DAY_IN_MS = SECOND_IN_MS * 60 * 60 * 24;
 
@@ -45,4 +47,19 @@ export function getDateFormattedMMYY(date: Date): string {
   const year = date.getFullYear() % 100;
 
   return `${month}/${year}`;
+}
+
+export function calculateStartMonth(date: Date): MonthEnum {
+  return date.getMonth();
+}
+
+export function calculateAcademicYear(date: Date): string {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  if (month >= MonthEnum.August) {
+    return `${year}-${year + 1}`;
+  }
+
+  return `${year - 1}-${year}`;
 }

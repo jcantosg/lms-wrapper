@@ -7,6 +7,7 @@ import { BlockRelationRepository } from '#academic-offering/domain/repository/bl
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 
 @Injectable()
 export class BlockRelationPostgresRepository
@@ -55,7 +56,30 @@ export class BlockRelationPostgresRepository
   ): Promise<BlockRelation[]> {
     return await this.repository.find({
       where: { programBlock: { id: programBlock.id } },
-      relations: { periodBlock: true, programBlock: true },
+      relations: {
+        periodBlock: {
+          academicPeriod: true,
+        },
+        programBlock: true,
+      },
+    });
+  }
+
+  async getByProgramBlockAndAcademicPeriod(
+    programBlock: ProgramBlock,
+    academicPeriod: AcademicPeriod,
+  ): Promise<BlockRelation | null> {
+    return await this.repository.findOne({
+      where: {
+        programBlock: { id: programBlock.id },
+        periodBlock: { academicPeriod: { id: academicPeriod.id } },
+      },
+      relations: {
+        periodBlock: {
+          academicPeriod: true,
+        },
+        programBlock: true,
+      },
     });
   }
 }

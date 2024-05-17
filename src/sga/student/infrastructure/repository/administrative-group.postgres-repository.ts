@@ -5,6 +5,8 @@ import { AdministrativeGroupRepository } from '#student/domain/repository/admini
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 @Injectable()
 export class AdministrativeGroupPostgresRepository
@@ -26,12 +28,14 @@ export class AdministrativeGroupPostgresRepository
       academicPeriod: administrativeGroup.academicPeriod,
       academicProgram: administrativeGroup.academicProgram,
       programBlock: administrativeGroup.programBlock,
+      periodBlock: administrativeGroup.periodBlock,
       students: administrativeGroup.students,
       teachers: administrativeGroup.teachers,
       createdAt: administrativeGroup.createdAt,
       createdBy: administrativeGroup.createdBy,
       updatedAt: administrativeGroup.updatedAt,
       updatedBy: administrativeGroup.updatedBy,
+      studentsNumber: administrativeGroup.studentsNumber,
     });
   }
 
@@ -53,5 +57,84 @@ export class AdministrativeGroupPostgresRepository
 
   async saveBatch(administrativeGroups: AdministrativeGroup[]): Promise<void> {
     await this.repository.save(administrativeGroups);
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnit`,
+      'business_unit',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPeriod`,
+      'academic_period',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicProgram`,
+      'academic_program',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.programBlock`,
+      'program_block',
+    );
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.periodBlock`, 'period_block');
+
+    return queryBuilder;
+  }
+
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'administrativeGroup';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
+  }
+
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<AdministrativeGroup[]> {
+    const aliasQuery = 'administrativeGroup';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 }

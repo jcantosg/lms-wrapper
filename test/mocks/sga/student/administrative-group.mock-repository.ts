@@ -7,4 +7,6 @@ export class AdministrativeGroupMockRepository
   saveBatch = jest.fn();
   existsById = jest.fn();
   existsByCode = jest.fn();
+  count = jest.fn();
+  matching = jest.fn();
 }

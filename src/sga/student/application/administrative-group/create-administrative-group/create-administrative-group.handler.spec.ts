@@ -4,10 +4,12 @@ import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import {
+  getABlockRelation,
   getABusinessUnit,
   getAnAcademicPeriod,
   getAnAcademicProgram,
   getAnAdminUser,
+  getAPeriodBlock,
   getAProgramBlock,
 } from '#test/entity-factory';
 import { CreateAdministrativeGroupCommand } from '#student/application/administrative-group/create-administrative-group/create-administrative-group.command';
@@ -21,9 +23,12 @@ import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.s
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
 import { AdministrativeGroupDuplicatedCodeException } from '#shared/domain/exception/administrative-group/administrative-group.duplicated-code.exception';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { BlockRelationMockRepository } from '#test/mocks/sga/academic-offering/block-relation.mock-repository';
 
 let handler: CreateAdministrativeGroupHandler;
 let repository: AdministrativeGroupRepository;
+let blockRelationRepository: BlockRelationRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let academicPeriodGetter: AcademicPeriodGetter;
 let academicProgramGetter: AcademicProgramGetter;
@@ -33,11 +38,14 @@ let existsByCodeSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
 let getAcademicPeriodSpy: jest.SpyInstance;
 let getAcademicProgramSpy: jest.SpyInstance;
+let getByProgramBlockAndAcademicPeriodSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit();
 const academicPeriod = getAnAcademicPeriod();
 const academicProgram = getAnAcademicProgram();
 const programBlock = getAProgramBlock();
+const periodBlock = getAPeriodBlock();
+const blockRelation = getABlockRelation(periodBlock, programBlock);
 const adminUser = getAnAdminUser();
 
 academicProgram.programBlocks = [programBlock];
@@ -52,18 +60,24 @@ const command = new CreateAdministrativeGroupCommand(
 describe('CreateAcademicRecordHandler', () => {
   beforeAll(() => {
     repository = new AdministrativeGroupMockRepository();
+    blockRelationRepository = new BlockRelationMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     academicPeriodGetter = getAnAcademicPeriodGetterMock();
     academicProgramGetter = getAnAcademicProgramGetterMock();
 
     saveBatchSpy = jest.spyOn(repository, 'saveBatch');
     existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
+    getByProgramBlockAndAcademicPeriodSpy = jest.spyOn(
+      blockRelationRepository,
+      'getByProgramBlockAndAcademicPeriod',
+    );
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     getAcademicPeriodSpy = jest.spyOn(academicPeriodGetter, 'get');
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
 
     handler = new CreateAdministrativeGroupHandler(
       repository,
+      blockRelationRepository,
       businessUnitGetter,
       academicPeriodGetter,
       academicProgramGetter,
@@ -122,6 +136,9 @@ describe('CreateAcademicRecordHandler', () => {
       Promise.resolve(academicProgram),
     );
     existsByCodeSpy.mockImplementation(() => Promise.resolve(true));
+    getByProgramBlockAndAcademicPeriodSpy.mockImplementation(() =>
+      Promise.resolve(blockRelation),
+    );
 
     academicPeriod.businessUnit = businessUnit;
     academicProgram.businessUnit = businessUnit;
@@ -141,6 +158,9 @@ describe('CreateAcademicRecordHandler', () => {
       Promise.resolve(academicProgram),
     );
     existsByCodeSpy.mockImplementation(() => Promise.resolve(false));
+    getByProgramBlockAndAcademicPeriodSpy.mockImplementation(() =>
+      Promise.resolve(blockRelation),
+    );
 
     academicPeriod.businessUnit = businessUnit;
     academicProgram.businessUnit = businessUnit;
