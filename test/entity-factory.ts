@@ -35,6 +35,7 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -310,6 +311,19 @@ export const getAnEnrollment = (): Enrollment => {
     EnrollmentVisibilityEnum.PD,
     EnrollmentTypeEnum.UNIVERSAE,
     getAProgramBlock(),
+    getAnAdminUser(),
+  );
+};
+
+export const getAnAdministrativeGroup = (): AdministrativeGroup => {
+  return AdministrativeGroup.create(
+    uuid(),
+    'code',
+    getABusinessUnit(),
+    getAnAcademicPeriod(),
+    getAnAcademicProgram(),
+    getAProgramBlock(),
+    getAPeriodBlock(),
     getAnAdminUser(),
   );
 };

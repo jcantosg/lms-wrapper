@@ -7,6 +7,8 @@ import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { GetAllAdministrativeGroupsHandler } from '#student/application/administrative-group/get-all-administrative-groups/get-all-administrative-groups.handler';
 import { SearchAdministrativeGroupsHandler } from '#student/application/administrative-group/search-administrative-groups/search-administrative-groups.handler';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
+import { GetAdministrativeGroupHandler } from '#student/application/administrative-group/get-administrative-group/get-administrative-group.handler';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -54,8 +56,18 @@ const searchAdministrativeGroupsHandler = {
   inject: [AdministrativeGroupRepository],
 };
 
+const getAdministrativeGroupHandler = {
+  provide: GetAdministrativeGroupHandler,
+  useFactory: (
+    administrativeGroupGetter: AdministrativeGroupGetter,
+  ): GetAdministrativeGroupHandler =>
+    new GetAdministrativeGroupHandler(administrativeGroupGetter),
+  inject: [AdministrativeGroupGetter],
+};
+
 export const administrativeGroupHandlers = [
   createAdministrativeGroupHandler,
   getAllAdministrativeGroupsHandler,
   searchAdministrativeGroupsHandler,
+  getAdministrativeGroupHandler,
 ];

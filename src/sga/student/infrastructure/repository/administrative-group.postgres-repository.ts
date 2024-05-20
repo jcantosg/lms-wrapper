@@ -79,6 +79,8 @@ export class AdministrativeGroupPostgresRepository
       'program_block',
     );
 
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.students`, 'students');
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.teachers`, 'teachers');
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.periodBlock`, 'period_block');
 
     return queryBuilder;
@@ -136,5 +138,41 @@ export class AdministrativeGroupPostgresRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
+  }
+
+  async get(id: string): Promise<AdministrativeGroup | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: {
+        businessUnit: true,
+        academicPeriod: true,
+        academicProgram: true,
+        programBlock: true,
+        periodBlock: true,
+        students: true,
+        teachers: true,
+      },
+    });
+  }
+
+  async getByAdminUser(
+    administrativeGroupId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AdministrativeGroup | null> {
+    if (isSuperAdmin) {
+      return await this.get(administrativeGroupId);
+    }
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('administrativeGroup');
+
+    return await queryBuilder
+      .where('administrativeGroup.id = :id', { id: administrativeGroupId })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
   }
 }

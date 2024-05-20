@@ -16,7 +16,6 @@ export interface GetAdministrativeGroupResponse {
   academicPeriod: {
     id: string;
     name: string;
-    startDate: string;
   };
   startMonth: MonthEnum;
   academicYear: string;
@@ -56,8 +55,6 @@ export class GetAllAdministrativeGroupsResponse {
             academicPeriod: {
               id: administrativeGroup.academicPeriod.id,
               name: administrativeGroup.academicPeriod.name,
-              startDate:
-                administrativeGroup.academicPeriod.startDate.toISOString(),
             },
             startMonth: administrativeGroup.periodBlock.startMonth,
             academicYear: administrativeGroup.periodBlock.academicYear,

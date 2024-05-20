@@ -19,6 +19,9 @@ import {
   GetAllAdministrativeGroupsResponse,
 } from '#student/infrastructure/controller/administrative-group/get-all-administrative-groups/get-all-administrative-groups.response';
 import { MonthEnum } from '#/sga/shared/domain/enum/month.enum';
+import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { Roles } from '#/sga/shared/infrastructure/decorators/roles.decorator';
+import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';
 
 type GetAllAdministrativeGroupsQueryParams = {
   page: number;
@@ -39,7 +42,14 @@ export class GetAllAdministrativeGroupsController {
   constructor(private readonly handler: GetAllAdministrativeGroupsHandler) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(
+    AdminUserRoles.SUPERADMIN,
+    AdminUserRoles.JEFATURA,
+    AdminUserRoles.SUPERVISOR_JEFATURA,
+    AdminUserRoles.SUPERVISOR_SECRETARIA,
+    AdminUserRoles.SECRETARIA,
+  )
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(
       getAllAdministrativeGroupsSchema,

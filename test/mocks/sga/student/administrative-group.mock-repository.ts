@@ -9,4 +9,5 @@ export class AdministrativeGroupMockRepository
   existsByCode = jest.fn();
   count = jest.fn();
   matching = jest.fn();
+  getByAdminUser = jest.fn();
 }

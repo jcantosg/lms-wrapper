@@ -125,4 +125,10 @@ export class PeriodBlock extends BaseEntity {
     this.updatedAt = new Date();
     this._updatedBy = user;
   }
+
+  public blockNumber(): number {
+    return Number.isNaN(Number(this._name.slice(-1)))
+      ? 0
+      : Number(this._name.slice(-1));
+  }
 }

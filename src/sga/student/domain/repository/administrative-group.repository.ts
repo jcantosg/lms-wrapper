@@ -19,4 +19,9 @@ export abstract class AdministrativeGroupRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<AdministrativeGroup[]>;
+  abstract getByAdminUser(
+    administrativeGroupId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AdministrativeGroup | null>;
 }
