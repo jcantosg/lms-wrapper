@@ -51,6 +51,7 @@ export class AcademicRecordPostgresRepository
       `${aliasQuery}.businessUnit`,
       'business_unit',
     );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.student`, 'student');
 
     return queryBuilder;
   }
@@ -76,7 +77,7 @@ export class AcademicRecordPostgresRepository
       .getOne();
   }
 
-  async get(id: string): Promise<any> {
+  async get(id: string): Promise<AcademicRecord | null> {
     return await this.repository.findOne({
       where: { id },
       relations: {
@@ -92,5 +93,34 @@ export class AcademicRecordPostgresRepository
         virtualCampus: true,
       },
     });
+  }
+
+  async getStudentAcademicRecord(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicRecord[] | null> {
+    if (isSuperAdmin) {
+      return await this.repository.find({
+        where: { student: { id } },
+        relations: {
+          academicProgram: {
+            title: true,
+          },
+          academicPeriod: true,
+        },
+      });
+    }
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('academicRecord');
+
+    return await queryBuilder
+      .where('student.id = :id', { id: id })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getMany();
   }
 }

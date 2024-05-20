@@ -27,4 +27,21 @@ export class AcademicRecordGetter {
 
     return academicRecord;
   }
+
+  async getStudentAcademicRecord(
+    id: string,
+    adminBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ) {
+    const academicRecord = await this.repository.getStudentAcademicRecord(
+      id,
+      adminBusinessUnits,
+      isSuperAdmin,
+    );
+    if (!academicRecord) {
+      throw new AcademicRecordNotFoundException();
+    }
+
+    return academicRecord;
+  }
 }

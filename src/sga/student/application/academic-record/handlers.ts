@@ -9,6 +9,7 @@ import { AcademicProgramGetter } from '#academic-offering/domain/service/academi
 import { EditAcademicRecordHandler } from '#student/application/academic-record/edit-academic-record/edit-academic-record.handler';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { GetAcademicRecordDetailHandler } from '#student/application/academic-record/get-academic-record-detail/get-academic-record-detail.handler';
+import { GetStudentAcademicRecordHandler } from '#student/application/academic-record/get-student-academic-record/get-student-academic-record.handler';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -57,9 +58,19 @@ const getAcademicRecordDetailHandler = {
   inject: [AcademicRecordGetter],
 };
 
+const getStudentAcademicRecordHandler = {
+  provide: GetStudentAcademicRecordHandler,
+  useFactory: (
+    academicRecordGetter: AcademicRecordGetter,
+  ): GetStudentAcademicRecordHandler =>
+    new GetStudentAcademicRecordHandler(academicRecordGetter),
+  inject: [AcademicRecordGetter],
+};
+
 export const academicRecordHandlers = [
   GetAllAcademicRecordModalitiesHandler,
   createAcademicRecordHandler,
   editAcademicRecordHandler,
   getAcademicRecordDetailHandler,
+  getStudentAcademicRecordHandler,
 ];
