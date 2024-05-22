@@ -35,12 +35,14 @@ export class GetAcademicPeriodResponse {
         id: academicPeriod.businessUnit.id,
         name: academicPeriod.businessUnit.name,
       },
-      periodBlocks: academicPeriod.periodBlocks.map((pb) => ({
-        id: pb.id,
-        name: pb.name,
-        startDate: pb.startDate,
-        endDate: pb.endDate,
-      })),
+      periodBlocks: academicPeriod.periodBlocks
+        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+        .map((pb) => ({
+          id: pb.id,
+          name: pb.name,
+          startDate: pb.startDate,
+          endDate: pb.endDate,
+        })),
       blocksNumber: academicPeriod.periodBlocks.length,
     };
   }

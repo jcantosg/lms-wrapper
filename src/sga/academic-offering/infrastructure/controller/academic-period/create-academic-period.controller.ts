@@ -21,7 +21,6 @@ export interface PeriodBlockBody {
   id: string;
   name: string;
   startDate: Date;
-  endDate: Date;
 }
 
 interface CreateAcademicPeriodBody {

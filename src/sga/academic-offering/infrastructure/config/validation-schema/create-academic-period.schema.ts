@@ -13,7 +13,6 @@ export const createAcademicPeriodSchema: Joi.ObjectSchema = Joi.object({
         id: Joi.string().guid().required(),
         name: Joi.string().required(),
         startDate: Joi.date().required(),
-        endDate: Joi.date().required(),
       }),
     )
     .required(),

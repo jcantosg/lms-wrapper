@@ -64,13 +64,11 @@ describe('/academic-period (POST)', () => {
             id: uuid(),
             name: 'name1',
             startDate: new Date(),
-            endDate: new Date(),
           },
           {
             id: uuid(),
             name: 'name2',
             startDate: new Date(),
-            endDate: new Date(),
           },
         ],
       })
@@ -92,13 +90,11 @@ describe('/academic-period (POST)', () => {
             id: uuid(),
             name: 'name5',
             startDate: new Date(),
-            endDate: new Date(),
           },
           {
             id: uuid(),
             name: 'name6',
             startDate: new Date(),
-            endDate: new Date(),
           },
         ],
       })

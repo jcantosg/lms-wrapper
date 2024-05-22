@@ -34,7 +34,6 @@ const command = new CreateAcademicPeriodCommand(
       id: uuid(),
       name: 'name',
       startDate: new Date(),
-      endDate: new Date(),
     },
   ],
 );

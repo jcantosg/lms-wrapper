@@ -41,19 +41,22 @@ export class CreateAcademicPeriodHandler implements CommandHandler {
       command.periodBlocks.length,
       command.adminUser,
     );
-    const periodBlocks = [];
-    for (const periodBlock of command.periodBlocks) {
-      periodBlocks.push(
-        PeriodBlock.create(
-          periodBlock.id,
-          academicPeriod,
-          periodBlock.name,
-          periodBlock.startDate,
-          periodBlock.endDate,
-          command.adminUser,
-        ),
-      );
-    }
+    const periodBlocks: PeriodBlock[] = [];
+    command.periodBlocks
+      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+      .map((block, index) => {
+        const next = command.periodBlocks[index + 1];
+        periodBlocks.push(
+          PeriodBlock.create(
+            block.id,
+            academicPeriod,
+            block.name,
+            block.startDate,
+            next ? next.startDate : academicPeriod.endDate,
+            command.adminUser,
+          ),
+        );
+      });
     academicPeriod.periodBlocks = periodBlocks;
 
     await this.transactionalService.execute({
