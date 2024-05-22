@@ -2,7 +2,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
@@ -178,13 +178,28 @@ export class SubjectPostgresRepository
     businessUnitId: string,
     academicProgramId: string,
   ): Promise<Subject[]> {
-    return await this.repository.findBy({
-      businessUnit: {
-        id: businessUnitId,
+    const assignedSubjects =
+      await this.getSubjectsByAcademicProgram(academicProgramId);
+
+    const assignedSubjectsIds = assignedSubjects.map((subject) => subject.id);
+
+    return this.repository.find({
+      where: {
+        businessUnit: {
+          id: businessUnitId,
+        },
+        id: Not(In(assignedSubjectsIds)),
       },
-      programBlocks: {
-        academicProgram: {
-          id: Not(academicProgramId),
+    });
+  }
+
+  public getSubjectsByAcademicProgram(academicProgramId: string) {
+    return this.repository.find({
+      where: {
+        programBlocks: {
+          academicProgram: {
+            id: academicProgramId,
+          },
         },
       },
     });

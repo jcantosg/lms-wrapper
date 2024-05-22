@@ -36,4 +36,8 @@ export abstract class SubjectRepository {
   abstract getSubjectsNotEnrolled(
     academicRecord: AcademicRecord,
   ): Promise<Subject[]>;
+
+  abstract getSubjectsByAcademicProgram(
+    academicProgramId: string,
+  ): Promise<Subject[]>;
 }

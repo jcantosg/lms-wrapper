@@ -78,7 +78,16 @@ export class StudentPostgresRepository
   }
 
   async get(id: string): Promise<Student | null> {
-    return await this.repository.findOne({ where: { id: id } });
+    return await this.repository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        country: true,
+        citizenship: true,
+        contactCountry: true,
+      },
+    });
   }
 
   async count(

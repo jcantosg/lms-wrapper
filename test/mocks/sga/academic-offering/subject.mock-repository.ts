@@ -10,4 +10,5 @@ export class SubjectMockRepository implements SubjectRepository {
   count = jest.fn();
   getByBusinessUnit = jest.fn();
   getSubjectsNotEnrolled = jest.fn();
+  getSubjectsByAcademicProgram = jest.fn();
 }

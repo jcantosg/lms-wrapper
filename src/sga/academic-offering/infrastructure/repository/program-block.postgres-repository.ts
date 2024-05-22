@@ -27,7 +27,12 @@ export class ProgramBlockPostgresRepository
   async get(id: string): Promise<ProgramBlock | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { academicProgram: true, subjects: true },
+      relations: {
+        academicProgram: {
+          businessUnit: true,
+        },
+        subjects: true,
+      },
     });
   }
 
@@ -36,7 +41,11 @@ export class ProgramBlockPostgresRepository
 
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicProgram`,
-      'academic_program',
+      'academicProgram',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicProgram.businessUnit',
+      'businessUnit',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subjects`, 'subject');
 
@@ -59,7 +68,7 @@ export class ProgramBlockPostgresRepository
 
     return await queryBuilder
       .where('programBlock.id = :id', { id: programBlockId })
-      .andWhere('academic_program.businessUnit.id IN(:...ids)', {
+      .andWhere('academicProgram.businessUnit.id IN(:...ids)', {
         ids: adminUserBusinessUnits,
       })
       .getOne();
