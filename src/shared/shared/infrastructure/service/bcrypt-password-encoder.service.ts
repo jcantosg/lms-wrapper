@@ -1,4 +1,4 @@
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { hash } from 'bcrypt';
 
 const HASH_SALT = 10;

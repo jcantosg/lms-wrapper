@@ -1,8 +1,8 @@
 import { GetAccessQualificationsHandler } from '#student/application/get-access-qualifications/get-access-qualifications.handler';
 import { CreateStudentHandler } from '#student/application/create-student/create-student.handler';
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
-import { StudentGetter } from '#student/domain/service/student-getter.service';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { GetStudentsHandler } from '#student/application/get-students/get-students.handler';
@@ -17,6 +17,7 @@ import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -26,9 +27,12 @@ const getAccessQualificationsHandler = {
 
 const createStudentHandler = {
   provide: CreateStudentHandler,
-  useFactory: (repository: StudentRepository): CreateStudentHandler =>
-    new CreateStudentHandler(repository),
-  inject: [StudentRepository],
+  useFactory: (
+    repository: StudentRepository,
+    passwordEncoder: PasswordEncoder,
+  ): CreateStudentHandler =>
+    new CreateStudentHandler(repository, passwordEncoder),
+  inject: [StudentRepository, PasswordEncoder],
 };
 
 const editStudentHandler = {

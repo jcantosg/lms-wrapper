@@ -1,9 +1,9 @@
 import { GetStudentHandler } from '#student/application/get-student/get-student.handler';
-import { StudentGetter } from '#student/domain/service/student-getter.service';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { getASGAStudent } from '#test/entity-factory';
 import { GetStudentQuery } from '#student/application/get-student/get-student.query';
 import { getAStudentGetterMock } from '#test/service-factory';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 
 let handler: GetStudentHandler;

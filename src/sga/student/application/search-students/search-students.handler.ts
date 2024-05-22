@@ -1,8 +1,8 @@
 import { QueryHandler } from '#shared/domain/bus/query.handler';
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { SearchStudentsQuery } from '#student/application/search-students/search-students.query';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { SearchStudentsCriteria } from '#student/application/search-students/search-students.criteria';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 

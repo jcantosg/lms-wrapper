@@ -6,7 +6,7 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 
 export class AcademicRecord extends BaseEntity {
   private constructor(

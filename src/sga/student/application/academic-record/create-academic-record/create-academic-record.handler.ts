@@ -9,7 +9,7 @@ import { AcademicProgramNotFoundException } from '#shared/domain/exception/acade
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
-import { StudentGetter } from '#student/domain/service/student-getter.service';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AcademicRecordDuplicatedException } from '#student/shared/exception/academic-record-duplicated.exception';
 
 export class CreateAcademicRecordHandler implements CommandHandler {

@@ -1,8 +1,8 @@
-import { StudentGetter } from '#student/domain/service/student-getter.service';
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';
 import { getASGAStudent } from '#test/entity-factory';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 
 let service: StudentGetter;

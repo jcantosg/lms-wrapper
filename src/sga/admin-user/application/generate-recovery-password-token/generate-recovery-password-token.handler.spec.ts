@@ -3,12 +3,12 @@ import { GenerateRecoveryPasswordTokenHandler } from '#admin-user/application/ge
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
-import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { getAnAdminUser } from '#test/entity-factory';
 import { RecoveryPasswordTokenMockRepository } from '#test/mocks/sga/adminUser/recovery-password-token.mock-repository';
 import {
-  getAJwtTokenGeneratorMock,
   getAdminUserGetterMock,
+  getAJwtTokenGeneratorMock,
 } from '#test/service-factory';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';

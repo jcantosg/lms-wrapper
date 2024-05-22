@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import datasource from '#config/ormconfig';
 import { Logger } from '@nestjs/common';
 import { AppModule } from '#/app.module';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { seedCountries } from '#commands/country/seed-countries';
 import { seedBusinessUnits } from '#commands/business-unit/seed-business-units';
 import { createAdminUser } from '#commands/admin-user/create-default-admin-user';

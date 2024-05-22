@@ -1,6 +1,6 @@
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { v4 as uuid } from 'uuid';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { DataSource, Repository } from 'typeorm';
 import {
@@ -64,6 +64,7 @@ export class CreateStudentE2eSeed implements E2eSeed {
       CreateStudentE2eSeed.existingStudentEmail,
       CreateStudentE2eSeed.existingUniversaeEmail,
       this.superAdminUser,
+      'test123',
     );
     await this.studentRepository.save(this.existingStudent);
   }

@@ -1,5 +1,5 @@
 import { IdentityDocumentValues } from '#/sga/shared/domain/value-object/identity-document';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 
 interface GetStudentDetailResponse {
   id: string;

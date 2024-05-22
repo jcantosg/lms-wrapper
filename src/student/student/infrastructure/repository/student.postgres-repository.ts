@@ -1,8 +1,8 @@
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
-import { Student } from '#student/domain/entity/student.entity';
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { Student } from '#shared/domain/entity/student.entity';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { studentSchema } from '#student/infrastructure/config/schema/student.schema';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 import { Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
@@ -50,6 +50,7 @@ export class StudentPostgresRepository
       createdBy: student.createdBy,
       updatedBy: student.updatedBy,
       academicRecords: student.academicRecords,
+      password: student.password,
     });
   }
 
@@ -151,5 +152,9 @@ export class StudentPostgresRepository
     );
 
     return queryBuilder;
+  }
+
+  async getByEmail(email: string): Promise<Student | null> {
+    return await this.repository.findOne({ where: { universaeEmail: email } });
   }
 }

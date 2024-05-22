@@ -3,7 +3,7 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';

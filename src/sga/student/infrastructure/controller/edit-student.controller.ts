@@ -8,8 +8,8 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { IdentityDocumentValues } from '#/sga/shared/domain/value-object/identity-document';
-import { StudentGender } from '#student/domain/enum/student-gender.enum';
-import { AccessQualification } from '#student/domain/enum/access-qualification.enum';
+import { StudentGender } from '#shared/domain/enum/student-gender.enum';
+import { AccessQualification } from '#shared/domain/enum/access-qualification.enum';
 import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
 import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { RolesGuard } from '#/sga/shared/infrastructure/auth/roles.guard';

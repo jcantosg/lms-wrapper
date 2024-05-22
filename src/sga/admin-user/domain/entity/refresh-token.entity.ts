@@ -13,6 +13,7 @@ export class RefreshToken extends BaseEntity {
   ) {
     super(id, createdAt, updatedAt);
   }
+
   static createForUser(id: string, user: AdminUser, ttl: number) {
     const now = getNow();
 

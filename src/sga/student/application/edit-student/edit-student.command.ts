@@ -1,7 +1,7 @@
 import { Command } from '#shared/domain/bus/command';
-import { StudentGender } from '#student/domain/enum/student-gender.enum';
+import { StudentGender } from '#shared/domain/enum/student-gender.enum';
 import { IdentityDocumentValues } from '#/sga/shared/domain/value-object/identity-document';
-import { AccessQualification } from '#student/domain/enum/access-qualification.enum';
+import { AccessQualification } from '#shared/domain/enum/access-qualification.enum';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 
 export class EditStudentCommand implements Command {

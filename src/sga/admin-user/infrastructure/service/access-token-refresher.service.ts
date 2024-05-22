@@ -2,7 +2,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { RefreshToken } from '#admin-user/domain/entity/refresh-token.entity';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { RefreshTokenRepository } from '#admin-user/domain/repository/refresh-token.repository';
-import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { AdminUserNotFoundException } from '#shared/domain/exception/admin-user/admin-user-not-found.exception';
 import { RefreshTokenNotFoundException } from '#shared/domain/exception/admin-user/refresh-token-not-found.exception';
 import { RefreshTokenRevokedException } from '#shared/domain/exception/admin-user/refresh-token-revoked.exception';
@@ -20,6 +20,7 @@ export interface RefreshTokenPayload {
 @Injectable()
 export class AccessTokenRefresherService {
   private logger: Logger;
+
   constructor(
     private readonly adminUserRepository: AdminUserRepository,
     private readonly tokenRepository: RefreshTokenRepository,

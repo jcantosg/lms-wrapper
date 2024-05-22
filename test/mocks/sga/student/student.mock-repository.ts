@@ -1,4 +1,4 @@
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 
 export class StudentMockRepository implements StudentRepository {
   save = jest.fn();
@@ -8,4 +8,5 @@ export class StudentMockRepository implements StudentRepository {
   get = jest.fn();
   count = jest.fn();
   matching = jest.fn();
+  getByEmail = jest.fn();
 }

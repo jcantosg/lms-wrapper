@@ -1,6 +1,6 @@
 import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
-import { StudentRepository } from '#student/domain/repository/student.repository';
-import { StudentGetter } from '#student/domain/service/student-getter.service';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { getAnAdminUser, getASGAStudent } from '#test/entity-factory';

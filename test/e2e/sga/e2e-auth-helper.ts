@@ -1,7 +1,7 @@
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
-import { BCryptPasswordEncoder } from '#admin-user/infrastructure/service/bcrypt-password-encoder.service';
+import { BCryptPasswordEncoder } from '#shared/infrastructure/service/bcrypt-password-encoder.service';
 import supertest from 'supertest';
 import { DataSource } from 'typeorm';
 import {

@@ -2,15 +2,15 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import {
-  getARecoveryPasswordToken,
   getAnAdminUser,
+  getARecoveryPasswordToken,
 } from '#test/entity-factory';
 import { RecoveryPasswordTokenMockRepository } from '#test/mocks/sga/adminUser/recovery-password-token.mock-repository';
 import {
-  PasswordEncoderMock,
-  getAJwtServiceMock,
   getAdminUserGetterMock,
+  getAJwtServiceMock,
   getRecoveryPasswordTokenGetterMock,
+  PasswordEncoderMock,
 } from '#test/service-factory';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
@@ -18,7 +18,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdatePasswordHandler } from '#admin-user/application/update-password/update-password.handler';
 import { UpdatePasswordCommand } from '#admin-user/application/update-password/update-password.command';
 import { AdminUserMockRepository } from '#test/mocks/sga/adminUser/admin-user.mock-repository';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
 
 let adminUserGetter: AdminUserGetter;

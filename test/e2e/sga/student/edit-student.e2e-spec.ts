@@ -5,7 +5,7 @@ import { startApp } from '#test/e2e/e2e-helper';
 import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 
 const path = `/student/${EditStudentE2eSeed.existingStudentId}`;
 

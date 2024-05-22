@@ -4,7 +4,7 @@ import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
-import { StudentGetter } from '#student/domain/service/student-getter.service';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AcademicRecordMockRepository } from '#test/mocks/sga/student/academic-record.mock-repository';
 import {
   getAnAcademicPeriodGetterMock,

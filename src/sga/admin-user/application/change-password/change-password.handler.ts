@@ -1,7 +1,7 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { ChangePasswordCommand } from '#admin-user/application/change-password/change-password.command';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
 import { PasswordChecker } from '#admin-user/domain/service/password-checker.service';
 import { InvalidPasswordException } from '#shared/domain/exception/admin-user/invalid-password.exception';

@@ -1,7 +1,7 @@
 import datasource from '#config/ormconfig';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { adminUsers } from './admin-users';
 import {
   IdentityDocument,

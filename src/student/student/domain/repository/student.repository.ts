@@ -1,4 +1,4 @@
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
@@ -27,4 +27,6 @@ export abstract class StudentRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<number>;
+
+  abstract getByEmail(email: string): Promise<Student | null>;
 }

@@ -1,5 +1,5 @@
 import { CreateStudentHandler } from '#student/application/create-student/create-student.handler';
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { CreateStudentCommand } from '#student/application/create-student/create-student.command';
 import { v4 as uuid } from 'uuid';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';
@@ -7,6 +7,8 @@ import { StudentDuplicatedException } from '#student/shared/exception/student-du
 import { StudentDuplicatedEmailException } from '#student/shared/exception/student-duplicated-email.exception';
 import { StudentDuplicatedUniversaeEmailException } from '#student/shared/exception/student-duplicated-universae-email.exception';
 import { getAnAdminUser } from '#test/entity-factory';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { PasswordEncoderMock } from '#test/service-factory';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateStudentHandler;
@@ -15,6 +17,7 @@ let saveSpy: jest.SpyInstance;
 let existsByIdSpy: jest.SpyInstance;
 let existsByEmailSpy: jest.SpyInstance;
 let existsByUniversaeSpy: jest.SpyInstance;
+let passwordEncoder: PasswordEncoder;
 
 const command = new CreateStudentCommand(
   uuid(),
@@ -28,7 +31,8 @@ const command = new CreateStudentCommand(
 describe('Create Student Handler Test', () => {
   beforeAll(() => {
     repository = new StudentMockRepository();
-    handler = new CreateStudentHandler(repository);
+    passwordEncoder = new PasswordEncoderMock();
+    handler = new CreateStudentHandler(repository, passwordEncoder);
     saveSpy = jest.spyOn(repository, 'save');
     existsByIdSpy = jest.spyOn(repository, 'existsById');
     existsByEmailSpy = jest.spyOn(repository, 'existsByEmail');

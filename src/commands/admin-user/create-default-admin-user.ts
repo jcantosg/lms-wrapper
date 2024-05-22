@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import datasource from '#config/ormconfig';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import {
   IdentityDocument,

@@ -22,12 +22,12 @@ import { RemoveBusinessUnitFromAdminUserHandler } from '#admin-user/application/
 import { AddBusinessUnitsToAdminUserHandler } from '#admin-user/application/add-business-units-to-admin-user/add-business-units-to-admin-user.handler';
 import { GenerateRecoveryPasswordTokenHandler } from '#admin-user/application/generate-recovery-password-token/generate-recovery-password-token.handler';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
-import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { ConfigService } from '@nestjs/config';
 import { UpdatePasswordHandler } from '#admin-user/application/update-password/update-password.handler';
 import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery-password-token-getter.service';
 import { JwtService } from '@nestjs/jwt';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { EditProfileHandler } from '#admin-user/application/edit-profile/edit-profile.handler';
 import { ChangePasswordHandler } from '#admin-user/application/change-password/change-password.handler';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';

@@ -6,7 +6,7 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Country } from '#shared/domain/entity/country.entity';
@@ -107,6 +107,7 @@ export class EditAcademicRecordE2eSeed implements E2eSeed {
     this.virtualCampusRepository = datasource.getRepository(VirtualCampus);
     this.academicRecordRepository = datasource.getRepository(AcademicRecord);
   }
+
   async arrange(): Promise<void> {
     const country = await this.countryRepository.findOneByOrFail({
       name: 'España',
@@ -218,6 +219,7 @@ export class EditAcademicRecordE2eSeed implements E2eSeed {
       EditAcademicRecordE2eSeed.studentEmail,
       EditAcademicRecordE2eSeed.universaeEmail,
       this.superAdminUser,
+      'test123',
     );
     await this.studentRepository.save(this.student);
 

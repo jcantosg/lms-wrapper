@@ -1,8 +1,8 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
-import { AccessQualification } from '#student/domain/enum/access-qualification.enum';
-import { StudentGender } from '#student/domain/enum/student-gender.enum';
-import { StudentStatus } from '#student/domain/enum/student-status.enum';
-import { StudentOrigin } from '#student/domain/enum/student-origin.enum.';
+import { AccessQualification } from '#shared/domain/enum/access-qualification.enum';
+import { StudentGender } from '#shared/domain/enum/student-gender.enum';
+import { StudentStatus } from '#shared/domain/enum/student-status.enum';
+import { StudentOrigin } from '#shared/domain/enum/student-origin.enum.';
 import { Country } from '#shared/domain/entity/country.entity';
 import {
   IdentityDocument,
@@ -10,6 +10,8 @@ import {
 } from '#/sga/shared/domain/value-object/identity-document';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+
+export const DEFAULT_PASSWORD = 'Universa3€';
 
 export class Student extends BaseEntity {
   private constructor(
@@ -44,6 +46,7 @@ export class Student extends BaseEntity {
     private _guardianEmail: string | null,
     private _guardianPhone: string | null,
     private _academicRecords: AcademicRecord[],
+    private _password: string | null,
   ) {
     super(id, new Date(), new Date());
   }
@@ -288,6 +291,14 @@ export class Student extends BaseEntity {
     this._academicRecords = value;
   }
 
+  public get password(): string | null {
+    return this._password;
+  }
+
+  public set password(value: string | null) {
+    this._password = value;
+  }
+
   static createFromSGA(
     id: string,
     name: string,
@@ -296,6 +307,7 @@ export class Student extends BaseEntity {
     email: string,
     universaeEmail: string,
     user: AdminUser,
+    password: string,
   ): Student {
     return new Student(
       id,
@@ -329,6 +341,53 @@ export class Student extends BaseEntity {
       null,
       null,
       [],
+      password,
+    );
+  }
+
+  static createFromCRM(
+    id: string,
+    name: string,
+    surname: string,
+    surname2: string,
+    email: string,
+    password: string,
+    universaeEmail: string,
+    user: AdminUser,
+  ) {
+    return new Student(
+      id,
+      name,
+      surname,
+      surname2,
+      email,
+      universaeEmail,
+      StudentStatus.CREATED,
+      true,
+      StudentOrigin.SGA,
+      user,
+      user,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      [],
+      password,
     );
   }
 

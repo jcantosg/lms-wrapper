@@ -1,9 +1,8 @@
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
 import { getAnAdminUser } from '#test/entity-factory';
 import { AdminUserMockRepository } from '#test/mocks/sga/adminUser/admin-user.mock-repository';
-import clearAllMocks = jest.clearAllMocks;
 import { ChangePasswordHandler } from '#admin-user/application/change-password/change-password.handler';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
 import { ChangePasswordCommand } from '#admin-user/application/change-password/change-password.command';
 import { PasswordChecker } from '#admin-user/domain/service/password-checker.service';
@@ -14,6 +13,7 @@ import {
   PasswordFormatCheckerMock,
 } from '#test/service-factory';
 import { InvalidFormatPasswordException } from '#shared/domain/exception/admin-user/invalid-format-password.exception';
+import clearAllMocks = jest.clearAllMocks;
 
 let handler: ChangePasswordHandler;
 let repository: AdminUserRepository;

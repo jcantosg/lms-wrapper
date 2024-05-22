@@ -1,6 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { StudentRepository } from '#student/domain/repository/student.repository';
-import { StudentGetter } from '#student/domain/service/student-getter.service';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { EditStudentCommand } from '#student/application/edit-student/edit-student.command';
 import { StudentDuplicatedEmailException } from '#student/shared/exception/student-duplicated-email.exception';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';

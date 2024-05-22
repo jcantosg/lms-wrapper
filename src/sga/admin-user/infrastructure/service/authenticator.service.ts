@@ -1,5 +1,5 @@
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
-import { JwtTokenGenerator } from './jwt-token-generator.service';
+import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { RefreshTokenGenerator } from './refresh-token-generator.service';
 import { Injectable } from '@nestjs/common';
 

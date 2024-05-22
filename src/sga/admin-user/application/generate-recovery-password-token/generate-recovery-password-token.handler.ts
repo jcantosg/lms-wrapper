@@ -5,7 +5,7 @@ import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-passwo
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { RecoveryPasswordTokenGeneratedEvent } from '#admin-user/domain/event/recovery-password-token-generated.event';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 

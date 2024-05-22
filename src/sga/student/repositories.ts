@@ -1,5 +1,3 @@
-import { StudentRepository } from '#student/domain/repository/student.repository';
-import { StudentPostgresRepository } from '#student/infrastructure/repository/student.postgres-repository';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { AcademicRecordPostgresRepository } from '#student/infrastructure/repository/academic-record.postgres-repository';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
@@ -10,10 +8,6 @@ import { EnrollmentRepository } from '#student/domain/repository/enrollment.repo
 import { EnrollmentPostgresRepository } from '#student/infrastructure/repository/enrollment.postgres-repository';
 
 export const repositories = [
-  {
-    provide: StudentRepository,
-    useClass: StudentPostgresRepository,
-  },
   {
     provide: AcademicRecordRepository,
     useClass: AcademicRecordPostgresRepository,

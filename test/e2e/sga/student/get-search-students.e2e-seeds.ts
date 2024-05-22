@@ -1,7 +1,7 @@
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { v4 as uuid } from 'uuid';
 import { DataSource, Repository } from 'typeorm';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
@@ -157,6 +157,7 @@ export class GetSearchStudentsE2eSeed implements E2eSeed {
       GetSearchStudentsE2eSeed.studentEmail,
       GetSearchStudentsE2eSeed.studentUniversaeEmail,
       this.superAdminUser,
+      'test123',
     );
     await this.studentRepository.save(student);
     const academicRecord = AcademicRecord.create(

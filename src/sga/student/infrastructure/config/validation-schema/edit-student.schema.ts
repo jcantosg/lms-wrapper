@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import { getAllStudentGenders } from '#student/domain/enum/student-gender.enum';
-import { getAccessQualification } from '#student/domain/enum/access-qualification.enum';
+import { getAllStudentGenders } from '#shared/domain/enum/student-gender.enum';
+import { getAccessQualification } from '#shared/domain/enum/access-qualification.enum';
 
 export const editStudentSchema = Joi.object({
   name: Joi.string().required(),

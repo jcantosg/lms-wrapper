@@ -1,13 +1,20 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { StudentRepository } from '#student/domain/repository/student.repository';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { CreateStudentCommand } from '#student/application/create-student/create-student.command';
 import { StudentDuplicatedException } from '#student/shared/exception/student-duplicated.exception';
 import { StudentDuplicatedEmailException } from '#student/shared/exception/student-duplicated-email.exception';
 import { StudentDuplicatedUniversaeEmailException } from '#student/shared/exception/student-duplicated-universae-email.exception';
-import { Student } from '#student/domain/entity/student.entity';
+import {
+  DEFAULT_PASSWORD,
+  Student,
+} from '#shared/domain/entity/student.entity';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 
 export class CreateStudentHandler implements CommandHandler {
-  constructor(private readonly repository: StudentRepository) {}
+  constructor(
+    private readonly repository: StudentRepository,
+    private readonly passwordEncoder: PasswordEncoder,
+  ) {}
 
   async handle(command: CreateStudentCommand): Promise<void> {
     if (await this.repository.existsById(command.id)) {
@@ -32,6 +39,7 @@ export class CreateStudentHandler implements CommandHandler {
       command.email,
       command.universaeEmail,
       command.adminUser,
+      await this.passwordEncoder.encodePassword(DEFAULT_PASSWORD),
     );
 
     await this.repository.save(student);

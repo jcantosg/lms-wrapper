@@ -1,6 +1,6 @@
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
-import { StudentStatus } from '#student/domain/enum/student-status.enum';
 import { MonthEnum } from '#/sga/shared/domain/enum/month.enum';
+import { StudentStatus } from '#shared/domain/enum/student-status.enum';
 
 type AdministrativeGroupStudent = {
   id: string;

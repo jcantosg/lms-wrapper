@@ -1,4 +1,4 @@
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { IdentityDocumentValues } from '#/sga/shared/domain/value-object/identity-document';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';

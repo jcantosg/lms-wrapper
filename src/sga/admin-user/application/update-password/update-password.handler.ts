@@ -7,7 +7,7 @@ import { RecoveryPasswordTokenGetter } from '#admin-user/domain/service/recovery
 import { JwtService } from '@nestjs/jwt';
 import { getNow } from '#shared/domain/lib/date';
 import { AdminUserRepository } from '#admin-user/domain/repository/admin-user.repository';
-import { PasswordEncoder } from '#admin-user/domain/service/password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 
 export class UpdatePasswordHandler implements CommandHandler {
   constructor(

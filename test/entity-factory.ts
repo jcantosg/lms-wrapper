@@ -27,7 +27,7 @@ import { ProgramBlockStructureType } from '#academic-offering/domain/enum/progra
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
@@ -253,6 +253,7 @@ export const getASGAStudent = (): Student => {
     'test@test.org',
     'test@universae.com',
     getAnAdminUser(),
+    'test',
   );
 };
 

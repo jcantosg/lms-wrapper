@@ -9,6 +9,12 @@ import { GeonamesWrapper } from '#shared/infrastructure/clients/geonames/geoname
 import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { BCryptPasswordEncoder } from '#shared/infrastructure/service/bcrypt-password-encoder.service';
+import { StudentPasswordChecker } from '#/student/student/domain/service/student-password-checker.service';
+import { BcryptStudentPasswordChecker } from '#/student/student/infrastructure/service/bcrypt-student-password-checker.service';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
+import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -43,9 +49,29 @@ const uuidService = {
   useClass: UUIDv4GeneratorService,
 };
 
+const studentGetter = {
+  provide: StudentGetter,
+  useFactory: (repository: StudentRepository): StudentGetter =>
+    new StudentGetter(repository),
+  inject: [StudentRepository],
+};
+
+const passwordEncoder = {
+  provide: PasswordEncoder,
+  useClass: BCryptPasswordEncoder,
+};
+
+const passwordChecker = {
+  provide: StudentPasswordChecker,
+  useClass: BcryptStudentPasswordChecker,
+};
+
 export const services = [
   countryGetter,
   imageUploader,
   provinceGetter,
   uuidService,
+  studentGetter,
+  passwordEncoder,
+  passwordChecker,
 ];

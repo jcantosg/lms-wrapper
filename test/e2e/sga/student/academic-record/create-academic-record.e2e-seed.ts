@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { v4 as uuid } from 'uuid';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
@@ -183,6 +183,7 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
       CreateAcademicRecordE2eSeed.studentEmail,
       CreateAcademicRecordE2eSeed.universaeEmail,
       this.superAdminUser,
+      'test123',
     );
     await this.studentRepository.save(this.student);
   }

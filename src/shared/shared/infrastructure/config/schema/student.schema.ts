@@ -1,15 +1,15 @@
 import { EntitySchema } from 'typeorm';
-import { Student } from '#student/domain/entity/student.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 import {
   BaseSchemaColumns,
   BaseSchemaRelations,
 } from '#shared/infrastructure/config/schema/base.schema';
-import { StudentGender } from '#student/domain/enum/student-gender.enum';
+import { StudentGender } from '#shared/domain/enum/student-gender.enum';
 import { ValueObjectTransformer } from '#shared/infrastructure/value-object/value-object-transformer';
 import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
-import { StudentStatus } from '#student/domain/enum/student-status.enum';
-import { StudentOrigin } from '#student/domain/enum/student-origin.enum.';
-import { AccessQualification } from '#student/domain/enum/access-qualification.enum';
+import { StudentStatus } from '#shared/domain/enum/student-status.enum';
+import { StudentOrigin } from '#shared/domain/enum/student-origin.enum.';
+import { AccessQualification } from '#shared/domain/enum/access-qualification.enum';
 
 export const studentSchema = new EntitySchema<Student>({
   name: 'Student',
@@ -123,6 +123,10 @@ export const studentSchema = new EntitySchema<Student>({
       nullable: true,
     },
     guardianPhone: {
+      type: String,
+      nullable: true,
+    },
+    password: {
       type: String,
       nullable: true,
     },

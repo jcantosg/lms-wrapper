@@ -10,7 +10,7 @@ import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AdminUserBlockedEvent } from '#admin-user/domain/event/admin-user-blocked.event';
 import { MaximumLoginAttemptsException } from '#shared/domain/exception/admin-user/maximum-login-attempts.exception';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
-import { JwtTokenGenerator } from '#admin-user/infrastructure/service/jwt-token-generator.service';
+import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { RecoveryPasswordToken } from '#admin-user/domain/entity/recovery-password-token.entity';
 
 @Injectable()

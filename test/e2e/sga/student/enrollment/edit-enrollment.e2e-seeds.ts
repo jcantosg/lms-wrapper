@@ -6,7 +6,6 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
-import { Student } from '#student/domain/entity/student.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Country } from '#shared/domain/entity/country.entity';
@@ -28,6 +27,7 @@ import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enroll
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
+import { Student } from '#shared/domain/entity/student.entity';
 
 export class EditEnrollmentE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -251,6 +251,7 @@ export class EditEnrollmentE2eSeed implements E2eSeed {
       EditEnrollmentE2eSeed.studentEmail,
       EditEnrollmentE2eSeed.universaeEmail,
       this.superAdminUser,
+      'test123',
     );
     await this.studentRepository.save(this.student);
     this.enrollment = Enrollment.create(
