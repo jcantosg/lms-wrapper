@@ -16,4 +16,8 @@ export class StudentRefreshTokenPostgresRepository
     token.updated();
     await this.repository.save(token);
   }
+
+  async get(id: string): Promise<StudentRefreshToken | null> {
+    return await this.repository.findOne({ where: { id } });
+  }
 }

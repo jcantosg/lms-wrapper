@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Authenticator } from '#/student/student/infrastructure/service/student-authenticator.service';
 import { StudentCredentialsChecker } from '#/student/student/infrastructure/service/student-credentials-checker.service';
 import { RefreshTokenGenerator } from '#/student/student/infrastructure/service/refresh-token-generator.service';
+import { StudentAccessTokenRefresher } from '#/student/student/infrastructure/service/student-access-token-refresher.service';
 
 const authenticator = {
   provide: Authenticator,
@@ -21,9 +22,11 @@ const authenticator = {
   },
   inject: [JwtTokenGenerator, RefreshTokenGenerator, ConfigService],
 };
+
 export const services = [
   authenticator,
   StudentCredentialsChecker,
   RefreshTokenGenerator,
   JwtTokenGenerator,
+  StudentAccessTokenRefresher,
 ];
