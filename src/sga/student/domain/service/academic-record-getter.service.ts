@@ -33,15 +33,15 @@ export class AcademicRecordGetter {
     adminBusinessUnits: string[],
     isSuperAdmin: boolean,
   ) {
-    const academicRecord = await this.repository.getStudentAcademicRecord(
+    const academicRecords = await this.repository.getStudentAcademicRecords(
       id,
       adminBusinessUnits,
       isSuperAdmin,
     );
-    if (!academicRecord) {
+    if (academicRecords.length === 0) {
       throw new AcademicRecordNotFoundException();
     }
 
-    return academicRecord;
+    return academicRecords;
   }
 }

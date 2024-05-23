@@ -95,11 +95,11 @@ export class AcademicRecordPostgresRepository
     });
   }
 
-  async getStudentAcademicRecord(
+  async getStudentAcademicRecords(
     id: string,
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
-  ): Promise<AcademicRecord[] | null> {
+  ): Promise<AcademicRecord[]> {
     if (isSuperAdmin) {
       return await this.repository.find({
         where: { student: { id } },

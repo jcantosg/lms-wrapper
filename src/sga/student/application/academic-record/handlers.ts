@@ -62,9 +62,10 @@ const getStudentAcademicRecordHandler = {
   provide: GetStudentAcademicRecordHandler,
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
+    studentGetter: StudentGetter,
   ): GetStudentAcademicRecordHandler =>
-    new GetStudentAcademicRecordHandler(academicRecordGetter),
-  inject: [AcademicRecordGetter],
+    new GetStudentAcademicRecordHandler(academicRecordGetter, studentGetter),
+  inject: [AcademicRecordGetter, StudentGetter],
 };
 
 export const academicRecordHandlers = [

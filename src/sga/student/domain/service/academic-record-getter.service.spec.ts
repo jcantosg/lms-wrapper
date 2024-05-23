@@ -21,7 +21,7 @@ describe('Academic Record Getter Service', () => {
     getByAdminUserSpy = jest.spyOn(repository, 'getByAdminUser');
     getStudentAcademicRecordSpy = jest.spyOn(
       repository,
-      'getStudentAcademicRecord',
+      'getStudentAcademicRecords',
     );
   });
 
@@ -43,21 +43,21 @@ describe('Academic Record Getter Service', () => {
     ).rejects.toThrow(AcademicRecordNotFoundException);
   });
 
-  it('should return a student academic record', async () => {
+  it('should return a student academic records array', async () => {
     getStudentAcademicRecordSpy.mockImplementation(
-      (): Promise<AcademicRecord | null> => Promise.resolve(academicRecord),
+      (): Promise<AcademicRecord[]> => Promise.resolve([academicRecord]),
     );
     const result = await service.getStudentAcademicRecord(
       academicRecord.id,
       adminUser.businessUnits.map((bu) => bu.id),
       adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
-    expect(result).toEqual(academicRecord);
+    expect(result).toEqual([academicRecord]);
   });
 
-  it('should throw an AcademicRecordNotFoundException when student academic record does not exist', async () => {
+  it('should throw an AcademicRecordNotFoundException when array is empty', async () => {
     getStudentAcademicRecordSpy.mockImplementation(
-      (): Promise<AcademicRecord | null> => Promise.resolve(null),
+      (): Promise<AcademicRecord[]> => Promise.resolve([]),
     );
 
     await expect(
