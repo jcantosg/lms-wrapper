@@ -3,7 +3,7 @@ import { AdministrativeGroupRepository } from '#student/domain/repository/admini
 import { getAnAdministrativeGroup, getAnAdminUser } from '#test/entity-factory';
 import { AdministrativeGroupMockRepository } from '#test/mocks/sga/student/administrative-group.mock-repository';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
-import { AdministrativeGroupNotFound } from '#shared/domain/exception/administrative-group/administrative-group.not-found';
+import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
 
 let service: AdministrativeGroupGetter;
 let repository: AdministrativeGroupRepository;
@@ -26,7 +26,7 @@ describe('Administrative Group Getter Service', () => {
 
     await expect(
       service.getByAdminUser(administrativeGroup.id, adminUser),
-    ).rejects.toThrow(AdministrativeGroupNotFound);
+    ).rejects.toThrow(AdministrativeGroupNotFoundException);
   });
 
   it('should return an administrative group', async () => {

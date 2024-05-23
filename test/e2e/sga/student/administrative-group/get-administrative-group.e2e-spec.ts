@@ -32,12 +32,6 @@ describe('/administrative-group/:id (GET)', () => {
     );
   });
 
-  afterAll(async () => {
-    await seeder.clear();
-    await datasource.destroy();
-    await app.close();
-  });
-
   it('should return unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
   });
@@ -86,5 +80,11 @@ describe('/administrative-group/:id (GET)', () => {
         teachers: [],
       }),
     );
+  });
+
+  afterAll(async () => {
+    await seeder.clear();
+    await datasource.destroy();
+    await app.close();
   });
 });

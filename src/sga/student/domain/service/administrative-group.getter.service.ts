@@ -2,7 +2,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { AdministrativeGroupNotFound } from '#shared/domain/exception/administrative-group/administrative-group.not-found';
+import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
 
 export class AdministrativeGroupGetter {
   constructor(private readonly repository: AdministrativeGroupRepository) {}
@@ -18,7 +18,7 @@ export class AdministrativeGroupGetter {
     );
 
     if (!administrativeGroup) {
-      throw new AdministrativeGroupNotFound();
+      throw new AdministrativeGroupNotFoundException();
     }
 
     return administrativeGroup;

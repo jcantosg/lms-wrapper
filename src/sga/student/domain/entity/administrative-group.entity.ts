@@ -147,4 +147,10 @@ export class AdministrativeGroup extends BaseEntity {
   public hasDelayedStudents() {
     return new Date() > this._periodBlock.endDate && this._students.length > 0;
   }
+
+  addTeacher(teacher: EdaeUser) {
+    if (!this._teachers.find((teachEdae) => teachEdae.id === teacher.id)) {
+      this._teachers.push(teacher);
+    }
+  }
 }

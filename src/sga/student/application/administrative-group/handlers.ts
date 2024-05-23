@@ -9,6 +9,8 @@ import { SearchAdministrativeGroupsHandler } from '#student/application/administ
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { GetAdministrativeGroupHandler } from '#student/application/administrative-group/get-administrative-group/get-administrative-group.handler';
+import { AddEdaeUserToAdministrativeGroupHandler } from '#student/application/administrative-group/add-teacher-to-administrative-group/add-edae-user-to-administrative-group.handler';
+import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -65,9 +67,29 @@ const getAdministrativeGroupHandler = {
   inject: [AdministrativeGroupGetter],
 };
 
+const addEdaeUserToAdministrativeGroupHandler = {
+  provide: AddEdaeUserToAdministrativeGroupHandler,
+  useFactory: (
+    repository: AdministrativeGroupRepository,
+    administrativeGroupGetter: AdministrativeGroupGetter,
+    edaeUserGetter: EdaeUserGetter,
+  ): AddEdaeUserToAdministrativeGroupHandler =>
+    new AddEdaeUserToAdministrativeGroupHandler(
+      repository,
+      administrativeGroupGetter,
+      edaeUserGetter,
+    ),
+  inject: [
+    AdministrativeGroupRepository,
+    AdministrativeGroupGetter,
+    EdaeUserGetter,
+  ],
+};
+
 export const administrativeGroupHandlers = [
   createAdministrativeGroupHandler,
   getAllAdministrativeGroupsHandler,
   searchAdministrativeGroupsHandler,
   getAdministrativeGroupHandler,
+  addEdaeUserToAdministrativeGroupHandler,
 ];

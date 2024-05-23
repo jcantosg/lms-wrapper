@@ -38,7 +38,7 @@ export class AddEdaeUsersToSubjectController {
     new JoiRequestParamIdValidationPipeService(uuidSchema),
     new JoiRequestBodyValidationPipe(addEdaeUsersToSubjectSchema),
   )
-  async AddEdaeUsersToSubject(
+  async addEdaeUsersToSubject(
     @Request() req: AuthRequest,
     @Param('id') id: string,
     @Body() body: AddEdaeUsersToSubjectEndpointBody,

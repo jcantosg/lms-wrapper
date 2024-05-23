@@ -8,11 +8,13 @@ import { services } from '#student/services';
 import { BusinessUnitModule } from '#business-unit/business-unit.module';
 import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
 import { SharedModule } from '#shared/shared.module';
+import { EdaeUserModule } from '#edae-user/edae-user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature(studentSchemas),
     BusinessUnitModule,
+    EdaeUserModule,
     AcademicOfferingModule,
     SharedModule,
   ],

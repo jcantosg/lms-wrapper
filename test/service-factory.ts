@@ -30,6 +30,7 @@ import { PasswordFormatChecker } from '#admin-user/domain/service/password-forma
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -188,4 +189,10 @@ export function getAPeriodBlockGetterMock(): PeriodBlockGetter {
 
 export function getAnEnrollmentGetterMock(): EnrollmentGetter {
   return (EnrollmentGetter as jest.Mocked<typeof EnrollmentGetter>).prototype;
+}
+
+export function getAnAdministrativeGroupGetterMock(): AdministrativeGroupGetter {
+  return (
+    AdministrativeGroupGetter as jest.Mocked<typeof AdministrativeGroupGetter>
+  ).prototype;
 }

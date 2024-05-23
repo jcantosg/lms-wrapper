@@ -30,8 +30,10 @@ export class CreateAdministrativeGroupController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(
     AdminUserRoles.SUPERADMIN,
-    AdminUserRoles.SUPERVISOR_360,
-    AdminUserRoles.GESTOR_360,
+    AdminUserRoles.JEFATURA,
+    AdminUserRoles.SUPERVISOR_JEFATURA,
+    AdminUserRoles.SUPERVISOR_SECRETARIA,
+    AdminUserRoles.SECRETARIA,
   )
   @UsePipes(new JoiRequestBodyValidationPipe(createAdministrativeGroupSchema))
   async createAdministrativeGroup(
