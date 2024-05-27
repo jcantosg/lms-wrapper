@@ -6,8 +6,8 @@ import { internalGroupSchema } from '#student/infrastructure/config/schema/inter
 
 export const studentSchemas = [
   academicRecordSchema,
+  internalGroupSchema,
   enrollmentSchema,
   administrativeGroupSchema,
-  internalGroupSchema,
   subjectCallSchema,
 ];

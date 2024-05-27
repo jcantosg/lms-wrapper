@@ -8,4 +8,5 @@ export const createInternalGroupsBatchSchema = Joi.object({
     .items(Joi.string().guid({ version: 'uuidv4' }))
     .min(1)
     .required(),
+  isDefault: Joi.boolean().required(),
 });

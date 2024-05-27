@@ -27,7 +27,6 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
       command.adminUser.businessUnits.map((bu) => bu.id),
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
-
     const internalGroups: InternalGroup[] = [];
 
     await Promise.all(
@@ -38,7 +37,11 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
           command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
         );
 
-        if (!academicProgram.academicPeriods.includes(academicPeriod)) {
+        if (
+          !academicProgram.academicPeriods
+            .map((period) => period.id)
+            .includes(academicPeriod.id)
+        ) {
           throw new AcademicPeriodNotFoundException();
         }
 

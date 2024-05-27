@@ -5,8 +5,10 @@ import { GetStudentsController } from '#student/infrastructure/controller/get-st
 import { SearchStudentsController } from '#student/infrastructure/controller/search-students/search-students.controller';
 import { academicRecordControllers } from '#student/infrastructure/controller/academic-record/controllers';
 import { GetStudentController } from '#student/infrastructure/controller/get-student/get-student.controller';
-import { enrollmentControllers } from '#student/infrastructure/controller/enrollment/controllers';
 import { CreateInternalGroupsBatchController } from '#student/infrastructure/controller/create-internal-groups-batch.controller';
+import { GetInternalGroupsController } from '#student/infrastructure/controller/get-internal-groups/get-internal-groups.controller';
+import { SearchInternalGroupsController } from '#student/infrastructure/controller/search-internal-groups.controller';
+import { enrollmentControllers } from '#student/infrastructure/controller/enrollment/controllers';
 import { administrativeGroupControllers } from '#student/infrastructure/controller/administrative-group/controllers';
 
 export const controllers = [
@@ -17,7 +19,9 @@ export const controllers = [
   SearchStudentsController,
   GetStudentController,
   ...academicRecordControllers,
+  CreateInternalGroupsBatchController,
+  GetInternalGroupsController,
+  SearchInternalGroupsController,
   ...enrollmentControllers,
   ...administrativeGroupControllers,
-  CreateInternalGroupsBatchController,
 ];

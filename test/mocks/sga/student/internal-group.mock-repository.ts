@@ -5,4 +5,6 @@ export class InternalGroupMockRepository implements InternalGroupRepository {
   saveBatch = jest.fn();
   get = jest.fn();
   getByKeys = jest.fn();
+  count = jest.fn();
+  matching = jest.fn();
 }

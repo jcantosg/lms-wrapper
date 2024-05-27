@@ -65,8 +65,14 @@ export class AcademicProgramPostgresRepository
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.title`, 'title');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.programBlocks`,
-      'program_block',
+      'programBlock',
     );
+
+    queryBuilder.leftJoinAndSelect(
+      `programBlock.subjects`,
+      'programBlockSubject',
+    );
+
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPeriods`,
       'academicPeriods',
@@ -81,7 +87,7 @@ export class AcademicProgramPostgresRepository
       relations: {
         businessUnit: true,
         title: true,
-        programBlocks: true,
+        programBlocks: { subjects: true },
         academicPeriods: true,
       },
     });
