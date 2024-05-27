@@ -67,5 +67,10 @@ export const academicProgramSchema = new EntitySchema<AcademicProgram>({
         },
       },
     },
+    administrativeGroups: {
+      type: 'one-to-many',
+      target: 'AdministrativeGroup',
+      inverseSide: 'academicProgram',
+    },
   },
 });

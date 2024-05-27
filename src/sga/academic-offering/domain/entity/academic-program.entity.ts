@@ -5,6 +5,7 @@ import { Title } from '#academic-offering/domain/entity/title.entity';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 
 export class AcademicProgram extends BaseEntity {
   private _programBlocksNumber: number;
@@ -22,6 +23,7 @@ export class AcademicProgram extends BaseEntity {
     private _structureType: ProgramBlockStructureType,
     private _programBlocks: ProgramBlock[],
     private _academicPeriods: AcademicPeriod[],
+    private _administrativeGroups: AdministrativeGroup[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -46,6 +48,7 @@ export class AcademicProgram extends BaseEntity {
       user,
       user,
       structureType,
+      [],
       [],
       [],
     );
@@ -138,6 +141,14 @@ export class AcademicProgram extends BaseEntity {
 
   public set programBlocksNumber(value: number) {
     this._programBlocksNumber = value;
+  }
+
+  public get administrativeGroups(): AdministrativeGroup[] {
+    return this._administrativeGroups;
+  }
+
+  public set administrativeGroups(value: AdministrativeGroup[]) {
+    this._administrativeGroups = value;
   }
 
   public update(

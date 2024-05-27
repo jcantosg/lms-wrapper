@@ -165,13 +165,17 @@ export class AcademicProgramPostgresRepository
   }
 
   async getByAcademicPeriod(academicPeriodId: string) {
-    return await this.repository.find({
-      relations: { academicPeriods: true },
+    const academicPrograms = await this.repository.find({
+      relations: { academicPeriods: true, administrativeGroups: true },
       where: {
         academicPeriods: {
           id: academicPeriodId,
         },
       },
     });
+
+    return academicPrograms.filter(
+      (academicProgram) => academicProgram.administrativeGroups.length === 0,
+    );
   }
 }
