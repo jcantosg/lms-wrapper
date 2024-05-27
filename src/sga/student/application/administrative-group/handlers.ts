@@ -11,6 +11,7 @@ import { AdministrativeGroupGetter } from '#student/domain/service/administrativ
 import { GetAdministrativeGroupHandler } from '#student/application/administrative-group/get-administrative-group/get-administrative-group.handler';
 import { AddEdaeUserToAdministrativeGroupHandler } from '#student/application/administrative-group/add-teacher-to-administrative-group/add-edae-user-to-administrative-group.handler';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { RemoveEdaeUserFromAdministrativeGroupHandler } from '#student/application/administrative-group/remove-edae-user-from-administrative-group/remove-edae-user-from-administrative-group.handler';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -86,10 +87,30 @@ const addEdaeUserToAdministrativeGroupHandler = {
   ],
 };
 
+const removeEdaeUserFromAdministrativeGroupHandler = {
+  provide: RemoveEdaeUserFromAdministrativeGroupHandler,
+  useFactory: (
+    repository: AdministrativeGroupRepository,
+    administrativeGroupGetter: AdministrativeGroupGetter,
+    edaeUserGetter: EdaeUserGetter,
+  ): RemoveEdaeUserFromAdministrativeGroupHandler =>
+    new RemoveEdaeUserFromAdministrativeGroupHandler(
+      repository,
+      administrativeGroupGetter,
+      edaeUserGetter,
+    ),
+  inject: [
+    AdministrativeGroupRepository,
+    AdministrativeGroupGetter,
+    EdaeUserGetter,
+  ],
+};
+
 export const administrativeGroupHandlers = [
   createAdministrativeGroupHandler,
   getAllAdministrativeGroupsHandler,
   searchAdministrativeGroupsHandler,
   getAdministrativeGroupHandler,
   addEdaeUserToAdministrativeGroupHandler,
+  removeEdaeUserFromAdministrativeGroupHandler,
 ];

@@ -4,8 +4,9 @@ import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.servi
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { EdaeUserNotFoundException } from '#shared/domain/exception/edae-user/edae-user-not-found.exception';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
+import { CommandHandler } from '#shared/domain/bus/command.handler';
 
-export class AddEdaeUserToAdministrativeGroupHandler {
+export class AddEdaeUserToAdministrativeGroupHandler implements CommandHandler {
   constructor(
     private readonly administrativeGroupRepository: AdministrativeGroupRepository,
     private readonly administrativeGroupGetter: AdministrativeGroupGetter,

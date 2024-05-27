@@ -153,4 +153,10 @@ export class AdministrativeGroup extends BaseEntity {
       this._teachers.push(teacher);
     }
   }
+
+  removeTeacher(teacher: EdaeUser) {
+    this._teachers = this._teachers.filter(
+      (teachEdae) => teachEdae.id !== teacher.id,
+    );
+  }
 }

@@ -3,6 +3,7 @@ import { GetAllAdministrativeGroupsController } from '#student/infrastructure/co
 import { SearchAdministrativeGroupsController } from '#student/infrastructure/controller/administrative-group/search-administrative-groups.controller';
 import { GetAdministrativeGroupController } from '#student/infrastructure/controller/administrative-group/get-administrative-group/get-administrative-group.controller';
 import { AddEdaeUserToAdministrativeGroupController } from '#student/infrastructure/controller/administrative-group/add-edae-user-to-administrative-group.controller';
+import { RemoveEdaeUserFromAdministrativeGroupController } from '#student/infrastructure/controller/administrative-group/remove-edae-user-from-administrative-group.controller';
 
 export const administrativeGroupControllers = [
   CreateAdministrativeGroupController,
@@ -10,4 +11,5 @@ export const administrativeGroupControllers = [
   SearchAdministrativeGroupsController,
   GetAdministrativeGroupController,
   AddEdaeUserToAdministrativeGroupController,
+  RemoveEdaeUserFromAdministrativeGroupController,
 ];
