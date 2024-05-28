@@ -9,6 +9,9 @@ import { BusinessUnitModule } from '#business-unit/business-unit.module';
 import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
 import { SharedModule } from '#shared/shared.module';
 import { EdaeUserModule } from '#edae-user/edae-user.module';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
+import { listeners } from '#student/listeners';
 
 @Module({
   imports: [
@@ -18,7 +21,16 @@ import { EdaeUserModule } from '#edae-user/edae-user.module';
     AcademicOfferingModule,
     SharedModule,
   ],
-  providers: [...repositories, ...handlers, ...services],
+  providers: [
+    ...repositories,
+    ...handlers,
+    ...services,
+    ...listeners,
+    {
+      provide: EventDispatcher,
+      useClass: NestEventDispatcher,
+    },
+  ],
   exports: [...repositories, ...services],
   controllers: [...controllers],
 })

@@ -10,4 +10,5 @@ export class AdministrativeGroupMockRepository
   count = jest.fn();
   matching = jest.fn();
   getByAdminUser = jest.fn();
+  getByAcademicPeriodAndProgramAndBlock = jest.fn();
 }

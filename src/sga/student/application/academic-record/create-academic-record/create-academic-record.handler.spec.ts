@@ -17,7 +17,9 @@ import {
   getABusinessUnit,
   getAnAcademicPeriod,
   getAnAcademicProgram,
+  getAnAdministrativeGroup,
   getAnAdminUser,
+  getAPeriodBlock,
   getASGAStudent,
   getAVirtualCampus,
 } from '#test/entity-factory';
@@ -26,14 +28,21 @@ import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record
 import { VirtualCampusNotFoundException } from '#shared/domain/exception/business-unit/virtual-campus/virtual-campus-not-found.exception';
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
+import { AdministrativeGroupMockRepository } from '#test/mocks/sga/student/administrative-group.mock-repository';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
+import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
 
 let handler: CreateAcademicRecordHandler;
 let repository: AcademicRecordRepository;
+let administrativeGroupRepository: AdministrativeGroupRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let virtualCampusGetter: VirtualCampusGetter;
 let academicPeriodGetter: AcademicPeriodGetter;
 let academicProgramGetter: AcademicProgramGetter;
 let studentGetter: StudentGetter;
+let eventDispatcher: EventDispatcher;
 
 let saveSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -41,13 +50,17 @@ let getVirtualCampusSpy: jest.SpyInstance;
 let getAcademicPeriodSpy: jest.SpyInstance;
 let getAcademicProgramSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
+let getByAcademicPeriodAndProgramAndBlockSpy: jest.SpyInstance;
+let dispatchEventSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit();
 const virtualCampus = getAVirtualCampus();
 const academicPeriod = getAnAcademicPeriod();
+const periodBlock = getAPeriodBlock();
 const academicProgram = getAnAcademicProgram();
 const adminUser = getAnAdminUser();
 const student = getASGAStudent();
+const administrativeGroup = getAnAdministrativeGroup();
 
 const command = new CreateAcademicRecordCommand(
   'db801d43-883a-4eaa-8a1c-339adb4a464c',
@@ -64,11 +77,13 @@ const command = new CreateAcademicRecordCommand(
 describe('Create Academic Record Handler', () => {
   beforeAll(() => {
     repository = new AcademicRecordMockRepository();
+    administrativeGroupRepository = new AdministrativeGroupMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     virtualCampusGetter = getVirtualCampusGetterMock();
     academicPeriodGetter = getAnAcademicPeriodGetterMock();
     academicProgramGetter = getAnAcademicProgramGetterMock();
     studentGetter = getAStudentGetterMock();
+    eventDispatcher = new EventDispatcherMock();
 
     saveSpy = jest.spyOn(repository, 'save');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
@@ -76,14 +91,21 @@ describe('Create Academic Record Handler', () => {
     getAcademicPeriodSpy = jest.spyOn(academicPeriodGetter, 'get');
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
     getStudentSpy = jest.spyOn(studentGetter, 'get');
+    getByAcademicPeriodAndProgramAndBlockSpy = jest.spyOn(
+      administrativeGroupRepository,
+      'getByAcademicPeriodAndProgramAndBlock',
+    );
+    dispatchEventSpy = jest.spyOn(eventDispatcher, 'dispatch');
 
     handler = new CreateAcademicRecordHandler(
       repository,
+      administrativeGroupRepository,
       businessUnitGetter,
       virtualCampusGetter,
       academicPeriodGetter,
       academicProgramGetter,
       studentGetter,
+      eventDispatcher,
     );
   });
 
@@ -124,6 +146,7 @@ describe('Create Academic Record Handler', () => {
     getAcademicProgramSpy.mockImplementation(() =>
       Promise.resolve(academicProgram),
     );
+    academicPeriod.periodBlocks = [periodBlock];
 
     virtualCampus.businessUnit = businessUnit;
     academicPeriod.businessUnit = businessUnit;
@@ -131,6 +154,30 @@ describe('Create Academic Record Handler', () => {
 
     await expect(handler.handle(command)).rejects.toThrow(
       AcademicProgramNotFoundException,
+    );
+  });
+
+  it('should return 404 academic group not found', async () => {
+    getBusinessUnitSpy.mockImplementation(() => Promise.resolve(businessUnit));
+    getVirtualCampusSpy.mockImplementation(() =>
+      Promise.resolve(virtualCampus),
+    );
+    getAcademicPeriodSpy.mockImplementation(() =>
+      Promise.resolve(academicPeriod),
+    );
+    getAcademicProgramSpy.mockImplementation(() =>
+      Promise.resolve(academicProgram),
+    );
+    getStudentSpy.mockImplementation(() => Promise.resolve(student));
+
+    academicPeriod.periodBlocks = [periodBlock];
+    virtualCampus.businessUnit = businessUnit;
+    academicPeriod.businessUnit = businessUnit;
+    academicProgram.businessUnit = businessUnit;
+    academicPeriod.academicPrograms = [academicProgram];
+
+    await expect(handler.handle(command)).rejects.toThrow(
+      AdministrativeGroupNotFoundException,
     );
   });
 
@@ -146,6 +193,9 @@ describe('Create Academic Record Handler', () => {
       Promise.resolve(academicProgram),
     );
     getStudentSpy.mockImplementation(() => Promise.resolve(student));
+    getByAcademicPeriodAndProgramAndBlockSpy.mockImplementation(() =>
+      Promise.resolve(administrativeGroup),
+    );
 
     academicProgram.businessUnit = businessUnit;
 
@@ -164,6 +214,7 @@ describe('Create Academic Record Handler', () => {
         _createdBy: command.adminUser,
       }),
     );
+    expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
   });
 
   afterAll(() => {

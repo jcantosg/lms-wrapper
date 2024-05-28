@@ -10,32 +10,40 @@ import { EditAcademicRecordHandler } from '#student/application/academic-record/
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { GetAcademicRecordDetailHandler } from '#student/application/academic-record/get-academic-record-detail/get-academic-record-detail.handler';
 import { GetStudentAcademicRecordHandler } from '#student/application/academic-record/get-student-academic-record/get-student-academic-record.handler';
+import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
   useFactory: (
     repository: AcademicRecordRepository,
+    administrativeGroupRepository: AdministrativeGroupRepository,
     businessUnitGetter: BusinessUnitGetter,
     virtualCampusGetter: VirtualCampusGetter,
     academicPeriodGetter: AcademicPeriodGetter,
     academicProgramGetter: AcademicProgramGetter,
     studentGetter: StudentGetter,
+    eventDispatcher: EventDispatcher,
   ): CreateAcademicRecordHandler =>
     new CreateAcademicRecordHandler(
       repository,
+      administrativeGroupRepository,
       businessUnitGetter,
       virtualCampusGetter,
       academicPeriodGetter,
       academicProgramGetter,
       studentGetter,
+      eventDispatcher,
     ),
   inject: [
     AcademicRecordRepository,
+    AdministrativeGroupRepository,
     BusinessUnitGetter,
     VirtualCampusGetter,
     AcademicPeriodGetter,
     AcademicProgramGetter,
     StudentGetter,
+    EventDispatcher,
   ],
 };
 

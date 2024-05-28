@@ -175,4 +175,24 @@ export class AdministrativeGroupPostgresRepository
       })
       .getOne();
   }
+
+  async getByAcademicPeriodAndProgramAndBlock(
+    academicPeriodId: string,
+    academicProgramId: string,
+    periodBlockName: string,
+  ): Promise<AdministrativeGroup | null> {
+    return await this.repository.findOne({
+      relations: {
+        academicPeriod: true,
+        academicProgram: true,
+        periodBlock: true,
+        students: true,
+      },
+      where: {
+        academicPeriod: { id: academicPeriodId },
+        academicProgram: { id: academicProgramId },
+        periodBlock: { name: periodBlockName },
+      },
+    });
+  }
 }

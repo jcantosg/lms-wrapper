@@ -17,6 +17,9 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
+import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 
 export class CreateAcademicRecordE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -32,6 +35,10 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
   public static academicPeriodStartDate = '2023-09-01';
   public static academicPeriodEndDate = '2025-09-01';
   public static academicPeriodBlocksNumber = 1;
+  public static periodBlockId = uuid();
+  public static periodBlockName = 'Bloque 1';
+  public static periodBlockStartDate = '2023-09-01';
+  public static periodBlockEndDate = '2024-08-01';
 
   public static businessUnitId = '222fab6f-8205-46e6-961a-a92f47cbdc72';
   public static businessUnitName = 'Madrid';
@@ -56,6 +63,9 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
   public static studentEmail = 'juan@test.org';
   public static universaeEmail = 'juan.ros@universae.com';
 
+  public static administrativeGroupId = uuid();
+  public static administrativeGroupCode = 'M-23-25_MAD-INAS_1';
+
   public static academicRecordId = uuid();
 
   private superAdminUser: AdminUser;
@@ -65,10 +75,14 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
   private academicPeriod: AcademicPeriod;
   private academicProgram: AcademicProgram;
   private programBlock: ProgramBlock;
+  private periodBlock: PeriodBlock;
   private student: Student;
   private title: Title;
+  private administrativeGroup: AdministrativeGroup;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
+  private periodBlockRepository: Repository<PeriodBlock>;
+  private blockRelationRepository: Repository<BlockRelation>;
   private academicProgramRepository: Repository<AcademicProgram>;
   private businessUnitRepository: Repository<BusinessUnit>;
   private virtualCampusRepository: Repository<VirtualCampus>;
@@ -77,6 +91,7 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
   private programBlockRepository: Repository<ProgramBlock>;
   private studentRepository: Repository<Student>;
   private academicRecordRepository: Repository<AcademicRecord>;
+  private administrativeGroupRepository: Repository<AdministrativeGroup>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
@@ -88,6 +103,10 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
     this.studentRepository = datasource.getRepository(Student);
     this.virtualCampusRepository = datasource.getRepository(VirtualCampus);
     this.academicRecordRepository = datasource.getRepository(AcademicRecord);
+    this.periodBlockRepository = datasource.getRepository(PeriodBlock);
+    this.blockRelationRepository = datasource.getRepository(BlockRelation);
+    this.administrativeGroupRepository =
+      datasource.getRepository(AdministrativeGroup);
   }
 
   async arrange() {
@@ -166,6 +185,16 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
     this.academicPeriod.academicPrograms.push(this.academicProgram);
     await this.academicPeriodRepository.save(this.academicPeriod);
 
+    this.periodBlock = PeriodBlock.create(
+      CreateAcademicRecordE2eSeed.periodBlockId,
+      this.academicPeriod,
+      CreateAcademicRecordE2eSeed.periodBlockName,
+      new Date(CreateAcademicRecordE2eSeed.periodBlockStartDate),
+      new Date(CreateAcademicRecordE2eSeed.periodBlockEndDate),
+      this.superAdminUser,
+    );
+    await this.periodBlockRepository.save(this.periodBlock);
+
     this.programBlock = ProgramBlock.create(
       CreateAcademicRecordE2eSeed.programBlockId,
       CreateAcademicRecordE2eSeed.programBlockName,
@@ -174,6 +203,15 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
     );
     await this.programBlockRepository.save(this.programBlock);
     this.academicProgram.programBlocks = [this.programBlock];
+
+    await this.blockRelationRepository.save(
+      BlockRelation.create(
+        uuid(),
+        this.periodBlock,
+        this.programBlock,
+        this.superAdminUser,
+      ),
+    );
 
     this.student = Student.createFromSGA(
       CreateAcademicRecordE2eSeed.studentId,
@@ -186,9 +224,24 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
       'test123',
     );
     await this.studentRepository.save(this.student);
+
+    this.administrativeGroup = AdministrativeGroup.create(
+      CreateAcademicRecordE2eSeed.administrativeGroupId,
+      CreateAcademicRecordE2eSeed.administrativeGroupCode,
+      this.businessUnit,
+      this.academicPeriod,
+      this.academicProgram,
+      this.programBlock,
+      this.periodBlock,
+      this.superAdminUser,
+    );
+    await this.administrativeGroupRepository.save(this.administrativeGroup);
   }
 
   async clear() {
+    await this.administrativeGroupRepository.delete({});
+    await this.blockRelationRepository.delete({});
+    await this.periodBlockRepository.delete(this.periodBlock.id);
     await this.academicRecordRepository.delete(
       CreateAcademicRecordE2eSeed.academicRecordId,
     );

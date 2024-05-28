@@ -24,4 +24,9 @@ export abstract class AdministrativeGroupRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<AdministrativeGroup | null>;
+  abstract getByAcademicPeriodAndProgramAndBlock(
+    academicPeriodId: string,
+    academicProgramId: string,
+    periodBlockName: string,
+  ): Promise<AdministrativeGroup | null>;
 }

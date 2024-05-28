@@ -159,4 +159,11 @@ export class AdministrativeGroup extends BaseEntity {
       (teachEdae) => teachEdae.id !== teacher.id,
     );
   }
+
+  addStudent(student: Student) {
+    if (!this._students.find((stud) => stud.id === student.id)) {
+      this._students.push(student);
+      this._studentsNumber = this._students.length;
+    }
+  }
 }

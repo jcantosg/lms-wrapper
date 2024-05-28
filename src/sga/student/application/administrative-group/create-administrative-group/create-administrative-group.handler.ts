@@ -14,7 +14,7 @@ import { AcademicProgram } from '#academic-offering/domain/entity/academic-progr
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
-import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
+import { BlockRelationNotFoundException } from '#shared/domain/exception/academic-offering/block-relation.not-found.exception';
 
 export class CreateAdministrativeGroupHandler implements CommandHandler {
   constructor(
@@ -108,7 +108,7 @@ export class CreateAdministrativeGroupHandler implements CommandHandler {
             );
 
           if (!blockRelation) {
-            throw new ProgramBlockNotFoundException();
+            throw new BlockRelationNotFoundException();
           }
 
           return AdministrativeGroup.create(

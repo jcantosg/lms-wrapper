@@ -11,15 +11,21 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AcademicRecordDuplicatedException } from '#student/shared/exception/academic-record-duplicated.exception';
+import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
+import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { AcademicRecordCreatedEvent } from '#student/domain/event/academic-record/academic-record-created.event';
 
 export class CreateAcademicRecordHandler implements CommandHandler {
   constructor(
-    private academicRecordRepository: AcademicRecordRepository,
-    private businessUnitGetter: BusinessUnitGetter,
-    private virtualCampusGetter: VirtualCampusGetter,
-    private academicPeriodGetter: AcademicPeriodGetter,
-    private academicProgramGetter: AcademicProgramGetter,
-    private studentGetter: StudentGetter,
+    private readonly academicRecordRepository: AcademicRecordRepository,
+    private readonly administrativeGroupRepository: AdministrativeGroupRepository,
+    private readonly businessUnitGetter: BusinessUnitGetter,
+    private readonly virtualCampusGetter: VirtualCampusGetter,
+    private readonly academicPeriodGetter: AcademicPeriodGetter,
+    private readonly academicProgramGetter: AcademicProgramGetter,
+    private readonly studentGetter: StudentGetter,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: CreateAcademicRecordCommand) {
@@ -63,6 +69,21 @@ export class CreateAcademicRecordHandler implements CommandHandler {
 
     const student = await this.studentGetter.get(command.studentId);
 
+    const sortedBlocks = academicPeriod.periodBlocks.sort(
+      (a, b) => a.startDate.getTime() - b.startDate.getTime(),
+    );
+
+    const administrativeGroup =
+      await this.administrativeGroupRepository.getByAcademicPeriodAndProgramAndBlock(
+        academicPeriod.id,
+        academicProgram.id,
+        sortedBlocks[0].name,
+      );
+
+    if (!administrativeGroup) {
+      throw new AdministrativeGroupNotFoundException();
+    }
+
     const academicRecord = AcademicRecord.create(
       command.id,
       businessUnit,
@@ -75,6 +96,10 @@ export class CreateAcademicRecordHandler implements CommandHandler {
       command.adminUser,
     );
 
-    return this.academicRecordRepository.save(academicRecord);
+    await this.academicRecordRepository.save(academicRecord);
+
+    await this.eventDispatcher.dispatch(
+      new AcademicRecordCreatedEvent(administrativeGroup, student),
+    );
   }
 }
