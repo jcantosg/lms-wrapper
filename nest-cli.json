@@ -5,8 +5,13 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "../templates/*.pug",
+        "include": "../templates/*.hbs",
         "outDir": "dist/templates",
+        "watchAssets": true
+      },
+      {
+        "include": "../i18n/**/*",
+        "outDir": "dist/i18n",
         "watchAssets": true
       }
     ]

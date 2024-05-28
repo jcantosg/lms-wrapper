@@ -79,10 +79,9 @@ export class StudentPostgresRepository
 
   async get(id: string): Promise<Student | null> {
     return await this.repository.findOne({
-      where: {
-        id,
-      },
+      where: { id: id },
       relations: {
+        academicRecords: true,
         country: true,
         citizenship: true,
         contactCountry: true,
@@ -164,6 +163,14 @@ export class StudentPostgresRepository
   }
 
   async getByEmail(email: string): Promise<Student | null> {
-    return await this.repository.findOne({ where: { universaeEmail: email } });
+    return await this.repository.findOne({
+      where: { universaeEmail: email },
+      relations: {
+        academicRecords: true,
+        country: true,
+        citizenship: true,
+        contactCountry: true,
+      },
+    });
   }
 }

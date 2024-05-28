@@ -20,8 +20,14 @@ import { SGAModule } from '#/sga/sga.module';
 import { StudentModule } from '#/student/student.module';
 import { TeacherModule } from '#/teacher/Teacher.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { EdaeUserModule } from '#edae-user/edae-user.module';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import {
+  AcceptLanguageResolver,
+  I18nModule,
+  I18nService,
+  QueryResolver,
+} from 'nestjs-i18n';
 
 const env = process.env.NODE_ENV;
 const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
@@ -99,9 +105,21 @@ const loggerModule = LoggerModule.forRootAsync({
   inject: [ConfigService],
 });
 
+const i18nModule = I18nModule.forRoot({
+  fallbackLanguage: 'es',
+  loaderOptions: {
+    path: __dirname + '/../i18n/',
+    watch: true,
+  },
+  resolvers: [
+    { use: QueryResolver, options: ['lang'] },
+    AcceptLanguageResolver,
+  ],
+});
+
 const mailerModule = MailerModule.forRootAsync({
   imports: [ConfigModule],
-  useFactory: (configService: ConfigService) => ({
+  useFactory: (configService: ConfigService, i18n: I18nService) => ({
     transport: {
       host: configService.getOrThrow<string>('EMAIL_HOST'),
       port: configService.getOrThrow<number>('EMAIL_PORT'),
@@ -115,13 +133,13 @@ const mailerModule = MailerModule.forRootAsync({
     },
     template: {
       dir: __dirname + '/../templates',
-      adapter: new PugAdapter(),
+      adapter: new HandlebarsAdapter({ t: i18n.hbsHelper }),
       options: {
         strict: true,
       },
     },
   }),
-  inject: [ConfigService],
+  inject: [ConfigService, I18nService],
 });
 
 @Module({
@@ -133,6 +151,7 @@ const mailerModule = MailerModule.forRootAsync({
     SGAModule,
     StudentModule,
     TeacherModule,
+    i18nModule,
     mailerModule,
     EdaeUserModule,
   ],

@@ -12,4 +12,13 @@ export class StudentGetter {
 
     return student;
   }
+
+  async getByEmail(email: string) {
+    const student = await this.repository.getByEmail(email);
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    return student;
+  }
 }

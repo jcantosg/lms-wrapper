@@ -1,6 +1,5 @@
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
-
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
@@ -18,7 +17,6 @@ const enrollmentGetter = {
     new EnrollmentGetter(repository),
   inject: [EnrollmentRepository],
 };
-
 const administrativeGroupGetter = {
   provide: AdministrativeGroupGetter,
   useFactory: (

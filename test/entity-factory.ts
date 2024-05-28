@@ -36,6 +36,7 @@ import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
+import { StudentRecoveryPasswordToken } from '#/student/student/domain/entity/student-recovery-password-token.entity';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -328,3 +329,13 @@ export const getAnAdministrativeGroup = (): AdministrativeGroup => {
     getAnAdminUser(),
   );
 };
+
+export const getAStudentRecoveryPasswordToken =
+  (): StudentRecoveryPasswordToken => {
+    return StudentRecoveryPasswordToken.create(
+      uuid(),
+      999,
+      'token',
+      getASGAStudent(),
+    );
+  };

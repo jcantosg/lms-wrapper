@@ -9,6 +9,9 @@ import { LocalStrategy } from '#/student/student/infrastructure/auth/local.strat
 import { repositories } from '#/student/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { schemas } from '#/student/schemas';
+import { listeners } from '#/student/listeners';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -21,7 +24,17 @@ const jwtModule = JwtModule.registerAsync({
 
 @Module({
   imports: [TypeOrmModule.forFeature(schemas), jwtModule, SharedModule],
-  providers: [...repositories, ...services, ...handlers, LocalStrategy],
+  providers: [
+    ...repositories,
+    ...services,
+    ...handlers,
+    LocalStrategy,
+    ...listeners,
+    {
+      provide: EventDispatcher,
+      useClass: NestEventDispatcher,
+    },
+  ],
   controllers: [...studentControllers],
   exports: [...repositories, ...services],
 })
