@@ -19,6 +19,7 @@ export class GetAcademicProgramsPlainByPeriodHandler implements QueryHandler {
 
     return this.academicProgramRepository.getByAcademicPeriod(
       academicPeriod.id,
+      query.hasAdministrativeGroup,
     );
   }
 }
