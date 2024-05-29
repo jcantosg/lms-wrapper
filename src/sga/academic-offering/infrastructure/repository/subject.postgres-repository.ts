@@ -93,6 +93,11 @@ export class SubjectPostgresRepository
       'default_teacher',
     );
 
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.programBlocks`,
+      'program_blocks',
+    );
+
     return queryBuilder;
   }
 

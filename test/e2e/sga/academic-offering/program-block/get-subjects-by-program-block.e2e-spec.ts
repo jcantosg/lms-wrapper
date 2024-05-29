@@ -31,9 +31,11 @@ describe('/program-block/id/subject (GET)', () => {
   });
   it('should return an array of subjects', async () => {
     const response = await supertest(httpServer)
-      .get(path)
+      .get(`${path}?orderType=DESC&orderBy=official_code`)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
+    console.log(response.body);
+
     expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

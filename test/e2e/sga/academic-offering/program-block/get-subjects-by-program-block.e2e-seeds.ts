@@ -52,12 +52,25 @@ export class GetSubjectsByProgramBlockE2eSeed implements E2eSeed {
   public static subjectIsRegulated = true;
   public static subjectIsCore = true;
 
+  public static secondSubjectId = 'd66ffa3e-22e4-48ca-aeea-0c3b37fc70c4';
+  public static secondSubjectName = 'Algoritmos y Estructuras de Datos III';
+  public static secondSubjectCode = 'AED3';
+  public static secondSubjectOfficialCode = 'BOE-232';
+  public static secondSubjectHours = 20;
+  public static secondSubjectModality = SubjectModality.PRESENCIAL;
+  public static secondSubjectEvaluationType =
+    '8adeb962-3669-4c37-ada0-01328ef74c00';
+  public static secondSubjectType = SubjectType.SUBJECT;
+  public static secondSubjectIsRegulated = true;
+  public static secondSubjectIsCore = true;
+
   private superAdminUser: AdminUser;
   private businessUnit: BusinessUnit;
   private title: Title;
   private academicProgram: AcademicProgram;
   private programBlock: ProgramBlock;
   private subject: Subject;
+  private secondSubject: Subject;
 
   private businessUnitRepository: Repository<BusinessUnit>;
   private titleRepository: Repository<Title>;
@@ -138,6 +151,24 @@ export class GetSubjectsByProgramBlockE2eSeed implements E2eSeed {
     );
     await this.subjectRepository.save(this.subject);
 
+    this.secondSubject = Subject.create(
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectId,
+      null,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectName,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectCode,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectOfficialCode,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectHours,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectModality,
+      evaluationType,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectType,
+      this.businessUnit,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectIsRegulated,
+      GetSubjectsByProgramBlockE2eSeed.secondSubjectIsCore,
+      this.superAdminUser,
+      null,
+    );
+    await this.subjectRepository.save(this.secondSubject);
+
     this.programBlock = ProgramBlock.create(
       GetSubjectsByProgramBlockE2eSeed.programBlockId,
       'Bloque 1',
@@ -145,11 +176,13 @@ export class GetSubjectsByProgramBlockE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     this.programBlock.subjects.push(this.subject);
+    this.programBlock.subjects.push(this.secondSubject);
     await this.programBlockRepository.save(this.programBlock);
   }
 
   async clear() {
     await this.subjectRepository.delete(this.subject.id);
+    await this.subjectRepository.delete(this.secondSubject.id);
     await this.programBlockRepository.delete(this.programBlock.id);
     await this.academicProgramRepository.delete(this.academicProgram.id);
     await this.titleRepository.delete(this.title.id);

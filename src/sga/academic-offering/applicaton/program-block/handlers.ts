@@ -63,9 +63,12 @@ const deleteProgramBlockHandler = {
 
 const getSubjectsByProgramBlockHandler = {
   provide: GetSubjectsByProgramBlockHandler,
-  useFactory: (programBlockGetter: ProgramBlockGetter) =>
-    new GetSubjectsByProgramBlockHandler(programBlockGetter),
-  inject: [ProgramBlockGetter],
+  useFactory: (
+    programBlockGetter: ProgramBlockGetter,
+    subjectRepository: SubjectRepository,
+  ) =>
+    new GetSubjectsByProgramBlockHandler(programBlockGetter, subjectRepository),
+  inject: [ProgramBlockGetter, SubjectRepository],
 };
 
 const removeSubjectFromProgramBlockHandler = {
