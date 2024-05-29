@@ -7,4 +7,6 @@ export abstract class EnrollmentRepository {
   abstract get(id: string): Promise<Enrollment | null>;
 
   abstract matching(criteria: Criteria): Promise<Enrollment[]>;
+
+  abstract delete(enrollment: Enrollment): Promise<void>;
 }

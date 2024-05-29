@@ -12,6 +12,8 @@ import { EnrollmentRepository } from '#student/domain/repository/enrollment.repo
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { GetEnrollmentsByAcademicRecordHandler } from '#student/application/enrollment/get-enrollments-by-academic-record/get-enrollments-by-academic-record.handler';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { DeleteEnrollmentHandler } from '#student/application/enrollment/delete-enrollment/delete-enrollment.handler';
+import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 
 const getSubjectsNotEnrolledHandler = {
   provide: GetSubjectsNotEnrolledHandler,
@@ -65,6 +67,21 @@ const getEnrollmentsByAcademicRecord = {
   inject: [EnrollmentRepository, AcademicRecordRepository],
 };
 
+const deleteEnrollmentHandler = {
+  provide: DeleteEnrollmentHandler,
+  useFactory: (
+    enrollmentGetter: EnrollmentGetter,
+    enrollmentRepository: EnrollmentRepository,
+    subjectCallRepository: SubjectCallRepository,
+  ): DeleteEnrollmentHandler =>
+    new DeleteEnrollmentHandler(
+      enrollmentGetter,
+      enrollmentRepository,
+      subjectCallRepository,
+    ),
+  inject: [EnrollmentGetter, EnrollmentRepository, SubjectCallRepository],
+};
+
 export const enrollmentHandlers = [
   getSubjectsNotEnrolledHandler,
   createEnrollmentHandler,
@@ -72,4 +89,5 @@ export const enrollmentHandlers = [
   GetEnrollmentTypeHandler,
   editEnrollmentHandler,
   getEnrollmentsByAcademicRecord,
+  deleteEnrollmentHandler,
 ];

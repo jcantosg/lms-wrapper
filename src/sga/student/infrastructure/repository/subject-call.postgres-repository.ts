@@ -25,4 +25,8 @@ export class SubjectCallPostgresRepository
       status: subjectCall.status,
     });
   }
+
+  async delete(subjectCall: SubjectCall): Promise<void> {
+    await this.repository.delete(subjectCall.id);
+  }
 }

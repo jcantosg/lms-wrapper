@@ -36,6 +36,9 @@ import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
+import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
+import { SubjectCall } from '#student/domain/entity/subject-call.entity';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { StudentRecoveryPasswordToken } from '#/student/student/domain/entity/student-recovery-password-token.entity';
 
 export const getACountry = (id = uuid()): Country => {
@@ -330,6 +333,27 @@ export const getAnAdministrativeGroup = (): AdministrativeGroup => {
   );
 };
 
+export const getANotTakenSubjectCall = () =>
+  SubjectCall.create(
+    uuid(),
+    getAnEnrollment(),
+    1,
+    new Date(),
+    SubjectCallFinalGradeEnum.NP,
+    SubjectCallStatusEnum.NOT_STARTED,
+    getAnAdminUser(),
+  );
+
+export const getATakenSubjectCall = () =>
+  SubjectCall.create(
+    uuid(),
+    getAnEnrollment(),
+    2,
+    new Date(),
+    SubjectCallFinalGradeEnum.EIGHT,
+    SubjectCallStatusEnum.PASSED,
+    getAnAdminUser(),
+  );
 export const getAStudentRecoveryPasswordToken =
   (): StudentRecoveryPasswordToken => {
     return StudentRecoveryPasswordToken.create(

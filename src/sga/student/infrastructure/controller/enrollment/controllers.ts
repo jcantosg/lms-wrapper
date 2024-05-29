@@ -4,6 +4,7 @@ import { GetEnrollmentsByAcademicRecordController } from '#student/infrastructur
 import { GetEnrollmentVisibilityController } from '#student/infrastructure/controller/enrollment/get-enrollment-visibility.controller';
 import { GetEnrollmentTypeController } from '#student/infrastructure/controller/enrollment/get-enrollment-type.controller';
 import { EditEnrollmentController } from '#student/infrastructure/controller/enrollment/edit-enrollment.controller';
+import { DeleteEnrollmentController } from '#student/infrastructure/controller/enrollment/delete-enrollment.controller';
 
 export const enrollmentControllers = [
   GetSubjectsNotEnrolledController,
@@ -12,4 +13,5 @@ export const enrollmentControllers = [
   GetEnrollmentVisibilityController,
   GetEnrollmentTypeController,
   EditEnrollmentController,
+  DeleteEnrollmentController,
 ];

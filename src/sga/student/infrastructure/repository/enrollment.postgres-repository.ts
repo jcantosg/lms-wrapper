@@ -31,7 +31,10 @@ export class EnrollmentPostgresRepository
   }
 
   async get(id: string): Promise<Enrollment | null> {
-    return await this.repository.findOne({ where: { id } });
+    return await this.repository.findOne({
+      where: { id },
+      relations: { calls: true },
+    });
   }
 
   async matching(criteria: Criteria): Promise<Enrollment[]> {
@@ -52,6 +55,10 @@ export class EnrollmentPostgresRepository
     }
 
     return await this.getMany(queryBuilder);
+  }
+
+  async delete(enrollment: Enrollment): Promise<void> {
+    await this.repository.delete(enrollment.id);
   }
 
   private initializeQueryBuilder(aliasQuery: string) {

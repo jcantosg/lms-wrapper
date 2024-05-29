@@ -6,6 +6,8 @@ import { InternalGroupRepository } from '#student/domain/repository/internal-gro
 import { InternalGroupPostgresRepository } from '#student/infrastructure/repository/internal-group.postgres-repository';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { EnrollmentPostgresRepository } from '#student/infrastructure/repository/enrollment.postgres-repository';
+import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
+import { SubjectCallPostgresRepository } from '#student/infrastructure/repository/subject-call.postgres-repository';
 
 export const repositories = [
   {
@@ -23,5 +25,9 @@ export const repositories = [
   {
     provide: EnrollmentRepository,
     useClass: EnrollmentPostgresRepository,
+  },
+  {
+    provide: SubjectCallRepository,
+    useClass: SubjectCallPostgresRepository,
   },
 ];

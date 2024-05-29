@@ -6,6 +6,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
+import { isSubjectCallTaken } from '#student/domain/enum/enrollment/subject-call-status.enum';
 
 const MAX_CALLS = 4;
 
@@ -157,5 +158,18 @@ export class Enrollment extends BaseEntity {
     this.type = type;
     this.visibility = visibility;
     this.maxCalls = maxCalls;
+  }
+
+  public isEnrollmentTaken(): boolean {
+    if (this.calls.length > 1) {
+      return true;
+    }
+    for (const call of this.calls) {
+      if (isSubjectCallTaken(call)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

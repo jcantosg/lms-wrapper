@@ -1,3 +1,5 @@
+import { SubjectCall } from '#student/domain/entity/subject-call.entity';
+
 export enum SubjectCallStatusEnum {
   PASSED = 'Aprobada',
   NOT_PASSED = 'Suspendida',
@@ -9,3 +11,10 @@ export enum SubjectCallStatusEnum {
 
 export const getAllSubjectCallStatuses = (): SubjectCallStatusEnum[] =>
   Object.values(SubjectCallStatusEnum);
+
+export const isSubjectCallTaken = (subjectCall: SubjectCall): boolean => {
+  return ![
+    SubjectCallStatusEnum.NOT_STARTED,
+    SubjectCallStatusEnum.ONGOING,
+  ].includes(subjectCall.status);
+};
