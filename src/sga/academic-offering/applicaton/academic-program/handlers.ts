@@ -21,6 +21,9 @@ import { ProgramBlockRepository } from '#academic-offering/domain/repository/pro
 import { GetAcademicProgramsPlainByPeriodHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-plain-by-period/get-academic-programs-plain-by-period.handler';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { CreateAcademicProgramTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-program.transactional-service';
+import { GetAllInternalGroupsHandler } from '#academic-offering/applicaton/academic-program/get-all-internal-groups/get-all-internal-groups.handler';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { SearchInternalGroupsHandler } from '#academic-offering/applicaton/academic-program/search-internal-groups/search-internal-groups.handler';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -190,6 +193,20 @@ const getAcademicProgramsPlainByPeriodHandler = {
   inject: [AcademicProgramRepository, AcademicPeriodGetter],
 };
 
+const getAllInternalGroupsHandler = {
+  provide: GetAllInternalGroupsHandler,
+  useFactory: (internalGroupRepository: InternalGroupRepository) =>
+    new GetAllInternalGroupsHandler(internalGroupRepository),
+  inject: [InternalGroupRepository],
+};
+
+const searchInternalGroupsHandler = {
+  provide: SearchInternalGroupsHandler,
+  useFactory: (internalGroupRepository: InternalGroupRepository) =>
+    new SearchInternalGroupsHandler(internalGroupRepository),
+  inject: [InternalGroupRepository],
+};
+
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -204,4 +221,6 @@ export const academicProgramHandlers = [
   getAllAcademicProgramByAcademicPeriodHandler,
   searchAcademicProgramByAcademicPeriodHandler,
   getAcademicProgramsPlainByPeriodHandler,
+  getAllInternalGroupsHandler,
+  searchInternalGroupsHandler,
 ];

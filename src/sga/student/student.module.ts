@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { studentSchemas } from '#student/schemas';
 import { repositories } from '#student/repositories';
@@ -18,7 +18,7 @@ import { listeners } from '#student/listeners';
     TypeOrmModule.forFeature(studentSchemas),
     BusinessUnitModule,
     EdaeUserModule,
-    AcademicOfferingModule,
+    forwardRef(() => AcademicOfferingModule),
     SharedModule,
   ],
   providers: [
