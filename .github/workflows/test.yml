@@ -1,14 +1,14 @@
 name: CI
 
 on:
- push:
-  branches: [ main, dev ]
- pull_request:
-  branches: [ '*' ]
-
+  pull_request:
+    branches:
+      - main
+      - dev
 jobs:
  test:
   runs-on: ubuntu-latest
+
   env:
    DATABASE_HOST: localhost
    DATABASE_PORT: 5432
