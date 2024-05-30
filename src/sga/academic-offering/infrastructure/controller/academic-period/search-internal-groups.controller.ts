@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Param,
   Query,
   Request,
   UseGuards,
@@ -11,10 +12,10 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
-import { GetInternalGroupsResponse } from '#student/infrastructure/controller/get-internal-groups/get-internal-groups.response';
-import { searchInternalGroupsSchema } from '#student/infrastructure/config/validation-schema/search-internal-groups.schema';
-import { SearchInternalGroupsHandler } from '#student/application/search-internal-groups/search-internal-groups.handler';
-import { SearchInternalGroupsQuery } from '#student/application/search-internal-groups/search-internal-groups.query';
+import { GetInternalGroupsResponse } from '#academic-offering/infrastructure/controller/academic-period/get-internal-groups/get-internal-groups.response';
+import { searchInternalGroupsByPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/search-internal-groups-by-period.schema';
+import { SearchInternalGroupsHandler } from '#academic-offering/applicaton/academic-period/search-internal-groups/search-internal-groups.handler';
+import { SearchInternalGroupsQuery } from '#academic-offering/applicaton/academic-period/search-internal-groups/search-internal-groups.query';
 
 interface SearchInternalGroupQueryParams {
   page: number;
@@ -24,20 +25,24 @@ interface SearchInternalGroupQueryParams {
   text: string;
 }
 
-@Controller('internal-group')
+@Controller('academic-period')
 export class SearchInternalGroupsController {
   constructor(private readonly handler: SearchInternalGroupsHandler) {}
 
-  @Get('search')
+  @Get(':id/internal-group/search')
   @UseGuards(JwtAuthGuard)
   @UsePipes(
-    new JoiRequestQueryParamValidationPipeService(searchInternalGroupsSchema),
+    new JoiRequestQueryParamValidationPipeService(
+      searchInternalGroupsByPeriodSchema,
+    ),
   )
   async getInternalGroups(
+    @Param('id') academicPeriodId: string,
     @Query() params: SearchInternalGroupQueryParams,
     @Request() request: AuthRequest,
   ): Promise<CollectionResponse<GetInternalGroupsResponse>> {
     const query = new SearchInternalGroupsQuery(
+      academicPeriodId,
       params.text,
       request.user,
       params.page,

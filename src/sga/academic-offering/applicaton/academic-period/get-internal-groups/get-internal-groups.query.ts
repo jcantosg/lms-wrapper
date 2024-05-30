@@ -6,7 +6,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 export class GetInternalGroupsQuery extends CollectionQuery implements Query {
   constructor(
     public readonly startDate: string | null,
-    public readonly academicPeriod: string | null,
+    public readonly academicPeriodId: string,
     public readonly code: string | null,
     public readonly businessUnit: string | null,
     public readonly academicProgram: string | null,

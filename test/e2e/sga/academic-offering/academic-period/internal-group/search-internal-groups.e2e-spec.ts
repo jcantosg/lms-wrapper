@@ -4,11 +4,11 @@ import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { GetAllInternalGroupsE2eSeed } from '#test/e2e/sga/student/internal-group/get-all-internal-groups.e2e-seed';
+import { GetAllInternalGroupsE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/internal-group/get-all-internal-groups.e2e-seed';
 
-const path = '/internal-group/search';
+const path = `/academic-period/${GetAllInternalGroupsE2eSeed.academicPeriodId}/internal-group/search`;
 
-describe('/internal-group (GET)', () => {
+describe('/academic-period/{id}/internal-group/search (GET)', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;

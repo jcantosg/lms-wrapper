@@ -8,6 +8,7 @@ export class SearchInternalGroupsQuery
   implements Query
 {
   constructor(
+    public readonly academicPeriodId: string,
     public readonly text: string,
     public readonly adminUser: AdminUser,
     page: number,

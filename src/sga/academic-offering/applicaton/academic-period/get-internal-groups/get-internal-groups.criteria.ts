@@ -5,7 +5,7 @@ import {
   GroupOperator,
 } from '#/sga/shared/domain/criteria/filter';
 import { Order } from '#/sga/shared/domain/criteria/order';
-import { GetInternalGroupsQuery } from '#student/application/get-internal-groups/get-internal-groups.query';
+import { GetInternalGroupsQuery } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.query';
 
 export class GetInternalGroupsCriteria extends Criteria {
   constructor(query: GetInternalGroupsQuery) {
@@ -34,8 +34,8 @@ export class GetInternalGroupsCriteria extends Criteria {
         'business_unit',
       ),
       new Filter(
-        'name',
-        query.academicPeriod,
+        'id',
+        query.academicPeriodId,
         FilterOperators.LIKE,
         GroupOperator.AND,
         'academic_period',

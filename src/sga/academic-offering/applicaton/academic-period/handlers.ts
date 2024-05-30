@@ -12,6 +12,9 @@ import { PeriodBlockRepository } from '#academic-offering/domain/repository/peri
 import { EditPeriodBlockHandler } from '#academic-offering/applicaton/academic-period/edit-period-block/edit-period-block.handler';
 import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
 import { CreateAcademicPeriodTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-period.transactional-service';
+import { GetInternalGroupsHandler } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.handler';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { SearchInternalGroupsHandler } from '#academic-offering/applicaton/academic-period/search-internal-groups/search-internal-groups.handler';
 
 const createAcademicPeriodHandler = {
   provide: CreateAcademicPeriodHandler,
@@ -98,6 +101,21 @@ const editPeriodBlockHandler = {
   inject: [PeriodBlockGetter, PeriodBlockRepository],
 };
 
+const listInternalGroupsHandler = {
+  provide: GetInternalGroupsHandler,
+  useFactory: (repository: InternalGroupRepository): GetInternalGroupsHandler =>
+    new GetInternalGroupsHandler(repository),
+  inject: [InternalGroupRepository],
+};
+
+const searchInternalGroupsHandler = {
+  provide: SearchInternalGroupsHandler,
+  useFactory: (
+    repository: InternalGroupRepository,
+  ): SearchInternalGroupsHandler => new SearchInternalGroupsHandler(repository),
+  inject: [InternalGroupRepository],
+};
+
 export const academicPeriodHandlers = [
   createAcademicPeriodHandler,
   getAcademicPeriodHandler,
@@ -107,4 +125,6 @@ export const academicPeriodHandlers = [
   searchAcademicPeriodsHandler,
   getAcademicPeriodsByBusinessUnitHandler,
   editPeriodBlockHandler,
+  listInternalGroupsHandler,
+  searchInternalGroupsHandler,
 ];

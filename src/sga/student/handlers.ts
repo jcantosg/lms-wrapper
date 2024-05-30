@@ -17,8 +17,6 @@ import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
-import { GetInternalGroupsHandler } from '#student/application/get-internal-groups/get-internal-groups.handler';
-import { SearchInternalGroupsHandler } from '#student/application/search-internal-groups/search-internal-groups.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 
 const getAccessQualificationsHandler = {
@@ -100,21 +98,6 @@ const createInternalGroupsBatchHandler = {
   ],
 };
 
-const listInternalGroupsHandler = {
-  provide: GetInternalGroupsHandler,
-  useFactory: (repository: InternalGroupRepository): GetInternalGroupsHandler =>
-    new GetInternalGroupsHandler(repository),
-  inject: [InternalGroupRepository],
-};
-
-const searchInternalGroupsHandler = {
-  provide: SearchInternalGroupsHandler,
-  useFactory: (
-    repository: InternalGroupRepository,
-  ): SearchInternalGroupsHandler => new SearchInternalGroupsHandler(repository),
-  inject: [InternalGroupRepository],
-};
-
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -124,8 +107,6 @@ export const handlers = [
   getStudentHandler,
   ...academicRecordHandlers,
   createInternalGroupsBatchHandler,
-  listInternalGroupsHandler,
-  searchInternalGroupsHandler,
   ...enrollmentHandlers,
   ...administrativeGroupHandlers,
 ];

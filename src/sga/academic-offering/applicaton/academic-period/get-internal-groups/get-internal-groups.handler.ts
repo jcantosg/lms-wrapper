@@ -2,9 +2,9 @@ import { QueryHandler } from '#shared/domain/bus/query.handler';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
-import { GetInternalGroupsQuery } from '#student/application/get-internal-groups/get-internal-groups.query';
+import { GetInternalGroupsQuery } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.query';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
-import { GetInternalGroupsCriteria } from '#student/application/get-internal-groups/get-internal-groups.criteria';
+import { GetInternalGroupsCriteria } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.criteria';
 
 export class GetInternalGroupsHandler implements QueryHandler {
   constructor(private readonly repository: InternalGroupRepository) {}

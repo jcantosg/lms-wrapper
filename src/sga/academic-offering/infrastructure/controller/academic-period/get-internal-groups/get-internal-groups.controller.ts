@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Param,
   Query,
   Request,
   UseGuards,
@@ -11,10 +12,10 @@ import { JwtAuthGuard } from '#/sga/shared/infrastructure/auth/jwt-auth.guard';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructure/pipe/joi-request-query-param-validation-pipe.service';
-import { getInternalGroupsSchema } from '#student/infrastructure/config/validation-schema/get-internal-groups.schema';
-import { GetInternalGroupsResponse } from '#student/infrastructure/controller/get-internal-groups/get-internal-groups.response';
-import { GetInternalGroupsQuery } from '#student/application/get-internal-groups/get-internal-groups.query';
-import { GetInternalGroupsHandler } from '#student/application/get-internal-groups/get-internal-groups.handler';
+import { GetInternalGroupsResponse } from '#academic-offering/infrastructure/controller/academic-period/get-internal-groups/get-internal-groups.response';
+import { GetInternalGroupsHandler } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.handler';
+import { GetInternalGroupsQuery } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.query';
+import { getInternalGroupsByPeriodSchema } from '#academic-offering/infrastructure/config/validation-schema/get-internal-groups-by-period.schema';
 
 interface GetInternalGroupsQueryParams {
   page: number;
@@ -23,28 +24,30 @@ interface GetInternalGroupsQueryParams {
   orderType: OrderTypes;
   code: string | null;
   academicProgram: string | null;
-  academicPeriod: string | null;
   businessUnit: string | null;
   startDate: string | null;
   subject: string | null;
 }
 
-@Controller('internal-group')
+@Controller('academic-period')
 export class GetInternalGroupsController {
   constructor(private readonly handler: GetInternalGroupsHandler) {}
 
-  @Get()
+  @Get(':id/internal-group')
   @UseGuards(JwtAuthGuard)
   @UsePipes(
-    new JoiRequestQueryParamValidationPipeService(getInternalGroupsSchema),
+    new JoiRequestQueryParamValidationPipeService(
+      getInternalGroupsByPeriodSchema,
+    ),
   )
   async getInternalGroups(
+    @Param('id') academicPeriodId: string,
     @Query() params: GetInternalGroupsQueryParams,
     @Request() request: AuthRequest,
   ): Promise<CollectionResponse<GetInternalGroupsResponse>> {
     const query = new GetInternalGroupsQuery(
       params.startDate,
-      params.academicPeriod,
+      academicPeriodId,
       params.code,
       params.businessUnit,
       params.academicProgram,

@@ -3,8 +3,8 @@ import { CollectionHandlerResponse } from '#/sga/shared/application/collection.h
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
-import { SearchInternalGroupsQuery } from '#student/application/search-internal-groups/search-internal-groups.query';
-import { SearchInternalGroupsCriteria } from '#student/application/search-internal-groups/search-internal-groups.criteria';
+import { SearchInternalGroupsQuery } from '#academic-offering/applicaton/academic-period/search-internal-groups/search-internal-groups.query';
+import { SearchInternalGroupsCriteria } from '#academic-offering/applicaton/academic-period/search-internal-groups/search-internal-groups.criteria';
 
 export class SearchInternalGroupsHandler implements QueryHandler {
   constructor(private readonly repository: InternalGroupRepository) {}
