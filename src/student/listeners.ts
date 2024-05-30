@@ -7,7 +7,7 @@ const recoveryPasswordTokenGeneratedListener = {
   useFactory: (mailer: MailerService, configService: ConfigService) => {
     return new StudentRecoveryPasswordTokenGeneratedListener(
       mailer,
-      configService.get<string>('RECOVERY_TOKEN_URL')!,
+      configService.get<string>('STUDENT_RECOVERY_PASSWORD_TOKEN_URL')!,
     );
   },
   inject: [MailerService, ConfigService],

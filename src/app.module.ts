@@ -59,6 +59,7 @@ const configModule = ConfigModule.forRoot({
     RECOVERY_TOKEN_TTL: Joi.number().required(),
     GEONAMES_URL: Joi.string().required(),
     GEONAMES_NAME: Joi.string().required(),
+    STUDENT_RECOVERY_PASSWORD_TOKEN_URL: Joi.string().required(),
   }),
 });
 
