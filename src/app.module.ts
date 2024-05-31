@@ -60,6 +60,7 @@ const configModule = ConfigModule.forRoot({
     GEONAMES_URL: Joi.string().required(),
     GEONAMES_NAME: Joi.string().required(),
     STUDENT_RECOVERY_PASSWORD_TOKEN_URL: Joi.string().required(),
+    STUDENT_RECOVERY_PASSWORD_TTL: Joi.number().required(),
   }),
 });
 

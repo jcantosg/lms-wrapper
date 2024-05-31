@@ -10,6 +10,7 @@ import { UpdateStudentPasswordHandler } from '#/student/student/application/upda
 import { StudentRecoveryPasswordTokenGetter } from '#/student/student/domain/service/student-recovery-password-token-getter.service';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { ConfigService } from '@nestjs/config';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -28,12 +29,13 @@ const generateRecoveryPasswordTokenHandler = {
     recoveryPasswordTokenRepository: StudentRecoveryPasswordTokenRepository,
     jwtTokenGenerator: JwtTokenGenerator,
     eventDispatcher: EventDispatcher,
+    configService: ConfigService,
   ) =>
     new GenerateRecoveryPasswordTokenHandler(
       repository,
       recoveryPasswordTokenRepository,
       jwtTokenGenerator,
-      49,
+      configService.getOrThrow<number>('STUDENT_RECOVERY_PASSWORD_TTL'),
       eventDispatcher,
     ),
 
@@ -42,6 +44,7 @@ const generateRecoveryPasswordTokenHandler = {
     StudentRecoveryPasswordTokenRepository,
     JwtTokenGenerator,
     EventDispatcher,
+    ConfigService,
   ],
 };
 

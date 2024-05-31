@@ -19,7 +19,7 @@ export class StudentRecoveryPasswordTokenGeneratedListener {
       template: './student-recovery-token-password',
       subject: 'Recuperar contraseña',
       context: {
-        url: `${this.url}&token=${event.userToken}`,
+        url: `${this.url}?token=${event.userToken}`,
         name: event.userName,
       },
     });
