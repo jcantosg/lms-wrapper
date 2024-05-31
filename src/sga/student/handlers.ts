@@ -18,6 +18,9 @@ import { AcademicProgramGetter } from '#academic-offering/domain/service/academi
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { AddInternalGroupToAcademicPeriodHandler } from '#student/application/add-internal-group-to-academic-period/add-internal-group-to-academic-period.handler';
+import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
+import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { GetInternalGroupsHandler } from '#student/application/get-internal-groups/get-internal-groups.handler';
 import { SearchInternalGroupsHandler } from '#student/application/search-internal-groups/search-internal-groups.handler';
 
@@ -100,6 +103,34 @@ const createInternalGroupsBatchHandler = {
   ],
 };
 
+const addInternalGroupToAcademicPeriodHandler = {
+  provide: AddInternalGroupToAcademicPeriodHandler,
+  useFactory: (
+    repository: InternalGroupRepository,
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    subjectGetter: SubjectGetter,
+    blockRelationRepository: BlockRelationRepository,
+    edaeUserGetter: EdaeUserGetter,
+  ): AddInternalGroupToAcademicPeriodHandler =>
+    new AddInternalGroupToAcademicPeriodHandler(
+      repository,
+      academicPeriodGetter,
+      subjectGetter,
+      academicProgramGetter,
+      blockRelationRepository,
+      edaeUserGetter,
+    ),
+  inject: [
+    InternalGroupRepository,
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    SubjectGetter,
+    BlockRelationRepository,
+    EdaeUserGetter,
+  ],
+};
+
 const listInternalGroupsHandler = {
   provide: GetInternalGroupsHandler,
   useFactory: (repository: InternalGroupRepository): GetInternalGroupsHandler =>
@@ -126,6 +157,7 @@ export const handlers = [
   createInternalGroupsBatchHandler,
   ...enrollmentHandlers,
   ...administrativeGroupHandlers,
+  addInternalGroupToAcademicPeriodHandler,
   listInternalGroupsHandler,
   searchInternalGroupsHandler,
 ];
