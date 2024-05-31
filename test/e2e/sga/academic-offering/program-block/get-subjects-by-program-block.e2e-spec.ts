@@ -34,7 +34,6 @@ describe('/program-block/id/subject (GET)', () => {
       .get(`${path}?orderType=DESC&orderBy=official_code`)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
-    console.log(response.body);
 
     expect(response.body).toEqual(
       expect.arrayContaining([

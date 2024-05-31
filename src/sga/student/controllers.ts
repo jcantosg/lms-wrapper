@@ -8,6 +8,8 @@ import { GetStudentController } from '#student/infrastructure/controller/get-stu
 import { CreateInternalGroupsBatchController } from '#student/infrastructure/controller/create-internal-groups-batch.controller';
 import { enrollmentControllers } from '#student/infrastructure/controller/enrollment/controllers';
 import { administrativeGroupControllers } from '#student/infrastructure/controller/administrative-group/controllers';
+import { GetInternalGroupsController } from '#student/infrastructure/controller/internal-group/get-internal-groups/get-internal-groups.controller';
+import { SearchInternalGroupsController } from '#student/infrastructure/controller/internal-group/search-internal-groups.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -20,4 +22,6 @@ export const controllers = [
   CreateInternalGroupsBatchController,
   ...enrollmentControllers,
   ...administrativeGroupControllers,
+  GetInternalGroupsController,
+  SearchInternalGroupsController,
 ];
