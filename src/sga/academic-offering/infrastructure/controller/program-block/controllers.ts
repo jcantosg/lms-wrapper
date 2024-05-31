@@ -5,6 +5,7 @@ import { AddSubjectToProgramBlockController } from '#academic-offering/infrastru
 import { DeleteProgramBlockController } from '#academic-offering/infrastructure/controller/program-block/delete-program-block.controller';
 import { GetSubjectsByProgramBlockController } from '#academic-offering/infrastructure/controller/program-block/get-subjects-by-program-block/get-subjects-by-program-block.controller';
 import { RemoveSubjectsFromProgramBlockController } from '#academic-offering/infrastructure/controller/program-block/remove-subjects-from-program-block.controller';
+import { MoveSubjectController } from '#academic-offering/infrastructure/controller/program-block/move-subject-from-program-block.controller';
 
 export const programBlockControllers = [
   GetAllProgramBlockStructureTypesController,
@@ -14,4 +15,5 @@ export const programBlockControllers = [
   GetSubjectsByProgramBlockController,
   AddSubjectToProgramBlockController,
   RemoveSubjectsFromProgramBlockController,
+  MoveSubjectController,
 ];

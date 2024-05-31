@@ -5,6 +5,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 @Injectable()
 export class ProgramBlockPostgresRepository
@@ -89,5 +90,39 @@ export class ProgramBlockPostgresRepository
 
   async delete(programBlock: ProgramBlock): Promise<void> {
     await this.repository.delete(programBlock.id);
+  }
+
+  async moveSubjects(
+    subjectsToMove: Subject[],
+    newBlock: ProgramBlock,
+    currentBlock: ProgramBlock,
+  ): Promise<void> {
+    const subjectsToKeep = currentBlock.subjects.filter(
+      (currentBlockSubject) =>
+        !subjectsToMove.some(
+          (subjectToMove) => currentBlockSubject.id === subjectToMove.id,
+        ),
+    );
+    currentBlock.subjects = subjectsToKeep;
+    newBlock.subjects = [...newBlock.subjects, ...subjectsToMove];
+    const queryRunner = this.repository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.save(ProgramBlock, {
+        id: currentBlock.id,
+        subjects: currentBlock.subjects,
+      });
+      await queryRunner.manager.save(ProgramBlock, {
+        id: newBlock.id,
+        subjects: newBlock.subjects,
+      });
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

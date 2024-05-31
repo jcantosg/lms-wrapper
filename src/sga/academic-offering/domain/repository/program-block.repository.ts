@@ -1,4 +1,5 @@
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 export abstract class ProgramBlockRepository {
   abstract existsById(id: string): Promise<boolean>;
@@ -14,4 +15,10 @@ export abstract class ProgramBlockRepository {
   ): Promise<ProgramBlock | null>;
 
   abstract delete(programBlock: ProgramBlock): Promise<void>;
+
+  abstract moveSubjects(
+    subjectsToMove: Subject[],
+    newBlock: ProgramBlock,
+    currentBlock: ProgramBlock,
+  ): Promise<void>;
 }

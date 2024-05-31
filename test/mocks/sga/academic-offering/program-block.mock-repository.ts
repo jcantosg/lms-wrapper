@@ -6,4 +6,5 @@ export class ProgramBlockMockRepository implements ProgramBlockRepository {
   get = jest.fn();
   getByAdminUser = jest.fn();
   delete = jest.fn();
+  moveSubjects = jest.fn();
 }

@@ -10,6 +10,7 @@ import { GetSubjectsByProgramBlockHandler } from '#academic-offering/applicaton/
 import { RemoveSubjectFromProgramBlockHandler } from '#academic-offering/applicaton/program-block/remove-subject-from-program-block/remove-subject-from-program-block.handler';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
+import { MoveSubjectFromProgramBlockHandler } from '#academic-offering/applicaton/program-block/move-subject-from-program-block/move-subject-from-program-block.handler';
 
 const createProgramBlockHandler = {
   provide: CreateProgramBlockHandler,
@@ -108,6 +109,21 @@ const addSubjectToProgramBlockHandler = {
   ],
 };
 
+const moveSubjectFromProgramBlockHandler = {
+  provide: MoveSubjectFromProgramBlockHandler,
+  useFactory: (
+    repository: ProgramBlockRepository,
+    programBlockGetter: ProgramBlockGetter,
+    subjectGetter: SubjectGetter,
+  ) =>
+    new MoveSubjectFromProgramBlockHandler(
+      repository,
+      programBlockGetter,
+      subjectGetter,
+    ),
+  inject: [ProgramBlockRepository, ProgramBlockGetter, SubjectGetter],
+};
+
 export const programBlockHandlers = [
   createProgramBlockHandler,
   editProgramBlockHandler,
@@ -115,4 +131,5 @@ export const programBlockHandlers = [
   deleteProgramBlockHandler,
   getSubjectsByProgramBlockHandler,
   removeSubjectFromProgramBlockHandler,
+  moveSubjectFromProgramBlockHandler,
 ];
