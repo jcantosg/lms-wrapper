@@ -55,17 +55,17 @@ describe('Academic Record Getter Service', () => {
     expect(result).toEqual([academicRecord]);
   });
 
-  it('should throw an AcademicRecordNotFoundException when array is empty', async () => {
+  it('should return an empty array when there are no academic records', async () => {
     getStudentAcademicRecordSpy.mockImplementation(
       (): Promise<AcademicRecord[]> => Promise.resolve([]),
     );
 
-    await expect(
-      service.getStudentAcademicRecord(
-        academicRecord.id,
-        adminUser.businessUnits.map((bu) => bu.id),
-        adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
-      ),
-    ).rejects.toThrow(AcademicRecordNotFoundException);
+    const result = await service.getStudentAcademicRecord(
+      academicRecord.id,
+      adminUser.businessUnits.map((bu) => bu.id),
+      adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+    );
+
+    expect(result).toEqual([]);
   });
 });

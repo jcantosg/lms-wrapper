@@ -38,9 +38,6 @@ export class AcademicRecordGetter {
       adminBusinessUnits,
       isSuperAdmin,
     );
-    if (academicRecords.length === 0) {
-      throw new AcademicRecordNotFoundException();
-    }
 
     return academicRecords;
   }
