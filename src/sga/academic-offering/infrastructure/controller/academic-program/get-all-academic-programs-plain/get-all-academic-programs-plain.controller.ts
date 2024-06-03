@@ -16,7 +16,7 @@ import { getAllAcademicProgramsPlainSchema } from '#academic-offering/infrastruc
 
 interface GetAllAcademicProgramPlainQueryParams {
   businessUnit: string;
-  blocksNumber: number;
+  blocksNumber?: number;
 }
 
 @Controller('academic-program')
@@ -36,8 +36,8 @@ export class GetAllAcademicProgramsPlainController {
   ): Promise<any> {
     const query = new GetAllAcademicProgramsPlainQuery(
       queryParams.businessUnit,
-      queryParams.blocksNumber,
       req.user,
+      queryParams.blocksNumber,
     );
 
     const response = await this.handler.handle(query);

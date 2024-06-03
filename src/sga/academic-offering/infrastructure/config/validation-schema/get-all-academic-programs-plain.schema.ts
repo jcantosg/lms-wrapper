@@ -2,5 +2,5 @@ import Joi from 'joi';
 
 export const getAllAcademicProgramsPlainSchema = Joi.object({
   businessUnit: Joi.string().guid().required(),
-  blocksNumber: Joi.number().integer().required().min(1),
+  blocksNumber: Joi.number().integer().optional().min(1),
 });

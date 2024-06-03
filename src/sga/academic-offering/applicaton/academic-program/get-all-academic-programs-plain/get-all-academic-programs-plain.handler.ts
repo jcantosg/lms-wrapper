@@ -21,9 +21,11 @@ export class GetAllAcademicProgramsPlainHandler implements QueryHandler {
       query.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
 
-    return academicPrograms.filter(
-      (academicProgram) =>
-        academicProgram.programBlocks.length === query.blocksNumber,
-    );
+    return query.blocksNumber !== undefined
+      ? academicPrograms.filter(
+          (academicProgram) =>
+            academicProgram.programBlocks.length === query.blocksNumber,
+        )
+      : academicPrograms;
   }
 }

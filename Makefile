@@ -46,10 +46,18 @@ test-e2e: ## Run e2e tests
 	mkdir -p files/subject/avatar
 	mkdir -p files/uploads/subject-resources
 	make test-database-setup
-	@npm run test:e2e ; make test-database-drop
-	rm -rf files/admin-user-avatar/new-admin*
-	rm -rf files/edae-user/new-edae-user*
-	rm -rf files/uploads/subject-resources/*
+	@if [ -z "$(TEST_PATTERN)" ]; then \
+	  npm run test:e2e; STATUS=$$?; \
+	else \
+	  npm run test:e2e -- $(TEST_PATTERN); STATUS=$$?; \
+	fi; \
+	make test-database-drop; \
+	rm -rf files/admin-user-avatar/new-admin*; \
+	rm -rf files/edae-user/new-edae-user*; \
+	rm -rf files/uploads/subject-resources/*; \
+	exit $$STATUS
+
+
 	rm -rf files/subject-avatar/*
 	rm -rf files/edae-user-avatar/*
 

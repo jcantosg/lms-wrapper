@@ -125,7 +125,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testTimeout": 30000,
-    "retryTimes": 3,
 
     "moduleNameMapper": {
       "^#admin-user/(.*)$": "<rootDir>/sga/admin-user/$1",
