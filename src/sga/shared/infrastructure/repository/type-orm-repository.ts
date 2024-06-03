@@ -27,6 +27,7 @@ const fieldOrderByMapping: Record<string, string> = {
   finalGrade: 'subjectCall.finalGrade',
   status: 'subjectCall.status',
   academicProgram: 'academic_program.name',
+  academicPeriod: 'academic_period.name',
   academicYear: 'period_block.academicYear',
   startMonth: 'period_block.startMonth',
   blockName: 'period_block.name',

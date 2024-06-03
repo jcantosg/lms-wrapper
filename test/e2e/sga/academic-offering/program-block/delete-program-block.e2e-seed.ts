@@ -17,6 +17,13 @@ import { ProgramBlockStructureType } from '#academic-offering/domain/enum/progra
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
 export class DeleteProgramBlockE2eSeed implements E2eSeed {
   public static academicPeriodId = uuid();
@@ -81,14 +88,17 @@ export class DeleteProgramBlockE2eSeed implements E2eSeed {
   private programBlockRepository: Repository<ProgramBlock>;
   constructor(private dataSource: DataSource) {
     this.academicPeriodRepository =
-      this.dataSource.getRepository(AcademicPeriod);
-    this.countryRepository = dataSource.getRepository(Country);
-    this.academicProgramRepository =
-      this.dataSource.getRepository(AcademicProgram);
-    this.businessUnitRepository = this.dataSource.getRepository(BusinessUnit);
-    this.titleRepository = this.dataSource.getRepository(Title);
-    this.programBlockRepository = this.dataSource.getRepository(ProgramBlock);
-    this.subjectRepository = this.dataSource.getRepository(Subject);
+      this.dataSource.getRepository(academicPeriodSchema);
+    this.countryRepository = dataSource.getRepository(CountrySchema);
+    this.academicProgramRepository = this.dataSource.getRepository(
+      academicProgramSchema,
+    );
+    this.businessUnitRepository =
+      this.dataSource.getRepository(businessUnitSchema);
+    this.titleRepository = this.dataSource.getRepository(titleSchema);
+    this.programBlockRepository =
+      this.dataSource.getRepository(programBlockSchema);
+    this.subjectRepository = this.dataSource.getRepository(subjectSchema);
   }
 
   async arrange(): Promise<void> {

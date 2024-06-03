@@ -9,6 +9,9 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { classroomSchema } from '#business-unit/infrastructure/config/schema/classroom.schema';
+import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 
 export class DeleteClassroomE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-classroom@email.com';
@@ -38,10 +41,11 @@ export class DeleteClassroomE2eSeed implements E2eSeed {
   private classroom: Classroom;
 
   constructor(private readonly datasource: DataSource) {
-    this.classroomRepository = datasource.getRepository(Classroom);
-    this.examinationCenterRepository =
-      datasource.getRepository(ExaminationCenter);
-    this.countryRepository = datasource.getRepository(Country);
+    this.classroomRepository = datasource.getRepository(classroomSchema);
+    this.examinationCenterRepository = datasource.getRepository(
+      examinationCenterSchema,
+    );
+    this.countryRepository = datasource.getRepository(CountrySchema);
   }
 
   async arrange() {

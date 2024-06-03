@@ -13,6 +13,12 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 
 export class RemoveAcademicProgramFromAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-edit-academic-period@email.com';
@@ -45,12 +51,15 @@ export class RemoveAcademicProgramFromAcademicPeriodE2eSeed implements E2eSeed {
   private readonly titleRepository: Repository<Title>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.academicProgramRepository = datasource.getRepository(AcademicProgram);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
-    this.titleRepository = datasource.getRepository(Title);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.academicProgramRepository = datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
+    this.titleRepository = datasource.getRepository(titleSchema);
   }
 
   async arrange(): Promise<void> {

@@ -4,6 +4,7 @@ import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '#/app.module';
+import { seedCountries } from '#commands/country/seed-countries';
 
 async function createEvaluationTypes(logger: Logger) {
   const businessUnitRepository = datasource.getRepository(BusinessUnit);
@@ -80,6 +81,7 @@ async function createEvaluationTypes(logger: Logger) {
       allBusinessUnits,
     ),
   );
+  logger.log('Evaluation types inserted');
 }
 
 async function bootstrap() {
@@ -87,6 +89,7 @@ async function bootstrap() {
   const logger = new Logger('Create Evaluation Types');
   app.useLogger(logger);
 
+  await seedCountries(logger);
   await createEvaluationTypes(logger);
   await datasource.destroy();
   await app.close();

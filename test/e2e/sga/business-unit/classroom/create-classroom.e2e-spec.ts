@@ -1,35 +1,33 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { CreateClassroomE2eSeed } from '#test/e2e/sga/business-unit/classroom/create-classroom.e2e-seeds';
 
 const path = `/classroom`;
 
 describe('/classroom (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateClassroomE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateClassroomE2eSeed.superAdminUserEmail,
-      CreateClassroomE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateClassroomE2eSeed.adminUserEmail,
-      CreateClassroomE2eSeed.adminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateClassroomE2eSeed.adminUserEmail,
+        CreateClassroomE2eSeed.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateClassroomE2eSeed.superAdminUserEmail,
+        CreateClassroomE2eSeed.superAdminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).post(path).expect(401);
@@ -111,7 +109,5 @@ describe('/classroom (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

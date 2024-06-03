@@ -9,6 +9,11 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
 export class GetSubjectDetailE2eSeed implements E2eSeed {
   public static subjectId = '83670209-9598-41d5-9c57-a393493f1b98';
@@ -44,12 +49,13 @@ export class GetSubjectDetailE2eSeed implements E2eSeed {
   private subjectRepository: Repository<Subject>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = this.datasource.getRepository(BusinessUnit);
-    this.userRepository = this.datasource.getRepository(AdminUser);
-    this.countryRepository = this.datasource.getRepository(Country);
+    this.businessUnitRepository =
+      this.datasource.getRepository(businessUnitSchema);
+    this.userRepository = this.datasource.getRepository(adminUserSchema);
+    this.countryRepository = this.datasource.getRepository(CountrySchema);
     this.evaluationTypeRepository =
-      this.datasource.getRepository(EvaluationType);
-    this.subjectRepository = this.datasource.getRepository(Subject);
+      this.datasource.getRepository(evaluationTypeSchema);
+    this.subjectRepository = this.datasource.getRepository(subjectSchema);
   }
 
   async arrange(): Promise<void> {

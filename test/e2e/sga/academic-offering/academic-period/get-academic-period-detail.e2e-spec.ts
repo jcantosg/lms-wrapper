@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { formatDate } from '#shared/domain/service/date-formatter.service';
 import { GetAcademicPeriodDetailE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/get-academic-period-detail.e2e-seed';
@@ -10,27 +8,27 @@ import { GetAcademicPeriodDetailE2eSeed } from '#test/e2e/sga/academic-offering/
 const path = `/academic-period/${GetAcademicPeriodDetailE2eSeed.academicPeriodId}`;
 
 describe('Get Academic Period Detail (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAcademicPeriodDetailE2eSeed(datasource);
     await seeder.arrange();
-    superAdminUserToken = await login(
-      httpServer,
-      GetAcademicPeriodDetailE2eSeed.superAdminEmail,
-      GetAcademicPeriodDetailE2eSeed.superAdminPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      GetAcademicPeriodDetailE2eSeed.adminEmail,
-      GetAcademicPeriodDetailE2eSeed.adminPassword,
-    );
+    [superAdminUserToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        GetAcademicPeriodDetailE2eSeed.superAdminEmail,
+        GetAcademicPeriodDetailE2eSeed.superAdminPassword,
+      ),
+      login(
+        httpServer,
+        GetAcademicPeriodDetailE2eSeed.adminEmail,
+        GetAcademicPeriodDetailE2eSeed.adminPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -77,8 +75,6 @@ describe('Get Academic Period Detail (GET)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

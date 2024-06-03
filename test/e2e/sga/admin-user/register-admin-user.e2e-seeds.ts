@@ -7,6 +7,9 @@ import { getAnAdminUser } from '#test/entity-factory';
 import { Country } from '#shared/domain/entity/country.entity';
 import { getAnIdentityDocument } from '#test/value-object-factory';
 import { createAdminUser } from '#test/e2e/sga/e2e-auth-helper';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 
 export class RegisterAdminUserE2eSeed implements E2eSeed {
   public static newAdminId = '401ddba2-d710-460a-a34e-7e8a4eb1a438';
@@ -41,9 +44,9 @@ export class RegisterAdminUserE2eSeed implements E2eSeed {
   private countryRepository: Repository<Country>;
 
   constructor(private datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.userRepository = datasource.getRepository(AdminUser);
-    this.countryRepository = datasource.getRepository(Country);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.userRepository = datasource.getRepository(adminUserSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
   }
 
   async arrange(): Promise<void> {

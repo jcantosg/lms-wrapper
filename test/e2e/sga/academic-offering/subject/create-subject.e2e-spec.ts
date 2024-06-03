@@ -1,33 +1,31 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { CreateSubjectE2eSeed } from '#test/e2e/sga/academic-offering/subject/create-subject.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { CreateSubjectE2eSeed } from '#test/e2e/sga/academic-offering/subject/create-subject.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = '/subject';
 describe('/subject (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let secretaryAccessToken: string;
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateSubjectE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateSubjectE2eSeed.superAdminUserEmail,
-      CreateSubjectE2eSeed.superAdminUserPassword,
-    );
-    secretaryAccessToken = await login(
-      httpServer,
-      CreateSubjectE2eSeed.adminUserEmail,
-      CreateSubjectE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, secretaryAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateSubjectE2eSeed.superAdminUserEmail,
+        CreateSubjectE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateSubjectE2eSeed.adminUserEmail,
+        CreateSubjectE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -135,7 +133,5 @@ describe('/subject (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

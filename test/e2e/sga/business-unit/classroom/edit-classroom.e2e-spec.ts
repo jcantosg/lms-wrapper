@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { ClassroomRepository } from '#business-unit/domain/repository/classroom.repository';
 import { ClassroomPostgresRepository } from '#business-unit/infrastructure/repository/classroom.postgres-repository';
@@ -12,7 +10,6 @@ import { EditClassroomE2eSeed } from '#test/e2e/sga/business-unit/classroom/edit
 const path = `/classroom/c2fc03f3-676c-4591-b815-e762d0e54542`;
 
 describe('/classroom/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
@@ -20,20 +17,21 @@ describe('/classroom/:id (PUT)', () => {
   let classroomRepository: ClassroomRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditClassroomE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      EditClassroomE2eSeed.superAdminUserEmail,
-      EditClassroomE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      EditClassroomE2eSeed.adminUserEmail,
-      EditClassroomE2eSeed.adminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        EditClassroomE2eSeed.adminUserEmail,
+        EditClassroomE2eSeed.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        EditClassroomE2eSeed.superAdminUserEmail,
+        EditClassroomE2eSeed.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -121,7 +119,5 @@ describe('/classroom/:id (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

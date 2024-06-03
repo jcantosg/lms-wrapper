@@ -8,6 +8,9 @@ import {
   createAdminUser,
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class RemoveBusinessUnitFromAdminUserE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;
@@ -22,9 +25,9 @@ export class RemoveBusinessUnitFromAdminUserE2eSeed implements E2eSeed {
   private readonly adminUserRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

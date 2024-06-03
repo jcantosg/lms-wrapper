@@ -12,6 +12,7 @@ import {
 import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class CreateVirtualCampusE2eSeeds implements E2eSeed {
   public static superAdminUserEmail = 'super-create-virtual-campus@email.com';
@@ -43,7 +44,7 @@ export class CreateVirtualCampusE2eSeeds implements E2eSeed {
     this.countryRepository = datasource.getRepository(CountrySchema);
     this.virtualCampusRepository =
       datasource.getRepository(virtualCampusSchema);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

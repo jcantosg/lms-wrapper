@@ -1,10 +1,8 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { GetAllEdaeUsersE2eSeed } from '#test/e2e/sga/edae-user/get-all-edae-users.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { GetAllEdaeUsersE2eSeed } from '#test/e2e/sga/edae-user/get-all-edae-users.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -13,13 +11,11 @@ import {
 const path = '/edae-user';
 
 describe('/edae-user (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllEdaeUsersE2eSeed(datasource);
     await seeder.arrange();
@@ -58,8 +54,6 @@ describe('/edae-user (GET)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

@@ -1,20 +1,16 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { EditProfileE2eSeed } from '#test/e2e/sga/admin-user/edit-profile.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { EditProfileE2eSeed } from '#test/e2e/sga/admin-user/edit-profile.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = '/profile';
 
 describe('/profile (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditProfileE2eSeed(datasource);
     await seeder.arrange();
@@ -47,7 +43,5 @@ describe('/profile (PUT)', () => {
   });
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

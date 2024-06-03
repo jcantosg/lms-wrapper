@@ -1,19 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { GenerateStudentRecoveryPasswordTokenSeed } from '#test/e2e/student/auth/generate-student-recovery-password-token.e2e-seeds';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { GenerateStudentRecoveryPasswordTokenSeed } from '#test/e2e/student/auth/generate-student-recovery-password-token.e2e-seeds';
 
 const path = '/student/recover-password';
 
 describe('/student/recover-password', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GenerateStudentRecoveryPasswordTokenSeed(datasource);
     await seeder.arrange();
@@ -33,7 +29,5 @@ describe('/student/recover-password', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

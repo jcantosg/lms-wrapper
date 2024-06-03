@@ -11,6 +11,11 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
 
 export class EditPeriodBlockE2eSeed implements E2eSeed {
   public static countryId = uuid();
@@ -43,11 +48,12 @@ export class EditPeriodBlockE2eSeed implements E2eSeed {
   private readonly periodBlockRepository: Repository<PeriodBlock>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
-    this.periodBlockRepository = datasource.getRepository(PeriodBlock);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
+    this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
   }
 
   async arrange(): Promise<void> {

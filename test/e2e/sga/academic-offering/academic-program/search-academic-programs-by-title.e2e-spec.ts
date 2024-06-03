@@ -1,10 +1,8 @@
-import { GetAcademicProgramsByTitleE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/get-academic-programs-by-title.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { GetAcademicProgramsByTitleE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/get-academic-programs-by-title.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -15,13 +13,11 @@ import { GetAllAcademicProgramsE2eSeedDataConfig } from '#test/e2e/sga/academic-
 const path = `/title/${GetAcademicProgramsByTitleE2eSeed.titleId}/academic-programs/search?text=murcia`;
 
 describe('/title/{{titleId}}/academic-programs/search (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAcademicProgramsByTitleE2eSeed(datasource);
     await seeder.arrange();
@@ -57,7 +53,5 @@ describe('/title/{{titleId}}/academic-programs/search (GET)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

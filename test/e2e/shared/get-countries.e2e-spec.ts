@@ -1,10 +1,7 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import request from 'supertest';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { CountryResponse } from '#shared/infrastructure/controller/country/get-country.response';
 import { countries as countriesExpected } from '#commands/country/countries';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '../sga/e2e-auth-helper';
 import { GetCountriesE2ESeed } from './get-countries.e2e-seeds';
 import { E2eSeed } from '../e2e-seed';
@@ -12,13 +9,11 @@ import { E2eSeed } from '../e2e-seed';
 const path = `/country`;
 
 describe('Get Countries', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let superAdminAccessToken: string;
   let seeder: E2eSeed;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetCountriesE2ESeed(datasource);
     await seeder.arrange();
@@ -34,7 +29,7 @@ describe('Get Countries', () => {
   });
 
   it('should return all countries', async () => {
-    const response = await request(httpServer)
+    const response = await supertest(httpServer)
       .get('/country')
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
@@ -61,10 +56,11 @@ describe('Get Countries', () => {
   });
 
   it('should return all countries with assigned business unit', async () => {
-    const response = await request(httpServer)
+    const response = await supertest(httpServer)
       .get('/country?filter=businessUnit')
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
+
     expect(response.body.length).toEqual(1);
     expect(response.body).toEqual(
       expect.arrayContaining([
@@ -78,8 +74,6 @@ describe('Get Countries', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

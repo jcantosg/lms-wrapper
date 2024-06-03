@@ -1,9 +1,7 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import supertest from 'supertest';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -15,28 +13,27 @@ import { GetAllAdminUsersE2eSeedDataConfig } from '#test/e2e/sga/admin-user/get-
 const path = '/admin-users';
 
 describe('/admin-users', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllAdminUsersE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      GetAllAdminUsersE2eSeedDataConfig.adminUsers[1].email,
-      GetAllAdminUsersE2eSeedDataConfig.adminUsers[1].password,
-    );
-
-    superAdminAccessToken = await login(
-      httpServer,
-      GetAllAdminUsersE2eSeedDataConfig.adminUsers[0].email,
-      GetAllAdminUsersE2eSeedDataConfig.adminUsers[0].password,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        GetAllAdminUsersE2eSeedDataConfig.adminUsers[1].email,
+        GetAllAdminUsersE2eSeedDataConfig.adminUsers[1].password,
+      ),
+      login(
+        httpServer,
+        GetAllAdminUsersE2eSeedDataConfig.adminUsers[0].email,
+        GetAllAdminUsersE2eSeedDataConfig.adminUsers[0].password,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -262,7 +259,5 @@ describe('/admin-users', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

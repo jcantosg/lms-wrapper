@@ -1,19 +1,15 @@
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
-
 import { EditAcademicRecordE2eSeed } from '#test/e2e/sga/student/academic-record/edit-academic-record.e2e-seed';
-import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
-import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
 
 const path = `/academic-record/${EditAcademicRecordE2eSeed.academicRecordId}`;
 
 describe('/academic-record/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,25 +17,30 @@ describe('/academic-record/:id (PUT)', () => {
   let adminAcessGestor360Token: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditAcademicRecordE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      EditAcademicRecordE2eSeed.superAdminUserEmail,
-      EditAcademicRecordE2eSeed.superAdminUserPassword,
-    );
-    adminAccessSecretariaToken = await login(
-      httpServer,
-      EditAcademicRecordE2eSeed.adminUserSecretariaEmail,
-      EditAcademicRecordE2eSeed.adminUserSecretariaPassword,
-    );
-    adminAcessGestor360Token = await login(
-      httpServer,
-      EditAcademicRecordE2eSeed.adminUserGestor360Email,
-      EditAcademicRecordE2eSeed.adminUserGestor360Password,
-    );
+    [
+      superAdminAccessToken,
+      adminAccessSecretariaToken,
+      adminAcessGestor360Token,
+    ] = await Promise.all([
+      login(
+        httpServer,
+        EditAcademicRecordE2eSeed.superAdminUserEmail,
+        EditAcademicRecordE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        EditAcademicRecordE2eSeed.adminUserSecretariaEmail,
+        EditAcademicRecordE2eSeed.adminUserSecretariaPassword,
+      ),
+      login(
+        httpServer,
+        EditAcademicRecordE2eSeed.adminUserGestor360Email,
+        EditAcademicRecordE2eSeed.adminUserGestor360Password,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -76,7 +77,7 @@ describe('/academic-record/:id (PUT)', () => {
   });
 
   it('should update an academic record', async () => {
-    const repository = datasource.getRepository(AcademicRecord);
+    const repository = datasource.getRepository(academicRecordSchema);
 
     await supertest(httpServer)
       .put(path)
@@ -99,7 +100,5 @@ describe('/academic-record/:id (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

@@ -1,35 +1,33 @@
-import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { CreateExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/examination-center/create-examination-center.e2e-seeds';
+import { HttpServer } from '@nestjs/common';
 
 const path = '/examination-center';
 
 describe('/examination-center (POST)', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateExaminationCenterE2eSeeds(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      CreateExaminationCenterE2eSeeds.adminUserEmail,
-      CreateExaminationCenterE2eSeeds.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateExaminationCenterE2eSeeds.superAdminUserEmail,
-      CreateExaminationCenterE2eSeeds.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateExaminationCenterE2eSeeds.adminUserEmail,
+        CreateExaminationCenterE2eSeeds.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateExaminationCenterE2eSeeds.superAdminUserEmail,
+        CreateExaminationCenterE2eSeeds.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -72,7 +70,5 @@ describe('/examination-center (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

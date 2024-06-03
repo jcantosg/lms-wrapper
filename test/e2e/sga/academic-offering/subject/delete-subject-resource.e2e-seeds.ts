@@ -14,6 +14,11 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { subjectResourceSchema } from '#academic-offering/infrastructure/config/schema/subject-resource.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 
 export class DeleteSubjectResourceE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-delete-subject-resource@email.com';
@@ -51,11 +56,14 @@ export class DeleteSubjectResourceE2eSeed implements E2eSeed {
   private countryRepository: Repository<Country>;
 
   constructor(private datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.subjectRepository = datasource.getRepository(Subject);
-    this.subjectResourceRepository = datasource.getRepository(SubjectResource);
-    this.countryRepository = datasource.getRepository(Country);
-    this.evaluationTypeRepository = datasource.getRepository(EvaluationType);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.subjectResourceRepository = datasource.getRepository(
+      subjectResourceSchema,
+    );
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.evaluationTypeRepository =
+      datasource.getRepository(evaluationTypeSchema);
   }
 
   async arrange(): Promise<void> {

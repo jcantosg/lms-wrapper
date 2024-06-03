@@ -1,36 +1,34 @@
 import { v4 as uuid } from 'uuid';
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { CreateAcademicPeriodE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/create-academic-period.e2e-seeds';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
 
 const path = '/academic-period';
 
 describe('/academic-period (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateAcademicPeriodE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateAcademicPeriodE2eSeed.superAdminUserEmail,
-      CreateAcademicPeriodE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateAcademicPeriodE2eSeed.adminUserEmail,
-      CreateAcademicPeriodE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateAcademicPeriodE2eSeed.superAdminUserEmail,
+        CreateAcademicPeriodE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateAcademicPeriodE2eSeed.adminUserEmail,
+        CreateAcademicPeriodE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).post(path).expect(401);
@@ -106,7 +104,5 @@ describe('/academic-period (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

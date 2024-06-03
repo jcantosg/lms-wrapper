@@ -11,6 +11,10 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 
 export class CreateAcademicProgramE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-academic-program@email.com';
@@ -40,10 +44,12 @@ export class CreateAcademicProgramE2eSeed implements E2eSeed {
   private readonly titleRepository: Repository<Title>;
 
   constructor(private datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.academicProgramRepository = datasource.getRepository(AcademicProgram);
-    this.titleRepository = datasource.getRepository(Title);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.academicProgramRepository = datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.titleRepository = datasource.getRepository(titleSchema);
   }
 
   async arrange(): Promise<void> {

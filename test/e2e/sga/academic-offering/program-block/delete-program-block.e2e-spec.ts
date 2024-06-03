@@ -1,15 +1,12 @@
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { DeleteProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/delete-program-block.e2e-seed';
-import datasource from '#config/ormconfig';
-import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/program-block/${DeleteProgramBlockE2eSeed.programBlockId}`;
 
 describe('/program-block/:id (DELETE)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -17,27 +14,27 @@ describe('/program-block/:id (DELETE)', () => {
   let secretariaAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new DeleteProgramBlockE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      DeleteProgramBlockE2eSeed.superAdminUserEmail,
-      DeleteProgramBlockE2eSeed.superAdminUserPassword,
-    );
-
-    gestor360AccessToken = await login(
-      httpServer,
-      DeleteProgramBlockE2eSeed.adminUserGestor360Email,
-      DeleteProgramBlockE2eSeed.adminUserGestor360Password,
-    );
-
-    secretariaAccessToken = await login(
-      httpServer,
-      DeleteProgramBlockE2eSeed.adminUserSecretariaEmail,
-      DeleteProgramBlockE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, gestor360AccessToken, secretariaAccessToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          DeleteProgramBlockE2eSeed.superAdminUserEmail,
+          DeleteProgramBlockE2eSeed.superAdminUserPassword,
+        ),
+        login(
+          httpServer,
+          DeleteProgramBlockE2eSeed.adminUserGestor360Email,
+          DeleteProgramBlockE2eSeed.adminUserGestor360Password,
+        ),
+        login(
+          httpServer,
+          DeleteProgramBlockE2eSeed.adminUserSecretariaEmail,
+          DeleteProgramBlockE2eSeed.adminUserSecretariaPassword,
+        ),
+      ]);
   });
 
   it('should return unauthorized', async () => {
@@ -78,7 +75,5 @@ describe('/program-block/:id (DELETE)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

@@ -1,18 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { EditTitleE2eSeed } from '#test/e2e/sga/academic-offering/title/edit-title.e2e-seed';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import supertest from 'supertest';
 import { TitlePostgresRepository } from '#academic-offering/infrastructure/repository/title.postgres-repository';
 import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 
 const path = `/title/${EditTitleE2eSeed.titleId}`;
 
 describe('/title/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,27 +18,27 @@ describe('/title/:id (PUT)', () => {
   let titleRepository: TitleRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditTitleE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      EditTitleE2eSeed.superAdminUserEmail,
-      EditTitleE2eSeed.superAdminUserPassword,
-    );
-
-    gestor360AccessToken = await login(
-      httpServer,
-      EditTitleE2eSeed.adminUserGestor360Email,
-      EditTitleE2eSeed.adminUserGestor360Password,
-    );
-
-    secretariaAccessToken = await login(
-      httpServer,
-      EditTitleE2eSeed.adminUserSecretariaEmail,
-      EditTitleE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, gestor360AccessToken, secretariaAccessToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          EditTitleE2eSeed.superAdminUserEmail,
+          EditTitleE2eSeed.superAdminUserPassword,
+        ),
+        login(
+          httpServer,
+          EditTitleE2eSeed.adminUserGestor360Email,
+          EditTitleE2eSeed.adminUserGestor360Password,
+        ),
+        login(
+          httpServer,
+          EditTitleE2eSeed.adminUserSecretariaEmail,
+          EditTitleE2eSeed.adminUserSecretariaPassword,
+        ),
+      ]);
   });
 
   it('should return unauthorized', async () => {
@@ -122,7 +119,5 @@ describe('/title/:id (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

@@ -1,21 +1,17 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { GetEdaeUserDetailE2eSeed } from '#test/e2e/sga/edae-user/get-edae-user-detail.e2e-seed';
 
 const path = `/edae-user/${GetEdaeUserDetailE2eSeed.edaeUserId}`;
 
 describe('Get Edae User Detail (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetEdaeUserDetailE2eSeed(datasource);
     await seeder.arrange();
@@ -61,8 +57,6 @@ describe('Get Edae User Detail (GET)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

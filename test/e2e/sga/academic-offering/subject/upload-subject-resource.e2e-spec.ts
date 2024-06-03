@@ -1,38 +1,38 @@
-import { UploadSubjectResourceE2eSeed } from '#test/e2e/sga/academic-offering/subject/upload-subject-resource.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
+import { UploadSubjectResourceE2eSeed } from '#test/e2e/sga/academic-offering/subject/upload-subject-resource.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { subjectResourceSchema } from '#academic-offering/infrastructure/config/schema/subject-resource.schema';
 
 const path = `/subject/${UploadSubjectResourceE2eSeed.subjectId}/resource`;
 const wrongPath = '/subject/2e06ca71-8b93-4613-9f24-30406f37c0de/resource';
 
 describe('/subject/:id/resource', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
-  const subjectResourceRepository = datasource.getRepository(SubjectResource);
+  const subjectResourceRepository = datasource.getRepository(
+    subjectResourceSchema,
+  );
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new UploadSubjectResourceE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      UploadSubjectResourceE2eSeed.superAdminUserEmail,
-      UploadSubjectResourceE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      UploadSubjectResourceE2eSeed.adminUserEmail,
-      UploadSubjectResourceE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        UploadSubjectResourceE2eSeed.superAdminUserEmail,
+        UploadSubjectResourceE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        UploadSubjectResourceE2eSeed.adminUserEmail,
+        UploadSubjectResourceE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -69,7 +69,5 @@ describe('/subject/:id/resource', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

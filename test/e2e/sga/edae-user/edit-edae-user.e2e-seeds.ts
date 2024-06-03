@@ -12,6 +12,9 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { getAnIdentityDocument } from '#test/value-object-factory';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
 
 export class EditEdaeUserE2eSeed implements E2eSeed {
   public static superAdminId = 'dee96fbe-f7ac-4284-ab86-4716d7a7a193';
@@ -43,26 +46,27 @@ export class EditEdaeUserE2eSeed implements E2eSeed {
   private country: Country;
   private edaeUser: EdaeUser;
 
+  private edaeUserRepository: Repository<EdaeUser>;
   private businessUnitRepository: Repository<BusinessUnit>;
   private countryRepository: Repository<Country>;
-  private edaeUserRepository: Repository<EdaeUser>;
 
-  constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.edaeUserRepository = datasource.getRepository(EdaeUser);
+  constructor(private datasource: DataSource) {
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
   }
 
   async arrange(): Promise<void> {
     this.country = Country.create(
       EditEdaeUserE2eSeed.countryId,
-      'ZZ',
+      'marte',
       'ZZZ',
-      'Test Country',
-      '+99',
-      'emoji',
+      'Marte',
+      '987',
+      ':)',
     );
     await this.countryRepository.save(this.country);
+
     this.businessUnit = BusinessUnit.create(
       EditEdaeUserE2eSeed.businessUnitId,
       EditEdaeUserE2eSeed.businessUnitName,

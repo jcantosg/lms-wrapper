@@ -1,24 +1,20 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { GetBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/business-unit/get-business-unit.e2e-seeds';
 
 const path = '/business-unit/35637f98-af93-456d-bde4-811ec48d4814';
 
 describe('/business-unit/:id (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
 
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
-    seeder = new GetBusinessUnitE2eSeed(datasource);
+    seeder = new GetBusinessUnitE2eSeed(global.datasource);
     await seeder.arrange();
     superAdminAccessToken = await login(
       httpServer,
@@ -52,7 +48,5 @@ describe('/business-unit/:id (GET)', () => {
   });
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

@@ -8,6 +8,9 @@ import {
 import { GetAllAdminUsersE2eSeedDataConfig } from '#test/e2e/sga/admin-user/get-all-admin-users.e2e-seed-data-config';
 import { Country } from '#shared/domain/entity/country.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class GetAllAdminUsersE2eSeed implements E2eSeed {
   private country: Country;
@@ -19,9 +22,9 @@ export class GetAllAdminUsersE2eSeed implements E2eSeed {
   private readonly adminUserRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
 
     this.adminUsers = [];
   }

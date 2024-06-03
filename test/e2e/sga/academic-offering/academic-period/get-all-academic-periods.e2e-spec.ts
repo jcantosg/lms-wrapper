@@ -1,9 +1,7 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import supertest from 'supertest';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -15,13 +13,11 @@ import { formatDate } from '#shared/domain/service/date-formatter.service';
 const path = '/academic-period';
 
 describe('/academic-period', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllAcademicPeriodsE2eSeed(datasource);
     await seeder.arrange();
@@ -181,7 +177,5 @@ describe('/academic-period', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

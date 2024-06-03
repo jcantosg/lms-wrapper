@@ -1,21 +1,17 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { GetAllInternalGroupsE2eSeed } from '#test/e2e/sga/academic-offering/academic-period/internal-group/get-all-internal-groups.e2e-seed';
 
 const path = `/academic-period/${GetAllInternalGroupsE2eSeed.academicPeriodId}/internal-group`;
 
 describe('/academic-period/{id}/internal-group (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllInternalGroupsE2eSeed(datasource);
     await seeder.arrange();
@@ -113,7 +109,5 @@ describe('/academic-period/{id}/internal-group (GET)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

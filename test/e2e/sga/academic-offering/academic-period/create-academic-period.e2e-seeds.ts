@@ -11,6 +11,10 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
 
 export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-academic-period@email.com';
@@ -46,10 +50,11 @@ export class CreateAcademicPeriodE2eSeed implements E2eSeed {
   private readonly periodBlockRepository: Repository<PeriodBlock>;
 
   constructor(private datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.periodBlockRepository = datasource.getRepository(PeriodBlock);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
   }
 
   async arrange(): Promise<void> {

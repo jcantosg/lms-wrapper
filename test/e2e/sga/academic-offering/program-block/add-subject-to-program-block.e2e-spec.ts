@@ -1,36 +1,34 @@
-import { AddSubjectToProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/add-subject-to-program-block.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { AddSubjectToProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/add-subject-to-program-block.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 const path = `/program-block/${AddSubjectToProgramBlockE2eSeed.programBlockId}/add-subject`;
 
 describe('/program-block/id/add-subject (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new AddSubjectToProgramBlockE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      AddSubjectToProgramBlockE2eSeed.superAdminUserEmail,
-      AddSubjectToProgramBlockE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      AddSubjectToProgramBlockE2eSeed.adminUserEmail,
-      AddSubjectToProgramBlockE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        AddSubjectToProgramBlockE2eSeed.superAdminUserEmail,
+        AddSubjectToProgramBlockE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        AddSubjectToProgramBlockE2eSeed.adminUserEmail,
+        AddSubjectToProgramBlockE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).put(path).expect(401);
@@ -54,10 +52,12 @@ describe('/program-block/id/add-subject (POST)', () => {
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({ subjectId: AddSubjectToProgramBlockE2eSeed.subjectId })
       .expect(200);
-    const programBlock = await datasource.getRepository(ProgramBlock).findOne({
-      where: { id: AddSubjectToProgramBlockE2eSeed.programBlockId },
-      relations: { subjects: true },
-    });
+    const programBlock = await datasource
+      .getRepository(programBlockSchema)
+      .findOne({
+        where: { id: AddSubjectToProgramBlockE2eSeed.programBlockId },
+        relations: { subjects: true },
+      });
     expect(programBlock!.subjects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -77,7 +77,5 @@ describe('/program-block/id/add-subject (POST)', () => {
   });
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

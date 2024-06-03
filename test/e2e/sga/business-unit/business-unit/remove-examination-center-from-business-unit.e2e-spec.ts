@@ -1,40 +1,40 @@
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
-import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { BusinessUnitPostgresRepository } from '#business-unit/infrastructure/repository/business-unit.postgres-repository';
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
 import { RemoveExaminationCentersFromBusinessUnitE2eSeeds } from '#test/e2e/sga/business-unit/business-unit/remove-examination-center-from-business-unit.e2e-seed';
+import { HttpServer } from '@nestjs/common';
 
 const path =
   '/business-unit/ab151b65-af1c-4e85-a939-a46ba4ed8095/remove-examination-center';
 
 describe('/business-unit/{id}/remove-examination-center', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
   let businessRepository: BusinessUnitRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
-    seeder = new RemoveExaminationCentersFromBusinessUnitE2eSeeds(datasource);
+    seeder = new RemoveExaminationCentersFromBusinessUnitE2eSeeds(
+      global.datasource,
+    );
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.adminUserEmail,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.superAdminUserEmail,
-      RemoveExaminationCentersFromBusinessUnitE2eSeeds.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        RemoveExaminationCentersFromBusinessUnitE2eSeeds.adminUserEmail,
+        RemoveExaminationCentersFromBusinessUnitE2eSeeds.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        RemoveExaminationCentersFromBusinessUnitE2eSeeds.superAdminUserEmail,
+        RemoveExaminationCentersFromBusinessUnitE2eSeeds.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -120,7 +120,5 @@ describe('/business-unit/{id}/remove-examination-center', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

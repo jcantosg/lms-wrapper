@@ -13,6 +13,10 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 
 export class EditSubjectE2eSeed implements E2eSeed {
   public static subjectId = 'ad1b657b-c378-4b55-a97f-d5050856ea64';
@@ -60,10 +64,11 @@ export class EditSubjectE2eSeed implements E2eSeed {
   private countryRepository: Repository<Country>;
 
   constructor(private datasource: DataSource) {
-    this.subjectRepository = datasource.getRepository(Subject);
-    this.evaluationTypeRepository = datasource.getRepository(EvaluationType);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.evaluationTypeRepository =
+      datasource.getRepository(evaluationTypeSchema);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
   }
 
   async arrange(): Promise<void> {

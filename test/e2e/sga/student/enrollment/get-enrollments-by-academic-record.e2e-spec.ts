@@ -1,22 +1,18 @@
-import { GetEnrollmentsByAcademicRecordE2eSeed } from '#test/e2e/sga/student/enrollment/get-enrollments-by-academic-record.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { GetEnrollmentsByAcademicRecordE2eSeed } from '#test/e2e/sga/student/enrollment/get-enrollments-by-academic-record.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/academic-record/${GetEnrollmentsByAcademicRecordE2eSeed.academicRecordId}/enrollment`;
 const wrongPath = `/academic-record/${GetEnrollmentsByAcademicRecordE2eSeed.academicPeriodId}/enrollment`;
 
 describe('/academic-record/:id/enrollment', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetEnrollmentsByAcademicRecordE2eSeed(datasource);
     await seeder.arrange();
@@ -53,7 +49,5 @@ describe('/academic-record/:id/enrollment', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

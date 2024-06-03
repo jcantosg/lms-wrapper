@@ -64,7 +64,8 @@ export class GetCountriesE2ESeed implements E2eSeed {
       '+89',
       GetCountriesE2ESeed.countryEmoji,
     );
-    this.countryRepository.save(this.country);
+
+    await this.countryRepository.save(this.country);
 
     this.businessUnit = BusinessUnit.create(
       GetCountriesE2ESeed.businessUnitId,
@@ -73,7 +74,7 @@ export class GetCountriesE2ESeed implements E2eSeed {
       this.country,
       this.superAdminUser,
     );
-    this.businessUnitRepository.save(this.businessUnit);
+    await this.businessUnitRepository.save(this.businessUnit);
   }
 
   async clear(): Promise<void> {

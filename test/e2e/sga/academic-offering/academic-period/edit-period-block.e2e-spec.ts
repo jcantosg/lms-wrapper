@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { PeriodBlockRepository } from '#academic-offering/domain/repository/period-block.repository';
 import { PeriodBlockPostgresRepository } from '#academic-offering/infrastructure/repository/period-block.postgres-repository';
@@ -13,7 +11,6 @@ const path = '/period-block/7baf9fc5-8976-4780-aa07-c0dfb420e230';
 const wrongPath = '/period-block/6fe5450c-4830-41cb-9e86-1c0ef1bdd5e5';
 
 describe('/period-block/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
@@ -21,20 +18,21 @@ describe('/period-block/:id (PUT)', () => {
   let periodBlockRepository: PeriodBlockRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditPeriodBlockE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      EditPeriodBlockE2eSeed.adminUserEmail,
-      EditPeriodBlockE2eSeed.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      EditPeriodBlockE2eSeed.superAdminUserEmail,
-      EditPeriodBlockE2eSeed.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        EditPeriodBlockE2eSeed.adminUserEmail,
+        EditPeriodBlockE2eSeed.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        EditPeriodBlockE2eSeed.superAdminUserEmail,
+        EditPeriodBlockE2eSeed.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -85,13 +83,15 @@ describe('/period-block/:id (PUT)', () => {
       EditPeriodBlockE2eSeed.anotherPeriodBlockId,
     );
 
-    expect(periodBlock?.startDate).toStrictEqual(new Date('2024-08-30'));
-    expect(previousPeriodBlock?.endDate).toStrictEqual(new Date('2024-08-30'));
+    expect(periodBlock?.startDate.toISOString()).toStrictEqual(
+      new Date('2024-08-30').toISOString(),
+    );
+    expect(previousPeriodBlock?.endDate.toISOString()).toStrictEqual(
+      new Date('2024-08-30').toISOString(),
+    );
   });
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

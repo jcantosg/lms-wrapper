@@ -1,8 +1,6 @@
 import { v4 as uuid } from 'uuid';
-import { startApp } from '#test/e2e/e2e-helper';
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import datasource from '#config/ormconfig';
 import supertest from 'supertest';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { GetAllExaminationCentersE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-examination-centers.e2e-seed-data-config';
@@ -12,15 +10,13 @@ const path = `/business-unit/${GetAllExaminationCentersE2eSeedDataConfig.busines
 const emptyPath = `/business-unit/${uuid()}/examination-centers`;
 
 describe('/business-unit/:id/examination-centers (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
-    seeder = new GetAllExaminationCentersE2eSeed(datasource);
+    seeder = new GetAllExaminationCentersE2eSeed(global.datasource);
     await seeder.arrange();
     superAdminAccessToken = await login(
       httpServer,
@@ -52,7 +48,5 @@ describe('/business-unit/:id/examination-centers (GET)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

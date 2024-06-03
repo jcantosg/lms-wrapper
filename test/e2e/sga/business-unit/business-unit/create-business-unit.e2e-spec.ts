@@ -1,39 +1,34 @@
 import supertest from 'supertest';
-import { INestApplication } from '@nestjs/common';
-import { startApp } from '#test/e2e/e2e-helper';
+import { HttpServer } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { CreateBusinessUnitE2eSeed } from '#test/e2e/sga/business-unit/business-unit/create-business-unit.e2e-seeds';
 
 const path = `/business-unit`;
 
 describe('/business-unit (POST)', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
+    //app = await startApp();
     httpServer = app.getHttpServer();
-
     seeder = new CreateBusinessUnitE2eSeed(datasource);
     await seeder.arrange();
-
-    adminAccessToken = await login(
-      httpServer,
-      CreateBusinessUnitE2eSeed.adminUserEmail,
-      CreateBusinessUnitE2eSeed.adminUserPassword,
-    );
-
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateBusinessUnitE2eSeed.superAdminUserEmail,
-      CreateBusinessUnitE2eSeed.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateBusinessUnitE2eSeed.adminUserEmail,
+        CreateBusinessUnitE2eSeed.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateBusinessUnitE2eSeed.superAdminUserEmail,
+        CreateBusinessUnitE2eSeed.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('Should return unauthorized (User not authenticated)', async () => {
@@ -105,7 +100,5 @@ describe('/business-unit (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

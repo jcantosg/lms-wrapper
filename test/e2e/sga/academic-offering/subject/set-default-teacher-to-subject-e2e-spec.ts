@@ -1,18 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { SetDefaultTeacherToSubjectE2eSeed } from '#test/e2e/sga/academic-offering/subject/set-default-teacher-to-subject-e2e-seed';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import supertest from 'supertest';
 import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
 const path = `/subject/${SetDefaultTeacherToSubjectE2eSeed.subjectId}/default-teacher`;
 
 describe('/subjects/:id/default-teacher (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -20,20 +17,21 @@ describe('/subjects/:id/default-teacher (PUT)', () => {
   let subjectRepository: SubjectRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new SetDefaultTeacherToSubjectE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      SetDefaultTeacherToSubjectE2eSeed.superAdminUserEmail,
-      SetDefaultTeacherToSubjectE2eSeed.superAdminUserPassword,
-    );
-    secretariaAccessToken = await login(
-      httpServer,
-      SetDefaultTeacherToSubjectE2eSeed.adminUserSecretariaEmail,
-      SetDefaultTeacherToSubjectE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, secretariaAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        SetDefaultTeacherToSubjectE2eSeed.superAdminUserEmail,
+        SetDefaultTeacherToSubjectE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        SetDefaultTeacherToSubjectE2eSeed.adminUserSecretariaEmail,
+        SetDefaultTeacherToSubjectE2eSeed.adminUserSecretariaPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -103,7 +101,5 @@ describe('/subjects/:id/default-teacher (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

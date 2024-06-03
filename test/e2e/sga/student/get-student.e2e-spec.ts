@@ -1,20 +1,16 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { GetStudentE2eSeed } from '#test/e2e/sga/student/get-student.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { GetStudentE2eSeed } from '#test/e2e/sga/student/get-student.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/student`;
 
 describe('/student (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetStudentE2eSeed(datasource);
     await seeder.arrange();
@@ -54,7 +50,5 @@ describe('/student (GET)', () => {
   });
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

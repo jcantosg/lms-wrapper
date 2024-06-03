@@ -1,36 +1,34 @@
-import { EditEnrollmentE2eSeed } from '#test/e2e/sga/student/enrollment/edit-enrollment.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { EditEnrollmentE2eSeed } from '#test/e2e/sga/student/enrollment/edit-enrollment.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 
 const path = `/enrollment/${EditEnrollmentE2eSeed.enrollmentId}`;
 
 describe('/enrollment/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditEnrollmentE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      EditEnrollmentE2eSeed.superAdminUserEmail,
-      EditEnrollmentE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      EditEnrollmentE2eSeed.adminUserEmail,
-      EditEnrollmentE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        EditEnrollmentE2eSeed.superAdminUserEmail,
+        EditEnrollmentE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        EditEnrollmentE2eSeed.adminUserEmail,
+        EditEnrollmentE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).put(path).expect(401);
@@ -74,7 +72,5 @@ describe('/enrollment/:id (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

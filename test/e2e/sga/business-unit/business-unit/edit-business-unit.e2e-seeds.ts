@@ -12,6 +12,8 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
 
 export class EditBusinessUnitE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-edit-business-unit@email.com';
@@ -49,9 +51,10 @@ export class EditBusinessUnitE2eSeed implements E2eSeed {
 
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
-    this.virtualCampusRepository = datasource.getRepository(VirtualCampus);
+    this.virtualCampusRepository =
+      datasource.getRepository(virtualCampusSchema);
     this.countryRepository = datasource.getRepository(CountrySchema);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

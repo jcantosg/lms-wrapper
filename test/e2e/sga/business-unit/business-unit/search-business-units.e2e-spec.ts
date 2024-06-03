@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '&/config/ormconfig';
 import supertest from 'supertest';
 import {
   DEFAULT_LIMIT,
@@ -14,7 +12,6 @@ import { GetAllBusinessUnitsE2eSeed } from '#test/e2e/sga/business-unit/business
 const path = '/business-unit/search';
 
 describe('/business-unit/search', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -28,7 +25,6 @@ describe('/business-unit/search', () => {
   };
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllBusinessUnitsE2eSeed(datasource);
     await seeder.arrange();
@@ -125,7 +121,5 @@ describe('/business-unit/search', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

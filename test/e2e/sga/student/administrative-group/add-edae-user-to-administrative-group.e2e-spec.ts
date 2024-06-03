@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { AddEdaeUserToAdministrativeGroupE2ESeed } from '#test/e2e/sga/student/administrative-group/add-edae-user-to-administrative-group.e2e-seed';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
@@ -12,7 +10,6 @@ import { administrativeGroupSchema } from '#student/infrastructure/config/schema
 const path = `/administrative-group/${AddEdaeUserToAdministrativeGroupE2ESeed.administrativeGroupId}/add-edae-user`;
 
 describe('/administrative-group/:id/add-edae-user (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -20,20 +17,21 @@ describe('/administrative-group/:id/add-edae-user (PUT)', () => {
   let administrativeGroupRepository: AdministrativeGroupRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new AddEdaeUserToAdministrativeGroupE2ESeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      AddEdaeUserToAdministrativeGroupE2ESeed.superAdminUserEmail,
-      AddEdaeUserToAdministrativeGroupE2ESeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      AddEdaeUserToAdministrativeGroupE2ESeed.adminUserEmail,
-      AddEdaeUserToAdministrativeGroupE2ESeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        AddEdaeUserToAdministrativeGroupE2ESeed.superAdminUserEmail,
+        AddEdaeUserToAdministrativeGroupE2ESeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        AddEdaeUserToAdministrativeGroupE2ESeed.adminUserEmail,
+        AddEdaeUserToAdministrativeGroupE2ESeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -113,7 +111,5 @@ describe('/administrative-group/:id/add-edae-user (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

@@ -11,6 +11,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class CreateExaminationCenterE2eSeeds implements E2eSeed {
   public static superAdminUserEmail =
@@ -44,7 +45,7 @@ export class CreateExaminationCenterE2eSeeds implements E2eSeed {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

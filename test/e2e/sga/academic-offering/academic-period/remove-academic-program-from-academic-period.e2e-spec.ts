@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { AcademicPeriodPostgresRepository } from '#academic-offering/infrastructure/repository/academic-period.postgres-repository';
@@ -15,7 +13,6 @@ const wrongPath =
   '/academic-period/6fe5450c-4830-41cb-9e86-1c0ef1bdd5e5/remove-academic-program';
 
 describe('/academic-period/:id/remove-academic-program (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
@@ -23,20 +20,21 @@ describe('/academic-period/:id/remove-academic-program (PUT)', () => {
   let academicPeriodRepository: AcademicPeriodRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new RemoveAcademicProgramFromAcademicPeriodE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      RemoveAcademicProgramFromAcademicPeriodE2eSeed.adminUserEmail,
-      RemoveAcademicProgramFromAcademicPeriodE2eSeed.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      RemoveAcademicProgramFromAcademicPeriodE2eSeed.superAdminUserEmail,
-      RemoveAcademicProgramFromAcademicPeriodE2eSeed.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        RemoveAcademicProgramFromAcademicPeriodE2eSeed.adminUserEmail,
+        RemoveAcademicProgramFromAcademicPeriodE2eSeed.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        RemoveAcademicProgramFromAcademicPeriodE2eSeed.superAdminUserEmail,
+        RemoveAcademicProgramFromAcademicPeriodE2eSeed.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -101,7 +99,5 @@ describe('/academic-period/:id/remove-academic-program (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

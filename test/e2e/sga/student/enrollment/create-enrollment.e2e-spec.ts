@@ -1,33 +1,31 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { CreateEnrollmentE2eSeed } from '#test/e2e/sga/student/enrollment/create-enrollment.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { CreateEnrollmentE2eSeed } from '#test/e2e/sga/student/enrollment/create-enrollment.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/enrollment`;
 describe('/enrollment (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateEnrollmentE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateEnrollmentE2eSeed.superAdminUserEmail,
-      CreateEnrollmentE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateEnrollmentE2eSeed.adminUserPassword,
-      CreateEnrollmentE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateEnrollmentE2eSeed.superAdminUserEmail,
+        CreateEnrollmentE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateEnrollmentE2eSeed.adminUserPassword,
+        CreateEnrollmentE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).post(path).expect(401);
@@ -96,7 +94,5 @@ describe('/enrollment (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

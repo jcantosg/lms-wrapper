@@ -1,36 +1,34 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { CreateStudentE2eSeed } from '#test/e2e/sga/student/create-student.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { CreateStudentE2eSeed } from '#test/e2e/sga/student/create-student.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { v4 as uuid } from 'uuid';
 
 const path = `/student`;
 
 describe('/student (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateStudentE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateStudentE2eSeed.superAdminUserEmail,
-      CreateStudentE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateStudentE2eSeed.adminUserEmail,
-      CreateStudentE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateStudentE2eSeed.superAdminUserEmail,
+        CreateStudentE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateStudentE2eSeed.adminUserEmail,
+        CreateStudentE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).post(path).expect(401);
@@ -111,7 +109,5 @@ describe('/student (POST)', () => {
   });
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

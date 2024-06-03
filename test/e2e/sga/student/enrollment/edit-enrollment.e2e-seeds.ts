@@ -28,6 +28,19 @@ import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-t
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { Student } from '#shared/domain/entity/student.entity';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
+import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
+import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
+import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
+import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
 
 export class EditEnrollmentE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -110,19 +123,25 @@ export class EditEnrollmentE2eSeed implements E2eSeed {
   private subjectCallRepository: Repository<SubjectCall>;
 
   constructor(private readonly datasource: DataSource) {
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.academicProgramRepository = datasource.getRepository(AcademicProgram);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.titleRepository = datasource.getRepository(Title);
-    this.programBlockRepository = datasource.getRepository(ProgramBlock);
-    this.evaluationTypeRepository = datasource.getRepository(EvaluationType);
-    this.subjectRepository = datasource.getRepository(Subject);
-    this.studentRepository = datasource.getRepository(Student);
-    this.virtualCampusRepository = datasource.getRepository(VirtualCampus);
-    this.academicRecordRepository = datasource.getRepository(AcademicRecord);
-    this.enrollmentRepository = datasource.getRepository(Enrollment);
-    this.subjectCallRepository = datasource.getRepository(SubjectCall);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.academicProgramRepository = datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.titleRepository = datasource.getRepository(titleSchema);
+    this.programBlockRepository = datasource.getRepository(programBlockSchema);
+    this.evaluationTypeRepository =
+      datasource.getRepository(evaluationTypeSchema);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.studentRepository = datasource.getRepository(studentSchema);
+    this.virtualCampusRepository =
+      datasource.getRepository(virtualCampusSchema);
+    this.academicRecordRepository =
+      datasource.getRepository(academicRecordSchema);
+    this.enrollmentRepository = datasource.getRepository(enrollmentSchema);
+    this.subjectCallRepository = datasource.getRepository(subjectCallSchema);
   }
 
   async arrange(): Promise<void> {

@@ -1,9 +1,7 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import supertest from 'supertest';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -15,27 +13,28 @@ import { expectSubjects } from '#test/e2e/sga/academic-offering/subject/helpers'
 
 const path = '/subject/';
 describe('/subject/', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let gestor360MurciaAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllSubjectsE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.email,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.password,
-    );
-    gestor360MurciaAccessToken = await login(
-      httpServer,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.email,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.password,
-    );
+    [superAdminAccessToken, gestor360MurciaAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.email,
+        AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.password,
+      ),
+      login(
+        httpServer,
+        AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser.email,
+        AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360MurciaUser
+          .password,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -194,7 +193,5 @@ describe('/subject/', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

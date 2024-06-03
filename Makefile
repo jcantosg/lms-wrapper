@@ -83,7 +83,6 @@ database-reload: ## drop, runs migrations, seed
 test-database-setup: ## Setup the test database
 	@npm run sga:test:db:create
 	@npm run typeorm:test:migrations:up
-	@npm run sga:test:db:seed:country
 	@npm run sga:test:db:seed:evaluation-types
 
 

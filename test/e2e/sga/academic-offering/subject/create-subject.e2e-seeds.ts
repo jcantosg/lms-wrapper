@@ -12,6 +12,9 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
 export class CreateSubjectE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-subject@email.com';
@@ -46,9 +49,9 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   private subjectRepository: Repository<Subject>;
 
   constructor(private datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.subjectRepository = datasource.getRepository(Subject);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
   }
 
   async arrange(): Promise<void> {

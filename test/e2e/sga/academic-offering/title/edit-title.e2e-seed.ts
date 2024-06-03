@@ -10,6 +10,9 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { E2eSeed } from '#test/e2e/e2e-seed';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 
 export class EditTitleE2eSeed implements E2eSeed {
   public static titleId = 'fb5fa446-e98b-48fa-a00f-0dff382cecad';
@@ -50,9 +53,9 @@ export class EditTitleE2eSeed implements E2eSeed {
   private countryRepository: Repository<Country>;
 
   constructor(private dataSource: DataSource) {
-    this.businessUnitRepository = dataSource.getRepository(BusinessUnit);
-    this.countryRepository = dataSource.getRepository(Country);
-    this.titleRepository = dataSource.getRepository(Title);
+    this.businessUnitRepository = dataSource.getRepository(businessUnitSchema);
+    this.countryRepository = dataSource.getRepository(CountrySchema);
+    this.titleRepository = dataSource.getRepository(titleSchema);
   }
   async arrange(): Promise<void> {
     const country = await this.countryRepository.findOneByOrFail({

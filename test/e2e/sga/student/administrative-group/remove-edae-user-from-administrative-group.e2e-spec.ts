@@ -1,19 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { RemoveEdaeUserFromAdministrativeGroupE2eSeed } from '#test/e2e/sga/student/administrative-group/remove-edae-user-from-administrative-group.e2e-seed';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
-import { AddEdaeUserToAdministrativeGroupE2ESeed } from '#test/e2e/sga/student/administrative-group/add-edae-user-to-administrative-group.e2e-seed';
 import { AdministrativeGroupPostgresRepository } from '#student/infrastructure/repository/administrative-group.postgres-repository';
 import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
 
 const path = `/administrative-group/${RemoveEdaeUserFromAdministrativeGroupE2eSeed.administrativeGroupId}/remove-edae-user`;
 
 describe('/administrative-group/:id/remove-edae-user (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,20 +17,21 @@ describe('/administrative-group/:id/remove-edae-user (PUT)', () => {
   let administrativeGroupRepository: AdministrativeGroupRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new RemoveEdaeUserFromAdministrativeGroupE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      AddEdaeUserToAdministrativeGroupE2ESeed.superAdminUserEmail,
-      AddEdaeUserToAdministrativeGroupE2ESeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      AddEdaeUserToAdministrativeGroupE2ESeed.adminUserEmail,
-      AddEdaeUserToAdministrativeGroupE2ESeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        RemoveEdaeUserFromAdministrativeGroupE2eSeed.superAdminUserEmail,
+        RemoveEdaeUserFromAdministrativeGroupE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        RemoveEdaeUserFromAdministrativeGroupE2eSeed.adminUserEmail,
+        RemoveEdaeUserFromAdministrativeGroupE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -107,7 +104,5 @@ describe('/administrative-group/:id/remove-edae-user (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

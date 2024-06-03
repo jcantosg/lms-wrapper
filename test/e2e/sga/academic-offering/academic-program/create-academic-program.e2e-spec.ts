@@ -1,36 +1,34 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { CreateAcademicProgramE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/create-academic-program.e2e-seeds';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 
 const path = '/academic-program';
 
 describe('/academic-program (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateAcademicProgramE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateAcademicProgramE2eSeed.superAdminUserEmail,
-      CreateAcademicProgramE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateAcademicProgramE2eSeed.adminUserEmail,
-      CreateAcademicProgramE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateAcademicProgramE2eSeed.superAdminUserEmail,
+        CreateAcademicProgramE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateAcademicProgramE2eSeed.adminUserEmail,
+        CreateAcademicProgramE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).post(path).expect(401);
@@ -97,7 +95,5 @@ describe('/academic-program (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

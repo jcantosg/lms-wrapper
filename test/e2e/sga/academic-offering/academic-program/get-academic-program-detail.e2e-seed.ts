@@ -8,6 +8,11 @@ import { Country } from '#shared/domain/entity/country.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
 
 export class GetAcademicProgramDetailE2eSeed implements E2eSeed {
   public static academicProgramId = '83670209-9598-41d5-9c57-a393493f1b98';
@@ -37,12 +42,14 @@ export class GetAcademicProgramDetailE2eSeed implements E2eSeed {
   private academicProgramRepository: Repository<AcademicProgram>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = this.datasource.getRepository(BusinessUnit);
-    this.userRepository = this.datasource.getRepository(AdminUser);
-    this.countryRepository = this.datasource.getRepository(Country);
-    this.titleRepository = this.datasource.getRepository(Title);
-    this.academicProgramRepository =
-      this.datasource.getRepository(AcademicProgram);
+    this.businessUnitRepository =
+      this.datasource.getRepository(businessUnitSchema);
+    this.userRepository = this.datasource.getRepository(adminUserSchema);
+    this.countryRepository = this.datasource.getRepository(CountrySchema);
+    this.titleRepository = this.datasource.getRepository(titleSchema);
+    this.academicProgramRepository = this.datasource.getRepository(
+      academicProgramSchema,
+    );
   }
 
   async arrange(): Promise<void> {

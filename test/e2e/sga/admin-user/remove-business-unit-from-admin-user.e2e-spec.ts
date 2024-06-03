@@ -1,18 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { AdminUserPostgresRepository } from '#admin-user/infrastructure/repository/admin-user.postgres-repository';
 import { AddBusinessUnitsToAdminUserE2eSeedDataConfig } from '#test/e2e/sga/admin-user/seed-data-config/add-business-units-to-admin-user.e2e-seed-data-config';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import supertest from 'supertest';
-import { startApp } from '#test/e2e/e2e-helper';
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { RemoveBusinessUnitFromAdminUserE2eSeed } from '#test/e2e/sga/admin-user/remove-business-unit-from-admin-user.e2e-seed';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 const path = `/admin-user/${AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.userId}/remove-business-unit`;
 
 describe('Remove Business Units from Admin User (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
@@ -21,25 +18,28 @@ describe('Remove Business Units from Admin User (PUT)', () => {
   let adminUserRepository: AdminUserPostgresRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new RemoveBusinessUnitFromAdminUserE2eSeed(datasource);
     await seeder.arrange();
-    superAdminUserToken = await login(
-      httpServer,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.email,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.password,
-    );
-    supervisor360UserToken = await login(
-      httpServer,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.email,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.password,
-    );
-    gestor360UserToken = await login(
-      httpServer,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.email,
-      AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.password,
-    );
+    [superAdminUserToken, supervisor360UserToken, gestor360UserToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.email,
+          AddBusinessUnitsToAdminUserE2eSeedDataConfig.superAdmin.password,
+        ),
+        login(
+          httpServer,
+          AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User.email,
+          AddBusinessUnitsToAdminUserE2eSeedDataConfig.supervisor360User
+            .password,
+        ),
+        login(
+          httpServer,
+          AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.email,
+          AddBusinessUnitsToAdminUserE2eSeedDataConfig.gestor360User.password,
+        ),
+      ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -119,7 +119,7 @@ describe('Remove Business Units from Admin User (PUT)', () => {
 
   it('should return a 200 business unit removed', async () => {
     adminUserRepository = new AdminUserPostgresRepository(
-      datasource.getRepository(AdminUser),
+      datasource.getRepository(adminUserSchema),
     );
     const barcelonaBusinessUnit =
       AddBusinessUnitsToAdminUserE2eSeedDataConfig.businessUnits.find(
@@ -146,8 +146,6 @@ describe('Remove Business Units from Admin User (PUT)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

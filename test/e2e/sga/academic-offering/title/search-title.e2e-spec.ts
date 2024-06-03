@@ -1,21 +1,17 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import supertest from 'supertest';
 import { GetAllTitlesE2eSeed } from '#test/e2e/sga/academic-offering/title/get-all-titles.e2e-seed';
 import { expectTitles } from '#test/e2e/sga/academic-offering/subject/helpers';
 
 const path = '/title/search?text=Shanghai';
 describe('/title/search (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllTitlesE2eSeed(datasource);
     await seeder.arrange();
@@ -43,7 +39,5 @@ describe('/title/search (GET)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

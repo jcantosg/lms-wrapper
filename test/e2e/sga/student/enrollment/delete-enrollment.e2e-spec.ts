@@ -1,34 +1,32 @@
-import { DeleteEnrollmentE2eSeed } from '#test/e2e/sga/student/enrollment/delete-enrollment.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { DeleteEnrollmentE2eSeed } from '#test/e2e/sga/student/enrollment/delete-enrollment.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/enrollment/${DeleteEnrollmentE2eSeed.enrollmentId}`;
 describe('/enrollment/:id (DELETE)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new DeleteEnrollmentE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      DeleteEnrollmentE2eSeed.superAdminUserEmail,
-      DeleteEnrollmentE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      DeleteEnrollmentE2eSeed.adminUserEmail,
-      DeleteEnrollmentE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        DeleteEnrollmentE2eSeed.superAdminUserEmail,
+        DeleteEnrollmentE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        DeleteEnrollmentE2eSeed.adminUserEmail,
+        DeleteEnrollmentE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).delete(path).expect(401);
@@ -50,7 +48,5 @@ describe('/enrollment/:id (DELETE)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

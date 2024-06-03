@@ -18,6 +18,7 @@ import {
   IdentityDocument,
   IdentityDocumentType,
 } from '#/sga/shared/domain/value-object/identity-document';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class RemoveBusinessUnitsFromEdaeUserE2eSeeds implements E2eSeed {
   public static superAdminUserEmail =
@@ -62,7 +63,7 @@ export class RemoveBusinessUnitsFromEdaeUserE2eSeeds implements E2eSeed {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
     this.countryRepository = datasource.getRepository(CountrySchema);
     this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

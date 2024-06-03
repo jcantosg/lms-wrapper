@@ -17,6 +17,11 @@ import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { getAnIdentityDocument } from '#test/value-object-factory';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
 
 export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
   public static subjectId = '38f3a921-cdd4-46c6-b2a5-7eaf6cbd4544';
@@ -75,11 +80,12 @@ export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
   private evaluationTypeRepository: Repository<EvaluationType>;
 
   constructor(private dataSource: DataSource) {
-    this.subjectRepository = dataSource.getRepository(Subject);
-    this.businessUnitRepository = dataSource.getRepository(BusinessUnit);
-    this.countryRepository = dataSource.getRepository(Country);
-    this.evaluationTypeRepository = dataSource.getRepository(EvaluationType);
-    this.edaeUserRepository = dataSource.getRepository(EdaeUser);
+    this.subjectRepository = dataSource.getRepository(subjectSchema);
+    this.businessUnitRepository = dataSource.getRepository(businessUnitSchema);
+    this.countryRepository = dataSource.getRepository(CountrySchema);
+    this.evaluationTypeRepository =
+      dataSource.getRepository(evaluationTypeSchema);
+    this.edaeUserRepository = dataSource.getRepository(edaeUserSchema);
   }
 
   async arrange(): Promise<void> {

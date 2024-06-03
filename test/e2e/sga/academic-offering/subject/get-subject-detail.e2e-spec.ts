@@ -1,21 +1,17 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import supertest from 'supertest';
+import { HttpServer } from '@nestjs/common';
+import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { GetSubjectDetailE2eSeed } from '#test/e2e/sga/academic-offering/subject/get-subject-detail.e2e-seed';
 
 const path = `/subject/${GetSubjectDetailE2eSeed.subjectId}`;
 
 describe('Get Subject Detail (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetSubjectDetailE2eSeed(datasource);
     await seeder.arrange();
@@ -58,8 +54,6 @@ describe('Get Subject Detail (GET)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

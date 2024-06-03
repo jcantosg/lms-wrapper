@@ -1,17 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { Repository } from 'typeorm';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { CreateInternalGroupE2eSeed } from '#test/e2e/sga/student/internal-group/create-internal-group.e2e-seed';
+import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 
 const path = '/internal-group/batch';
 
 describe('/internal-group/batch (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -19,20 +17,21 @@ describe('/internal-group/batch (POST)', () => {
   let internalGroupRepository: Repository<InternalGroup>;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateInternalGroupE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateInternalGroupE2eSeed.superAdminUserEmail,
-      CreateInternalGroupE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateInternalGroupE2eSeed.adminUserEmail,
-      CreateInternalGroupE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateInternalGroupE2eSeed.superAdminUserEmail,
+        CreateInternalGroupE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateInternalGroupE2eSeed.adminUserEmail,
+        CreateInternalGroupE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -83,7 +82,7 @@ describe('/internal-group/batch (POST)', () => {
   });
 
   it('should create internal groups', async () => {
-    internalGroupRepository = datasource.getRepository(InternalGroup);
+    internalGroupRepository = datasource.getRepository(internalGroupSchema);
 
     await supertest(httpServer)
       .post(path)
@@ -103,7 +102,5 @@ describe('/internal-group/batch (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

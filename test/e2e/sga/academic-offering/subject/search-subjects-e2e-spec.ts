@@ -1,9 +1,7 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import supertest from 'supertest';
+import { HttpServer } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import supertest from 'supertest';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -16,13 +14,11 @@ import { expectSubjects } from '#test/e2e/sga/academic-offering/subject/helpers'
 const path = '/subject/search';
 
 describe('/subject/search', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllSubjectsE2eSeed(datasource);
     await seeder.arrange();
@@ -77,8 +73,6 @@ describe('/subject/search', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

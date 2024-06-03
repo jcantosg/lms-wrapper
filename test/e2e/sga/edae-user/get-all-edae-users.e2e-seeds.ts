@@ -14,6 +14,9 @@ import { getAnIdentityDocument } from '#test/value-object-factory';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 
 export class GetAllEdaeUsersE2eSeed implements E2eSeed {
   public static countryId = uuid();
@@ -49,9 +52,9 @@ export class GetAllEdaeUsersE2eSeed implements E2eSeed {
   private readonly businessUnitRepository: Repository<BusinessUnit>;
 
   constructor(private datasource: DataSource) {
-    this.edaeUserRepository = datasource.getRepository(EdaeUser);
-    this.countryRepository = datasource.getRepository(Country);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
+    this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
   }
 
   async arrange(): Promise<void> {
@@ -74,7 +77,7 @@ export class GetAllEdaeUsersE2eSeed implements E2eSeed {
     );
     await this.businessUnitRepository.save(this.businessUnit);
     this.superAdminUser = await createAdminUser(
-      datasource,
+      this.datasource,
       GetAllEdaeUsersE2eSeed.superAdminUserId,
       GetAllEdaeUsersE2eSeed.superAdminUserEmail,
       GetAllEdaeUsersE2eSeed.superAdminUserPassword,

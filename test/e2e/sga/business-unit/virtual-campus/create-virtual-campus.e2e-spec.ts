@@ -1,21 +1,17 @@
 import supertest from 'supertest';
-import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { CreateVirtualCampusE2eSeeds } from '#test/e2e/sga/business-unit/virtual-campus/create-virtual-campus.e2e-seeds';
+import { HttpServer } from '@nestjs/common';
 
 const path = '/virtual-campus';
 
 describe('/virtual-campus (POST)', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateVirtualCampusE2eSeeds(datasource);
     await seeder.arrange();
@@ -69,7 +65,5 @@ describe('/virtual-campus (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

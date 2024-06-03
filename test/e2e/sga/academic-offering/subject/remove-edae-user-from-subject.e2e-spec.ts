@@ -1,18 +1,15 @@
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { RemoveEdaeUserFromSubjectE2eSeed } from '#test/e2e/sga/academic-offering/subject/remove-edae-user-from-subject.e2e-seed';
-import { HttpServer, INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import supertest from 'supertest';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
 
 const path = `/subject/${RemoveEdaeUserFromSubjectE2eSeed.subjectId}/remove-edae-user`;
 
 describe('/subjects/:id/remove-edae-user (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,27 +18,27 @@ describe('/subjects/:id/remove-edae-user (PUT)', () => {
   let subjectRepository: SubjectRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new RemoveEdaeUserFromSubjectE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      RemoveEdaeUserFromSubjectE2eSeed.superAdminUserEmail,
-      RemoveEdaeUserFromSubjectE2eSeed.superAdminUserPassword,
-    );
-
-    gestor360AccessToken = await login(
-      httpServer,
-      RemoveEdaeUserFromSubjectE2eSeed.adminUserGestor360Email,
-      RemoveEdaeUserFromSubjectE2eSeed.adminUserGestor360Password,
-    );
-
-    adminUserToken = await login(
-      httpServer,
-      RemoveEdaeUserFromSubjectE2eSeed.adminUserSecretariaEmail,
-      RemoveEdaeUserFromSubjectE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, gestor360AccessToken, adminUserToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          RemoveEdaeUserFromSubjectE2eSeed.superAdminUserEmail,
+          RemoveEdaeUserFromSubjectE2eSeed.superAdminUserPassword,
+        ),
+        login(
+          httpServer,
+          RemoveEdaeUserFromSubjectE2eSeed.adminUserGestor360Email,
+          RemoveEdaeUserFromSubjectE2eSeed.adminUserGestor360Password,
+        ),
+        login(
+          httpServer,
+          RemoveEdaeUserFromSubjectE2eSeed.adminUserSecretariaEmail,
+          RemoveEdaeUserFromSubjectE2eSeed.adminUserSecretariaPassword,
+        ),
+      ]);
   });
 
   it('should return unauthorized', async () => {
@@ -109,7 +106,5 @@ describe('/subjects/:id/remove-edae-user (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

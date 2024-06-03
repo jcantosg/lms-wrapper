@@ -8,6 +8,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 
 export class GetStudentE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'get-student@email.com';
@@ -29,7 +30,7 @@ export class GetStudentE2eSeed implements E2eSeed {
   private studentRepository: Repository<Student>;
 
   constructor(private readonly datasource: DataSource) {
-    this.studentRepository = datasource.getRepository(Student);
+    this.studentRepository = datasource.getRepository(studentSchema);
   }
 
   async arrange() {

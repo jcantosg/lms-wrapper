@@ -1,41 +1,38 @@
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
-import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-
 import { BusinessUnitPostgresRepository } from '#business-unit/infrastructure/repository/business-unit.postgres-repository';
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 import { BusinessUnitRepository } from '#business-unit/domain/repository/business-unit.repository';
 import { AddExaminationCentersToBusinessUnitE2eSeeds } from '#test/e2e/sga/business-unit/business-unit/add-examination-centers-to-business-unit.e2e-seed';
+import { HttpServer } from '@nestjs/common';
 
 const path =
   '/business-unit/b8d48d2a-7bab-4ef9-b30a-9eebf75ccae5/add-examination-center';
 
 describe('/business-unit/{id}/add-examination-center', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
   let businessRepository: BusinessUnitRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new AddExaminationCentersToBusinessUnitE2eSeeds(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      AddExaminationCentersToBusinessUnitE2eSeeds.adminUserEmail,
-      AddExaminationCentersToBusinessUnitE2eSeeds.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      AddExaminationCentersToBusinessUnitE2eSeeds.superAdminUserEmail,
-      AddExaminationCentersToBusinessUnitE2eSeeds.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        AddExaminationCentersToBusinessUnitE2eSeeds.adminUserEmail,
+        AddExaminationCentersToBusinessUnitE2eSeeds.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        AddExaminationCentersToBusinessUnitE2eSeeds.superAdminUserEmail,
+        AddExaminationCentersToBusinessUnitE2eSeeds.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -113,7 +110,5 @@ describe('/business-unit/{id}/add-examination-center', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

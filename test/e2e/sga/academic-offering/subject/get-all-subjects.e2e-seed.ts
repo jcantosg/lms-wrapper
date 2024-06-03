@@ -11,6 +11,11 @@ import { AddBusinessUnitsToAdminUserE2eSeedDataConfig } from '#test/e2e/sga/admi
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { GetAllSubjectsE2eSeedDataConfig } from '#test/e2e/sga/academic-offering/seed-data-config/get-all-subjects.e2e-seed-data-config';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
 export class GetAllSubjectsE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;
@@ -26,11 +31,12 @@ export class GetAllSubjectsE2eSeed implements E2eSeed {
   private readonly subjectRepository: Repository<Subject>;
 
   constructor(private readonly datasource: DataSource) {
-    this.adminUserRepository = datasource.getRepository(AdminUser);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.evaluationTypeRepository = datasource.getRepository(EvaluationType);
-    this.subjectRepository = datasource.getRepository(Subject);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.evaluationTypeRepository =
+      datasource.getRepository(evaluationTypeSchema);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
   }
 
   async arrange(): Promise<void> {

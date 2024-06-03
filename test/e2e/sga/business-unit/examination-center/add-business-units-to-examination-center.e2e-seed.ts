@@ -12,6 +12,7 @@ import { ExaminationCenter } from '#business-unit/domain/entity/examination-cent
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class AddBusinessUnitsToExaminationCenterE2eSeeds implements E2eSeed {
   public static superAdminUserEmail =
@@ -51,7 +52,7 @@ export class AddBusinessUnitsToExaminationCenterE2eSeeds implements E2eSeed {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

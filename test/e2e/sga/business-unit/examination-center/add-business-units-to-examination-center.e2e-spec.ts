@@ -1,40 +1,38 @@
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
-import { INestApplication } from '@nestjs/common';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { ExaminationCenterRepository } from '#business-unit/domain/repository/examination-center.repository';
 import { ExaminationCenterPostgresRepository } from '#business-unit/infrastructure/repository/examination-center.postgres-repository';
 import { AddBusinessUnitsToExaminationCenterE2eSeeds } from '#test/e2e/sga/business-unit/examination-center/add-business-units-to-examination-center.e2e-seed';
+import { HttpServer } from '@nestjs/common';
+import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
 
 const path =
   '/examination-center/02096887-c100-4170-b470-1230b90bcbc4/add-business-unit';
 
 describe('/examination-center/{id}/add-business-unit', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
   let examinationCenterRepository: ExaminationCenterRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new AddBusinessUnitsToExaminationCenterE2eSeeds(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      AddBusinessUnitsToExaminationCenterE2eSeeds.adminUserEmail,
-      AddBusinessUnitsToExaminationCenterE2eSeeds.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      AddBusinessUnitsToExaminationCenterE2eSeeds.superAdminUserEmail,
-      AddBusinessUnitsToExaminationCenterE2eSeeds.superAdminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        AddBusinessUnitsToExaminationCenterE2eSeeds.adminUserEmail,
+        AddBusinessUnitsToExaminationCenterE2eSeeds.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        AddBusinessUnitsToExaminationCenterE2eSeeds.superAdminUserEmail,
+        AddBusinessUnitsToExaminationCenterE2eSeeds.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -81,7 +79,7 @@ describe('/examination-center/{id}/add-business-unit', () => {
 
   it('should add business unit to examination center', async () => {
     examinationCenterRepository = new ExaminationCenterPostgresRepository(
-      datasource.getRepository(ExaminationCenter),
+      datasource.getRepository(examinationCenterSchema),
     );
 
     await supertest(httpServer)
@@ -112,7 +110,5 @@ describe('/examination-center/{id}/add-business-unit', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

@@ -13,6 +13,11 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 export class EditAcademicProgramE2eSeed implements E2eSeed {
   public static academicProgramId = uuid();
@@ -69,11 +74,13 @@ export class EditAcademicProgramE2eSeed implements E2eSeed {
   private programBlockRepository: Repository<ProgramBlock>;
 
   constructor(private dataSource: DataSource) {
-    this.businessUnitRepository = dataSource.getRepository(BusinessUnit);
-    this.countryRepository = dataSource.getRepository(Country);
-    this.titleRepository = dataSource.getRepository(Title);
-    this.academicProgramRepository = dataSource.getRepository(AcademicProgram);
-    this.programBlockRepository = dataSource.getRepository(ProgramBlock);
+    this.businessUnitRepository = dataSource.getRepository(businessUnitSchema);
+    this.countryRepository = dataSource.getRepository(CountrySchema);
+    this.titleRepository = dataSource.getRepository(titleSchema);
+    this.academicProgramRepository = dataSource.getRepository(
+      academicProgramSchema,
+    );
+    this.programBlockRepository = dataSource.getRepository(programBlockSchema);
   }
 
   async arrange(): Promise<void> {

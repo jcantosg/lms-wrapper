@@ -1,39 +1,38 @@
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
-import { INestApplication } from '@nestjs/common';
-import { startApp } from '#test/e2e/e2e-helper';
+import { HttpServer } from '@nestjs/common';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { EdaeUserRepository } from '#edae-user/domain/repository/edae-user.repository';
 import { EdaeUserPostgresRepository } from '#edae-user/infrastructure/repository/edae-user.postgres-repository';
-import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AddBusinessUnitsToEdaeUserE2eSeeds } from '#test/e2e/sga/edae-user/add-business-units-to-edae-user.e2e-seed';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
 
 const path =
   '/edae-user/02096887-c100-4170-b470-1230b90bcbc4/add-business-unit';
 
 describe('/edae-user/{id}/add-business-unit', () => {
-  let app: INestApplication;
-  let httpServer: any;
+  let httpServer: HttpServer;
   let seeder: AddBusinessUnitsToEdaeUserE2eSeeds;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
   let edaeUserRepository: EdaeUserRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new AddBusinessUnitsToEdaeUserE2eSeeds(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      AddBusinessUnitsToEdaeUserE2eSeeds.adminUserEmail,
-      AddBusinessUnitsToEdaeUserE2eSeeds.adminUserPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      AddBusinessUnitsToEdaeUserE2eSeeds.superAdminUserEmail,
-      AddBusinessUnitsToEdaeUserE2eSeeds.superAdminUserPassword,
-    );
+
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        AddBusinessUnitsToEdaeUserE2eSeeds.adminUserEmail,
+        AddBusinessUnitsToEdaeUserE2eSeeds.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        AddBusinessUnitsToEdaeUserE2eSeeds.superAdminUserEmail,
+        AddBusinessUnitsToEdaeUserE2eSeeds.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -100,7 +99,7 @@ describe('/edae-user/{id}/add-business-unit', () => {
     await seeder.addBusinessUnitToSuperAdminUser();
 
     edaeUserRepository = new EdaeUserPostgresRepository(
-      datasource.getRepository(EdaeUser),
+      datasource.getRepository(edaeUserSchema),
     );
 
     await supertest(httpServer)
@@ -129,7 +128,5 @@ describe('/edae-user/{id}/add-business-unit', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

@@ -1,22 +1,18 @@
-import { GetSubjectsByProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/get-subjects-by-program-block.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { GetSubjectsByProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/get-subjects-by-program-block.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/program-block/${GetSubjectsByProgramBlockE2eSeed.programBlockId}/subject`;
 const wrongPath = '/program-block/9e9ac9db-d986-4a93-9d2c-7d2e4dea2638/subject';
 
 describe('/program-block/id/subject (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetSubjectsByProgramBlockE2eSeed(datasource);
     await seeder.arrange();
@@ -55,7 +51,5 @@ describe('/program-block/id/subject (GET)', () => {
   });
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

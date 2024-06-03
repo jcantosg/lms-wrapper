@@ -27,6 +27,17 @@ import {
 } from '#/sga/shared/domain/value-object/identity-document';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
+import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
+import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
+import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
 
 export class AddInternalGroupToAcademicPeriodE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -90,17 +101,22 @@ export class AddInternalGroupToAcademicPeriodE2eSeed implements E2eSeed {
   private edaeUserRepository: Repository<EdaeUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.academicProgramRepository = datasource.getRepository(AcademicProgram);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.titleRepository = datasource.getRepository(Title);
-    this.programBlockRepository = datasource.getRepository(ProgramBlock);
-    this.periodBlockRepository = datasource.getRepository(PeriodBlock);
-    this.internalGroupRepository = datasource.getRepository(InternalGroup);
-    this.blockRelationRepository = datasource.getRepository(BlockRelation);
-    this.subjectRepository = datasource.getRepository(Subject);
-    this.edaeUserRepository = datasource.getRepository(EdaeUser);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.academicProgramRepository = datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.titleRepository = datasource.getRepository(titleSchema);
+    this.programBlockRepository = datasource.getRepository(programBlockSchema);
+    this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
+    this.internalGroupRepository =
+      datasource.getRepository(internalGroupSchema);
+    this.blockRelationRepository =
+      datasource.getRepository(blockRelationSchema);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
   }
 
   async arrange(): Promise<void> {

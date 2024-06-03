@@ -1,17 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { CreateAdministrativeGroupE2eSeed } from '#test/e2e/sga/student/administrative-group/create-administrative-group.e2e-seed';
 import { Repository } from 'typeorm';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
+import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
 
 const path = '/administrative-group';
 
 describe('/administrative-group (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -19,20 +17,21 @@ describe('/administrative-group (POST)', () => {
   let administrativeGroupRepository: Repository<AdministrativeGroup>;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateAdministrativeGroupE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateAdministrativeGroupE2eSeed.superAdminUserEmail,
-      CreateAdministrativeGroupE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateAdministrativeGroupE2eSeed.adminUserEmail,
-      CreateAdministrativeGroupE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateAdministrativeGroupE2eSeed.superAdminUserEmail,
+        CreateAdministrativeGroupE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateAdministrativeGroupE2eSeed.adminUserEmail,
+        CreateAdministrativeGroupE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -87,8 +86,9 @@ describe('/administrative-group (POST)', () => {
   });
 
   it('should create administrative groups', async () => {
-    administrativeGroupRepository =
-      datasource.getRepository(AdministrativeGroup);
+    administrativeGroupRepository = datasource.getRepository(
+      administrativeGroupSchema,
+    );
 
     await supertest(httpServer)
       .post(path)
@@ -129,7 +129,5 @@ describe('/administrative-group (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

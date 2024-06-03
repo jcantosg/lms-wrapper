@@ -1,8 +1,6 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { GetAdminDetailUserE2eSeed } from './get-admin-detail-user.e2e-seed';
 import { IdentityDocumentType } from '#/sga/shared/domain/value-object/identity-document';
@@ -10,27 +8,27 @@ import { IdentityDocumentType } from '#/sga/shared/domain/value-object/identity-
 const path = `/admin-user/${GetAdminDetailUserE2eSeed.newAdminId}`;
 
 describe('Get Admin Detail User (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAdminDetailUserE2eSeed(datasource);
     await seeder.arrange();
-    superAdminUserToken = await login(
-      httpServer,
-      GetAdminDetailUserE2eSeed.email,
-      GetAdminDetailUserE2eSeed.password,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      GetAdminDetailUserE2eSeed.newAdminEmail,
-      GetAdminDetailUserE2eSeed.newAdminPassword,
-    );
+    [superAdminUserToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        GetAdminDetailUserE2eSeed.email,
+        GetAdminDetailUserE2eSeed.password,
+      ),
+      login(
+        httpServer,
+        GetAdminDetailUserE2eSeed.newAdminEmail,
+        GetAdminDetailUserE2eSeed.newAdminPassword,
+      ),
+    ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -81,8 +79,6 @@ describe('Get Admin Detail User (GET)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

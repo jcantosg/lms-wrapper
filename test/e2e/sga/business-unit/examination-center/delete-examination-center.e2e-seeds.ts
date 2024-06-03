@@ -12,6 +12,8 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { GetAllBusinessUnitsE2eSeedDataConfig } from '#test/e2e/sga/business-unit/seed-data-config/get-all-business-units.e2e-seed-data-config';
 import { Country } from '#shared/domain/entity/country.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 
 export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
   public static examinationCenterId = '1c63d7a9-c0f4-4a5e-9e76-c6ce6f904dd1';
@@ -42,8 +44,8 @@ export class DeleteExaminationCenterE2eSeeds implements E2eSeed {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
-    this.countryRepository = datasource.getRepository(Country);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
   }
 
   async arrange(): Promise<void> {

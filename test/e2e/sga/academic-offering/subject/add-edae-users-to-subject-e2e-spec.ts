@@ -1,10 +1,8 @@
-import { AddEdaeUsersToSubjectE2eSeed } from '#test/e2e/sga/academic-offering/subject/add-edae-users-to-subject.e2e-seed';
-import datasource from '#config/ormconfig';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { startApp } from '#test/e2e/e2e-helper';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
+import { HttpServer } from '@nestjs/common';
+import { AddEdaeUsersToSubjectE2eSeed } from '#test/e2e/sga/academic-offering/subject/add-edae-users-to-subject.e2e-seed';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { SubjectPostgresRepository } from '#academic-offering/infrastructure/repository/subject.postgres-repository';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
@@ -12,7 +10,6 @@ import { subjectSchema } from '#academic-offering/infrastructure/config/schema/s
 const path = `/subject/${AddEdaeUsersToSubjectE2eSeed.subjectId}/add-edae-user`;
 
 describe('/subjects/:id/add-edae-user (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,27 +18,27 @@ describe('/subjects/:id/add-edae-user (POST)', () => {
   let subjectRepository: SubjectRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new AddEdaeUsersToSubjectE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      AddEdaeUsersToSubjectE2eSeed.superAdminUserEmail,
-      AddEdaeUsersToSubjectE2eSeed.superAdminUserPassword,
-    );
-
-    gestor360AccessToken = await login(
-      httpServer,
-      AddEdaeUsersToSubjectE2eSeed.adminUserGestor360Email,
-      AddEdaeUsersToSubjectE2eSeed.adminUserGestor360Password,
-    );
-
-    secretariaAccessToken = await login(
-      httpServer,
-      AddEdaeUsersToSubjectE2eSeed.adminUserSecretariaEmail,
-      AddEdaeUsersToSubjectE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, gestor360AccessToken, secretariaAccessToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          AddEdaeUsersToSubjectE2eSeed.superAdminUserEmail,
+          AddEdaeUsersToSubjectE2eSeed.superAdminUserPassword,
+        ),
+        login(
+          httpServer,
+          AddEdaeUsersToSubjectE2eSeed.adminUserGestor360Email,
+          AddEdaeUsersToSubjectE2eSeed.adminUserGestor360Password,
+        ),
+        login(
+          httpServer,
+          AddEdaeUsersToSubjectE2eSeed.adminUserSecretariaEmail,
+          AddEdaeUsersToSubjectE2eSeed.adminUserSecretariaPassword,
+        ),
+      ]);
   });
 
   it('should return unauthorized', async () => {
@@ -129,7 +126,5 @@ describe('/subjects/:id/add-edae-user (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

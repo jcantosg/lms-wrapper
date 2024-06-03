@@ -1,8 +1,5 @@
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
-
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { startApp } from '#test/e2e/e2e-helper';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { EditAcademicRecordE2eSeed } from '#test/e2e/sga/student/academic-record/edit-academic-record.e2e-seed';
 import { E2eSeed } from '#test/e2e/e2e-seed';
@@ -10,14 +7,12 @@ import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
 describe('/academic-record/:id (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let path: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditAcademicRecordE2eSeed(datasource);
     await seeder.arrange();
@@ -71,7 +66,5 @@ describe('/academic-record/:id (GET)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

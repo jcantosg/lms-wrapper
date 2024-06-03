@@ -9,6 +9,10 @@ import { Country } from '#shared/domain/entity/country.entity';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
 
 export class GetEdaeUserDetailE2eSeed implements E2eSeed {
   public static edaeUserId = '83670209-9598-41d5-9c57-a393493f1b98';
@@ -44,10 +48,11 @@ export class GetEdaeUserDetailE2eSeed implements E2eSeed {
   private edaeUserRepository: Repository<EdaeUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = this.datasource.getRepository(BusinessUnit);
-    this.userRepository = this.datasource.getRepository(AdminUser);
-    this.countryRepository = this.datasource.getRepository(Country);
-    this.edaeUserRepository = this.datasource.getRepository(EdaeUser);
+    this.businessUnitRepository =
+      this.datasource.getRepository(businessUnitSchema);
+    this.userRepository = this.datasource.getRepository(adminUserSchema);
+    this.countryRepository = this.datasource.getRepository(CountrySchema);
+    this.edaeUserRepository = this.datasource.getRepository(edaeUserSchema);
   }
 
   async arrange(): Promise<void> {

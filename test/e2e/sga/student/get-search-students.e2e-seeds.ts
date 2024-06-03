@@ -18,6 +18,15 @@ import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entit
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
+import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
 
 export class GetSearchStudentsE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-get-search-students@universae.com';
@@ -72,15 +81,20 @@ export class GetSearchStudentsE2eSeed implements E2eSeed {
   private academicRecordRepository: Repository<AcademicRecord>;
 
   constructor(private datasource: DataSource) {
-    this.countryRepository = datasource.getRepository(Country);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.virtualCampusRepository = datasource.getRepository(VirtualCampus);
-    this.titleRepository = datasource.getRepository(Title);
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.academicProgramRepository = datasource.getRepository(AcademicProgram);
-    this.programBlockRepository = datasource.getRepository(ProgramBlock);
-    this.studentRepository = datasource.getRepository(Student);
-    this.academicRecordRepository = datasource.getRepository(AcademicRecord);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.virtualCampusRepository =
+      datasource.getRepository(virtualCampusSchema);
+    this.titleRepository = datasource.getRepository(titleSchema);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.academicProgramRepository = datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.programBlockRepository = datasource.getRepository(programBlockSchema);
+    this.studentRepository = datasource.getRepository(studentSchema);
+    this.academicRecordRepository =
+      datasource.getRepository(academicRecordSchema);
   }
 
   async arrange(): Promise<void> {

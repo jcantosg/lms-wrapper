@@ -10,6 +10,10 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class EditExaminationCenterE2eSeed implements E2eSeed {
   public static countryId = uuid();
@@ -48,11 +52,12 @@ export class EditExaminationCenterE2eSeed implements E2eSeed {
   private readonly adminUserRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.examinationCenterRepository =
-      datasource.getRepository(ExaminationCenter);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.examinationCenterRepository = datasource.getRepository(
+      examinationCenterSchema,
+    );
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

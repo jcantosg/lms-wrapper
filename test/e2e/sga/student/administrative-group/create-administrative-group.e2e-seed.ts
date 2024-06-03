@@ -17,6 +17,15 @@ import { ProgramBlockStructureType } from '#academic-offering/domain/enum/progra
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
+import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
+import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
+import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 
 export class CreateAdministrativeGroupE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -91,16 +100,21 @@ export class CreateAdministrativeGroupE2eSeed implements E2eSeed {
   private administrativeGroupRepository: Repository<AdministrativeGroup>;
 
   constructor(private readonly datasource: DataSource) {
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.academicProgramRepository = datasource.getRepository(AcademicProgram);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.titleRepository = datasource.getRepository(Title);
-    this.programBlockRepository = datasource.getRepository(ProgramBlock);
-    this.administrativeGroupRepository =
-      datasource.getRepository(AdministrativeGroup);
-    this.periodBlockRepository = datasource.getRepository(PeriodBlock);
-    this.blockRelationRepository = datasource.getRepository(BlockRelation);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.academicProgramRepository = datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.titleRepository = datasource.getRepository(titleSchema);
+    this.programBlockRepository = datasource.getRepository(programBlockSchema);
+    this.administrativeGroupRepository = datasource.getRepository(
+      administrativeGroupSchema,
+    );
+    this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
+    this.blockRelationRepository =
+      datasource.getRepository(blockRelationSchema);
   }
 
   async arrange(): Promise<void> {

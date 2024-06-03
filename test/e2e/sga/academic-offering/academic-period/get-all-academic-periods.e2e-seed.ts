@@ -10,6 +10,10 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { GetAllAcademicPeriodsE2eSeedDataConfig } from '#test/e2e/sga/academic-offering/academic-period/get-all-academic-periods.e2e-seed-data-config';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class GetAllAcademicPeriodsE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;
@@ -24,10 +28,11 @@ export class GetAllAcademicPeriodsE2eSeed implements E2eSeed {
   private readonly adminUserRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.academicPeriodRepository = datasource.getRepository(AcademicPeriod);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.academicPeriodRepository =
+      datasource.getRepository(academicPeriodSchema);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

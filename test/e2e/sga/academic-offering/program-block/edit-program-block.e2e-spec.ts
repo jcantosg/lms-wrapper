@@ -1,35 +1,33 @@
-import { EditProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/edit-program-block.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { EditProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/edit-program-block.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 
 const path = `/program-block/${EditProgramBlockE2eSeed.programBlockId}`;
 
 describe('Edit Program Block (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditProgramBlockE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      EditProgramBlockE2eSeed.superAdminUserEmail,
-      EditProgramBlockE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      EditProgramBlockE2eSeed.adminUserEmail,
-      EditProgramBlockE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        EditProgramBlockE2eSeed.superAdminUserEmail,
+        EditProgramBlockE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        EditProgramBlockE2eSeed.adminUserEmail,
+        EditProgramBlockE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
   it('should return unauthorized', async () => {
     await supertest(httpServer).put(path).expect(401);
@@ -59,7 +57,5 @@ describe('Edit Program Block (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

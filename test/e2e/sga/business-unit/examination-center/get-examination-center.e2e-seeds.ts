@@ -11,6 +11,8 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { Country } from '#shared/domain/entity/country.entity';
 import { Classroom } from '#business-unit/domain/entity/classroom.entity';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { classroomSchema } from '#business-unit/infrastructure/config/schema/classroom.schema';
 
 export class GetExaminationCenterE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-get-examination-center@email.com';
@@ -40,8 +42,8 @@ export class GetExaminationCenterE2eSeed implements E2eSeed {
     this.examinationCenterRepository = datasource.getRepository(
       examinationCenterSchema,
     );
-    this.countryRepository = datasource.getRepository(Country);
-    this.classroomRepository = datasource.getRepository(Classroom);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.classroomRepository = datasource.getRepository(classroomSchema);
   }
 
   async arrange(): Promise<void> {

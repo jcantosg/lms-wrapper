@@ -12,6 +12,10 @@ import {
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { getAnIdentityDocument } from '#test/value-object-factory';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class CreateEdaeUserE2eSeed implements E2eSeed {
   public static newEdaeUserId = '747f51fe-cc5f-48f3-9ec7-f77368b17fcb';
@@ -53,10 +57,10 @@ export class CreateEdaeUserE2eSeed implements E2eSeed {
   private adminUserRepository: Repository<AdminUser>;
 
   constructor(private datasource: DataSource) {
-    this.edaeUserRepository = datasource.getRepository(EdaeUser);
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

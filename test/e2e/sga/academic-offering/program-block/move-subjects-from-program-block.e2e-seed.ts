@@ -16,6 +16,13 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 export class MoveSubjectsFromProgramBlockE2eSeed implements E2eSeed {
   public static superAdminUserId = 'd97ec108-5c63-44be-93d1-59c48e64c24b';
@@ -74,15 +81,18 @@ export class MoveSubjectsFromProgramBlockE2eSeed implements E2eSeed {
   private programBlockRepository: Repository<ProgramBlock>;
 
   constructor(private readonly datasource: DataSource) {
-    this.countryRepository = this.datasource.getRepository(Country);
-    this.businessUnitRepository = this.datasource.getRepository(BusinessUnit);
-    this.titleRepository = this.datasource.getRepository(Title);
+    this.countryRepository = this.datasource.getRepository(CountrySchema);
+    this.businessUnitRepository =
+      this.datasource.getRepository(businessUnitSchema);
+    this.titleRepository = this.datasource.getRepository(titleSchema);
     this.evaluationTypeRepository =
-      this.datasource.getRepository(EvaluationType);
-    this.subjectRepository = this.datasource.getRepository(Subject);
-    this.academicProgramRepository =
-      this.datasource.getRepository(AcademicProgram);
-    this.programBlockRepository = this.datasource.getRepository(ProgramBlock);
+      this.datasource.getRepository(evaluationTypeSchema);
+    this.subjectRepository = this.datasource.getRepository(subjectSchema);
+    this.academicProgramRepository = this.datasource.getRepository(
+      academicProgramSchema,
+    );
+    this.programBlockRepository =
+      this.datasource.getRepository(programBlockSchema);
   }
 
   async arrange(): Promise<void> {

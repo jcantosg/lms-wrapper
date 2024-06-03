@@ -1,9 +1,7 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import datasource from '#config/ormconfig';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { EditAcademicProgramE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/edit-academic-program.e2e-seed';
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { AcademicProgramPostgresRepository } from '#academic-offering/infrastructure/repository/academic-program.postgres-repository';
@@ -12,7 +10,6 @@ import { academicProgramSchema } from '#academic-offering/infrastructure/config/
 const path = `/academic-program/${EditAcademicProgramE2eSeed.academicProgramId}`;
 
 describe('/academic-program/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,26 +18,27 @@ describe('/academic-program/:id (PUT)', () => {
   let academicProgramRepository: AcademicProgramRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditAcademicProgramE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      EditAcademicProgramE2eSeed.superAdminUserEmail,
-      EditAcademicProgramE2eSeed.superAdminUserPassword,
-    );
-    gestor360AccessToken = await login(
-      httpServer,
-      EditAcademicProgramE2eSeed.adminUserGestor360Email,
-      EditAcademicProgramE2eSeed.adminUserGestor360Password,
-    );
-
-    secretariaAccessToken = await login(
-      httpServer,
-      EditAcademicProgramE2eSeed.adminUserSecretariaEmail,
-      EditAcademicProgramE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, gestor360AccessToken, secretariaAccessToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          EditAcademicProgramE2eSeed.superAdminUserEmail,
+          EditAcademicProgramE2eSeed.superAdminUserPassword,
+        ),
+        login(
+          httpServer,
+          EditAcademicProgramE2eSeed.adminUserGestor360Email,
+          EditAcademicProgramE2eSeed.adminUserGestor360Password,
+        ),
+        login(
+          httpServer,
+          EditAcademicProgramE2eSeed.adminUserSecretariaEmail,
+          EditAcademicProgramE2eSeed.adminUserSecretariaPassword,
+        ),
+      ]);
   });
 
   it('should return unauthorized', async () => {
@@ -133,7 +131,5 @@ describe('/academic-program/:id (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

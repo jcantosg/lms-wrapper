@@ -13,6 +13,11 @@ import {
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { academicProgramSchema } from '#academic-offering/infrastructure/config/schema/academic-program.schema';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 export class CreateProgramBlockE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -63,12 +68,15 @@ export class CreateProgramBlockE2eSeed implements E2eSeed {
   private programBlockRepository: Repository<ProgramBlock>;
 
   constructor(private dataSource: DataSource) {
-    this.academicProgramRepository =
-      this.dataSource.getRepository(AcademicProgram);
-    this.businessUnitRepository = this.dataSource.getRepository(BusinessUnit);
-    this.countryRepository = this.dataSource.getRepository(Country);
-    this.titleRepository = this.dataSource.getRepository(Title);
-    this.programBlockRepository = this.dataSource.getRepository(ProgramBlock);
+    this.academicProgramRepository = this.dataSource.getRepository(
+      academicProgramSchema,
+    );
+    this.businessUnitRepository =
+      this.dataSource.getRepository(businessUnitSchema);
+    this.countryRepository = this.dataSource.getRepository(CountrySchema);
+    this.titleRepository = this.dataSource.getRepository(titleSchema);
+    this.programBlockRepository =
+      this.dataSource.getRepository(programBlockSchema);
   }
 
   async arrange(): Promise<void> {

@@ -1,37 +1,35 @@
-import { EditEdaeUserE2eSeed } from '#test/e2e/sga/edae-user/edit-edae-user.e2e-seeds';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { EditEdaeUserE2eSeed } from '#test/e2e/sga/edae-user/edit-edae-user.e2e-seeds';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 const path = `/edae-user/${EditEdaeUserE2eSeed.edaeUserId}`;
 
 describe('/edae-user/:id (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let adminAccessToken: string;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditEdaeUserE2eSeed(datasource);
     await seeder.arrange();
-    adminAccessToken = await login(
-      httpServer,
-      EditEdaeUserE2eSeed.adminEmail,
-      EditEdaeUserE2eSeed.adminPassword,
-    );
-    superAdminAccessToken = await login(
-      httpServer,
-      EditEdaeUserE2eSeed.superAdminEmail,
-      EditEdaeUserE2eSeed.superAdminPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        EditEdaeUserE2eSeed.adminEmail,
+        EditEdaeUserE2eSeed.adminPassword,
+      ),
+      login(
+        httpServer,
+        EditEdaeUserE2eSeed.superAdminEmail,
+        EditEdaeUserE2eSeed.superAdminPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -73,7 +71,5 @@ describe('/edae-user/:id (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await app.close();
-    await datasource.destroy();
   });
 });

@@ -1,7 +1,5 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { startApp } from '#test/e2e/e2e-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import datasource from '#config/ormconfig';
 import { CreateEdaeUserE2eSeed } from '#test/e2e/sga/edae-user/create-edae-user.e2e-seeds';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
@@ -9,27 +7,27 @@ import { login } from '#test/e2e/sga/e2e-auth-helper';
 const path = '/edae-user';
 
 describe('/edae-user (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateEdaeUserE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateEdaeUserE2eSeed.superAdminUserMail,
-      CreateEdaeUserE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      CreateEdaeUserE2eSeed.adminUserMail,
-      CreateEdaeUserE2eSeed.adminUserPassword,
-    );
+    [adminAccessToken, superAdminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        CreateEdaeUserE2eSeed.adminUserMail,
+        CreateEdaeUserE2eSeed.adminUserPassword,
+      ),
+      login(
+        httpServer,
+        CreateEdaeUserE2eSeed.superAdminUserMail,
+        CreateEdaeUserE2eSeed.superAdminUserPassword,
+      ),
+    ]);
   });
 
   it('should create an edae user successfully', async () => {
@@ -105,8 +103,6 @@ describe('/edae-user (POST)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

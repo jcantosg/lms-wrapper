@@ -1,10 +1,8 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
+import { HttpServer } from '@nestjs/common';
+import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import datasource from '#config/ormconfig';
-import { startApp } from '#test/e2e/e2e-helper';
 import { CreateProgramBlockE2eSeed } from '#test/e2e/sga/academic-offering/program-block/create-program-block.e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
-import supertest from 'supertest';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { ProgramBlockPostgresRepository } from '#academic-offering/infrastructure/repository/program-block.postgres-repository';
 import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
@@ -12,7 +10,6 @@ import { programBlockSchema } from '#academic-offering/infrastructure/config/sch
 const path = '/program-block';
 
 describe('/program-block (POST)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -21,27 +18,27 @@ describe('/program-block (POST)', () => {
   let programBlockRepository: ProgramBlockRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new CreateProgramBlockE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      CreateProgramBlockE2eSeed.superAdminUserEmail,
-      CreateProgramBlockE2eSeed.superAdminUserPassword,
-    );
-
-    gestor360AccessToken = await login(
-      httpServer,
-      CreateProgramBlockE2eSeed.adminUserGestor360Email,
-      CreateProgramBlockE2eSeed.adminUserGestor360Password,
-    );
-
-    secretariaAccessToken = await login(
-      httpServer,
-      CreateProgramBlockE2eSeed.adminUserSecretariaEmail,
-      CreateProgramBlockE2eSeed.adminUserSecretariaPassword,
-    );
+    [superAdminAccessToken, gestor360AccessToken, secretariaAccessToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          CreateProgramBlockE2eSeed.superAdminUserEmail,
+          CreateProgramBlockE2eSeed.superAdminUserPassword,
+        ),
+        login(
+          httpServer,
+          CreateProgramBlockE2eSeed.adminUserGestor360Email,
+          CreateProgramBlockE2eSeed.adminUserGestor360Password,
+        ),
+        login(
+          httpServer,
+          CreateProgramBlockE2eSeed.adminUserSecretariaEmail,
+          CreateProgramBlockE2eSeed.adminUserSecretariaPassword,
+        ),
+      ]);
   });
 
   it('should return unauthorized', async () => {
@@ -120,7 +117,5 @@ describe('/program-block (POST)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

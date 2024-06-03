@@ -9,6 +9,8 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { examinationCenterSchema } from '#business-unit/infrastructure/config/schema/examination-center.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 
 export class GetAllPlainExaminationCentersE2eSeed implements E2eSeed {
   public static countryId = uuid();
@@ -41,9 +43,10 @@ export class GetAllPlainExaminationCentersE2eSeed implements E2eSeed {
   private readonly examinationCenterRepository: Repository<ExaminationCenter>;
 
   constructor(private readonly datasource: DataSource) {
-    this.examinationCenterRepository =
-      datasource.getRepository(ExaminationCenter);
-    this.countryRepository = datasource.getRepository(Country);
+    this.examinationCenterRepository = datasource.getRepository(
+      examinationCenterSchema,
+    );
+    this.countryRepository = datasource.getRepository(CountrySchema);
   }
 
   async arrange(): Promise<void> {

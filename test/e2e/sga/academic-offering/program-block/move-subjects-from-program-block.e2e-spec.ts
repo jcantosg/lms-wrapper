@@ -1,36 +1,34 @@
-import { MoveSubjectsFromProgramBlockE2eSeed } from './move-subjects-from-program-block.e2e-seed';
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
-import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { MoveSubjectsFromProgramBlockE2eSeed } from './move-subjects-from-program-block.e2e-seed';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 
 const path = (blockId: string) => `/program-block/${blockId}/move-subject`;
 
 describe('/program-block/:id/move-subject (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new MoveSubjectsFromProgramBlockE2eSeed(datasource);
     await seeder.arrange();
-    superAdminAccessToken = await login(
-      httpServer,
-      MoveSubjectsFromProgramBlockE2eSeed.superAdminUserEmail,
-      MoveSubjectsFromProgramBlockE2eSeed.superAdminUserPassword,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      MoveSubjectsFromProgramBlockE2eSeed.adminUserEmail,
-      MoveSubjectsFromProgramBlockE2eSeed.adminUserPassword,
-    );
+    [superAdminAccessToken, adminAccessToken] = await Promise.all([
+      login(
+        httpServer,
+        MoveSubjectsFromProgramBlockE2eSeed.superAdminUserEmail,
+        MoveSubjectsFromProgramBlockE2eSeed.superAdminUserPassword,
+      ),
+      login(
+        httpServer,
+        MoveSubjectsFromProgramBlockE2eSeed.adminUserEmail,
+        MoveSubjectsFromProgramBlockE2eSeed.adminUserPassword,
+      ),
+    ]);
   });
 
   it('should return unauthorized', async () => {
@@ -67,14 +65,18 @@ describe('/program-block/:id/move-subject (PUT)', () => {
         newBlockId: MoveSubjectsFromProgramBlockE2eSeed.programBlock2Id,
       })
       .expect(200);
-    const programBlock1 = await datasource.getRepository(ProgramBlock).findOne({
-      where: { id: MoveSubjectsFromProgramBlockE2eSeed.programBlock1Id },
-      relations: { subjects: true },
-    });
-    const programBlock2 = await datasource.getRepository(ProgramBlock).findOne({
-      where: { id: MoveSubjectsFromProgramBlockE2eSeed.programBlock2Id },
-      relations: { subjects: true },
-    });
+    const programBlock1 = await datasource
+      .getRepository(programBlockSchema)
+      .findOne({
+        where: { id: MoveSubjectsFromProgramBlockE2eSeed.programBlock1Id },
+        relations: { subjects: true },
+      });
+    const programBlock2 = await datasource
+      .getRepository(programBlockSchema)
+      .findOne({
+        where: { id: MoveSubjectsFromProgramBlockE2eSeed.programBlock2Id },
+        relations: { subjects: true },
+      });
     expect(programBlock1!.subjects).toEqual(
       expect.not.arrayContaining([
         expect.objectContaining({
@@ -106,7 +108,5 @@ describe('/program-block/:id/move-subject (PUT)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });

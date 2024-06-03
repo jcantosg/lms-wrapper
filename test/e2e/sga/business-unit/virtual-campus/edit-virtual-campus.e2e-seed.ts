@@ -13,6 +13,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class EditVirtualCampusE2eSeed implements E2eSeed {
   public static countryId = uuid();
@@ -52,7 +53,7 @@ export class EditVirtualCampusE2eSeed implements E2eSeed {
     this.countryRepository = datasource.getRepository(CountrySchema);
     this.virtualCampusRepository =
       datasource.getRepository(virtualCampusSchema);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

@@ -9,6 +9,9 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { titleSchema } from '#academic-offering/infrastructure/config/schema/title.schema';
 
 export class GetAllTitlesE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;
@@ -50,9 +53,9 @@ export class GetAllTitlesE2eSeed implements E2eSeed {
   private readonly titleRepository: Repository<Title>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.titleRepository = datasource.getRepository(Title);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.titleRepository = datasource.getRepository(titleSchema);
   }
 
   async arrange(): Promise<void> {

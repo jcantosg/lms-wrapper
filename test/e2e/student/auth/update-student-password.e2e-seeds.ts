@@ -8,6 +8,8 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { StudentRecoveryPasswordToken } from '#/student/student/domain/entity/student-recovery-password-token.entity';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
+import { studentRecoveryPasswordTokenSchema } from '#/student/student/infrastructure/config/schema/student-recovery-password-token.schema';
 
 export class UpdateStudentPasswordE2eSeed implements E2eSeed {
   public static studentId = 'cf665ac9-939e-4ebe-aba4-745dfb469acc';
@@ -24,9 +26,9 @@ export class UpdateStudentPasswordE2eSeed implements E2eSeed {
   private studentRecoveryPasswordTokenRepository: Repository<StudentRecoveryPasswordToken>;
 
   constructor(private readonly datasource: DataSource) {
-    this.studentRepository = datasource.getRepository(Student);
+    this.studentRepository = datasource.getRepository(studentSchema);
     this.studentRecoveryPasswordTokenRepository = datasource.getRepository(
-      StudentRecoveryPasswordToken,
+      studentRecoveryPasswordTokenSchema,
     );
   }
 

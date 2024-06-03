@@ -1,18 +1,15 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import datasource from '#config/ormconfig';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { IdentityDocumentType } from '#/sga/shared/domain/value-object/identity-document';
 import { EditAdminUserE2eSeed } from '#test/e2e/sga/admin-user/edit-admin-user.e2e-seed';
 import { AdminUserPostgresRepository } from '#admin-user/infrastructure/repository/admin-user.postgres-repository';
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 const path = `/admin-user/${EditAdminUserE2eSeed.newAdminId}`;
 
 describe('Edit Admin User (PUT)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminUserToken: string;
@@ -21,26 +18,27 @@ describe('Edit Admin User (PUT)', () => {
   let adminUserRepository: AdminUserPostgresRepository;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new EditAdminUserE2eSeed(datasource);
     await seeder.arrange();
-    superAdminUserToken = await login(
-      httpServer,
-      EditAdminUserE2eSeed.email,
-      EditAdminUserE2eSeed.password,
-    );
-    adminAccessToken = await login(
-      httpServer,
-      EditAdminUserE2eSeed.newAdminEmail,
-      EditAdminUserE2eSeed.newAdminPassword,
-    );
-
-    userAccessToken = await login(
-      httpServer,
-      EditAdminUserE2eSeed.normalUserEmail,
-      EditAdminUserE2eSeed.normalUserPassword,
-    );
+    [superAdminUserToken, adminAccessToken, userAccessToken] =
+      await Promise.all([
+        login(
+          httpServer,
+          EditAdminUserE2eSeed.email,
+          EditAdminUserE2eSeed.password,
+        ),
+        login(
+          httpServer,
+          EditAdminUserE2eSeed.newAdminEmail,
+          EditAdminUserE2eSeed.newAdminPassword,
+        ),
+        login(
+          httpServer,
+          EditAdminUserE2eSeed.normalUserEmail,
+          EditAdminUserE2eSeed.normalUserPassword,
+        ),
+      ]);
   });
 
   it('Should return Unauthorized', async () => {
@@ -93,7 +91,7 @@ describe('Edit Admin User (PUT)', () => {
 
   it('Should return a user updated', async () => {
     adminUserRepository = new AdminUserPostgresRepository(
-      datasource.getRepository(AdminUser),
+      datasource.getRepository(adminUserSchema),
     );
     await supertest(httpServer)
       .put(path)
@@ -128,8 +126,6 @@ describe('Edit Admin User (PUT)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
     await seeder.clear();
-    await datasource.destroy();
   });
 });

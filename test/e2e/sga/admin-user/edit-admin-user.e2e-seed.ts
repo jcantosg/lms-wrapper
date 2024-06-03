@@ -5,6 +5,9 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { createAdminUser } from '#test/e2e/sga/e2e-auth-helper';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { Country } from '#shared/domain/entity/country.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 
 export class EditAdminUserE2eSeed implements E2eSeed {
   public static newAdminId = 'ad14075c-ba7d-44dd-8ee8-2e1c4974e7e2';
@@ -37,9 +40,10 @@ export class EditAdminUserE2eSeed implements E2eSeed {
   private countryRepository: Repository<Country>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = this.datasource.getRepository(BusinessUnit);
-    this.userRepository = this.datasource.getRepository(AdminUser);
-    this.countryRepository = this.datasource.getRepository(Country);
+    this.businessUnitRepository =
+      this.datasource.getRepository(businessUnitSchema);
+    this.userRepository = this.datasource.getRepository(adminUserSchema);
+    this.countryRepository = this.datasource.getRepository(CountrySchema);
   }
 
   async arrange(): Promise<void> {

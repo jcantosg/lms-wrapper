@@ -9,6 +9,9 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { v4 as uuid } from 'uuid';
 import { Country } from '#shared/domain/entity/country.entity';
+import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
+import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class DeleteAdminUserE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-delete-admin-user@email.com';
@@ -34,9 +37,9 @@ export class DeleteAdminUserE2eSeed implements E2eSeed {
   private userRepository: Repository<AdminUser>;
 
   constructor(private readonly datasource: DataSource) {
-    this.businessUnitRepository = datasource.getRepository(BusinessUnit);
-    this.countryRepository = datasource.getRepository(Country);
-    this.userRepository = datasource.getRepository(AdminUser);
+    this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.countryRepository = datasource.getRepository(CountrySchema);
+    this.userRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

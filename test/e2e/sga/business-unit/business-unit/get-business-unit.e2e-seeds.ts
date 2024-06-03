@@ -11,6 +11,7 @@ import {
   removeAdminUser,
 } from '#test/e2e/sga/e2e-auth-helper';
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
+import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-user.schema';
 
 export class GetBusinessUnitE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'get-edit-business-unit@email.com';
@@ -38,7 +39,7 @@ export class GetBusinessUnitE2eSeed implements E2eSeed {
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
     this.countryRepository = datasource.getRepository(CountrySchema);
-    this.adminUserRepository = datasource.getRepository(AdminUser);
+    this.adminUserRepository = datasource.getRepository(adminUserSchema);
   }
 
   async arrange(): Promise<void> {

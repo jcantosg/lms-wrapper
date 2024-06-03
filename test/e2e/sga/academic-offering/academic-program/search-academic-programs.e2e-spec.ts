@@ -1,10 +1,8 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { E2eSeed } from '#test/e2e/e2e-seed';
-import { startApp } from '#test/e2e/e2e-helper';
-import { GetAllAcademicProgramsE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/get-all-academic-programs.e2e-seeds';
-import datasource from '#config/ormconfig';
-import { login } from '#test/e2e/sga/e2e-auth-helper';
+import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
+import { E2eSeed } from '#test/e2e/e2e-seed';
+import { GetAllAcademicProgramsE2eSeed } from '#test/e2e/sga/academic-offering/academic-program/get-all-academic-programs.e2e-seeds';
+import { login } from '#test/e2e/sga/e2e-auth-helper';
 import {
   DEFAULT_LIMIT,
   FIRST_PAGE,
@@ -15,13 +13,11 @@ import { GetAllAcademicProgramsE2eSeedDataConfig } from '#test/e2e/sga/academic-
 const path = '/academic-program/search';
 
 describe('/academic-program/search (GET)', () => {
-  let app: INestApplication;
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
 
   beforeAll(async () => {
-    app = await startApp();
     httpServer = app.getHttpServer();
     seeder = new GetAllAcademicProgramsE2eSeed(datasource);
     await seeder.arrange();
@@ -72,7 +68,5 @@ describe('/academic-program/search (GET)', () => {
 
   afterAll(async () => {
     await seeder.clear();
-    await datasource.destroy();
-    await app.close();
   });
 });
