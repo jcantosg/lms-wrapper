@@ -1,0 +1,27 @@
+import * as Joi from 'joi';
+
+export const zohoExcelImportSchema: Joi.ObjectSchema = Joi.object({
+  nombre: Joi.string().required(),
+  apellido_1: Joi.string().required(),
+  apellido_2: Joi.string().required(),
+  email_personal: Joi.string().required(),
+  NIF: Joi.string().required().allow('', null),
+  email_universae: Joi.string().required(),
+  password_alumno: Joi.string().required(),
+  Telefono: Joi.string().required().allow('', null),
+  provincia: Joi.string().required().allow('', null),
+  municipio: Joi.string().required().allow('', null),
+  country: Joi.string().required().allow('', null),
+  cp: Joi.string().required().allow('', null),
+  sexo: Joi.string().required().allow('', null),
+  birth_date: Joi.date().required(),
+  nuss: Joi.string().required().allow('', null),
+  defensa: Joi.boolean().required(),
+  contact_id: Joi.string().required(),
+  unidad_negocio: Joi.string().required(),
+  sede_virtual: Joi.string().required(),
+  programa_formativo: Joi.string().required(),
+  periodo: Joi.string().required(),
+  modalidad: Joi.string().required(),
+  n_oportunidad: Joi.string().required(),
+});

@@ -11,4 +11,5 @@ export class AcademicProgramMockRepository
   count = jest.fn();
   matching = jest.fn();
   getByAcademicPeriod = jest.fn();
+  getByCode = jest.fn();
 }

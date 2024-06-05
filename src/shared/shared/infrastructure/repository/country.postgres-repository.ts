@@ -44,4 +44,11 @@ export class CountryPostgresRepository implements CountryRepository {
   async get(id: string): Promise<Country | null> {
     return await this.repository.findOne({ where: { id } });
   }
+
+  async getByName(name: string): Promise<Country | null> {
+    return await this.repository
+      .createQueryBuilder()
+      .where('LOWER(name) = LOWER(:name)', { name })
+      .getOne();
+  }
 }

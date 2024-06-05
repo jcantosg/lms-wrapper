@@ -70,6 +70,21 @@ export class BusinessUnitPostgresRepository
     });
   }
 
+  async getByName(name: string): Promise<BusinessUnit | null> {
+    return await this.repository.findOne({
+      where: { name },
+      relations: {
+        country: true,
+        virtualCampuses: {
+          businessUnit: true,
+        },
+        examinationCenters: {
+          classrooms: true,
+        },
+      },
+    });
+  }
+
   async existsById(id: string): Promise<boolean> {
     const result = await this.repository.findOne({ where: { id } });
 

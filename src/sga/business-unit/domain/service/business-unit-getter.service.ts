@@ -32,4 +32,14 @@ export class BusinessUnitGetter {
 
     return businessUnit;
   }
+
+  async getByName(name: string): Promise<BusinessUnit> {
+    const businessUnit = await this.businessUnitRepository.getByName(name);
+
+    if (!businessUnit) {
+      throw new BusinessUnitNotFoundException();
+    }
+
+    return businessUnit;
+  }
 }

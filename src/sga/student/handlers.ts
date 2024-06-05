@@ -18,11 +18,18 @@ import { AcademicProgramGetter } from '#academic-offering/domain/service/academi
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
-import { AddInternalGroupToAcademicPeriodHandler } from '#student/application/add-internal-group-to-academic-period/add-internal-group-to-academic-period.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { GetInternalGroupsHandler } from '#student/application/get-internal-groups/get-internal-groups.handler';
 import { SearchInternalGroupsHandler } from '#student/application/search-internal-groups/search-internal-groups.handler';
+import { AddInternalGroupToAcademicPeriodHandler } from '#student/application/add-internal-group-to-academic-period/add-internal-group-to-academic-period.handler';
+import { CreateStudentFromCRMHandler } from '#student/application/create-student-from-crm/create-student-from-crm.handler';
+import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
+import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campus-getter.service';
+import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
+import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { ConfigService } from '@nestjs/config';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -146,6 +153,55 @@ const searchInternalGroupsHandler = {
   inject: [InternalGroupRepository],
 };
 
+const createStudentFromCRMHandler = {
+  provide: CreateStudentFromCRMHandler,
+  useFactory: (
+    repository: StudentRepository,
+    passwordEncoder: PasswordEncoder,
+    businessUnitGetter: BusinessUnitGetter,
+    virtualCampusGetter: VirtualCampusGetter,
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    crmImportRepository: CRMImportRepository,
+    adminUserGetter: AdminUserGetter,
+    configService: ConfigService,
+    countryGetter: CountryGetter,
+    academicRecordRepository: AcademicRecordRepository,
+  ): CreateStudentFromCRMHandler => {
+    const adminEmail = configService.get<string>(
+      'ADMIN_USER_EMAIL',
+      'sga@universae.com',
+    );
+
+    return new CreateStudentFromCRMHandler(
+      repository,
+      passwordEncoder,
+      businessUnitGetter,
+      virtualCampusGetter,
+      academicPeriodGetter,
+      academicProgramGetter,
+      crmImportRepository,
+      adminUserGetter,
+      adminEmail,
+      countryGetter,
+      academicRecordRepository,
+    );
+  },
+  inject: [
+    StudentRepository,
+    PasswordEncoder,
+    BusinessUnitGetter,
+    VirtualCampusGetter,
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    CRMImportRepository,
+    AdminUserGetter,
+    ConfigService,
+    CountryGetter,
+    AcademicRecordRepository,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -160,4 +216,5 @@ export const handlers = [
   addInternalGroupToAcademicPeriodHandler,
   listInternalGroupsHandler,
   searchInternalGroupsHandler,
+  createStudentFromCRMHandler,
 ];

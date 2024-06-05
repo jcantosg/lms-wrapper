@@ -15,6 +15,9 @@ import { StudentPasswordChecker } from '#/student/student/domain/service/student
 import { BcryptStudentPasswordChecker } from '#/student/student/infrastructure/service/bcrypt-student-password-checker.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { ExcelFileParser } from '#shared/domain/service/excel-file-parser.service';
+import { ExcelJSFileParser } from '#shared/infrastructure/service/exceljs-file-parser.service';
+import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -66,6 +69,17 @@ const passwordChecker = {
   useClass: BcryptStudentPasswordChecker,
 };
 
+const excelFileParser = {
+  provide: ExcelFileParser,
+  useFactory: (
+    repository: CRMImportRepository,
+    provincesGetter: ProvinceGetter,
+    countryGetter: CountryGetter,
+  ): ExcelJSFileParser =>
+    new ExcelJSFileParser(repository, provincesGetter, countryGetter),
+  inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
+};
+
 export const services = [
   countryGetter,
   imageUploader,
@@ -74,4 +88,5 @@ export const services = [
   studentGetter,
   passwordEncoder,
   passwordChecker,
+  excelFileParser,
 ];

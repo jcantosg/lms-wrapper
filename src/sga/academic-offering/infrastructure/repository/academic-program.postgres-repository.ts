@@ -93,6 +93,18 @@ export class AcademicProgramPostgresRepository
     });
   }
 
+  async getByCode(code: string): Promise<AcademicProgram | null> {
+    return await this.repository.findOne({
+      where: { code },
+      relations: {
+        businessUnit: true,
+        title: true,
+        programBlocks: { subjects: true },
+        academicPeriods: true,
+      },
+    });
+  }
+
   async getByAdminUser(
     academicProgramId: string,
     adminUserBusinessUnits: string[],

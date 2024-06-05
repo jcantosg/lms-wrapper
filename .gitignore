@@ -239,3 +239,4 @@ pnpm-debug.log*
 !.vscode/extensions.json
 
 files/*
+ftp-files/*

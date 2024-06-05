@@ -14,4 +14,18 @@ export class CountryGetter {
 
     return country;
   }
+
+  async getByName(name: string | null): Promise<Country> {
+    if (!name) {
+      throw new CountryNotFoundException();
+    }
+    const normalizedName = name.toLowerCase().trim();
+    const country = await this.countryRepository.getByName(normalizedName);
+
+    if (!country) {
+      throw new CountryNotFoundException();
+    }
+
+    return country;
+  }
 }

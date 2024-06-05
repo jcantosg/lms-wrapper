@@ -4,7 +4,6 @@ import {
   getAnAdminUser,
   getAnExaminationCenter,
 } from '#test/entity-factory';
-import { ExaminationCenterMockRepository } from '#test/mocks/sga/business-unit/examination-center.mock-repository';
 import {
   getAdminUserGetterMock,
   getAnExaminationCenterGetterMock,
@@ -19,6 +18,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { ExaminationCenter } from '#business-unit/domain/entity/examination-center.entity';
 import { RemoveExaminationCentersFromBusinessUnitCommand } from '#business-unit/application/business-unit/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.command';
 import { RemoveExaminationCentersFromBusinessUnitHandler } from '#business-unit/application/business-unit/remove-examination-center-from-business-unit/remove-examination-center-from-business-unit.handler';
+import { BusinessUnitMockRepository } from '#test/mocks/sga/business-unit/business-unit.mock-repository';
 
 let handler: RemoveExaminationCentersFromBusinessUnitHandler;
 let businessUnitRepository: BusinessUnitRepository;
@@ -46,7 +46,7 @@ const command = new RemoveExaminationCentersFromBusinessUnitCommand(
 describe('Remove Examination centers from Business Unit', () => {
   beforeAll(() => {
     adminUserGetter = getAdminUserGetterMock();
-    businessUnitRepository = new ExaminationCenterMockRepository();
+    businessUnitRepository = new BusinessUnitMockRepository();
     examinationCenterGetter = getAnExaminationCenterGetterMock();
     businessUnitGetter = getBusinessUnitGetterMock();
 

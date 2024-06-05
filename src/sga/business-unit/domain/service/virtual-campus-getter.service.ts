@@ -16,4 +16,14 @@ export class VirtualCampusGetter {
 
     return virtualCampus;
   }
+
+  async getByCode(code: string): Promise<VirtualCampus> {
+    const virtualCampus = await this.virtualCampusRepository.getByCode(code);
+
+    if (!virtualCampus) {
+      throw new VirtualCampusNotFoundException();
+    }
+
+    return virtualCampus;
+  }
 }

@@ -35,6 +35,13 @@ export class VirtualCampusPostgresRepository
     });
   }
 
+  async getByCode(code: string): Promise<VirtualCampus | null> {
+    return await this.repository.findOne({
+      where: { code },
+      relations: { businessUnit: true },
+    });
+  }
+
   async update(virtualCampus: VirtualCampus): Promise<void> {
     await this.repository.update(virtualCampus.id, {
       name: virtualCampus.name,

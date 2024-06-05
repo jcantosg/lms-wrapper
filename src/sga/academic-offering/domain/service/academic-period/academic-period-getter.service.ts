@@ -17,6 +17,16 @@ export class AcademicPeriodGetter {
     return academicPeriod;
   }
 
+  async getByCode(code: string): Promise<AcademicPeriod> {
+    const academicPeriod = await this.academicPeriodRepository.getByCode(code);
+
+    if (!academicPeriod) {
+      throw new AcademicPeriodNotFoundException();
+    }
+
+    return academicPeriod;
+  }
+
   async getByAdminUser(
     id: string,
     adminUserBusinessUnits: string[],

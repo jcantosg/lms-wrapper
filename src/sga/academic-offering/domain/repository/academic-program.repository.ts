@@ -33,4 +33,6 @@ export abstract class AcademicProgramRepository {
     academicPeriodId: string,
     hasAdministrativeGroup?: boolean,
   ): Promise<AcademicProgram[]>;
+
+  abstract getByCode(code: string): Promise<AcademicProgram | null>;
 }

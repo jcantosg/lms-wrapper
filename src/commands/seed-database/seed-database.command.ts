@@ -10,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import { seedAdminUsers } from '#commands/admin-user/seed-admin-users';
 import { seedEdaeUsers } from '#commands/edae-user/seed-edae-users';
 import { seedAcademicPeriods } from '#commands/academic-period/seed-academic-periods';
+import { seedTitles } from '#commands/title/seed-titles';
+import { seedAcademicPrograms } from '#commands/academic-program/seed-academic-programs';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -27,6 +29,8 @@ async function bootstrap() {
   await seedAdminUsers(logger, passwordEncoder);
   await seedEdaeUsers(logger);
   await seedAcademicPeriods(logger);
+  await seedTitles(logger);
+  await seedAcademicPrograms(logger);
 
   await datasource.destroy();
   await app.close();

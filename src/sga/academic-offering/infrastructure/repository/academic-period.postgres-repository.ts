@@ -140,6 +140,17 @@ export class AcademicPeriodPostgresRepository
     });
   }
 
+  async getByCode(code: string): Promise<AcademicPeriod | null> {
+    return await this.repository.findOne({
+      where: { code },
+      relations: {
+        businessUnit: true,
+        academicPrograms: true,
+        periodBlocks: true,
+      },
+    });
+  }
+
   async getByAdminUser(
     academicPeriodId: string,
     adminUserBusinessUnits: string[],

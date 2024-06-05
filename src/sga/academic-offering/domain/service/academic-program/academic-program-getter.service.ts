@@ -17,6 +17,17 @@ export class AcademicProgramGetter {
     return academicProgram;
   }
 
+  async getByCode(code: string): Promise<AcademicProgram> {
+    const academicProgram =
+      await this.academicProgramRepository.getByCode(code);
+
+    if (!academicProgram) {
+      throw new AcademicProgramNotFoundException();
+    }
+
+    return academicProgram;
+  }
+
   async getByAdminUser(
     id: string,
     adminUserBusinessUnits: string[],

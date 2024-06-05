@@ -12,6 +12,7 @@ import { EdaeUserModule } from '#edae-user/edae-user.module';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
 import { listeners } from '#student/listeners';
+import { AdminUserModule } from '#admin-user/admin-user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { listeners } from '#student/listeners';
     EdaeUserModule,
     forwardRef(() => AcademicOfferingModule),
     SharedModule,
+    AdminUserModule,
   ],
   providers: [
     ...repositories,

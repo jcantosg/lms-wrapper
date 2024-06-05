@@ -38,7 +38,8 @@
     "sga:test:db:seed:admin-user": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/admin-user/create-default-admin-user.command.ts",
     "sga:db:seed:data": "ts-node -r tsconfig-paths/register src/commands/seed-database/seed-database.command.ts",
     "sga:db:seed:evaluation-types": "ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts",
-    "sga:test:db:seed:evaluation-types": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts"
+    "sga:test:db:seed:evaluation-types": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts",
+    "sga:student:import-excel-file": "ts-node -r tsconfig-paths/register src/commands/student/import-crm-files.command.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.504.0",
@@ -55,6 +56,7 @@
     "@nestjs/typeorm": "^10.0.1",
     "aws-sdk": "^2.1549.0",
     "bcrypt": "^5.1.1",
+    "exceljs": "^4.4.0",
     "handlebars": "^4.7.8",
     "joi": "^17.11.0",
     "nestjs-i18n": "^10.4.5",

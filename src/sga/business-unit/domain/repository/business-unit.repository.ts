@@ -33,4 +33,6 @@ export abstract class BusinessUnitRepository {
     adminUserBusinessUnits: string[],
     hasAcademicPeriods: boolean,
   ): Promise<BusinessUnit[]>;
+
+  abstract getByName(name: string): Promise<BusinessUnit | null>;
 }

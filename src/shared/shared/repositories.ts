@@ -6,6 +6,8 @@ import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/r
 import { RecoveryPasswordTokenPostgresRepository } from '#admin-user/infrastructure/repository/recovery-password-token.postgres-repository';
 import { StudentRepository } from '#/student/student/domain/repository/student.repository';
 import { StudentPostgresRepository } from '#/student/student/infrastructure/repository/student.postgres-repository';
+import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
+import { CRMImportPostgresRepository } from '#shared/infrastructure/repository/crm-import.postgres-repository';
 
 export const repositories = [
   {
@@ -23,5 +25,9 @@ export const repositories = [
   {
     provide: RecoveryPasswordTokenRepository,
     useClass: RecoveryPasswordTokenPostgresRepository,
+  },
+  {
+    provide: CRMImportRepository,
+    useClass: CRMImportPostgresRepository,
   },
 ];
