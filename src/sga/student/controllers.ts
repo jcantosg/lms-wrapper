@@ -11,6 +11,7 @@ import { administrativeGroupControllers } from '#student/infrastructure/controll
 import { AddInternalGroupToAcademicPeriodController } from '#student/infrastructure/controller/add-internal-group-to-academic-period.controller';
 import { GetInternalGroupsController } from '#student/infrastructure/controller/internal-group/get-internal-groups/get-internal-groups.controller';
 import { SearchInternalGroupsController } from '#student/infrastructure/controller/internal-group/search-internal-groups.controller';
+import { subjectCallControllers } from '#student/infrastructure/controller/subject-call/controllers';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -26,4 +27,5 @@ export const controllers = [
   AddInternalGroupToAcademicPeriodController,
   GetInternalGroupsController,
   SearchInternalGroupsController,
+  ...subjectCallControllers,
 ];

@@ -2,6 +2,7 @@ import { SubjectCallRepository } from '#student/domain/repository/subject-call.r
 
 export class SubjectCallMockRepository implements SubjectCallRepository {
   delete = jest.fn();
-
   save = jest.fn();
+  get = jest.fn();
+  getByAdminUser = jest.fn();
 }

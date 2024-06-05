@@ -30,6 +30,7 @@ import { CRMImportRepository } from '#shared/domain/repository/crm-import.reposi
 import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.service';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { ConfigService } from '@nestjs/config';
+import { subjectCallHandlers } from '#student/application/subject-call/handlers';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -213,6 +214,7 @@ export const handlers = [
   createInternalGroupsBatchHandler,
   ...enrollmentHandlers,
   ...administrativeGroupHandlers,
+  ...subjectCallHandlers,
   addInternalGroupToAcademicPeriodHandler,
   listInternalGroupsHandler,
   searchInternalGroupsHandler,

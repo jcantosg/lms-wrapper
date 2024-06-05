@@ -16,6 +16,14 @@ export class SubjectCallPostgresRepository
     super();
   }
 
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.enrollment`, 'enrollment');
+
+    return queryBuilder;
+  }
+
   async save(subjectCall: SubjectCall): Promise<void> {
     await this.repository.save({
       id: subjectCall.id,
@@ -23,10 +31,43 @@ export class SubjectCallPostgresRepository
       callNumber: subjectCall.callNumber,
       finalGrade: subjectCall.finalGrade,
       status: subjectCall.status,
+      callDate: subjectCall.callDate,
     });
   }
 
   async delete(subjectCall: SubjectCall): Promise<void> {
     await this.repository.delete(subjectCall.id);
+  }
+
+  async get(id: string): Promise<SubjectCall | null> {
+    return await this.repository.findOne({
+      relations: {
+        enrollment: true,
+      },
+      where: { id },
+    });
+  }
+
+  async getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<SubjectCall | null> {
+    if (isSuperAdmin) {
+      return await this.get(id);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+
+    const queryBuilder = this.initializeQueryBuilder('subjectCall');
+
+    return await queryBuilder
+      .where('subjectCall.id = :id', { id })
+      .andWhere('enrollment.businessUnit IN (:...businessUnits)', {
+        businessUnits: adminUserBusinessUnits,
+      })
+      .getOne();
   }
 }

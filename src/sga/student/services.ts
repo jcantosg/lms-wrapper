@@ -4,6 +4,8 @@ import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.serv
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
+import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
+import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -24,9 +26,16 @@ const administrativeGroupGetter = {
   ): AdministrativeGroupGetter => new AdministrativeGroupGetter(repository),
   inject: [AdministrativeGroupRepository],
 };
+const subjectCallGetter = {
+  provide: SubjectCallGetter,
+  useFactory: (repository: SubjectCallRepository): SubjectCallGetter =>
+    new SubjectCallGetter(repository),
+  inject: [SubjectCallRepository],
+};
 
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
   administrativeGroupGetter,
+  subjectCallGetter,
 ];
