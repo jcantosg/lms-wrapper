@@ -12,6 +12,7 @@ import { GetAcademicRecordDetailHandler } from '#student/application/academic-re
 import { GetStudentAcademicRecordHandler } from '#student/application/academic-record/get-student-academic-record/get-student-academic-record.handler';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { GetAllAcademicRecordStatusHandler } from '#student/application/academic-record/get-all-academic-record-status/get-all-academic-record-status.handler';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -82,4 +83,5 @@ export const academicRecordHandlers = [
   editAcademicRecordHandler,
   getAcademicRecordDetailHandler,
   getStudentAcademicRecordHandler,
+  GetAllAcademicRecordStatusHandler,
 ];

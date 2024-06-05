@@ -48,6 +48,15 @@ export class UpdateStudentPasswordE2eSeed implements E2eSeed {
       UpdateStudentPasswordE2eSeed.studentEmail,
       UpdateStudentPasswordE2eSeed.studentPassword,
       UpdateStudentPasswordE2eSeed.studentUniversaeEmail,
+      'crm-id',
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       this.adminUser,
     );
 

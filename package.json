@@ -21,6 +21,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "NODE_ENV=test && jest --testTimeout=30000 --config ./test/jest-e2e.json --runInBand --ci --bail",
+    "test:e2e:debug": "NODE_ENV=test && jest --testTimeout=30000 --config ./test/jest-e2e.json --runInBand",
     "commitlint": "commitlint --edit",
     "commit": "cz",
     "deploy:staging": "pm2 deploy staging --force",
@@ -127,7 +128,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testTimeout": 30000,
-
     "moduleNameMapper": {
       "^#admin-user/(.*)$": "<rootDir>/sga/admin-user/$1",
       "^#shared/(.*)$": "<rootDir>/shared/shared/$1",

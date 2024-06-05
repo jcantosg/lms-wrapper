@@ -48,6 +48,15 @@ export class GenerateStudentRecoveryPasswordTokenSeed implements E2eSeed {
       GenerateStudentRecoveryPasswordTokenSeed.studentEmail,
       GenerateStudentRecoveryPasswordTokenSeed.studentPassword,
       GenerateStudentRecoveryPasswordTokenSeed.studentUniversaeEmail,
+      'crm-id',
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
       this.adminUser,
     );
     await this.studentRepository.save(this.student);
