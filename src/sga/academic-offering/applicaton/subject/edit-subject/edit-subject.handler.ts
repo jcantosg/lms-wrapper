@@ -36,14 +36,16 @@ export class EditSubjectHandler implements CommandHandler {
       subject,
       command.adminUser.businessUnits,
     );
-
-    const image = command.image
-      ? await this.imageUploader.uploadImage(
-          command.image,
-          command.name,
-          'subject',
-        )
-      : null;
+    let image = subject.image;
+    if (command.image !== undefined) {
+      image = command.image
+        ? await this.imageUploader.uploadImage(
+            command.image,
+            command.name,
+            'subject',
+          )
+        : null;
+    }
 
     subject.update(
       command.name,
