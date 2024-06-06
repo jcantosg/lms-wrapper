@@ -18,4 +18,5 @@ export const editSubjectSchema = Joi.object({
   isRegulated: Joi.boolean().required(),
   isCore: Joi.boolean().required(),
   officialRegionalCode: Joi.string().optional().allow(''),
+  lmsCourseId: Joi.number().optional().allow(null),
 });

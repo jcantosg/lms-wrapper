@@ -33,6 +33,7 @@ interface EditSubjectBody {
   isRegulated: boolean;
   isCore: boolean;
   officialRegionalCode: string | null;
+  lmsCourseId: number | null;
 }
 
 @Controller('subject')
@@ -69,6 +70,7 @@ export class EditSubjectController {
       body.isCore,
       req.user,
       body.officialRegionalCode,
+      body.lmsCourseId,
     );
 
     await this.handler.handle(command);

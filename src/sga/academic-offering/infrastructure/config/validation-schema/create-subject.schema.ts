@@ -16,4 +16,5 @@ export const createSubjectSchema = Joi.object({
   isRegulated: Joi.boolean().required(),
   isCore: Joi.boolean().required(),
   officialRegionalCode: Joi.string().optional(),
+  lmsCourseId: Joi.number().optional(),
 });

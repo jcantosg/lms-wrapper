@@ -9,6 +9,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { SubjectResource } from '#academic-offering/domain/entity/subject-resource.entity';
 import { SubjectInvalidEdaeUserRoleException } from '#shared/domain/exception/academic-offering/subject.invalid-edae-user-role.exception';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 
 export class Subject extends BaseEntity {
   private constructor(
@@ -33,6 +34,7 @@ export class Subject extends BaseEntity {
     private _officialRegionalCode: string | null,
     private _defaultTeacher: EdaeUser | null,
     private _programBlocks: ProgramBlock[],
+    private _lmsCourse: LmsCourse | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -181,6 +183,14 @@ export class Subject extends BaseEntity {
     this._programBlocks = value;
   }
 
+  public get lmsCourse(): LmsCourse | null {
+    return this._lmsCourse;
+  }
+
+  public set lmsCourse(value: LmsCourse | null) {
+    this._lmsCourse = value;
+  }
+
   static create(
     id: string,
     imageUrl: string | null,
@@ -227,6 +237,7 @@ export class Subject extends BaseEntity {
       officialRegionalCode,
       null,
       [],
+      null,
     );
   }
 
@@ -243,6 +254,7 @@ export class Subject extends BaseEntity {
     isCore: boolean,
     user: AdminUser,
     officialRegionalCode: string | null,
+    lmsCourse: LmsCourse | null,
   ) {
     if (isRegulated && !evaluationType) {
       throw new EvaluationTypeNotFoundException();
@@ -269,6 +281,7 @@ export class Subject extends BaseEntity {
         : null;
     this.updatedBy = user;
     this.updatedAt = new Date();
+    this.lmsCourse = lmsCourse;
   }
 
   addTeacher(teacher: EdaeUser) {
@@ -295,5 +308,9 @@ export class Subject extends BaseEntity {
 
   isDefaultTeacher(teacher: EdaeUser): boolean {
     return this._defaultTeacher?.id === teacher.id;
+  }
+
+  addLmsCourse(lmsCourse: LmsCourse | null): void {
+    this.lmsCourse = lmsCourse;
   }
 }

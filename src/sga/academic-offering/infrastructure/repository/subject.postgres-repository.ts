@@ -55,6 +55,7 @@ export class SubjectPostgresRepository
       resources: subject.resources,
       officialRegionalCode: subject.officialRegionalCode,
       programBlocks: subject.programBlocks,
+      lmsCourse: subject.lmsCourse,
     });
   }
 

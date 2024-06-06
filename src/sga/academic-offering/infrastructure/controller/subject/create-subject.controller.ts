@@ -32,6 +32,7 @@ interface CreateSubjectBody {
   isRegulated: boolean;
   isCore: boolean;
   officialRegionalCode: string | null;
+  lmsCourseId: number | null;
 }
 
 @Controller('subject')
@@ -65,6 +66,7 @@ export class CreateSubjectController {
       body.isCore,
       request.user,
       body.officialRegionalCode,
+      body.lmsCourseId,
     );
     await this.handler.handle(command);
   }

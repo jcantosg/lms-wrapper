@@ -24,6 +24,8 @@ import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
 import { EditSubjectHandler } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.handler';
+import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
+import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: EditSubjectHandler;
@@ -33,6 +35,7 @@ let evaluationTypeGetter: EvaluationTypeGetter;
 let imageUploader: ImageUploader;
 let evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker;
 let subjectBusinessUnitChecker: SubjectBusinessUnitChecker;
+let lmsCourseRepository: LmsCourseRepository;
 const subject = getASubject();
 const evaluationType = getAnEvaluationType();
 const adminUser = getAnAdminUser();
@@ -41,6 +44,7 @@ let saveSpy: jest.SpyInstance;
 let getEvaluationTypeSpy: jest.SpyInstance;
 let getSubjectSpy: jest.SpyInstance;
 let existsByCodeSpy: jest.SpyInstance;
+let getLmsCourseSpy: jest.SpyInstance;
 
 const command = new EditSubjectCommand(
   subject.id,
@@ -56,6 +60,7 @@ const command = new EditSubjectCommand(
   true,
   adminUser,
   null,
+  1,
 );
 
 describe('Edit Subject Handler Unit Test', () => {
@@ -67,6 +72,7 @@ describe('Edit Subject Handler Unit Test', () => {
     evaluationTypeBusinessUnitChecker =
       getAnEvaluationTypeBusinessUnitCheckerMock();
     subjectBusinessUnitChecker = getASubjectBusinessUnitCheckerMock();
+    lmsCourseRepository = new LmsCourseMockRepository();
     handler = new EditSubjectHandler(
       repository,
       subjectGetter,
@@ -74,11 +80,13 @@ describe('Edit Subject Handler Unit Test', () => {
       imageUploader,
       evaluationTypeBusinessUnitChecker,
       subjectBusinessUnitChecker,
+      lmsCourseRepository,
     );
     saveSpy = jest.spyOn(repository, 'save');
     getEvaluationTypeSpy = jest.spyOn(evaluationTypeGetter, 'get');
     getSubjectSpy = jest.spyOn(subjectGetter, 'get');
     existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
+    getLmsCourseSpy = jest.spyOn(lmsCourseRepository, 'getOne');
   });
 
   it('should save a subject', async () => {
@@ -95,6 +103,7 @@ describe('Edit Subject Handler Unit Test', () => {
     );
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
+    expect(getLmsCourseSpy).toHaveBeenCalledTimes(1);
   });
   it('should throw a SubjectDuplicatedCodeException', async () => {
     existsByCodeSpy.mockImplementation(

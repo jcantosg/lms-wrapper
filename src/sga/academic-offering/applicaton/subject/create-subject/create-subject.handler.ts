@@ -8,6 +8,7 @@ import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { SubjectDuplicatedException } from '#shared/domain/exception/academic-offering/subject.duplicated.exception';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
+import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
 
 export class CreateSubjectHandler implements CommandHandler {
   constructor(
@@ -15,6 +16,7 @@ export class CreateSubjectHandler implements CommandHandler {
     private readonly evaluationTypeGetter: EvaluationTypeGetter,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly imageUploader: ImageUploader,
+    private readonly lmsCourseRepository: LmsCourseRepository,
   ) {}
 
   async handle(command: CreateSubjectCommand): Promise<void> {
@@ -59,7 +61,10 @@ export class CreateSubjectHandler implements CommandHandler {
       command.adminUser,
       command.officialRegionalCode,
     );
-
+    const lmsCourse = command.lmsCourseId
+      ? await this.lmsCourseRepository.getOne(command.lmsCourseId)
+      : null;
+    subject.addLmsCourse(lmsCourse);
     await this.repository.save(subject);
   }
 }

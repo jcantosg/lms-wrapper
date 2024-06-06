@@ -6,6 +6,8 @@ import {
 } from '#shared/infrastructure/config/schema/base.schema';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { ValueObjectTransformer } from '#shared/infrastructure/value-object/value-object-transformer';
+import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 
 export const subjectSchema = new EntitySchema<Subject>({
   name: 'Subject',
@@ -61,6 +63,12 @@ export const subjectSchema = new EntitySchema<Subject>({
       name: 'official_regional_code',
       type: String,
       nullable: true,
+    },
+    lmsCourse: {
+      name: 'lms_course',
+      type: 'json',
+      nullable: true,
+      transformer: ValueObjectTransformer(LmsCourse),
     },
   },
   relations: {

@@ -28,6 +28,7 @@ import {
   I18nService,
   QueryResolver,
 } from 'nestjs-i18n';
+import { LmsWrapperModule } from '#/lms-wrapper/lms-wrapper.module';
 
 const env = process.env.NODE_ENV;
 const envFile = fs.existsSync(`.env.${env}`) ? `.env.${env}` : '.env';
@@ -157,6 +158,7 @@ const mailerModule = MailerModule.forRootAsync({
     i18nModule,
     mailerModule,
     EdaeUserModule,
+    LmsWrapperModule,
   ],
   providers: [
     {

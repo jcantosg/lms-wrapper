@@ -7,6 +7,7 @@ import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/su
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
+import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
 
 export class EditSubjectHandler implements CommandHandler {
   constructor(
@@ -16,6 +17,7 @@ export class EditSubjectHandler implements CommandHandler {
     private readonly imageUploader: ImageUploader,
     private readonly evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker,
     private readonly subjectBusinessUnitChecker: SubjectBusinessUnitChecker,
+    private readonly lmsCourseRepository: LmsCourseRepository,
   ) {}
 
   async handle(command: EditSubjectCommand): Promise<void> {
@@ -46,6 +48,12 @@ export class EditSubjectHandler implements CommandHandler {
           )
         : null;
     }
+    let lmsCourse = subject.lmsCourse;
+    if (command.lmsCourseId === null) {
+      lmsCourse = null;
+    } else if (command.lmsCourseId !== undefined) {
+      lmsCourse = await this.lmsCourseRepository.getOne(command.lmsCourseId);
+    }
 
     subject.update(
       command.name,
@@ -60,6 +68,7 @@ export class EditSubjectHandler implements CommandHandler {
       command.isCore,
       command.adminUser,
       command.officialRegionalCode,
+      lmsCourse,
     );
 
     await this.repository.save(subject);

@@ -21,6 +21,8 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { CreateSubjectHandler } from '#academic-offering/applicaton/subject/create-subject/create-subject.handler';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
+import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
+import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateSubjectHandler;
@@ -28,11 +30,13 @@ let repository: SubjectRepository;
 let evaluationTypeGetter: EvaluationTypeGetter;
 let businessUnitGetter: BusinessUnitGetter;
 let imageUploader: ImageUploader;
+let lmsCourseRepository: LmsCourseRepository;
 
 let saveSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
 let getEvaluationType: jest.SpyInstance;
 let existsByCodeSpy: jest.SpyInstance;
+let getLmsCourseSpy: jest.SpyInstance;
 
 const evaluationType = getAnEvaluationType();
 const businessUnit = getABusinessUnit();
@@ -51,6 +55,7 @@ const command = new CreateSubjectCommand(
   true,
   getAnAdminUser(),
   'MUR',
+  1,
 );
 
 describe('Create Subject Handler', () => {
@@ -59,16 +64,19 @@ describe('Create Subject Handler', () => {
     evaluationTypeGetter = getAnEvaluationTypeGetterMock();
     businessUnitGetter = getBusinessUnitGetterMock();
     imageUploader = getImageUploaderMock();
+    lmsCourseRepository = new LmsCourseMockRepository();
     handler = new CreateSubjectHandler(
       repository,
       evaluationTypeGetter,
       businessUnitGetter,
       imageUploader,
+      lmsCourseRepository,
     );
     saveSpy = jest.spyOn(repository, 'save');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     getEvaluationType = jest.spyOn(evaluationTypeGetter, 'get');
     existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
+    getLmsCourseSpy = jest.spyOn(lmsCourseRepository, 'getOne');
   });
   it('should throw a SubjectDuplicatedCodeException', async () => {
     existsByCodeSpy.mockImplementation(
@@ -90,6 +98,7 @@ describe('Create Subject Handler', () => {
     );
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
+    expect(getLmsCourseSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         _id: command.id,

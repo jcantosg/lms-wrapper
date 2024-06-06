@@ -18,5 +18,6 @@ export class EditSubjectCommand implements Command {
     public readonly isCore: boolean,
     public readonly adminUser: AdminUser,
     public readonly officialRegionalCode: string | null,
+    public readonly lmsCourseId: number | null,
   ) {}
 }

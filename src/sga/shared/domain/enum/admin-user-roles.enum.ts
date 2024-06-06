@@ -36,3 +36,9 @@ export function getAdminUserRoles(roles: AdminUserRoles[]): AdminUserRoles[] {
 
   return [...new Set(result)];
 }
+
+export const get360AdminUserRoles = (): AdminUserRoles[] => [
+  AdminUserRoles.SUPERADMIN,
+  AdminUserRoles.GESTOR_360,
+  AdminUserRoles.SUPERVISOR_360,
+];

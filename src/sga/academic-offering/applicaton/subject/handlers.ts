@@ -23,6 +23,7 @@ import { GetAllSubjectsModalitiesHandler } from '#academic-offering/applicaton/s
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/subject/get-all-subject-types/get-all-subject-types.handler';
 import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/subject/get-subjects-by-business-unit/get-subjects-by-business-unit.handler';
 import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
+import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -31,18 +32,21 @@ const createSubjectHandler = {
     evaluationTypeGetter: EvaluationTypeGetter,
     businessUnitGetter: BusinessUnitGetter,
     imageUploader: ImageUploader,
+    lmsCourseRepository: LmsCourseRepository,
   ) =>
     new CreateSubjectHandler(
       repository,
       evaluationTypeGetter,
       businessUnitGetter,
       imageUploader,
+      lmsCourseRepository,
     ),
   inject: [
     SubjectRepository,
     EvaluationTypeGetter,
     BusinessUnitGetter,
     ImageUploader,
+    LmsCourseRepository,
   ],
 };
 
@@ -63,7 +67,8 @@ const editSubjectHandler = {
     imageUploader: ImageUploader,
     evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker,
     subjectBusinessUnitChecker: SubjectBusinessUnitChecker,
-  ) =>
+    lmsCourseRepository: LmsCourseRepository,
+  ): EditSubjectHandler =>
     new EditSubjectHandler(
       repository,
       subjectGetter,
@@ -71,6 +76,7 @@ const editSubjectHandler = {
       imageUploader,
       evaluationTypeBusinessUnitChecker,
       subjectBusinessUnitChecker,
+      lmsCourseRepository,
     ),
   inject: [
     SubjectRepository,
@@ -79,6 +85,7 @@ const editSubjectHandler = {
     ImageUploader,
     EvaluationTypeBusinessUnitChecker,
     SubjectBusinessUnitChecker,
+    LmsCourseRepository,
   ],
 };
 

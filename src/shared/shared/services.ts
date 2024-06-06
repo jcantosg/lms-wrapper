@@ -15,6 +15,7 @@ import { StudentPasswordChecker } from '#/student/student/domain/service/student
 import { BcryptStudentPasswordChecker } from '#/student/student/infrastructure/service/bcrypt-student-password-checker.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { Logger } from '@nestjs/common';
 import { ExcelFileParser } from '#shared/domain/service/excel-file-parser.service';
 import { ExcelJSFileParser } from '#shared/infrastructure/service/exceljs-file-parser.service';
 import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
@@ -37,10 +38,13 @@ const imageUploader = {
 
 const provinceGetter = {
   provide: ProvinceGetter,
-  useFactory: (configService: ConfigService): GeonamesProvinceGetter =>
+  useFactory: (
+    configService: ConfigService,
+    logger: Logger,
+  ): GeonamesProvinceGetter =>
     new GeonamesProvinceGetter(
       new GeonamesWrapper(
-        new FetchWrapper(configService.getOrThrow('GEONAMES_URL')),
+        new FetchWrapper(configService.getOrThrow('GEONAMES_URL'), logger),
         configService.getOrThrow('GEONAMES_NAME'),
       ),
     ),
