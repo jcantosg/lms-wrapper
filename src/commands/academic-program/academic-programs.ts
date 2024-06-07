@@ -12,3 +12,32 @@ export const academicPrograms = [
     ],
   },
 ];
+
+export const subjects = [
+  {
+    id: 'b35a1ca1-bba7-4f39-bca8-9df80fad7b5b',
+    name: 'Asignatura 1',
+    code: 'Code45',
+    officialCode: 'official_code_1',
+    modality: 'Presencial',
+    hours: 30,
+    evaluationType: '8adeb962-3669-4c37-ada0-01328ef74c00',
+    type: 'Asignatura',
+    businessUnit: '68fc5295-d99d-432d-a989-433361974791',
+    isRegulated: false,
+    isCore: true,
+  },
+  {
+    id: '459bfacb-9fdd-4709-add7-c11bd4f67637',
+    name: 'Asignatura 2',
+    code: 'Code46',
+    officialCode: 'official_code_2',
+    modality: 'Presencial',
+    hours: 30,
+    evaluationType: '8adeb962-3669-4c37-ada0-01328ef74c00',
+    type: 'Asignatura',
+    businessUnit: '68fc5295-d99d-432d-a989-433361974791',
+    isRegulated: false,
+    isCore: true,
+  },
+];

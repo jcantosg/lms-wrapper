@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export class EnrollmentPostgresRepository
   extends TypeOrmRepository<Enrollment>
@@ -40,6 +41,15 @@ export class EnrollmentPostgresRepository
           callDate: 'DESC',
         },
       },
+    });
+  }
+
+  async getByAcademicRecord(
+    academicRecord: AcademicRecord,
+  ): Promise<Enrollment[]> {
+    return await this.repository.find({
+      where: { academicRecord: { id: academicRecord.id } },
+      relations: { calls: true },
     });
   }
 

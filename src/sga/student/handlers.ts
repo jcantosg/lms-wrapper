@@ -31,6 +31,9 @@ import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.se
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { ConfigService } from '@nestjs/config';
 import { subjectCallHandlers } from '#student/application/subject-call/handlers';
+import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
+import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -168,6 +171,9 @@ const createStudentFromCRMHandler = {
     configService: ConfigService,
     countryGetter: CountryGetter,
     academicRecordRepository: AcademicRecordRepository,
+    enrollmentCreator: EnrollmentCreator,
+    createStudentFromCRMTransactionalService: CreateStudentFromCRMTransactionalService,
+    enrollmentGetter: EnrollmentGetter,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
       'ADMIN_USER_EMAIL',
@@ -186,6 +192,9 @@ const createStudentFromCRMHandler = {
       adminEmail,
       countryGetter,
       academicRecordRepository,
+      enrollmentCreator,
+      createStudentFromCRMTransactionalService,
+      enrollmentGetter,
     );
   },
   inject: [
@@ -200,6 +209,9 @@ const createStudentFromCRMHandler = {
     ConfigService,
     CountryGetter,
     AcademicRecordRepository,
+    EnrollmentCreator,
+    CreateStudentFromCRMTransactionalService,
+    EnrollmentGetter,
   ],
 };
 

@@ -24,6 +24,9 @@ import { AcademicRecordRepository } from '#student/domain/repository/academic-re
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
+import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -38,6 +41,9 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly adminUserEmail: string,
     private readonly countryGetter: CountryGetter,
     private readonly academicRecordRepository: AcademicRecordRepository,
+    private readonly enrollmentCreator: EnrollmentCreator,
+    private readonly createStudentFromCRMTransactionalService: CreateStudentFromCRMTransactionalService,
+    private readonly enrollmentGetter: EnrollmentGetter,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -166,7 +172,10 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             ar.virtualCampus.id === virtualCampus.id &&
             ar.academicPeriod.id === academicPeriod.id &&
             ar.academicProgram.id === academicProgram.id &&
-            ar.status !== AcademicRecordStatusEnum.VALID,
+            ![
+              AcademicRecordStatusEnum.VALID,
+              AcademicRecordStatusEnum.FINISHED,
+            ].includes(ar.status),
         )
       ) {
         const newAcademicRecord = AcademicRecord.create(
@@ -180,8 +189,31 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           true,
           adminUser,
         );
-        await this.academicRecordRepository.save(newAcademicRecord);
         student.academicRecords.push(newAcademicRecord);
+        const enrollments =
+          await this.enrollmentCreator.createForAcademicRecord(
+            newAcademicRecord,
+          );
+
+        const oldEnrollments =
+          await this.enrollmentGetter.getByStudent(student);
+
+        enrollments.forEach((enrollment) => {
+          const oldEnrollment = oldEnrollments.find(
+            (oe) => oe.subject.officialCode === enrollment.subject.officialCode,
+          );
+          if (oldEnrollment) {
+            enrollment.calls = oldEnrollment.calls;
+            enrollment.visibility = oldEnrollment.visibility;
+            enrollment.type = oldEnrollment.type;
+          }
+        });
+
+        await this.createStudentFromCRMTransactionalService.execute({
+          student,
+          academicRecord: newAcademicRecord,
+          enrollments,
+        });
       }
       this.repository.save(student);
     } else {
@@ -208,8 +240,6 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         adminUser,
       );
 
-      this.repository.save(student);
-
       const newAcademicRecord = AcademicRecord.create(
         uuid(),
         businessUnit,
@@ -221,7 +251,17 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         true,
         adminUser,
       );
-      await this.academicRecordRepository.save(newAcademicRecord);
+
+      const enrollments =
+        await this.enrollmentCreator.createForAcademicRecord(newAcademicRecord);
+
+      student.academicRecords.push(newAcademicRecord);
+
+      await this.createStudentFromCRMTransactionalService.execute({
+        student,
+        academicRecord: newAcademicRecord,
+        enrollments,
+      });
     }
 
     crmImport.update(

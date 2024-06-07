@@ -6,6 +6,12 @@ import { AdministrativeGroupGetter } from '#student/domain/service/administrativ
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
+import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
+import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
+import { CreateStudentFromCRMTypeormTransactionalService } from '#student/infrastructure/service/create-student-from-crm.typeorm-transactional-service';
+import datasource from '#config/ormconfig';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -33,9 +39,27 @@ const subjectCallGetter = {
   inject: [SubjectCallRepository],
 };
 
+const createStudentFromCRMTransactionalService = {
+  provide: CreateStudentFromCRMTransactionalService,
+  useFactory: (): CreateStudentFromCRMTypeormTransactionalService =>
+    new CreateStudentFromCRMTypeormTransactionalService(datasource),
+};
+
+const enrollmentCreatorService = {
+  provide: EnrollmentCreator,
+  useFactory: (
+    subjectRepository: SubjectRepository,
+    uuidGenerator: UUIDGeneratorService,
+  ): EnrollmentCreator =>
+    new EnrollmentCreator(subjectRepository, uuidGenerator),
+  inject: [SubjectRepository, UUIDGeneratorService],
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
   administrativeGroupGetter,
   subjectCallGetter,
+  createStudentFromCRMTransactionalService,
+  enrollmentCreatorService,
 ];

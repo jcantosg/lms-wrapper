@@ -208,6 +208,11 @@ export class SubjectPostgresRepository
           },
         },
       },
+      relations: {
+        programBlocks: {
+          academicProgram: true,
+        },
+      },
     });
   }
 
