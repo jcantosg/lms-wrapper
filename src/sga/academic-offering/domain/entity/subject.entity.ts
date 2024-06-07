@@ -211,10 +211,6 @@ export class Subject extends BaseEntity {
       throw new EvaluationTypeNotFoundException();
     }
 
-    const assignedEvaluationType: EvaluationType | null = isRegulated
-      ? evaluationType
-      : null;
-
     return new Subject(
       id,
       imageUrl,
@@ -223,7 +219,7 @@ export class Subject extends BaseEntity {
       officialCode,
       hours,
       modality,
-      assignedEvaluationType,
+      evaluationType,
       type,
       businessUnit,
       [],
@@ -260,10 +256,6 @@ export class Subject extends BaseEntity {
       throw new EvaluationTypeNotFoundException();
     }
 
-    const assignedEvaluationType: EvaluationType | null = isRegulated
-      ? evaluationType
-      : null;
-
     this.name = name;
     this.code = code;
     this.hours = hours;
@@ -271,7 +263,7 @@ export class Subject extends BaseEntity {
       officialCode !== '' && officialCode !== undefined ? officialCode : null;
     this.image = image;
     this.modality = modality;
-    this.evaluationType = assignedEvaluationType;
+    this.evaluationType = evaluationType;
     this.type = type;
     this.isRegulated = isRegulated;
     this.isCore = isCore;

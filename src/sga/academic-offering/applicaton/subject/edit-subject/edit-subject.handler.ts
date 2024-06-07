@@ -24,10 +24,9 @@ export class EditSubjectHandler implements CommandHandler {
     if (await this.repository.existsByCode(command.id, command.code)) {
       throw new SubjectDuplicatedCodeException();
     }
-    const evaluationType =
-      command.evaluationType && command.isRegulated
-        ? await this.evaluationTypeGetter.get(command.evaluationType)
-        : null;
+    const evaluationType = command.evaluationType
+      ? await this.evaluationTypeGetter.get(command.evaluationType)
+      : null;
 
     this.evaluationTypeBusinessUnitChecker.checkEvaluationTypeBusinessUnit(
       evaluationType,
