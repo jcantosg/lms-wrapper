@@ -5,6 +5,8 @@ export abstract class SubjectCallRepository {
 
   abstract delete(subjectCall: SubjectCall): Promise<void>;
 
+  abstract existsById(id: string): Promise<boolean>;
+
   abstract get(id: string): Promise<SubjectCall | null>;
 
   abstract getByAdminUser(

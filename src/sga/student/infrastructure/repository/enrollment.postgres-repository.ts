@@ -34,6 +34,12 @@ export class EnrollmentPostgresRepository
     return await this.repository.findOne({
       where: { id },
       relations: { calls: true },
+      order: {
+        calls: {
+          callNumber: 'DESC',
+          callDate: 'DESC',
+        },
+      },
     });
   }
 
@@ -70,6 +76,10 @@ export class EnrollmentPostgresRepository
       `${aliasQuery}.academicRecord`,
       'academicRecord',
     );
+    queryBuilder.leftJoinAndSelect(
+      'academicRecord.businessUnit',
+      'businessUnit',
+    );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subject`, 'subject');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.programBlock`,
@@ -77,5 +87,30 @@ export class EnrollmentPostgresRepository
     );
 
     return queryBuilder;
+  }
+
+  async getByAdminUser(
+    enrollmentId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment | null> {
+    const queryBuilder = this.initializeQueryBuilder('enrollment');
+
+    if (isSuperAdmin) {
+      return await this.get(enrollmentId);
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+
+    return await queryBuilder
+      .where('enrollment.id = :id', { id: enrollmentId })
+      .andWhere('academicRecord.businessUnit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .orderBy('subjectCall.callNumber', 'DESC')
+      .addOrderBy('subjectCall.callDate', 'DESC')
+      .getOne();
   }
 }

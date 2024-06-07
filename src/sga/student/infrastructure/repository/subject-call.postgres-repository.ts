@@ -32,6 +32,10 @@ export class SubjectCallPostgresRepository
       finalGrade: subjectCall.finalGrade,
       status: subjectCall.status,
       callDate: subjectCall.callDate,
+      createdBy: subjectCall.createdBy,
+      updatedBy: subjectCall.updatedBy,
+      createdAt: subjectCall.createdAt,
+      updatedAt: subjectCall.updatedAt,
     });
   }
 
@@ -69,5 +73,13 @@ export class SubjectCallPostgresRepository
         businessUnits: adminUserBusinessUnits,
       })
       .getOne();
+  }
+
+  async existsById(id: string): Promise<boolean> {
+    const subjectCall = await this.repository.findOne({
+      where: { id },
+    });
+
+    return !!subjectCall;
   }
 }

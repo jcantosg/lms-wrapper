@@ -68,7 +68,7 @@ describe('Create Enrollment Unit Test', () => {
     expect(executeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         subjectCall: expect.objectContaining({
-          finalGrade: SubjectCallFinalGradeEnum.NP,
+          finalGrade: SubjectCallFinalGradeEnum.ONGOING,
         }),
       }),
     );

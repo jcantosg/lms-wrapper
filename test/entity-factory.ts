@@ -339,8 +339,8 @@ export const getANotTakenSubjectCall = () =>
     getAnEnrollment(),
     1,
     new Date(),
-    SubjectCallFinalGradeEnum.NP,
-    SubjectCallStatusEnum.NOT_STARTED,
+    SubjectCallFinalGradeEnum.ONGOING,
+    SubjectCallStatusEnum.ONGOING,
     getAnAdminUser(),
   );
 

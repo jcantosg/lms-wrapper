@@ -1,4 +1,5 @@
 export enum SubjectCallFinalGradeEnum {
+  ONGOING = '-',
   NP = 'NP',
   RC = 'RC',
   ONE = '1',

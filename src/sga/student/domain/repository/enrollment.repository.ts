@@ -9,4 +9,10 @@ export abstract class EnrollmentRepository {
   abstract matching(criteria: Criteria): Promise<Enrollment[]>;
 
   abstract delete(enrollment: Enrollment): Promise<void>;
+
+  abstract getByAdminUser(
+    enrollmentId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment | null>;
 }

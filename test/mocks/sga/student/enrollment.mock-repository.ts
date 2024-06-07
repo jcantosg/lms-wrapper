@@ -5,4 +5,5 @@ export class EnrollmentMockRepository implements EnrollmentRepository {
   get = jest.fn();
   matching = jest.fn();
   delete = jest.fn();
+  getByAdminUser = jest.fn();
 }

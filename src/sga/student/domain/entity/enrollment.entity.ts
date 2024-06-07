@@ -9,6 +9,7 @@ import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-t
 import { isSubjectCallTaken } from '#student/domain/enum/enrollment/subject-call-status.enum';
 
 const MAX_CALLS = 4;
+export const FIRST_CALL_NUMBER = 1;
 
 export class Enrollment extends BaseEntity {
   private constructor(
@@ -171,5 +172,13 @@ export class Enrollment extends BaseEntity {
     }
 
     return false;
+  }
+
+  public getLastCall(): SubjectCall | null {
+    if (this.calls.length === 0) {
+      return null;
+    }
+
+    return this.calls[0];
   }
 }

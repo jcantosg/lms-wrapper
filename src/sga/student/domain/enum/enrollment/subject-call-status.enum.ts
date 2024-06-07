@@ -6,15 +6,11 @@ export enum SubjectCallStatusEnum {
   RENOUNCED = 'Renuncia',
   NOT_PRESENTED = 'No Presentado',
   ONGOING = 'En Curso',
-  NOT_STARTED = 'No Iniciada',
 }
 
 export const getAllSubjectCallStatuses = (): SubjectCallStatusEnum[] =>
   Object.values(SubjectCallStatusEnum);
 
 export const isSubjectCallTaken = (subjectCall: SubjectCall): boolean => {
-  return ![
-    SubjectCallStatusEnum.NOT_STARTED,
-    SubjectCallStatusEnum.ONGOING,
-  ].includes(subjectCall.status);
+  return ![SubjectCallStatusEnum.ONGOING].includes(subjectCall.status);
 };

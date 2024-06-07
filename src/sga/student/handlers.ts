@@ -218,5 +218,6 @@ export const handlers = [
   addInternalGroupToAcademicPeriodHandler,
   listInternalGroupsHandler,
   searchInternalGroupsHandler,
+  ...subjectCallHandlers,
   createStudentFromCRMHandler,
 ];

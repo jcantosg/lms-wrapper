@@ -57,8 +57,8 @@ export class CreateEnrollmentHandler implements CommandHandler {
         enrollment,
         1,
         new Date(),
-        SubjectCallFinalGradeEnum.NP,
-        SubjectCallStatusEnum.NOT_STARTED,
+        SubjectCallFinalGradeEnum.ONGOING,
+        SubjectCallStatusEnum.ONGOING,
         command.user,
       );
       enrollment.addSubjectCall(subjectCall);

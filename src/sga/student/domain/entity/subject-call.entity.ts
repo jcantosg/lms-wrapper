@@ -118,6 +118,7 @@ export class SubjectCall extends BaseEntity {
       [SubjectCallFinalGradeEnum.NP]: SubjectCallStatusEnum.NOT_PRESENTED,
       [SubjectCallFinalGradeEnum.RC]: SubjectCallStatusEnum.RENOUNCED,
       [SubjectCallFinalGradeEnum.NA]: SubjectCallStatusEnum.NOT_PASSED,
+      [SubjectCallFinalGradeEnum.ONGOING]: SubjectCallStatusEnum.ONGOING,
     };
 
     return gradeToStatusMap[this._finalGrade];

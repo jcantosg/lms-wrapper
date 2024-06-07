@@ -2,6 +2,8 @@ import { GetSubjectCallFinalGradesHandler } from '#student/application/subject-c
 import { EditSubjectCallHandler } from '#student/application/subject-call/edit-subject-call/edit-subject-call.handler';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
+import { AddSubjectCallHandler } from '#student/application/subject-call/add-subject-call/add-subject-call.handler';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 
 const editSubjectCallHandler = {
   provide: EditSubjectCallHandler,
@@ -13,7 +15,18 @@ const editSubjectCallHandler = {
   inject: [SubjectCallRepository, SubjectCallGetter],
 };
 
+const addSubjectCallHandler = {
+  provide: AddSubjectCallHandler,
+  useFactory: (
+    repository: SubjectCallRepository,
+    enrollmentGetter: EnrollmentGetter,
+  ): AddSubjectCallHandler =>
+    new AddSubjectCallHandler(repository, enrollmentGetter),
+  inject: [SubjectCallRepository, EnrollmentGetter],
+};
+
 export const subjectCallHandlers = [
   GetSubjectCallFinalGradesHandler,
   editSubjectCallHandler,
+  addSubjectCallHandler,
 ];
