@@ -20,6 +20,14 @@ export class SubjectCallPostgresRepository
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.enrollment`, 'enrollment');
+    queryBuilder.leftJoinAndSelect(
+      'enrollment.academicRecord',
+      'academicRecord',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicRecord.businessUnit',
+      'businessUnit',
+    );
 
     return queryBuilder;
   }
@@ -46,7 +54,11 @@ export class SubjectCallPostgresRepository
   async get(id: string): Promise<SubjectCall | null> {
     return await this.repository.findOne({
       relations: {
-        enrollment: true,
+        enrollment: {
+          academicRecord: {
+            businessUnit: true,
+          },
+        },
       },
       where: { id },
     });
@@ -69,7 +81,7 @@ export class SubjectCallPostgresRepository
 
     return await queryBuilder
       .where('subjectCall.id = :id', { id })
-      .andWhere('enrollment.businessUnit IN (:...businessUnits)', {
+      .andWhere('businessUnit.id IN (:...businessUnits)', {
         businessUnits: adminUserBusinessUnits,
       })
       .getOne();

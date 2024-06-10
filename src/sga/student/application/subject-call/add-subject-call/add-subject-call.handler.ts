@@ -15,7 +15,7 @@ import {
 } from '#student/domain/entity/enrollment.entity';
 import { SubjectCallNotTakenException } from '#shared/domain/exception/subject-call/subject-call.not-taken.exception';
 import { SubjectCallMaxReachedException } from '#shared/domain/exception/subject-call/subject-call.max-reached.exception';
-import { SubjectCallJustPassedException } from '#shared/domain/exception/subject-call/subject-call.just-passed.exception';
+import { SubjectCallAlreadyPassedException } from '#shared/domain/exception/subject-call/subject-call.already-passed.exception';
 
 export class AddSubjectCallHandler implements CommandHandler {
   constructor(
@@ -68,7 +68,7 @@ export class AddSubjectCallHandler implements CommandHandler {
     }
 
     if (lastCall.status === SubjectCallStatusEnum.PASSED) {
-      throw new SubjectCallJustPassedException();
+      throw new SubjectCallAlreadyPassedException();
     }
 
     if (lastCall.status === SubjectCallStatusEnum.RENOUNCED) {

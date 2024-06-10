@@ -175,7 +175,7 @@ describe('/enrollment/:id/add-subject-call (POST)', () => {
       })
       .expect(409);
 
-    expect(response.body.message).toBe('sga.subject-call.just-passed');
+    expect(response.body.message).toBe('sga.subject-call.already-passed');
   });
 
   it('should create a new subject call with callNumber 2 with before call RC', async () => {

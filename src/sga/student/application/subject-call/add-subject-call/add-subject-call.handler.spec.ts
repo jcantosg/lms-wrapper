@@ -13,7 +13,7 @@ import { SubjectCallDuplicatedException } from '#shared/domain/exception/sga-stu
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { SubjectCallNotTakenException } from '#shared/domain/exception/subject-call/subject-call.not-taken.exception';
-import { SubjectCallJustPassedException } from '#shared/domain/exception/subject-call/subject-call.just-passed.exception';
+import { SubjectCallAlreadyPassedException } from '#shared/domain/exception/subject-call/subject-call.already-passed.exception';
 import { SubjectCallMaxReachedException } from '#shared/domain/exception/subject-call/subject-call.max-reached.exception';
 
 let handler: AddSubjectCallHandler;
@@ -92,7 +92,7 @@ describe('Add Subject Call Handler', () => {
     subjectCall.status = SubjectCallStatusEnum.PASSED;
 
     await expect(handler.handle(command)).rejects.toThrow(
-      SubjectCallJustPassedException,
+      SubjectCallAlreadyPassedException,
     );
   });
 

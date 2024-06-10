@@ -137,4 +137,11 @@ export class SubjectCall extends BaseEntity {
     this._updatedBy = user;
     this.updatedAt = new Date();
   }
+
+  public hasFinalGrade(): boolean {
+    return ![
+      SubjectCallFinalGradeEnum.ONGOING,
+      SubjectCallFinalGradeEnum.NA,
+    ].includes(this.finalGrade);
+  }
 }
