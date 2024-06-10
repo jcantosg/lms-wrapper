@@ -47,7 +47,7 @@ describe('Academic Record Getter Service', () => {
     getStudentAcademicRecordSpy.mockImplementation(
       (): Promise<AcademicRecord[]> => Promise.resolve([academicRecord]),
     );
-    const result = await service.getStudentAcademicRecord(
+    const result = await service.getStudentAcademicRecords(
       academicRecord.id,
       adminUser.businessUnits.map((bu) => bu.id),
       adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
@@ -60,7 +60,7 @@ describe('Academic Record Getter Service', () => {
       (): Promise<AcademicRecord[]> => Promise.resolve([]),
     );
 
-    const result = await service.getStudentAcademicRecord(
+    const result = await service.getStudentAcademicRecords(
       academicRecord.id,
       adminUser.businessUnits.map((bu) => bu.id),
       adminUser.roles.includes(AdminUserRoles.SUPERADMIN),

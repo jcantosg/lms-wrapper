@@ -1,12 +1,12 @@
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import {
-  getASGAStudent,
   getAnAcademicRecord,
   getAnAdminUser,
+  getASGAStudent,
 } from '#test/entity-factory';
 import {
-  getAStudentGetterMock,
   getAnAcademicRecordGetterMock,
+  getAStudentGetterMock,
 } from '#test/service-factory';
 import { GetStudentAcademicRecordHandler } from '#student/application/academic-record/get-student-academic-record/get-student-academic-record.handler';
 
@@ -30,7 +30,7 @@ describe('GetStudentAcademicRecordHandler', () => {
     );
     getAcademicRecordSpy = jest.spyOn(
       academicRecordGetter,
-      'getStudentAcademicRecord',
+      'getStudentAcademicRecords',
     );
     getStudentSpy = jest.spyOn(studentGetter, 'get');
   });

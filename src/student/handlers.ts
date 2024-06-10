@@ -11,6 +11,10 @@ import { StudentRecoveryPasswordTokenGetter } from '#/student/student/domain/ser
 import { JwtService } from '@nestjs/jwt';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { ConfigService } from '@nestjs/config';
+import { GetStudentAcademicRecordsHandler } from '#/student/academic-offering/academic-record/application/get-student-academic-records/get-student-academic-records.handler';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { GetStudentAcademicRecordHandler } from '#/student/academic-offering/academic-record/application/get-student-academic-record/get-student-academic-record.handler';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -76,8 +80,28 @@ const updateStudentPasswordHandler = {
   ],
 };
 
+const getStudentAcademicRecordsHandler = {
+  provide: GetStudentAcademicRecordsHandler,
+  useFactory: (
+    repository: AcademicRecordRepository,
+  ): GetStudentAcademicRecordsHandler =>
+    new GetStudentAcademicRecordsHandler(repository),
+  inject: [AcademicRecordRepository],
+};
+
+const getAcademicRecordHandler = {
+  provide: GetStudentAcademicRecordHandler,
+  useFactory: (
+    academicRecordGetter: AcademicRecordGetter,
+  ): GetStudentAcademicRecordHandler =>
+    new GetStudentAcademicRecordHandler(academicRecordGetter),
+  inject: [AcademicRecordGetter],
+};
+
 export const handlers = [
   createRefreshTokenHandler,
   generateRecoveryPasswordTokenHandler,
   updateStudentPasswordHandler,
+  getStudentAcademicRecordsHandler,
+  getAcademicRecordHandler,
 ];

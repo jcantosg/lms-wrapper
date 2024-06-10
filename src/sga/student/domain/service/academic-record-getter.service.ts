@@ -2,6 +2,9 @@ import { AcademicRecordRepository } from '#student/domain/repository/academic-re
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
+import { Student } from '#shared/domain/entity/student.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { StudentAcademicRecordNotFoundException } from '#/student/student/domain/exception/student-academic-record-not-found.exception';
 
 export class AcademicRecordGetter {
   constructor(private readonly repository: AcademicRecordRepository) {}
@@ -28,17 +31,27 @@ export class AcademicRecordGetter {
     return academicRecord;
   }
 
-  async getStudentAcademicRecord(
+  async getStudentAcademicRecords(
     id: string,
     adminBusinessUnits: string[],
     isSuperAdmin: boolean,
   ) {
-    const academicRecords = await this.repository.getStudentAcademicRecords(
+    return await this.repository.getStudentAcademicRecords(
       id,
       adminBusinessUnits,
       isSuperAdmin,
     );
+  }
 
-    return academicRecords;
+  async getStudentAcademicRecord(
+    id: string,
+    student: Student,
+  ): Promise<AcademicRecord> {
+    const academicRecord = await this.repository.getByStudent(id, student);
+    if (!academicRecord) {
+      throw new StudentAcademicRecordNotFoundException();
+    }
+
+    return academicRecord;
   }
 }

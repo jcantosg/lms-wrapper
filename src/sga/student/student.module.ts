@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { studentSchemas } from '#student/schemas';
 import { repositories } from '#student/repositories';
@@ -36,4 +36,4 @@ import { AdminUserModule } from '#admin-user/admin-user.module';
   exports: [...repositories, ...services],
   controllers: [...controllers],
 })
-export class StudentModule {}
+export class SGAStudentModule {}

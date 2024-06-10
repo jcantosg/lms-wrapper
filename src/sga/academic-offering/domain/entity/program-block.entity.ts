@@ -2,6 +2,7 @@ import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 
 export class ProgramBlock extends BaseEntity {
   private constructor(
@@ -13,6 +14,7 @@ export class ProgramBlock extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _blockRelation: BlockRelation | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -57,6 +59,14 @@ export class ProgramBlock extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get blockRelation(): BlockRelation | null {
+    return this._blockRelation;
+  }
+
+  public set blockRelation(value: BlockRelation | null) {
+    this._blockRelation = value;
+  }
+
   public static create(
     id: string,
     name: string,
@@ -72,6 +82,7 @@ export class ProgramBlock extends BaseEntity {
       new Date(),
       user,
       user,
+      null,
     );
   }
 

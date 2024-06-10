@@ -1,4 +1,6 @@
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { Student } from '#shared/domain/entity/student.entity';
 
 export abstract class AcademicRecordRepository {
   abstract save(academicRecord: AcademicRecord): Promise<void>;
@@ -18,4 +20,11 @@ export abstract class AcademicRecordRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<AcademicRecord[]>;
+
+  abstract matching(criteria: Criteria): Promise<AcademicRecord[]>;
+
+  abstract getByStudent(
+    id: string,
+    student: Student,
+  ): Promise<AcademicRecord | null>;
 }

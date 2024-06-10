@@ -9,6 +9,7 @@ import {
   IdentityDocumentType,
 } from '#/sga/shared/domain/value-object/identity-document';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { HttpServer } from '@nestjs/common';
 
 export async function login(httpServer: any, email: string, password: string) {
   const loginResponse = await supertest(httpServer).post('/auth/login').send({
@@ -60,4 +61,19 @@ export async function removeAdminUser(
   if (user) {
     await userRepository.delete(user.id);
   }
+}
+
+export async function loginStudent(
+  httpServer: HttpServer,
+  email: string,
+  password: string,
+): Promise<string> {
+  const loginResponse = await supertest(httpServer)
+    .post('/student/login')
+    .send({
+      username: email,
+      password: password,
+    });
+
+  return loginResponse.body.accessToken;
 }

@@ -19,7 +19,7 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
       throw new StudentNotFoundException();
     }
 
-    return await this.academicRecordGetter.getStudentAcademicRecord(
+    return await this.academicRecordGetter.getStudentAcademicRecords(
       query.id,
       query.adminUser.businessUnits.map((bu) => bu.id),
       query.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),

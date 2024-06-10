@@ -6,10 +6,12 @@ import {
   calculateAcademicYear,
   calculateStartMonth,
 } from '#shared/domain/lib/date';
+import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 
 export class PeriodBlock extends BaseEntity {
   private _startMonth: MonthEnum;
   private _academicYear: string;
+
   private constructor(
     id: string,
     createdAt: Date,
@@ -20,6 +22,7 @@ export class PeriodBlock extends BaseEntity {
     private _endDate: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _blockRelation: BlockRelation | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -88,6 +91,14 @@ export class PeriodBlock extends BaseEntity {
     this._academicYear = value;
   }
 
+  public get blockRelation(): BlockRelation | null {
+    return this._blockRelation;
+  }
+
+  public set blockRelation(value: BlockRelation | null) {
+    this._blockRelation = value;
+  }
+
   public static create(
     id: string,
     academicPeriod: AcademicPeriod,
@@ -106,6 +117,7 @@ export class PeriodBlock extends BaseEntity {
       endDate,
       user,
       user,
+      null,
     );
 
     periodBlock._startMonth = calculateStartMonth(startDate);

@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { Student } from '#shared/domain/entity/student.entity';
 
 @Injectable()
 export class AcademicRecordPostgresRepository
@@ -52,6 +54,26 @@ export class AcademicRecordPostgresRepository
       'business_unit',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.student`, 'student');
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicProgram`,
+      'academicProgram',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicProgram.title',
+      'academicProgramTitle',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicProgram.programBlocks',
+      'academicProgramProgramBlocks',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicProgram.academicPeriods',
+      'academicProgramAcademicPeriods',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'academicProgramAcademicPeriods.periodBlocks',
+      'academicProgramPeriodBlocks',
+    );
 
     return queryBuilder;
   }
@@ -122,5 +144,50 @@ export class AcademicRecordPostgresRepository
         ids: adminUserBusinessUnits,
       })
       .getMany();
+  }
+
+  async matching(criteria: Criteria): Promise<AcademicRecord[]> {
+    const queryBuilder = this.initializeQueryBuilder('academicRecord');
+    let criteriaToQueryBuilder = await this.convertCriteriaToQueryBuilder(
+      criteria,
+      queryBuilder,
+      'academicRecord',
+    );
+    if (criteria.page !== null && criteria.limit !== null) {
+      criteriaToQueryBuilder = criteriaToQueryBuilder.applyPagination(
+        criteria,
+        queryBuilder,
+      );
+    }
+    if (criteria.order !== null) {
+      criteriaToQueryBuilder.applyOrder(criteria, queryBuilder, 'enrollment');
+    }
+
+    return await this.getMany(queryBuilder);
+  }
+
+  async getByStudent(
+    id: string,
+    student: Student,
+  ): Promise<AcademicRecord | null> {
+    return await this.repository.findOne({
+      where: {
+        id: id,
+        student: {
+          id: student.id,
+        },
+      },
+      relations: {
+        academicProgram: {
+          programBlocks: {
+            blockRelation: {
+              programBlock: true,
+              periodBlock: true,
+            },
+            subjects: true,
+          },
+        },
+      },
+    });
   }
 }

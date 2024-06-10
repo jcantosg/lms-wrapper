@@ -38,5 +38,10 @@ export const programBlockSchema = new EntitySchema<ProgramBlock>({
         },
       },
     },
+    blockRelation: {
+      type: 'one-to-one',
+      target: 'BlockRelation',
+      inverseSide: 'programBlock',
+    },
   },
 });

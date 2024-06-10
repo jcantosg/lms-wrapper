@@ -14,7 +14,7 @@ import { EdaeUserModule } from '#edae-user/edae-user.module';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
 import { listeners } from '#academic-offering/listeners';
-import { StudentModule } from '#student/student.module';
+import { SGAStudentModule } from '#student/student.module';
 import { LmsWrapperModule } from '#/lms-wrapper/lms-wrapper.module';
 
 const fileManager: FactoryProvider = {
@@ -41,7 +41,7 @@ const fileManager: FactoryProvider = {
     TypeOrmModule.forFeature(academicPeriodSchemas),
     BusinessUnitModule,
     EdaeUserModule,
-    StudentModule,
+    SGAStudentModule,
     LmsWrapperModule,
   ],
   providers: [

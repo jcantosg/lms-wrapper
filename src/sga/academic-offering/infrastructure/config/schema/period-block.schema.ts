@@ -45,6 +45,11 @@ export const periodBlockSchema = new EntitySchema<PeriodBlock>({
         name: 'academic_period_id',
       },
     },
+    blockRelation: {
+      type: 'one-to-one',
+      target: 'BlockRelation',
+      inverseSide: 'periodBlock',
+    },
     ...BaseSchemaRelations,
   },
 });
