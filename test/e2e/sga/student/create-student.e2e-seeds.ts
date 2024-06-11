@@ -9,6 +9,10 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
+import { MoodleStudentRepository } from '#/lms-wrapper/infrastructure/repository/moodle-student.repository';
+import { MoodleWrapper } from '#/lms-wrapper/infrastructure/wrapper/moodle-wrapper';
+import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
+import { Logger } from '@nestjs/common';
 
 export class CreateStudentE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-student@email.com';
@@ -37,9 +41,16 @@ export class CreateStudentE2eSeed implements E2eSeed {
   private adminUser: AdminUser;
 
   private studentRepository: Repository<Student>;
+  private lmsRepository: MoodleStudentRepository;
 
   constructor(private readonly datasource: DataSource) {
     this.studentRepository = datasource.getRepository(studentSchema);
+    this.lmsRepository = new MoodleStudentRepository(
+      new MoodleWrapper(
+        new FetchWrapper(process.env.LMS_URL!, new Logger()),
+        process.env.LMS_TOKEN!,
+      ),
+    );
   }
 
   async arrange() {
@@ -72,8 +83,13 @@ export class CreateStudentE2eSeed implements E2eSeed {
   }
 
   async clear() {
+    const student = await this.studentRepository.findOne({
+      where: { id: CreateStudentE2eSeed.studentId },
+    });
+    await this.lmsRepository.delete(student!.lmsStudent!.value.id);
     await this.studentRepository.delete(this.existingStudent.id);
     await this.studentRepository.delete(CreateStudentE2eSeed.studentId);
+
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.adminUser);
   }

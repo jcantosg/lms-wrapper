@@ -38,8 +38,8 @@ export class FetchWrapper {
     }
   }
 
-  handleErrors(response: { message: string; exception: string }) {
-    if (response.exception) {
+  handleErrors(response: { message: string; exception: string } | null) {
+    if (response && response.exception) {
       this.logger.error(response.exception, response.message);
 
       throw new BadRequestException();
