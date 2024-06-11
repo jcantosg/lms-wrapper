@@ -4,10 +4,10 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { loginStudent } from '#test/e2e/sga/e2e-auth-helper';
 import { GetStudentAcademicRecordDetailE2eSeed } from '#test/e2e/student/academic-record/get-student-academic-record-detail.e2e-seed';
 
-const path = `/student/academic-record/${GetStudentAcademicRecordDetailE2eSeed.academicRecordId}`;
-const wrongPath = `/student/academic-record/${GetStudentAcademicRecordDetailE2eSeed.academicPeriodId}`;
+const path = `/student-360/academic-record/${GetStudentAcademicRecordDetailE2eSeed.academicRecordId}`;
+const wrongPath = `/student-360/academic-record/${GetStudentAcademicRecordDetailE2eSeed.academicPeriodId}`;
 
-describe('/student/academic-record/:id (GET)', () => {
+describe('/student-360/academic-record/:id (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let studentToken: string;
@@ -34,7 +34,7 @@ describe('/student/academic-record/:id (GET)', () => {
     expect(response.body.message).toEqual('student.academic-record.not-found');
   });
 
-  it('should return all student academic records', async () => {
+  it('should return an academic record detail', async () => {
     const response = await supertest(httpServer)
       .get(path)
       .auth(studentToken, { type: 'bearer' })

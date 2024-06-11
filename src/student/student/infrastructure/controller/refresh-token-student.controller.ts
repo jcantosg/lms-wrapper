@@ -7,7 +7,7 @@ interface RefreshTokenStudentBody {
   refreshToken: string;
 }
 
-@Controller('student')
+@Controller('student-360')
 export class RefreshTokenStudentController {
   constructor(
     private readonly accessTokenRefresher: StudentAccessTokenRefresher,

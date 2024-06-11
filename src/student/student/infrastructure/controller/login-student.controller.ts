@@ -5,7 +5,7 @@ import { StudentAuthRequest } from '#shared/infrastructure/http/request';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 import { loginStudentSchema } from '#/student/student/infrastructure/config/validation-schema/login-student.schema';
 
-@Controller('student')
+@Controller('student-360')
 export class LoginStudentController {
   constructor(private readonly authenticator: Authenticator) {}
 

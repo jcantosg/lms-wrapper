@@ -14,7 +14,7 @@ import { StudentAuthRequest } from '#shared/infrastructure/http/request';
 import { GetStudentAcademicRecordQuery } from '#/student/academic-offering/academic-record/application/get-student-academic-record/get-student-academic-record.query';
 import { GetStudentAcademicRecordResponse } from '#/student/academic-offering/academic-record/infrastructure/controller/get-student-academic-record/get-student-academic-record.response';
 
-@Controller('student')
+@Controller('student-360')
 export class GetStudentAcademicRecordController {
   constructor(private readonly handler: GetStudentAcademicRecordHandler) {}
 

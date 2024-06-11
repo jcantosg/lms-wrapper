@@ -7,9 +7,9 @@ import { StudentPostgresRepository } from '#/student/student/infrastructure/repo
 import { studentRecoveryPasswordTokenSchema } from '#/student/student/infrastructure/config/schema/student-recovery-password-token.schema';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 
-const path = '/student/auth/update-password';
+const path = '/student-360/auth/update-password';
 
-describe('/student/auth/update-password (PUT)', () => {
+describe('/student-360/auth/update-password (PUT)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
 
@@ -44,7 +44,7 @@ describe('/student/auth/update-password (PUT)', () => {
     );
 
     await supertest(httpServer)
-      .post('/student/recover-password')
+      .post('/student-360/recover-password')
       .send({
         universaeEmail: UpdateStudentPasswordE2eSeed.studentUniversaeEmail,
       })

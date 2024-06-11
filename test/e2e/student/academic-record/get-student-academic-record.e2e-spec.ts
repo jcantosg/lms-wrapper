@@ -4,9 +4,9 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { loginStudent } from '#test/e2e/sga/e2e-auth-helper';
 import { GetStudentAcademicRecordE2eSeed } from '#test/e2e/student/academic-record/get-student-academic-record.e2e-seed';
 
-const path = `/universae/student/academic-record`;
+const path = `/student-360/academic-record`;
 
-describe('/universae/student/academic-record(GET)', () => {
+describe('/student-360/academic-record (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let studentToken: string;

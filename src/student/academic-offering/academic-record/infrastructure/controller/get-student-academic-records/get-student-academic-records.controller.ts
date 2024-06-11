@@ -5,7 +5,7 @@ import { GetStudentAcademicRecordsQuery } from '#/student/academic-offering/acad
 import { GetStudentAcademicRecordsResponse } from '#/student/academic-offering/academic-record/infrastructure/controller/get-student-academic-records/get-student-academic-records.response';
 import { StudentJwtAuthGuard } from '#/student/student/infrastructure/auth/student-jwt-auth.guard';
 
-@Controller('universae/student')
+@Controller('student-360')
 export class GetStudentAcademicRecordsController {
   constructor(private readonly handler: GetStudentAcademicRecordsHandler) {}
 

@@ -3,9 +3,9 @@ import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { GenerateStudentRecoveryPasswordTokenSeed } from '#test/e2e/student/auth/generate-student-recovery-password-token.e2e-seeds';
 
-const path = '/student/recover-password';
+const path = '/student-360/recover-password';
 
-describe('/student/recover-password', () => {
+describe('/student-360/recover-password', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
 

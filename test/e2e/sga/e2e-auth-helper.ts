@@ -69,7 +69,7 @@ export async function loginStudent(
   password: string,
 ): Promise<string> {
   const loginResponse = await supertest(httpServer)
-    .post('/student/login')
+    .post('/student-360/login')
     .send({
       username: email,
       password: password,

@@ -9,7 +9,7 @@ interface UpdateStudentPasswordBody {
   token: string;
 }
 
-@Controller('student')
+@Controller('student-360')
 export class UpdateStudentPasswordController {
   constructor(private readonly handler: UpdateStudentPasswordHandler) {}
 

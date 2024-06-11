@@ -8,7 +8,7 @@ interface CreateRecoveryPasswordTokenBody {
   universaeEmail: string;
 }
 
-@Controller('student')
+@Controller('student-360')
 export class GenerateRecoveryPasswordTokenController {
   constructor(private readonly handler: GenerateRecoveryPasswordTokenHandler) {}
 
