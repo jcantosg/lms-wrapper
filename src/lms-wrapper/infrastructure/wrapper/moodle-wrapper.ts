@@ -35,6 +35,11 @@ interface MoodleLoginResponse {
   privatetoken: string | null;
 }
 
+interface MoodleCreateUserResponse {
+  id: number;
+  username: string;
+}
+
 export class MoodleWrapper implements LmsWrapper {
   constructor(
     private readonly wrapper: FetchWrapper,
@@ -98,6 +103,27 @@ export class MoodleWrapper implements LmsWrapper {
   async saveCourse(lmsCourse: LmsCourse): Promise<void> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_course_create_courses&moodlewsrestformat=json&courses[0][fullname]=${lmsCourse.value.name}&courses[0][shortname]=${lmsCourse.value.shortname}&courses[0][categoryid]=${lmsCourse.value.categoryId}`;
     await this.wrapper.post(this.url, queryParams);
+  }
+
+  async deleteStudent(id: number): Promise<void> {
+    const queryParams = `wstoken=${this.token}&wsfunction=core_user_delete_users&moodlewsrestformat=json&userids[0]=${id}`;
+    await this.wrapper.post(this.url, queryParams);
+  }
+
+  async saveStudent(
+    username: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ): Promise<number> {
+    const queryParams = `wstoken=${this.token}&wsfunction=core_user_create_users&moodlewsrestformat=json&users[0][username]=${username}&users[0][firstname]=${firstName}&users[0][lastname]=${lastName}&users[0][email]=${email}&users[0][password]=${password}`;
+    const response: MoodleCreateUserResponse[] = await this.wrapper.post(
+      this.url,
+      queryParams,
+    );
+
+    return response[0].id;
   }
 
   async login(

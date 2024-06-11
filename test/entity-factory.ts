@@ -258,6 +258,7 @@ export const getASGAStudent = (): Student => {
     'test@universae.com',
     getAnAdminUser(),
     'test',
+    null,
   );
 };
 

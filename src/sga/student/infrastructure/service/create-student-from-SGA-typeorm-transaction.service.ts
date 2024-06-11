@@ -4,13 +4,13 @@ import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/delete-lms-st
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import {
-  CreateStudentFromCRMTransactionParams,
-  CreateStudentFromCRMTransactionalService,
-} from '#student/domain/service/create-student-from-crm.transactional-service';
+  CreateStudentFromSGATransactionParams,
+  CreateStudentFromSGATransactionService,
+} from '#student/domain/service/create-student-from-SGA.transactional-service';
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
-export class CreateStudentFromCRMTypeormTransactionalService extends CreateStudentFromCRMTransactionalService {
+export class CreateStudentFromSGATyperomTransactionService extends CreateStudentFromSGATransactionService {
   private logger: Logger;
   constructor(
     private readonly datasource: DataSource,
@@ -20,11 +20,11 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     private readonly rawPassword: string,
   ) {
     super();
-    this.logger = new Logger(CreateStudentFromCRMTransactionalService.name);
+    this.logger = new Logger(CreateStudentFromSGATransactionService.name);
   }
 
   async execute(
-    entities: CreateStudentFromCRMTransactionParams,
+    entities: CreateStudentFromSGATransactionParams,
   ): Promise<void> {
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -32,9 +32,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     try {
       const lmsStudent = await this.createLmsStudentHandler.handle(
         new CreateLmsStudentCommand(
-          this.normalizeUsername(
-            `${entities.student.name}-${entities.student.surname}-${entities.student.surname2}`,
-          ),
+          `${entities.student.name}-${entities.student.surname}-${entities.student.surname2}`.toLowerCase(),
           entities.student.name,
           `${entities.student.surname} ${entities.student.surname2}`,
           entities.student.email,
@@ -47,12 +45,6 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       );
       entities.student.lmsStudent = lmsStudent;
       await queryRunner.manager.save(entities.student);
-      await queryRunner.manager.save(entities.academicRecord);
-      await Promise.all([
-        entities.enrollments.forEach(
-          async (enrollment) => await queryRunner.manager.save(enrollment),
-        ),
-      ]);
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -64,13 +56,5 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     } finally {
       await queryRunner.release();
     }
-  }
-
-  private normalizeUsername(username: string): string {
-    return username
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(' ', '-')
-      .toLowerCase();
   }
 }

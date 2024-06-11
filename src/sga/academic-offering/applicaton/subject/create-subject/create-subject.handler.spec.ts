@@ -21,16 +21,16 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { CreateSubjectHandler } from '#academic-offering/applicaton/subject/create-subject/create-subject.handler';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
-import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
 import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
 import clearAllMocks = jest.clearAllMocks;
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
 
 let handler: CreateSubjectHandler;
 let repository: SubjectRepository;
 let evaluationTypeGetter: EvaluationTypeGetter;
 let businessUnitGetter: BusinessUnitGetter;
 let imageUploader: ImageUploader;
-let lmsCourseRepository: LmsCourseRepository;
+let lmsCourseHandler: GetLmsCourseHandler;
 
 let saveSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -64,19 +64,19 @@ describe('Create Subject Handler', () => {
     evaluationTypeGetter = getAnEvaluationTypeGetterMock();
     businessUnitGetter = getBusinessUnitGetterMock();
     imageUploader = getImageUploaderMock();
-    lmsCourseRepository = new LmsCourseMockRepository();
+    lmsCourseHandler = new GetLmsCourseHandler(new LmsCourseMockRepository());
     handler = new CreateSubjectHandler(
       repository,
       evaluationTypeGetter,
       businessUnitGetter,
       imageUploader,
-      lmsCourseRepository,
+      lmsCourseHandler,
     );
     saveSpy = jest.spyOn(repository, 'save');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     getEvaluationType = jest.spyOn(evaluationTypeGetter, 'get');
     existsByCodeSpy = jest.spyOn(repository, 'existsByCode');
-    getLmsCourseSpy = jest.spyOn(lmsCourseRepository, 'getOne');
+    getLmsCourseSpy = jest.spyOn(lmsCourseHandler, 'handle');
   });
   it('should throw a SubjectDuplicatedCodeException', async () => {
     existsByCodeSpy.mockImplementation(

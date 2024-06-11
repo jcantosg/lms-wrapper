@@ -3,10 +3,13 @@ import {
   CreateAcademicProgramTransactionParams,
   CreateAcademicProgramTransactionService,
 } from '#academic-offering/domain/service/academic-program/create-academic-program.transactional-service';
+import { Logger } from '@nestjs/common';
 
 export class CreateAcademicProgramTyperomTransactionService extends CreateAcademicProgramTransactionService {
+  private logger: Logger;
   constructor(private readonly datasource: DataSource) {
     super();
+    this.logger = new Logger(CreateAcademicProgramTransactionService.name);
   }
 
   async execute(
@@ -21,7 +24,7 @@ export class CreateAcademicProgramTyperomTransactionService extends CreateAcadem
       }
       await queryRunner.commitTransaction();
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();

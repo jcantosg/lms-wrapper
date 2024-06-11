@@ -172,6 +172,7 @@ export class GetSearchStudentsE2eSeed implements E2eSeed {
       GetSearchStudentsE2eSeed.studentUniversaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(student);
     const academicRecord = AcademicRecord.create(

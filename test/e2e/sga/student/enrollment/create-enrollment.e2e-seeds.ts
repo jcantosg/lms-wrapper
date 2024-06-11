@@ -266,6 +266,7 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
       CreateEnrollmentE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(this.student);
   }

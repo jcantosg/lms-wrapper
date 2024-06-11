@@ -259,6 +259,7 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
       AddSubjectCallE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(this.student);
 

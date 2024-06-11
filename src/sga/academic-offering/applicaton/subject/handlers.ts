@@ -23,7 +23,7 @@ import { GetAllSubjectsModalitiesHandler } from '#academic-offering/applicaton/s
 import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/subject/get-all-subject-types/get-all-subject-types.handler';
 import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/subject/get-subjects-by-business-unit/get-subjects-by-business-unit.handler';
 import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
-import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -32,21 +32,21 @@ const createSubjectHandler = {
     evaluationTypeGetter: EvaluationTypeGetter,
     businessUnitGetter: BusinessUnitGetter,
     imageUploader: ImageUploader,
-    lmsCourseRepository: LmsCourseRepository,
+    lmsCourseHandler: GetLmsCourseHandler,
   ) =>
     new CreateSubjectHandler(
       repository,
       evaluationTypeGetter,
       businessUnitGetter,
       imageUploader,
-      lmsCourseRepository,
+      lmsCourseHandler,
     ),
   inject: [
     SubjectRepository,
     EvaluationTypeGetter,
     BusinessUnitGetter,
     ImageUploader,
-    LmsCourseRepository,
+    GetLmsCourseHandler,
   ],
 };
 
@@ -67,7 +67,7 @@ const editSubjectHandler = {
     imageUploader: ImageUploader,
     evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker,
     subjectBusinessUnitChecker: SubjectBusinessUnitChecker,
-    lmsCourseRepository: LmsCourseRepository,
+    lmsCourseHandler: GetLmsCourseHandler,
   ): EditSubjectHandler =>
     new EditSubjectHandler(
       repository,
@@ -76,7 +76,7 @@ const editSubjectHandler = {
       imageUploader,
       evaluationTypeBusinessUnitChecker,
       subjectBusinessUnitChecker,
-      lmsCourseRepository,
+      lmsCourseHandler,
     ),
   inject: [
     SubjectRepository,
@@ -85,7 +85,7 @@ const editSubjectHandler = {
     ImageUploader,
     EvaluationTypeBusinessUnitChecker,
     SubjectBusinessUnitChecker,
-    LmsCourseRepository,
+    GetLmsCourseHandler,
   ],
 };
 

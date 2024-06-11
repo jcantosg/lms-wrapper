@@ -10,14 +10,17 @@ import { getAnAdminUser } from '#test/entity-factory';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { PasswordEncoderMock } from '#test/service-factory';
 import clearAllMocks = jest.clearAllMocks;
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { TransactionalServiceMock } from '#test/mocks/shared/transactional-service-mock';
 
 let handler: CreateStudentHandler;
 let repository: StudentRepository;
-let saveSpy: jest.SpyInstance;
+let executeSpy: jest.SpyInstance;
 let existsByIdSpy: jest.SpyInstance;
 let existsByEmailSpy: jest.SpyInstance;
 let existsByUniversaeSpy: jest.SpyInstance;
 let passwordEncoder: PasswordEncoder;
+let transactionalService: TransactionalService;
 
 const command = new CreateStudentCommand(
   uuid(),
@@ -32,8 +35,13 @@ describe('Create Student Handler Test', () => {
   beforeAll(() => {
     repository = new StudentMockRepository();
     passwordEncoder = new PasswordEncoderMock();
-    handler = new CreateStudentHandler(repository, passwordEncoder);
-    saveSpy = jest.spyOn(repository, 'save');
+    transactionalService = new TransactionalServiceMock();
+    handler = new CreateStudentHandler(
+      repository,
+      passwordEncoder,
+      transactionalService,
+    );
+    executeSpy = jest.spyOn(transactionalService, 'execute');
     existsByIdSpy = jest.spyOn(repository, 'existsById');
     existsByEmailSpy = jest.spyOn(repository, 'existsByEmail');
     existsByUniversaeSpy = jest.spyOn(repository, 'existsByUniversaeEmail');
@@ -44,15 +52,17 @@ describe('Create Student Handler Test', () => {
     existsByEmailSpy.mockImplementation(() => Promise.resolve(false));
     existsByUniversaeSpy.mockImplementation(() => Promise.resolve(false));
     await handler.handle(command);
-    expect(saveSpy).toHaveBeenCalledTimes(1);
-    expect(saveSpy).toHaveBeenCalledWith(
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+    expect(executeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: command.id,
-        name: command.name,
-        surname: command.surname,
-        surname2: command.surname2,
-        email: command.email,
-        universaeEmail: command.universaeEmail,
+        student: expect.objectContaining({
+          id: command.id,
+          name: command.name,
+          surname: command.surname,
+          surname2: command.surname2,
+          email: command.email,
+          universaeEmail: command.universaeEmail,
+        }),
       }),
     );
   });

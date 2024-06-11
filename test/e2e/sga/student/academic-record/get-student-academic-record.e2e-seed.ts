@@ -234,6 +234,7 @@ export class GetStudentAcademicRecordE2eSeed implements E2eSeed {
       GetStudentAcademicRecordE2eSeed.universaeEmail,
       this.superAdminUser,
       GetStudentAcademicRecordE2eSeed.studentPassword,
+      null,
     );
     await this.studentRepository.save(this.student);
 

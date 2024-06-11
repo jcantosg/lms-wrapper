@@ -31,6 +31,7 @@ import { AdminUserGetter } from '#admin-user/domain/service/admin-user-getter.se
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { ConfigService } from '@nestjs/config';
 import { subjectCallHandlers } from '#student/application/subject-call/handlers';
+import { CreateStudentFromSGATransactionService } from '#student/domain/service/create-student-from-SGA.transactional-service';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
@@ -46,9 +47,14 @@ const createStudentHandler = {
   useFactory: (
     repository: StudentRepository,
     passwordEncoder: PasswordEncoder,
+    transactionalService: CreateStudentFromSGATransactionService,
   ): CreateStudentHandler =>
-    new CreateStudentHandler(repository, passwordEncoder),
-  inject: [StudentRepository, PasswordEncoder],
+    new CreateStudentHandler(repository, passwordEncoder, transactionalService),
+  inject: [
+    StudentRepository,
+    PasswordEncoder,
+    CreateStudentFromSGATransactionService,
+  ],
 };
 
 const editStudentHandler = {

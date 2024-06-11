@@ -67,6 +67,7 @@ export class EditStudentE2eSeed implements E2eSeed {
       EditStudentE2eSeed.existingUniversaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     this.secondExistingStudent = Student.createFromSGA(
       EditStudentE2eSeed.secondExistingStudentId,
@@ -77,6 +78,7 @@ export class EditStudentE2eSeed implements E2eSeed {
       EditStudentE2eSeed.secondExistingUniversaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save([
       this.existingStudent,

@@ -271,6 +271,7 @@ export class DeleteEnrollmentE2eSeed implements E2eSeed {
       DeleteEnrollmentE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(this.student);
     this.enrollment = Enrollment.create(

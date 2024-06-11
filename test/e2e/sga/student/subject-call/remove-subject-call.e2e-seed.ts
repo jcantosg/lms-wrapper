@@ -264,6 +264,7 @@ export class RemoveSubjectCallE2eSeed implements E2eSeed {
       RemoveSubjectCallE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(this.student);
 

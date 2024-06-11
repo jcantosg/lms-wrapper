@@ -10,6 +10,7 @@ import {
 } from '#/sga/shared/domain/value-object/identity-document';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 
 export const DEFAULT_PASSWORD = 'Universa3€';
 
@@ -47,8 +48,17 @@ export class Student extends BaseEntity {
     private _guardianPhone: string | null,
     private _academicRecords: AcademicRecord[],
     private _password: string | null,
+    private _lmsStudent: LmsStudent | null,
   ) {
     super(id, new Date(), new Date());
+  }
+
+  public get lmsStudent(): LmsStudent | null {
+    return this._lmsStudent;
+  }
+
+  public set lmsStudent(value: LmsStudent | null) {
+    this._lmsStudent = value;
   }
 
   public get name(): string {
@@ -308,6 +318,7 @@ export class Student extends BaseEntity {
     universaeEmail: string,
     user: AdminUser,
     password: string,
+    lmsStudent: LmsStudent | null,
   ): Student {
     return new Student(
       id,
@@ -342,6 +353,7 @@ export class Student extends BaseEntity {
       null,
       [],
       password,
+      lmsStudent,
     );
   }
 
@@ -363,6 +375,7 @@ export class Student extends BaseEntity {
     state: string | null,
     city: string | null,
     user: AdminUser,
+    lmsStudent: LmsStudent | null,
   ) {
     return new Student(
       id,
@@ -397,6 +410,7 @@ export class Student extends BaseEntity {
       null,
       [],
       password,
+      lmsStudent,
     );
   }
 
@@ -426,6 +440,7 @@ export class Student extends BaseEntity {
     guardianSurname: string | null,
     guardianEmail: string | null,
     guardianPhone: string | null,
+    lmsStudent: LmsStudent | null,
   ) {
     this.name = name;
     this.surname = surname;
@@ -454,5 +469,12 @@ export class Student extends BaseEntity {
     this.guardianSurname = guardianSurname;
     this.guardianEmail = guardianEmail;
     this.guardianPhone = guardianPhone;
+    if (lmsStudent) {
+      this._lmsStudent = lmsStudent;
+    }
+  }
+
+  public updateLMSStudent(lmsStudent: LmsStudent): void {
+    this._lmsStudent = lmsStudent;
   }
 }

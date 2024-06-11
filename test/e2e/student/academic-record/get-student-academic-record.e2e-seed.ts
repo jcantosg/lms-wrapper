@@ -239,6 +239,7 @@ export class GetStudentAcademicRecordE2eSeed implements E2eSeed {
       await passwordEncoder.encodePassword(
         GetStudentAcademicRecordE2eSeed.studentPassword,
       ),
+      null,
     );
     await this.studentRepository.save(this.student);
 

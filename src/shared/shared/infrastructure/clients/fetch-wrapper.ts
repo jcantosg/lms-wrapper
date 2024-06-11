@@ -31,6 +31,8 @@ export class FetchWrapper {
 
       const responseJson = await response.json();
       this.handleErrors(responseJson);
+
+      return responseJson;
     } catch (error) {
       throw new BadRequestException();
     }

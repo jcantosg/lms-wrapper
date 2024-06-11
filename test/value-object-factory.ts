@@ -4,6 +4,7 @@ import {
 } from '#/sga/shared/domain/value-object/identity-document';
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
+import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 
 export const getAnIdentityDocument = (
   identityDocumentType: IdentityDocumentType = IdentityDocumentType.DNI,
@@ -18,4 +19,14 @@ export const getALmsCourse = (id: number = Math.random(), name: string) =>
     shortname: 'test',
     name: name,
     modules: [],
+  });
+
+export const getALmsStudent = (id: number = Math.random()) =>
+  new LmsStudent({
+    id: id,
+    username: 'username',
+    firstName: 'name',
+    lastName: 'last name',
+    email: 'email@test.com',
+    password: 'password',
   });

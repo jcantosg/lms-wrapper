@@ -7,7 +7,8 @@ import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/su
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
-import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
+import { GetLMSCourseQuery } from '#/lms-wrapper/application/get-lms-course/get-lms-course.command';
 
 export class EditSubjectHandler implements CommandHandler {
   constructor(
@@ -17,7 +18,7 @@ export class EditSubjectHandler implements CommandHandler {
     private readonly imageUploader: ImageUploader,
     private readonly evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker,
     private readonly subjectBusinessUnitChecker: SubjectBusinessUnitChecker,
-    private readonly lmsCourseRepository: LmsCourseRepository,
+    private readonly lmsCourseHandler: GetLmsCourseHandler,
   ) {}
 
   async handle(command: EditSubjectCommand): Promise<void> {
@@ -51,7 +52,9 @@ export class EditSubjectHandler implements CommandHandler {
     if (command.lmsCourseId === null) {
       lmsCourse = null;
     } else if (command.lmsCourseId !== undefined) {
-      lmsCourse = await this.lmsCourseRepository.getOne(command.lmsCourseId);
+      lmsCourse = await this.lmsCourseHandler.handle(
+        new GetLMSCourseQuery(command.lmsCourseId),
+      );
     }
 
     subject.update(

@@ -9,11 +9,13 @@ import {
   Student,
 } from '#shared/domain/entity/student.entity';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 
 export class CreateStudentHandler implements CommandHandler {
   constructor(
     private readonly repository: StudentRepository,
     private readonly passwordEncoder: PasswordEncoder,
+    private readonly transactionalService: TransactionalService,
   ) {}
 
   async handle(command: CreateStudentCommand): Promise<void> {
@@ -31,6 +33,7 @@ export class CreateStudentHandler implements CommandHandler {
     ) {
       throw new StudentDuplicatedUniversaeEmailException();
     }
+
     const student = Student.createFromSGA(
       command.id,
       command.name,
@@ -40,8 +43,11 @@ export class CreateStudentHandler implements CommandHandler {
       command.universaeEmail,
       command.adminUser,
       await this.passwordEncoder.encodePassword(DEFAULT_PASSWORD),
+      null,
     );
 
-    await this.repository.save(student);
+    await this.transactionalService.execute({
+      student,
+    });
   }
 }

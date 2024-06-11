@@ -241,6 +241,7 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
       CreateAcademicRecordE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(this.student);
 

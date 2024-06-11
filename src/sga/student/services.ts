@@ -6,12 +6,18 @@ import { AdministrativeGroupGetter } from '#student/domain/service/administrativ
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
+import { CreateStudentFromSGATransactionService } from '#student/domain/service/create-student-from-SGA.transactional-service';
+import { CreateStudentFromSGATyperomTransactionService } from '#student/infrastructure/service/create-student-from-SGA-typeorm-transaction.service';
+import { CreateLmsStudentHandler } from '#/lms-wrapper/application/create-lms-student/create-lms-student.handler';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { CreateStudentFromCRMTypeormTransactionalService } from '#student/infrastructure/service/create-student-from-crm.typeorm-transactional-service';
 import datasource from '#config/ormconfig';
+import { ConfigService } from '@nestjs/config';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -38,11 +44,62 @@ const subjectCallGetter = {
     new SubjectCallGetter(repository),
   inject: [SubjectCallRepository],
 };
+const createStudentFromSGATransactionService = {
+  provide: CreateStudentFromSGATransactionService,
+  useFactory: (
+    createLmsStudentHandler: CreateLmsStudentHandler,
+    deleteLmsStudentHandler: DeleteLmsStudentHandler,
+    passwordEncoder: PasswordEncoder,
+    configService: ConfigService,
+  ): CreateStudentFromSGATyperomTransactionService => {
+    const defaultPassword = configService.get<string>(
+      'DEFAULT_LMS_PASSWORD',
+      'Defaultpassword-1234',
+    );
+
+    return new CreateStudentFromSGATyperomTransactionService(
+      datasource,
+      createLmsStudentHandler,
+      deleteLmsStudentHandler,
+      passwordEncoder,
+      defaultPassword,
+    );
+  },
+  inject: [
+    CreateLmsStudentHandler,
+    DeleteLmsStudentHandler,
+    PasswordEncoder,
+    ConfigService,
+  ],
+};
 
 const createStudentFromCRMTransactionalService = {
   provide: CreateStudentFromCRMTransactionalService,
-  useFactory: (): CreateStudentFromCRMTypeormTransactionalService =>
-    new CreateStudentFromCRMTypeormTransactionalService(datasource),
+  useFactory: (
+    createLmsStudentHandler: CreateLmsStudentHandler,
+    deleteLmsStudentHandler: DeleteLmsStudentHandler,
+    passwordEncoder: PasswordEncoder,
+    configService: ConfigService,
+  ): CreateStudentFromCRMTypeormTransactionalService => {
+    const defaultPassword = configService.get<string>(
+      'DEFAULT_LMS_PASSWORD',
+      'Defaultpassword-1234',
+    );
+
+    return new CreateStudentFromCRMTypeormTransactionalService(
+      datasource,
+      createLmsStudentHandler,
+      deleteLmsStudentHandler,
+      passwordEncoder,
+      defaultPassword,
+    );
+  },
+  inject: [
+    CreateLmsStudentHandler,
+    DeleteLmsStudentHandler,
+    PasswordEncoder,
+    ConfigService,
+  ],
 };
 
 const enrollmentCreatorService = {
@@ -60,6 +117,7 @@ export const services = [
   enrollmentGetter,
   administrativeGroupGetter,
   subjectCallGetter,
+  createStudentFromSGATransactionService,
   createStudentFromCRMTransactionalService,
   enrollmentCreatorService,
 ];

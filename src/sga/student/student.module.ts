@@ -13,6 +13,7 @@ import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
 import { listeners } from '#student/listeners';
 import { AdminUserModule } from '#admin-user/admin-user.module';
+import { LmsWrapperModule } from '#/lms-wrapper/lms-wrapper.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AdminUserModule } from '#admin-user/admin-user.module';
     forwardRef(() => AcademicOfferingModule),
     SharedModule,
     AdminUserModule,
+    LmsWrapperModule,
   ],
   providers: [
     ...repositories,

@@ -258,6 +258,7 @@ export class GetEnrollmentsByAcademicRecordE2eSeed implements E2eSeed {
       GetEnrollmentsByAcademicRecordE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
+      null,
     );
     await this.studentRepository.save(this.student);
     this.enrollment = Enrollment.create(

@@ -10,6 +10,7 @@ import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-docu
 import { StudentStatus } from '#shared/domain/enum/student-status.enum';
 import { StudentOrigin } from '#shared/domain/enum/student-origin.enum.';
 import { AccessQualification } from '#shared/domain/enum/access-qualification.enum';
+import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 
 export const studentSchema = new EntitySchema<Student>({
   name: 'Student',
@@ -129,6 +130,13 @@ export const studentSchema = new EntitySchema<Student>({
     password: {
       type: String,
       nullable: true,
+    },
+    lmsStudent: {
+      name: 'lms_student',
+      type: 'json',
+      nullable: true,
+      transformer: ValueObjectTransformer(LmsStudent),
+      default: {},
     },
   },
   relations: {

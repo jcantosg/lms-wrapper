@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
@@ -12,11 +12,13 @@ export class ProgramBlockPostgresRepository
   extends TypeOrmRepository<ProgramBlock>
   implements ProgramBlockRepository
 {
+  private logger: Logger;
   constructor(
     @InjectRepository(programBlockSchema)
     private readonly repository: Repository<ProgramBlock>,
   ) {
     super();
+    this.logger = new Logger(ProgramBlockRepository.name);
   }
 
   async existsById(id: string): Promise<boolean> {
@@ -120,7 +122,7 @@ export class ProgramBlockPostgresRepository
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.log(error);
+      this.logger.error(error);
     } finally {
       await queryRunner.release();
     }

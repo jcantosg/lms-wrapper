@@ -4,6 +4,7 @@ import {
 } from '#shared/domain/service/transactional-service.service';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
+import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 export interface CreateEnrollmentTransactionParams extends TransactionParams {
@@ -12,8 +13,10 @@ export interface CreateEnrollmentTransactionParams extends TransactionParams {
 }
 
 export class CreateEnrollmentTransactionalService extends TransactionalService {
+  private logger: Logger;
   constructor(private readonly datasource: DataSource) {
     super();
+    this.logger = new Logger(CreateEnrollmentTransactionalService.name);
   }
 
   async execute(entities: CreateEnrollmentTransactionParams): Promise<void> {
@@ -25,7 +28,7 @@ export class CreateEnrollmentTransactionalService extends TransactionalService {
 
       await queryRunner.commitTransaction();
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
