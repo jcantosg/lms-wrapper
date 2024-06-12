@@ -33,6 +33,7 @@ import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.serv
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { StudentRecoveryPasswordTokenGetter } from '#/student/student/domain/service/student-recovery-password-token-getter.service';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
+import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -209,4 +210,8 @@ export function getAStudentRecoveryPasswordTokenGetterMock(): StudentRecoveryPas
 
 export function getASubjectCallGetterMock(): SubjectCallGetter {
   return (SubjectCallGetter as jest.Mocked<typeof SubjectCallGetter>).prototype;
+}
+
+export function getAnEnrollmentCreatorMock(): EnrollmentCreator {
+  return (EnrollmentCreator as jest.Mocked<typeof EnrollmentCreator>).prototype;
 }

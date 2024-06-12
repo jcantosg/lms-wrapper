@@ -57,6 +57,6 @@ const providers: Provider[] = [
   ],
   providers,
   controllers: [...controllers],
-  exports: [...repositories, ...services],
+  exports: [...repositories, ...services, fileManager],
 })
 export class SharedModule {}

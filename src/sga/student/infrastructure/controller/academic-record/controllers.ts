@@ -4,6 +4,7 @@ import { EditAcademicRecordController } from '#student/infrastructure/controller
 import { AcademicRecordDetailController } from '#student/infrastructure/controller/academic-record/get-academic-record-detail.controller';
 import { GetStudentAcademicRecordController } from '#student/infrastructure/controller/academic-record/get-student-academic-record.controller';
 import { GetAllAcademicRecordStatusController } from '#student/infrastructure/controller/academic-record/get-all-academic-record-status.controller';
+import { TransferAcademicRecordController } from '#student/infrastructure/controller/academic-record/transfer-academic-record.controller';
 
 export const academicRecordControllers = [
   GetAllAcademicRecordStatusController,
@@ -12,4 +13,5 @@ export const academicRecordControllers = [
   EditAcademicRecordController,
   AcademicRecordDetailController,
   GetStudentAcademicRecordController,
+  TransferAcademicRecordController,
 ];

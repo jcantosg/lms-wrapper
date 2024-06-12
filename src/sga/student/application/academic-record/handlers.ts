@@ -13,6 +13,11 @@ import { GetStudentAcademicRecordHandler } from '#student/application/academic-r
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { GetAllAcademicRecordStatusHandler } from '#student/application/academic-record/get-all-academic-record-status/get-all-academic-record-status.handler';
+import { TransferAcademicRecordHandler } from '#student/application/academic-record/transfer-academic-record/transfer-academic-record.handler';
+import { TransferAcademicRecordTransactionalService } from '#student/domain/service/transfer-academic-record.transactional-service';
+import { FileManager } from '#shared/domain/file-manager/file-manager';
+import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -76,6 +81,42 @@ const getStudentAcademicRecordHandler = {
     new GetStudentAcademicRecordHandler(academicRecordGetter, studentGetter),
   inject: [AcademicRecordGetter, StudentGetter],
 };
+const transferAcademicRecordHandler = {
+  provide: TransferAcademicRecordHandler,
+  useFactory: (
+    businessUnitGetter: BusinessUnitGetter,
+    virtualCampusGetter: VirtualCampusGetter,
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    transactionalService: TransferAcademicRecordTransactionalService,
+    academicRecordGetter: AcademicRecordGetter,
+    fileManager: FileManager,
+    enrollmentCreatorService: EnrollmentCreator,
+    enrollmentGetter: EnrollmentGetter,
+  ): TransferAcademicRecordHandler =>
+    new TransferAcademicRecordHandler(
+      businessUnitGetter,
+      virtualCampusGetter,
+      academicPeriodGetter,
+      academicProgramGetter,
+      transactionalService,
+      academicRecordGetter,
+      fileManager,
+      enrollmentCreatorService,
+      enrollmentGetter,
+    ),
+  inject: [
+    BusinessUnitGetter,
+    VirtualCampusGetter,
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    TransferAcademicRecordTransactionalService,
+    AcademicRecordGetter,
+    FileManager,
+    EnrollmentCreator,
+    EnrollmentGetter,
+  ],
+};
 
 export const academicRecordHandlers = [
   GetAllAcademicRecordModalitiesHandler,
@@ -84,4 +125,5 @@ export const academicRecordHandlers = [
   getAcademicRecordDetailHandler,
   getStudentAcademicRecordHandler,
   GetAllAcademicRecordStatusHandler,
+  transferAcademicRecordHandler,
 ];

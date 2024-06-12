@@ -6,18 +6,20 @@ import { AdministrativeGroupGetter } from '#student/domain/service/administrativ
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
+import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
+import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
+import { TransferAcademicRecordTransactionalService } from '#student/domain/service/transfer-academic-record.transactional-service';
+import datasource from '#config/ormconfig';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { CreateStudentFromSGATransactionService } from '#student/domain/service/create-student-from-SGA.transactional-service';
 import { CreateStudentFromSGATyperomTransactionService } from '#student/infrastructure/service/create-student-from-SGA-typeorm-transaction.service';
 import { CreateLmsStudentHandler } from '#/lms-wrapper/application/create-lms-student/create-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
-import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
-import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
-import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { CreateStudentFromCRMTypeormTransactionalService } from '#student/infrastructure/service/create-student-from-crm.typeorm-transactional-service';
-import datasource from '#config/ormconfig';
 import { ConfigService } from '@nestjs/config';
+import { TransferAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/transfer-academic-record.typeorm-transactional-service';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -44,6 +46,22 @@ const subjectCallGetter = {
     new SubjectCallGetter(repository),
   inject: [SubjectCallRepository],
 };
+const enrollmentCreator = {
+  provide: EnrollmentCreator,
+  useFactory: (
+    repository: SubjectRepository,
+    uuidGenerator: UUIDGeneratorService,
+  ): EnrollmentCreator => new EnrollmentCreator(repository, uuidGenerator),
+  inject: [SubjectRepository, UUIDGeneratorService],
+};
+
+const transferAcademicRecordTransactionalService = {
+  provide: TransferAcademicRecordTransactionalService,
+  useFactory: (): TransferAcademicRecordTypeormTransactionalService =>
+    new TransferAcademicRecordTypeormTransactionalService(datasource),
+  inject: [],
+};
+
 const createStudentFromSGATransactionService = {
   provide: CreateStudentFromSGATransactionService,
   useFactory: (
@@ -117,6 +135,8 @@ export const services = [
   enrollmentGetter,
   administrativeGroupGetter,
   subjectCallGetter,
+  enrollmentCreator,
+  transferAcademicRecordTransactionalService,
   createStudentFromSGATransactionService,
   createStudentFromCRMTransactionalService,
   enrollmentCreatorService,

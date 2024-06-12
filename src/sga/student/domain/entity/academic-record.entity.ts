@@ -147,4 +147,10 @@ export class AcademicRecord extends BaseEntity {
     this.updatedAt = new Date();
     this._updatedBy = adminUser;
   }
+
+  updateStatus(status: AcademicRecordStatusEnum, adminUser: AdminUser) {
+    this._status = status;
+    this.updatedAt = new Date();
+    this._updatedBy = adminUser;
+  }
 }

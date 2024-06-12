@@ -8,6 +8,8 @@ import { EnrollmentRepository } from '#student/domain/repository/enrollment.repo
 import { EnrollmentPostgresRepository } from '#student/infrastructure/repository/enrollment.postgres-repository';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 import { SubjectCallPostgresRepository } from '#student/infrastructure/repository/subject-call.postgres-repository';
+import { AcademicRecordTransferRepository } from '#student/domain/repository/academic-record-transfer.repository';
+import { AcademicRecordTransferPostgresRepository } from '#student/infrastructure/repository/academic-record-transfer.postgres-repository';
 
 export const repositories = [
   {
@@ -29,5 +31,9 @@ export const repositories = [
   {
     provide: SubjectCallRepository,
     useClass: SubjectCallPostgresRepository,
+  },
+  {
+    provide: AcademicRecordTransferRepository,
+    useClass: AcademicRecordTransferPostgresRepository,
   },
 ];

@@ -1,6 +1,7 @@
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentNotFoundException } from '#student/shared/exception/enrollment-not-found.exception';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Student } from '#shared/domain/entity/student.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
@@ -15,6 +16,12 @@ export class EnrollmentGetter {
     }
 
     return enrollment;
+  }
+
+  public async getByAcademicRecord(
+    academicRecord: AcademicRecord,
+  ): Promise<Enrollment[]> {
+    return await this.repository.getByAcademicRecord(academicRecord);
   }
 
   public async getByStudent(student: Student): Promise<Enrollment[]> {

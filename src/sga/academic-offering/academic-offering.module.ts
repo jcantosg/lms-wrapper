@@ -6,16 +6,17 @@ import { handlers } from '#academic-offering/handlers';
 import { BusinessUnitModule } from '#business-unit/business-unit.module';
 import { controllers } from '#academic-offering/controllers';
 import { services } from '#academic-offering/services';
-import { FileManager } from '#shared/domain/file-manager/file-manager';
-import { ConfigService } from '@nestjs/config';
-import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
-import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
 import { EdaeUserModule } from '#edae-user/edae-user.module';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dispatcher.service';
 import { listeners } from '#academic-offering/listeners';
 import { SGAStudentModule } from '#student/student.module';
 import { LmsWrapperModule } from '#/lms-wrapper/lms-wrapper.module';
+import { SharedModule } from '#shared/shared.module';
+import { FileManager } from '#shared/domain/file-manager/file-manager';
+import { ConfigService } from '@nestjs/config';
+import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
+import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
 
 const fileManager: FactoryProvider = {
   provide: FileManager,
@@ -43,12 +44,13 @@ const fileManager: FactoryProvider = {
     EdaeUserModule,
     SGAStudentModule,
     LmsWrapperModule,
+    SharedModule,
   ],
   providers: [
+    fileManager,
     ...repositories,
     ...handlers,
     ...services,
-    fileManager,
     {
       provide: EventDispatcher,
       useClass: NestEventDispatcher,
