@@ -1,6 +1,7 @@
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 interface GetStudentAcademicRecordResponseBody {
   id: string;
@@ -11,6 +12,7 @@ interface GetStudentAcademicRecordResponseBody {
     subjects: {
       id: string;
       lmsId: number;
+      type: SubjectType;
       name: string;
       unitsNumber: number;
       image: string | null;
@@ -41,6 +43,7 @@ export class GetStudentAcademicRecordResponse {
                 id: subject.id,
                 lmsId: subject.lmsCourse!.value.id,
                 name: subject.name,
+                type: subject.type,
                 image: subject.image,
                 unitsNumber: subject.lmsCourse!.value.modules.length,
                 teacher: {

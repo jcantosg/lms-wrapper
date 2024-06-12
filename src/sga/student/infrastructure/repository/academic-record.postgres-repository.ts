@@ -184,7 +184,9 @@ export class AcademicRecordPostgresRepository
               programBlock: true,
               periodBlock: true,
             },
-            subjects: true,
+            subjects: {
+              defaultTeacher: true,
+            },
           },
         },
       },
