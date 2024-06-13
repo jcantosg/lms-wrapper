@@ -27,14 +27,14 @@ export class GetAllInternalGroupsCriteria extends Criteria {
         'academic_program',
       ),
       new Filter(
-        'name',
+        'id',
         query.academicPeriod,
         FilterOperators.LIKE,
         GroupOperator.AND,
         'academic_period',
       ),
       new Filter(
-        'name',
+        'id',
         query.subject,
         FilterOperators.LIKE,
         GroupOperator.AND,

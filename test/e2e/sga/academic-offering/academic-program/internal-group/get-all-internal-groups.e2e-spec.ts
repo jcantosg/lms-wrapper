@@ -88,7 +88,7 @@ describe('/academic-program/906d5184-3204-4847-b351-6267ce7f97a5/internal-group 
     const response = await supertest(httpServer)
       .get(path)
       .query({
-        subject: 'subject',
+        subject: GetAllInternalGroupsE2eSeed.subjectId,
       })
       .auth(superAdminAccessToken, { type: 'bearer' });
 

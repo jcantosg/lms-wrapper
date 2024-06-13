@@ -25,9 +25,10 @@ export class GetInternalGroupsCriteria extends Criteria {
         query.startDate,
         FilterOperators.EQUALS,
         GroupOperator.AND,
+        'period-block',
       ),
       new Filter(
-        'name',
+        'id',
         query.businessUnit,
         FilterOperators.LIKE,
         GroupOperator.AND,
@@ -41,14 +42,14 @@ export class GetInternalGroupsCriteria extends Criteria {
         'academic_period',
       ),
       new Filter(
-        'name',
+        'id',
         query.academicProgram,
         FilterOperators.LIKE,
         GroupOperator.AND,
         'academic_program',
       ),
       new Filter(
-        'name',
+        'id',
         query.subject,
         FilterOperators.LIKE,
         GroupOperator.AND,

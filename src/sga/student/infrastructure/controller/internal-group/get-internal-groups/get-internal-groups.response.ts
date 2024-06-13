@@ -51,12 +51,12 @@ export class GetInternalGroupsResponse {
               name: internalGroup.academicPeriod.name,
             },
             academicProgram: {
-              id: internalGroup.academicPeriod.id,
-              name: internalGroup.academicPeriod.name,
+              id: internalGroup.academicProgram.id,
+              name: internalGroup.academicProgram.name,
             },
             subject: {
-              id: internalGroup.academicPeriod.id,
-              name: internalGroup.academicPeriod.name,
+              id: internalGroup.subject.id,
+              name: internalGroup.subject.name,
             },
           };
         },

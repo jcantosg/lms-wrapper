@@ -31,6 +31,7 @@ const fieldOrderByMapping: Record<string, string> = {
   academicYear: 'period_block.academicYear',
   startMonth: 'period_block.startMonth',
   blockName: 'period_block.name',
+  startDate: 'period_block.startDate',
 };
 
 export class TypeOrmRepository<T extends ObjectLiteral> {

@@ -4,16 +4,11 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 export interface GetInternalGroupResponse {
   id: string;
   code: string;
-  startDate: Date;
-  businessUnit: {
+  block: {
     id: string;
     name: string;
   };
   academicProgram: {
-    id: string;
-    name: string;
-  };
-  academicPeriod: {
     id: string;
     name: string;
   };
@@ -41,14 +36,9 @@ export class GetInternalGroupsResponse {
           return {
             id: internalGroup.id,
             code: internalGroup.code,
-            startDate: internalGroup.periodBlock.startDate,
-            businessUnit: {
-              id: internalGroup.businessUnit.id,
-              name: internalGroup.businessUnit.name,
-            },
-            academicPeriod: {
-              id: internalGroup.academicPeriod.id,
-              name: internalGroup.academicPeriod.name,
+            block: {
+              id: internalGroup.periodBlock.id,
+              name: internalGroup.periodBlock.name,
             },
             academicProgram: {
               id: internalGroup.academicPeriod.id,

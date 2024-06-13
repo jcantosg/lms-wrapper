@@ -87,7 +87,7 @@ describe('/internal-group (GET)', () => {
     const response = await supertest(httpServer)
       .get(path)
       .query({
-        subject: 'subject',
+        subject: GetAllInternalGroupsE2eSeed.subjectId,
       })
       .auth(superAdminAccessToken, { type: 'bearer' });
 
