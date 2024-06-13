@@ -3,12 +3,13 @@ import Joi from 'joi';
 
 const orderByFields = [
   'code',
-  'subject',
+  'subjectName',
   'academicProgram',
   'academicPeriod',
-  'businessUnit',
+  'busniessUnit',
   'startDate',
 ];
+
 export const getInternalGroupsSchema = createCollectionSchema(orderByFields, {
   code: Joi.string().optional(),
   subject: Joi.string().optional(),

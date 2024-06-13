@@ -1,7 +1,7 @@
 import { createCollectionSchema } from '#/sga/shared/infrastructure/config/validation-schema/collection-schema';
 import Joi from 'joi';
 
-const orderByFields = ['code', 'subject', 'academicPeriod', 'block'];
+const orderByFields = ['code', 'subjectName', 'academicPeriod', 'blockName'];
 
 export const searchInternalGroupsSchema = createCollectionSchema(
   orderByFields,

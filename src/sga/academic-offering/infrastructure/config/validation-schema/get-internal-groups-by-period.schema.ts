@@ -3,7 +3,7 @@ import Joi from 'joi';
 
 const orderByFields = [
   'code',
-  'subject',
+  'subjectName',
   'academicProgram',
   'businessUnit',
   'startDate',
