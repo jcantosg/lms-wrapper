@@ -18,6 +18,8 @@ import { PasswordEncoder } from '#shared/domain/service/password-encoder.service
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { CreateStudentFromCRMTypeormTransactionalService } from '#student/infrastructure/service/create-student-from-crm.typeorm-transactional-service';
+import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/administrative-group-status-student.getter.service';
+import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 import { ConfigService } from '@nestjs/config';
 import { TransferAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/transfer-academic-record.typeorm-transactional-service';
 
@@ -130,6 +132,19 @@ const enrollmentCreatorService = {
   inject: [SubjectRepository, UUIDGeneratorService],
 };
 
+const administrativeGroupStatusStudentGetterService = {
+  provide: AdministrativeGroupStatusStudentGetter,
+  useFactory: (
+    enrollmentRepository: EnrollmentRepository,
+    subjectUpToBlockGetter: SubjectUpToBlockGetter,
+  ): AdministrativeGroupStatusStudentGetter =>
+    new AdministrativeGroupStatusStudentGetter(
+      enrollmentRepository,
+      subjectUpToBlockGetter,
+    ),
+  inject: [EnrollmentRepository, SubjectUpToBlockGetter],
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
@@ -140,4 +155,5 @@ export const services = [
   createStudentFromSGATransactionService,
   createStudentFromCRMTransactionalService,
   enrollmentCreatorService,
+  administrativeGroupStatusStudentGetterService,
 ];

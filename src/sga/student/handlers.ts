@@ -35,6 +35,10 @@ import { CreateStudentFromSGATransactionService } from '#student/domain/service/
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { GetAllStudentsByAdministrativeGroupHandler } from '#student/application/get-all-students-by-administrative-group/get-all-students-by-administrative-group.handler';
+import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
+import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/administrative-group-status-student.getter.service';
+import { SearchStudentsByAdministrativeGroupHandler } from '#student/application/search-students-by-administrative-group/search-students-by-administrative-group.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -221,6 +225,50 @@ const createStudentFromCRMHandler = {
   ],
 };
 
+const getAllStudentsByAdministrativeGroupHandler = {
+  provide: GetAllStudentsByAdministrativeGroupHandler,
+  useFactory: (
+    studentsRepository: StudentRepository,
+    academicRecordRepository: AcademicRecordRepository,
+    administrativeGroupGetter: AdministrativeGroupGetter,
+    administrativeGroupStatusStudentGetter: AdministrativeGroupStatusStudentGetter,
+  ): GetAllStudentsByAdministrativeGroupHandler =>
+    new GetAllStudentsByAdministrativeGroupHandler(
+      studentsRepository,
+      academicRecordRepository,
+      administrativeGroupGetter,
+      administrativeGroupStatusStudentGetter,
+    ),
+  inject: [
+    StudentRepository,
+    AcademicRecordRepository,
+    AdministrativeGroupGetter,
+    AdministrativeGroupStatusStudentGetter,
+  ],
+};
+
+const searchStudentsByAdministrativeGroupHandler = {
+  provide: SearchStudentsByAdministrativeGroupHandler,
+  useFactory: (
+    studentsRepository: StudentRepository,
+    academicRecordRepository: AcademicRecordRepository,
+    administrativeGroupGetter: AdministrativeGroupGetter,
+    administrativeGroupStatusStudentGetter: AdministrativeGroupStatusStudentGetter,
+  ): SearchStudentsByAdministrativeGroupHandler =>
+    new SearchStudentsByAdministrativeGroupHandler(
+      studentsRepository,
+      academicRecordRepository,
+      administrativeGroupGetter,
+      administrativeGroupStatusStudentGetter,
+    ),
+  inject: [
+    StudentRepository,
+    AcademicRecordRepository,
+    AdministrativeGroupGetter,
+    AdministrativeGroupStatusStudentGetter,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -238,4 +286,6 @@ export const handlers = [
   searchInternalGroupsHandler,
   ...subjectCallHandlers,
   createStudentFromCRMHandler,
+  getAllStudentsByAdministrativeGroupHandler,
+  searchStudentsByAdministrativeGroupHandler,
 ];

@@ -123,6 +123,7 @@ export class StudentPostgresRepository
   ): Promise<Student[]> {
     const aliasQuery = 'student';
     const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
     const baseRepository = isSuperAdmin
       ? this
       : await this.filterBusinessUnits(
@@ -131,7 +132,7 @@ export class StudentPostgresRepository
           adminUserBusinessUnits,
         );
 
-    return await (
+    const rawStudents = await (
       await baseRepository.convertCriteriaToQueryBuilder(
         criteria,
         queryBuilder,
@@ -140,7 +141,21 @@ export class StudentPostgresRepository
     )
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .applyPagination(criteria, queryBuilder)
-      .getMany(queryBuilder);
+      .getRawMany(queryBuilder);
+
+    const studentIdsInOrder = [
+      ...new Set(rawStudents.map((row) => row.student_id)),
+    ];
+
+    const queryBuilderEntities = this.initializeQueryBuilder('studentQuery');
+
+    const students = await queryBuilderEntities
+      .whereInIds(studentIdsInOrder)
+      .getMany();
+
+    return studentIdsInOrder.map((id) =>
+      students.find((student) => student.id === id),
+    ) as Student[];
   }
 
   private initializeQueryBuilder(aliasQuery: string) {
@@ -151,12 +166,21 @@ export class StudentPostgresRepository
       'academicRecords',
     );
     queryBuilder.leftJoinAndSelect(
+      'academicRecords.academicPeriod',
+      'academic_record_academic_period',
+    );
+
+    queryBuilder.leftJoinAndSelect(
       'academicRecords.academicProgram',
       'academic_record_academic_program',
     );
     queryBuilder.leftJoinAndSelect(
       'academicRecords.businessUnit',
       'academic_record_business_unit',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.administrativeGroups`,
+      'administrativeGroups',
     );
 
     return queryBuilder;

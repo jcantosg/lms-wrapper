@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { Student } from '#shared/domain/entity/student.entity';
 
@@ -144,6 +145,21 @@ export class AcademicRecordPostgresRepository
         ids: adminUserBusinessUnits,
       })
       .getMany();
+  }
+
+  async getStudentAcademicRecordByPeriodAndProgram(
+    studentId: string,
+    academicPeriodId: string,
+    academicProgramId: string,
+  ): Promise<AcademicRecord | null> {
+    return await this.repository.findOne({
+      where: {
+        student: { id: studentId },
+        academicPeriod: { id: academicPeriodId },
+        academicProgram: { id: academicProgramId },
+        status: Not(AcademicRecordStatusEnum.CANCELLED),
+      },
+    });
   }
 
   async matching(criteria: Criteria): Promise<AcademicRecord[]> {

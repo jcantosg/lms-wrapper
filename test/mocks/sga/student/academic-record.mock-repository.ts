@@ -6,6 +6,7 @@ export class AcademicRecordMockRepository implements AcademicRecordRepository {
   existsById = jest.fn();
   getByAdminUser = jest.fn();
   getStudentAcademicRecords = jest.fn();
+  getStudentAcademicRecordByPeriodAndProgram = jest.fn();
   matching = jest.fn();
   getByStudent = jest.fn();
 }

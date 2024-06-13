@@ -49,7 +49,7 @@ export class EnrollmentPostgresRepository
   ): Promise<Enrollment[]> {
     return await this.repository.find({
       where: { academicRecord: { id: academicRecord.id } },
-      relations: { calls: true },
+      relations: { calls: true, subject: true },
     });
   }
 

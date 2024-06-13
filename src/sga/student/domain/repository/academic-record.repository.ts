@@ -21,6 +21,12 @@ export abstract class AcademicRecordRepository {
     isSuperAdmin: boolean,
   ): Promise<AcademicRecord[]>;
 
+  abstract getStudentAcademicRecordByPeriodAndProgram(
+    studentId: string,
+    academicPeriodId: string,
+    academicProgramId: string,
+  ): Promise<AcademicRecord | null>;
+
   abstract matching(criteria: Criteria): Promise<AcademicRecord[]>;
 
   abstract getByStudent(

@@ -12,6 +12,8 @@ import { AddInternalGroupToAcademicPeriodController } from '#student/infrastruct
 import { GetInternalGroupsController } from '#student/infrastructure/controller/internal-group/get-internal-groups/get-internal-groups.controller';
 import { SearchInternalGroupsController } from '#student/infrastructure/controller/internal-group/search-internal-groups.controller';
 import { subjectCallControllers } from '#student/infrastructure/controller/subject-call/controllers';
+import { GetAllStudentsByAdministrativeGroupController } from '#student/infrastructure/controller/get-all-students-by-administrative-group/get-all-students-by-administrative-group.controller';
+import { SearchStudentsByAdministrativeGroupController } from '#student/infrastructure/controller/search-students-by-administrative-group/search-students-by-administrative-group.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -28,4 +30,6 @@ export const controllers = [
   GetInternalGroupsController,
   SearchInternalGroupsController,
   ...subjectCallControllers,
+  GetAllStudentsByAdministrativeGroupController,
+  SearchStudentsByAdministrativeGroupController,
 ];

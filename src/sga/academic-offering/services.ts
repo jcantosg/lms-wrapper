@@ -21,6 +21,7 @@ import { PeriodBlockRepository } from '#academic-offering/domain/repository/peri
 import { CreateAcademicPeriodTyperomTransactionService } from '#academic-offering/infrastructure/service/create-academic-period-transaction.service';
 import { CreateAcademicProgramTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-program.transactional-service';
 import { CreateAcademicPeriodTransactionService } from '#academic-offering/domain/service/academic-program/create-academic-period.transactional-service';
+import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 
 const evaluationTypeGetter = {
   provide: EvaluationTypeGetter,
@@ -90,6 +91,16 @@ const createAcademicPeriodTransactionalService = {
     new CreateAcademicPeriodTyperomTransactionService(datasource),
 };
 
+const subjectUpToBlockGetterService = {
+  provide: SubjectUpToBlockGetter,
+  useFactory: (
+    academicProgramGetter: AcademicProgramGetter,
+    programBlockGetter: ProgramBlockGetter,
+  ): SubjectUpToBlockGetter =>
+    new SubjectUpToBlockGetter(academicProgramGetter, programBlockGetter),
+  inject: [AcademicProgramGetter, ProgramBlockGetter],
+};
+
 export const services = [
   evaluationTypeGetter,
   subjectGetter,
@@ -103,4 +114,5 @@ export const services = [
   createAcademicProgramTransactionalService,
   periodBlockGetterService,
   createAcademicPeriodTransactionalService,
+  subjectUpToBlockGetterService,
 ];

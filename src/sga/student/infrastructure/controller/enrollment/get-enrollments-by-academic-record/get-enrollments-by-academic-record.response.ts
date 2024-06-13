@@ -19,6 +19,7 @@ interface GetEnrollmentByAcademicRecordResponse {
     finalGrade: SubjectCallFinalGradeEnum;
     status: SubjectCallStatusEnum;
   }[];
+  maxCalls: number;
 }
 
 export class GetEnrollmentsByAcademicRecordResponse {
@@ -41,6 +42,7 @@ export class GetEnrollmentsByAcademicRecordResponse {
             status: call.status,
           };
         }),
+        maxCalls: enrollment.maxCalls,
       };
     });
   }

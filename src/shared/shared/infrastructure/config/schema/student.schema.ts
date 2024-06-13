@@ -170,5 +170,18 @@ export const studentSchema = new EntitySchema<Student>({
       target: 'AcademicRecord',
       inverseSide: 'student',
     },
+    administrativeGroups: {
+      type: 'many-to-many',
+      target: 'AdministrativeGroup',
+      joinTable: {
+        name: 'administrative_group_students',
+        joinColumn: {
+          name: 'student_id',
+        },
+        inverseJoinColumn: {
+          name: 'administrative_group_id',
+        },
+      },
+    },
   },
 });

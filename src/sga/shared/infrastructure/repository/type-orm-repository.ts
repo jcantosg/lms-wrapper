@@ -19,7 +19,7 @@ const fieldOrderByMapping: Record<string, string> = {
   businessUnit: 'business_unit.name',
   officialCode: 'title.officialCode',
   subjectOfficialCode: 'subjects.officialCode',
-  identityDocumentNumber: `"student".identityDocument->>'identityDocumentNumber'`,
+  identityDocumentNumber: `"student".identity_document->>'identityDocumentNumber'`,
   subjectName: 'subject.name',
   programBlock: 'programBlock.name',
   hours: 'subject.hours',
@@ -213,6 +213,10 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
 
   async getMany(queryBuilder: SelectQueryBuilder<T>): Promise<T[]> {
     return await queryBuilder.getMany();
+  }
+
+  async getRawMany(queryBuilder: SelectQueryBuilder<T>) {
+    return await queryBuilder.getRawMany();
   }
 
   async getCount(queryBuilder: SelectQueryBuilder<T>): Promise<number> {

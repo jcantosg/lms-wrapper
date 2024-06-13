@@ -10,6 +10,7 @@ import {
 } from '#/sga/shared/domain/value-object/identity-document';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 
 export const DEFAULT_PASSWORD = 'Universa3€';
@@ -49,6 +50,7 @@ export class Student extends BaseEntity {
     private _academicRecords: AcademicRecord[],
     private _password: string | null,
     private _lmsStudent: LmsStudent | null,
+    private _administrativeGroups: AdministrativeGroup[],
   ) {
     super(id, new Date(), new Date());
   }
@@ -309,6 +311,14 @@ export class Student extends BaseEntity {
     this._password = value;
   }
 
+  public get administrativeGroups(): AdministrativeGroup[] {
+    return this._administrativeGroups;
+  }
+
+  public set administrativeGroups(value: AdministrativeGroup[]) {
+    this._administrativeGroups = value;
+  }
+
   static createFromSGA(
     id: string,
     name: string,
@@ -354,6 +364,7 @@ export class Student extends BaseEntity {
       [],
       password,
       lmsStudent,
+      [],
     );
   }
 
@@ -411,6 +422,7 @@ export class Student extends BaseEntity {
       [],
       password,
       lmsStudent,
+      [],
     );
   }
 
