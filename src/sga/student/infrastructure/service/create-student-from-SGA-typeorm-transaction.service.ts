@@ -9,9 +9,11 @@ import {
 } from '#student/domain/service/create-student-from-SGA.transactional-service';
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { stringWithoutWhitespaces } from '#shared/domain/lib/string-without-whitespaces';
 
 export class CreateStudentFromSGATyperomTransactionService extends CreateStudentFromSGATransactionService {
   private logger: Logger;
+
   constructor(
     private readonly datasource: DataSource,
     private readonly createLmsStudentHandler: CreateLmsStudentHandler,
@@ -32,7 +34,9 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
     try {
       const lmsStudent = await this.createLmsStudentHandler.handle(
         new CreateLmsStudentCommand(
-          `${entities.student.name}-${entities.student.surname}-${entities.student.surname2}`.toLowerCase(),
+          `${stringWithoutWhitespaces(entities.student.name)}-${
+            entities.student.surname
+          }-${entities.student.surname2}`.toLowerCase(),
           entities.student.name,
           `${entities.student.surname} ${entities.student.surname2}`,
           entities.student.email,

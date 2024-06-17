@@ -1,9 +1,9 @@
 import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 import { LmsWrapper } from '#/lms-wrapper/domain/service/lms-wrapper';
-import { stringToCamelCase } from '#shared/domain/lib/stringToCamelCase';
+import { stringToCamelCase } from '#shared/domain/lib/string-to-camel-case';
 
-const mooodleCourseContentIcon: { [id: string]: string } = {
+const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
   infografias: '/infografias.svg',
   clasesInteractivas: '/clases_interactivas.svg',
@@ -73,7 +73,7 @@ export class MoodleWrapper implements LmsWrapper {
             id: courseContentResponse.id,
             name: stringToCamelCase(courseContentResponse.name),
             image:
-              mooodleCourseContentIcon[
+              moodleCourseContentIcon[
                 stringToCamelCase(courseContentResponse.name)
               ] ?? '/courseContent.svg',
           };
