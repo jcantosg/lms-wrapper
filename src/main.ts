@@ -1,11 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
-import { VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
+import {
+  Logger as NestJsLogger,
+  VERSION_NEUTRAL,
+  VersioningType,
+} from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
+  const logger = new NestJsLogger();
   const app = await NestFactory.create(AppModule);
+  process.on('unhandledRejection', (error: Error) => {
+    logger.error(`ERROR on async function: ${error.name} ${error.message}`);
+  });
 
   app.useLogger(app.get(Logger));
   app.enableVersioning({
