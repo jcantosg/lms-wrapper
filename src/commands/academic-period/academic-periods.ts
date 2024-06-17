@@ -1,3 +1,16 @@
+export const periodBlocks = [
+  {
+    name: 'Bloque 1',
+    startDate: new Date('2024-02-01'),
+    endDate: new Date('2024-08-01'),
+  },
+  {
+    name: 'Bloque 2',
+    startDate: new Date('2024-08-01'),
+    endDate: new Date('2025-02-23'),
+  },
+];
+
 export const academicPeriods = [
   {
     id: '3b2963e9-4f39-46ed-a4d6-827f8dc8ce7c',
@@ -6,7 +19,7 @@ export const academicPeriods = [
     startDate: '2024-02-01',
     endDate: '2025-02-23',
     businessUnit: 'BARCELONA',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
   {
@@ -16,7 +29,7 @@ export const academicPeriods = [
     startDate: '2023-09-01',
     endDate: '2025-08-01',
     businessUnit: 'BARCELONA',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
   {
@@ -36,7 +49,7 @@ export const academicPeriods = [
     startDate: '2024-02-01',
     endDate: '2025-02-23',
     businessUnit: 'BARCELONA',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
   {
@@ -46,7 +59,7 @@ export const academicPeriods = [
     startDate: '2023-09-01',
     endDate: '2025-08-01',
     businessUnit: 'MADRID',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
   {
@@ -56,7 +69,7 @@ export const academicPeriods = [
     startDate: '2023-09-01',
     endDate: '2025-08-01',
     businessUnit: 'MURCIA',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
   {
@@ -66,7 +79,7 @@ export const academicPeriods = [
     startDate: '2023-09-01',
     endDate: '2025-06-27',
     businessUnit: 'BARCELONA2',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
   {
@@ -76,7 +89,7 @@ export const academicPeriods = [
     startDate: '2023-12-18',
     endDate: '2026-06-30',
     businessUnit: 'BARCELONA2',
-    blocksNumber: 4,
+    blocksNumber: 2,
     user: 'sga@universae.com',
   },
 ];

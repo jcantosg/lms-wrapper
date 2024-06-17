@@ -6,7 +6,7 @@ const orderByFields = [
   'subjectName',
   'academicProgram',
   'academicPeriod',
-  'busniessUnit',
+  'businessUnit',
   'startDate',
 ];
 

@@ -12,6 +12,7 @@ import { seedEdaeUsers } from '#commands/edae-user/seed-edae-users';
 import { seedAcademicPeriods } from '#commands/academic-period/seed-academic-periods';
 import { seedTitles } from '#commands/title/seed-titles';
 import { seedAcademicPrograms } from '#commands/academic-program/seed-academic-programs';
+import { createAcademicRelations } from '#commands/academic-program/create-academic-relations';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -31,6 +32,7 @@ async function bootstrap() {
   await seedAcademicPeriods(logger);
   await seedTitles(logger);
   await seedAcademicPrograms(logger);
+  await createAcademicRelations(logger);
 
   await datasource.destroy();
   await app.close();
