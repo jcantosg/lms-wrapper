@@ -123,7 +123,6 @@ export class StudentPostgresRepository
   ): Promise<Student[]> {
     const aliasQuery = 'student';
     const queryBuilder = this.initializeQueryBuilder(aliasQuery);
-
     const baseRepository = isSuperAdmin
       ? this
       : await this.filterBusinessUnits(
@@ -139,13 +138,11 @@ export class StudentPostgresRepository
         aliasQuery,
       )
     )
-      .applyOrder(criteria, queryBuilder, aliasQuery)
-      .applyPagination(criteria, queryBuilder)
+      .applyOrder(criteria, queryBuilder, aliasQuery, true)
+      .applyPaginationWithLimit(criteria, queryBuilder)
       .getRawMany(queryBuilder);
 
-    const studentIdsInOrder = [
-      ...new Set(rawStudents.map((row) => row.student_id)),
-    ];
+    const studentIdsInOrder = rawStudents.map((student) => student.student_id);
 
     const queryBuilderEntities = this.initializeQueryBuilder('studentQuery');
 

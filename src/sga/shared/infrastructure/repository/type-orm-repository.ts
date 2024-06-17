@@ -227,12 +227,18 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     criteria: Criteria,
     queryBuilder: SelectQueryBuilder<T>,
     aliasQuery: string,
+    orderByJsonField: boolean = false,
   ): TypeOrmRepository<T> {
     if (criteria.order!.hasOrderType() && criteria.order!.hasOrderBy()) {
       const orderByField = criteria.order!.orderBy;
       const orderBy = !criteria.order!.hasOrderNested()
         ? fieldOrderByMapping[orderByField] || `${aliasQuery}.${orderByField}`
         : fieldOrderByMapping[orderByField] || `${orderByField}`;
+
+      if (orderByJsonField) {
+        queryBuilder.select([`${aliasQuery}.id`, orderBy]);
+        queryBuilder.distinct(true);
+      }
 
       queryBuilder.addOrderBy(
         orderBy,
@@ -252,6 +258,17 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     queryBuilder
       .skip((criteria.page! - 1) * criteria.limit!)
       .take(criteria.limit!);
+
+    return this;
+  }
+
+  applyPaginationWithLimit(
+    criteria: Criteria,
+    queryBuilder: SelectQueryBuilder<T>,
+  ): TypeOrmRepository<T> {
+    queryBuilder
+      .offset((criteria.page! - 1) * criteria.limit!)
+      .limit(criteria.limit!);
 
     return this;
   }
