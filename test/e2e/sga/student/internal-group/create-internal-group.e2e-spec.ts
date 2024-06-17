@@ -97,7 +97,7 @@ describe('/internal-group/batch (POST)', () => {
     const internalGroups = await internalGroupRepository.find({});
 
     expect(internalGroups.length).toBe(1);
-    expect(internalGroups[0].code).toBe('MAD-INAScodeM-23-250');
+    expect(internalGroups[0].code).toBe('MAD-INAS code M-23-25 0');
   });
 
   afterAll(async () => {

@@ -154,7 +154,7 @@ describe('Create Internal Groups Batch Handler Test', () => {
     expect(saveSpy).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
-          code: `${command.prefix}${academicProgram.code}${subject.code}${academicPeriod.code}0${command.sufix}`,
+          code: `${command.prefix} ${academicProgram.code} ${subject.code} ${academicPeriod.code} 0 ${command.sufix}`,
         }),
       ]),
     );
@@ -186,7 +186,7 @@ describe('Create Internal Groups Batch Handler Test', () => {
     expect(saveSpy).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
-          code: `${command.prefix}${academicProgram.code}${subject.code}${academicPeriod.code}1${command.sufix}`,
+          code: `${command.prefix} ${academicProgram.code} ${subject.code} ${academicPeriod.code} 1 ${command.sufix}`,
         }),
       ]),
     );

@@ -70,11 +70,11 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
                 internalGroups.push(
                   InternalGroup.create(
                     this.uuidGenerator.generate(),
-                    `${command.prefix ?? ''}${academicProgram.code}${
-                      subject.code
-                    }${academicPeriod.code}${existentInternalGroups.length}${
-                      command.sufix ?? ''
-                    }`,
+                    `${command.prefix ?? ''}${command.prefix ? ' ' : ''}${
+                      academicProgram.code
+                    } ${subject.code} ${academicPeriod.code} ${
+                      existentInternalGroups.length
+                    }${command.sufix ? ' ' : ''}${command.sufix ?? ''}`,
                     [],
                     [],
                     academicPeriod,
