@@ -224,12 +224,15 @@ export class SubjectPostgresRepository
       .leftJoinAndSelect(
         Enrollment,
         'enrollments',
-        'enrollments.subject_id = subjects.id',
+        'enrollments.subject_id = subjects.id AND enrollments.academic_record_id = :id',
+        { id: academicRecord.id },
       )
-      .andWhere('enrollments.subject_id  IS NULL')
-      .andWhere('enrollments.academic_record_id = :id', {
-        id: academicRecord.id,
-      });
+      .innerJoin('subjects.programBlocks', 'programBlocks')
+      .innerJoin('programBlocks.academicProgram', 'academicProgram')
+      .andWhere('academicProgram.id = :programId', {
+        programId: academicRecord.academicProgram.id,
+      })
+      .andWhere('enrollments.subject_id IS NULL');
 
     return await queryBuilder.getMany();
   }
