@@ -36,8 +36,9 @@ export class GetStudentAcademicRecordResponse {
           return {
             id: programBlock.id,
             name: programBlock.name,
-            isBlock:
-              programBlock.blockRelation!.periodBlock.startDate <= new Date(),
+            isBlock: !(
+              programBlock.blockRelation!.periodBlock.startDate <= new Date()
+            ),
             subjects: programBlock.subjects.map((subject: Subject) => {
               return {
                 id: subject.id,
