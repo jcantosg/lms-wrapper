@@ -15,6 +15,7 @@ import { GetStudentAcademicRecordsHandler } from '#/student/academic-offering/ac
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { GetStudentAcademicRecordHandler } from '#/student/academic-offering/academic-record/application/get-student-academic-record/get-student-academic-record.handler';
+import { ExpireStudentRefreshTokenHandler } from '#/student/student/application/expire-refresh-token/expire-student-refresh-token.handler';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -98,10 +99,21 @@ const getAcademicRecordHandler = {
   inject: [AcademicRecordGetter],
 };
 
+const expireStudentRefreshTokenHandler = {
+  provide: ExpireStudentRefreshTokenHandler,
+  useFactory: (
+    studentGetter: StudentGetter,
+    refreshTokenRepository: StudentRefreshTokenRepository,
+  ): ExpireStudentRefreshTokenHandler =>
+    new ExpireStudentRefreshTokenHandler(studentGetter, refreshTokenRepository),
+  inject: [StudentGetter, StudentRefreshTokenRepository],
+};
+
 export const handlers = [
   createRefreshTokenHandler,
   generateRecoveryPasswordTokenHandler,
   updateStudentPasswordHandler,
   getStudentAcademicRecordsHandler,
   getAcademicRecordHandler,
+  expireStudentRefreshTokenHandler,
 ];
