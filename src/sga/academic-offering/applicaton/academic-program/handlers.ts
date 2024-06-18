@@ -24,7 +24,6 @@ import { CreateAcademicProgramTransactionService } from '#academic-offering/doma
 import { GetSubjectsByAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/get-subjects-by-academic-program/get-subjects-by-academic-program.handler';
 import { GetAllInternalGroupsHandler } from '#academic-offering/applicaton/academic-program/get-all-internal-groups/get-all-internal-groups.handler';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
-import { SearchInternalGroupsHandler } from '#academic-offering/applicaton/academic-program/search-internal-groups/search-internal-groups.handler';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -208,13 +207,6 @@ const getAllInternalGroupsHandler = {
   inject: [InternalGroupRepository],
 };
 
-const searchInternalGroupsHandler = {
-  provide: SearchInternalGroupsHandler,
-  useFactory: (internalGroupRepository: InternalGroupRepository) =>
-    new SearchInternalGroupsHandler(internalGroupRepository),
-  inject: [InternalGroupRepository],
-};
-
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -231,5 +223,4 @@ export const academicProgramHandlers = [
   getAcademicProgramsPlainByPeriodHandler,
   getSubjectsByAcademicProgramHandler,
   getAllInternalGroupsHandler,
-  searchInternalGroupsHandler,
 ];

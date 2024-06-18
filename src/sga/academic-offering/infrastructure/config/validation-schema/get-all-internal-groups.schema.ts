@@ -7,5 +7,6 @@ export const getAllInternalGroupsSchema = createCollectionSchema(
   {
     subject: Joi.string().optional(),
     academicPeriod: Joi.string().optional(),
+    code: Joi.string().optional(),
   },
 );

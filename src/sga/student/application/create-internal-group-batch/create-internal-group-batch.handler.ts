@@ -11,6 +11,7 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 
 export class CreateInternalGroupsBatchHandler implements CommandHandler {
   constructor(
@@ -72,9 +73,13 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
                     this.uuidGenerator.generate(),
                     `${command.prefix ?? ''}${command.prefix ? ' ' : ''}${
                       academicProgram.code
-                    } ${subject.code} ${academicPeriod.code} ${
-                      existentInternalGroups.length
-                    }${command.sufix ? ' ' : ''}${command.sufix ?? ''}`,
+                    } ${subject.code} ${
+                      academicPeriod.code
+                    } ${this.getInternalGroupNumber(
+                      existentInternalGroups,
+                      internalGroups,
+                      academicProgram,
+                    )}${command.sufix ? ' ' : ''}${command.sufix ?? ''}`,
                     [],
                     [],
                     academicPeriod,
@@ -94,6 +99,19 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
     );
 
     await this.repository.saveBatch(internalGroups);
+  }
+
+  private getInternalGroupNumber(
+    existentInternalGroups: InternalGroup[],
+    internalGroups: InternalGroup[],
+    academicProgram: AcademicProgram,
+  ): number {
+    return (
+      existentInternalGroups.length +
+      internalGroups.filter(
+        (ig) => (ig.academicProgram.id = academicProgram.id),
+      ).length
+    );
   }
 
   private async getPeriodBlock(

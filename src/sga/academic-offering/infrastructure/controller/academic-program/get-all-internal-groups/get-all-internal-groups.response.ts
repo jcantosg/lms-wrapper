@@ -41,8 +41,8 @@ export class GetAllInternalGroupsResponse {
               name: internalGroup.academicPeriod.name,
             },
             subject: {
-              id: internalGroup.academicPeriod.id,
-              name: internalGroup.academicPeriod.name,
+              id: internalGroup.subject.id,
+              name: internalGroup.subject.name,
             },
             block: {
               id: internalGroup.periodBlock.id,

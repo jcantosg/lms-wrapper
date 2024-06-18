@@ -53,9 +53,11 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
-      await this.deleteLmsStudentHandler.handle(
-        new DeleteLmsStudentCommand(lmsId!),
-      );
+      if (!!lmsId) {
+        await this.deleteLmsStudentHandler.handle(
+          new DeleteLmsStudentCommand(lmsId),
+        );
+      }
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();

@@ -19,6 +19,7 @@ export class GetAllInternalGroupsCriteria extends Criteria {
 
   private static createFilters(query: GetAllInternalGroupsQuery): Filter[] {
     return [
+      new Filter('code', query.code, FilterOperators.LIKE, GroupOperator.AND),
       new Filter(
         'id',
         query.academicProgramId,

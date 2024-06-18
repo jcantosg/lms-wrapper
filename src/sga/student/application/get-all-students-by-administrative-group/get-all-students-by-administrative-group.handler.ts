@@ -10,6 +10,7 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/administrative-group-status-student.getter.service';
 import { StudentAdministrativeGroupStatusEnum } from '#student/domain/enum/student-administrative-group-status.enum';
+import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
 
 export type StudentAdministrativeGroup = {
   student: Student;
@@ -59,10 +60,12 @@ export class GetAllStudentsByAdministrativeGroupHandler
               administrativeGroup.academicPeriod.id,
               administrativeGroup.academicProgram.id,
             );
-
+          if (!academicRecord) {
+            throw new AcademicRecordNotFoundException();
+          }
           const status =
             await this.administrativeGroupStatusStudentGetter.getStatus(
-              academicRecord!,
+              academicRecord,
               administrativeGroup,
             );
 

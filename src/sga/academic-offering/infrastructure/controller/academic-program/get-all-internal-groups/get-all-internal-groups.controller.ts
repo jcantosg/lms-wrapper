@@ -24,6 +24,7 @@ interface GetAllInternalGroupsQueryParams {
   orderType: OrderTypes;
   academicPeriod: string | null;
   subject: string | null;
+  code: string | null;
 }
 
 @Controller('academic-program')
@@ -44,6 +45,7 @@ export class GetAllInternalGroupsController {
       academicProgramId,
       params.academicPeriod,
       params.subject,
+      params.code,
       params.page,
       params.limit,
       params.orderBy,

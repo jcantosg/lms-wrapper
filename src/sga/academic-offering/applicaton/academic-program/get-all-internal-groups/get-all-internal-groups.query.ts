@@ -11,6 +11,7 @@ export class GetAllInternalGroupsQuery
     public readonly academicProgramId: string,
     public readonly academicPeriod: string | null,
     public readonly subject: string | null,
+    public readonly code: string | null,
     page: number,
     limit: number,
     orderBy: string,
