@@ -21,7 +21,11 @@ async function bootstrap() {
     header: 'X-Version',
     defaultVersion: VERSION_NEUTRAL,
   });
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   app.use(bodyParser.json({ limit: '50mb' }));
 
