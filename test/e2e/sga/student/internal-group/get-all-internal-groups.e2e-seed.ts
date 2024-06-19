@@ -30,47 +30,63 @@ import { periodBlockSchema } from '#academic-offering/infrastructure/config/sche
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
+import {
+  IdentityDocument,
+  IdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
+import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
   public static superAdminUserPassword = 'pass123';
-  public static superAdminUserId = uuid();
+  public static superAdminUserId = '3ee76690-78b1-4515-8f74-683a3fe6db1a';
   public static adminUserEmail = 'user@email.com';
   public static adminUserPassword = 'pass123';
-  public static adminUserId = uuid();
+  public static adminUserId = '7dbceb0e-8e1c-4052-b2b8-3e7d753221d4';
 
-  public static businessUnitId = uuid();
+  public static businessUnitId = '8c063e8d-f3c5-4be2-b471-f546b2b714cc';
   public static businessUnitName = 'Madrid';
   public static businessUnitCode = 'MAD';
 
-  public static academicPeriodId = uuid();
+  public static anotherBusinessUnitId = 'd0e2fe59-d266-4ddc-9f7b-945b05a78745';
+  public static anotherBusinessUnitName = 'Madrid2';
+  public static anotherBusinessUnitCode = 'MAD2';
+
+  public static academicPeriodId = 'af9cb84a-e7f8-4fca-9e92-1bbe2c32ca83';
   public static academicPeriodName = 'Madrid 2023 2025';
   public static academicPeriodCode = 'M-23-25';
   public static academicPeriodStartDate = '2023-09-01';
   public static academicPeriodEndDate = '2025-09-01';
   public static academicPeriodBlocksNumber = 1;
 
-  public static academicProgramId = uuid();
+  public static academicProgramId = '23de9031-56c0-4585-a239-95406f6459f9';
   public static academicProgramName =
     'Administración de sistemas informaticos en red';
   public static academicProgramCode = 'MAD-INAS';
 
-  public static programBlockId = uuid();
+  public static programBlockId = '1a9a9fd2-c2fd-4671-bf1c-b444167c13ee';
   public static programBlockName = 'Bloque 1';
 
-  public static periodBlockId = uuid();
+  public static periodBlockId = 'ff172625-6250-4754-9dfb-6988b3ca1c34';
   public static periodBlockName = 'Bloque 1';
 
-  public static blockRelationId = uuid();
+  public static blockRelationId = 'cb2f1064-f3c1-468f-aa7b-22ce9c2b793f';
 
-  public static subjectId = uuid();
+  public static subjectId = '8039b275-3b61-4e19-8f8a-3ad6b0008308';
 
-  public static internalGroupId = uuid();
+  public static internalGroupId = '9df6e69d-b5b7-4b6a-bcb5-1d87b83f4086';
   public static internalGroupCode = 'code';
+
+  public static edaeUserId = '71aedcb1-b310-442d-817b-1bd8a9648e24';
+  public static anotherEdaeUserId = '98434bcd-4c08-4757-ac26-131ec1cc18fd';
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
   private businessUnit: BusinessUnit;
+  private anotherBusinessUnit: BusinessUnit;
   private academicPeriod: AcademicPeriod;
   private academicProgram: AcademicProgram;
   private title: Title;
@@ -89,6 +105,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   private internalGroupRepository: Repository<InternalGroup>;
   private blockRelationRepository: Repository<BlockRelation>;
   private subjectRepository: Repository<Subject>;
+  private edaeUserRepository: Repository<EdaeUser>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -106,6 +123,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     this.blockRelationRepository =
       datasource.getRepository(blockRelationSchema);
     this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
   }
 
   async arrange(): Promise<void> {
@@ -121,6 +139,15 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.businessUnitRepository.save(this.businessUnit);
+
+    this.anotherBusinessUnit = BusinessUnit.create(
+      GetAllInternalGroupsE2eSeed.anotherBusinessUnitId,
+      GetAllInternalGroupsE2eSeed.anotherBusinessUnitName,
+      GetAllInternalGroupsE2eSeed.anotherBusinessUnitCode,
+      country,
+      this.superAdminUser,
+    );
+    await this.businessUnitRepository.save(this.anotherBusinessUnit);
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
@@ -138,6 +165,46 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       GetAllInternalGroupsE2eSeed.adminUserPassword,
       [AdminUserRoles.SECRETARIA],
       [this.businessUnit],
+    );
+
+    await this.edaeUserRepository.save(
+      EdaeUser.create(
+        GetAllInternalGroupsE2eSeed.anotherEdaeUserId,
+        'name',
+        'surname',
+        null,
+        'email@email.com',
+        new IdentityDocument({
+          identityDocumentNumber: '73211519N',
+          identityDocumentType: IdentityDocumentType.DNI,
+        }),
+        [EdaeRoles.TUTOR],
+        [this.anotherBusinessUnit],
+        TimeZoneEnum.GMT,
+        true,
+        country,
+        null,
+      ),
+    );
+
+    await this.edaeUserRepository.save(
+      EdaeUser.create(
+        GetAllInternalGroupsE2eSeed.edaeUserId,
+        'pepe',
+        'perez',
+        null,
+        'pepe@email.com',
+        new IdentityDocument({
+          identityDocumentNumber: '73211519N',
+          identityDocumentType: IdentityDocumentType.DNI,
+        }),
+        [EdaeRoles.TUTOR],
+        [this.businessUnit],
+        TimeZoneEnum.GMT,
+        true,
+        country,
+        null,
+      ),
     );
 
     this.title = Title.create(
@@ -253,7 +320,8 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     await this.academicProgramRepository.delete({});
     await this.subjectRepository.delete({});
     await this.titleRepository.delete({});
-    await this.businessUnitRepository.delete(this.businessUnit.id);
+    await this.edaeUserRepository.delete({});
+    await this.businessUnitRepository.delete({});
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.adminUser);
   }

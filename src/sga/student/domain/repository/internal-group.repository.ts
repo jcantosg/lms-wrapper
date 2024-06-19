@@ -24,4 +24,9 @@ export abstract class InternalGroupRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<number>;
+  abstract getByAdminUser(
+    internalGroupId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<InternalGroup | null>;
 }

@@ -22,6 +22,8 @@ import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/
 import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 import { ConfigService } from '@nestjs/config';
 import { TransferAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/transfer-academic-record.typeorm-transactional-service';
+import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -145,6 +147,13 @@ const administrativeGroupStatusStudentGetterService = {
   inject: [EnrollmentRepository, SubjectUpToBlockGetter],
 };
 
+const internalGroupGetter = {
+  provide: InternalGroupGetter,
+  useFactory: (repository: InternalGroupRepository): InternalGroupGetter =>
+    new InternalGroupGetter(repository),
+  inject: [InternalGroupRepository],
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
@@ -156,4 +165,5 @@ export const services = [
   createStudentFromCRMTransactionalService,
   enrollmentCreatorService,
   administrativeGroupStatusStudentGetterService,
+  internalGroupGetter,
 ];

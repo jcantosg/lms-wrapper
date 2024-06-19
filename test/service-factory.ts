@@ -35,6 +35,7 @@ import { StudentRecoveryPasswordTokenGetter } from '#/student/student/domain/ser
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
+import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -220,4 +221,9 @@ export function getASubjectUpToBlockGetterMock(): SubjectUpToBlockGetter {
 
 export function getAnEnrollmentCreatorMock(): EnrollmentCreator {
   return (EnrollmentCreator as jest.Mocked<typeof EnrollmentCreator>).prototype;
+}
+
+export function getAInternalGroupGetterMock(): InternalGroupGetter {
+  return (InternalGroupGetter as jest.Mocked<typeof InternalGroupGetter>)
+    .prototype;
 }

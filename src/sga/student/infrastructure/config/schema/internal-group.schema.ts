@@ -64,10 +64,10 @@ export const internalGroupSchema = new EntitySchema<InternalGroup>({
       joinTable: {
         name: 'internal_groups_students',
         joinColumn: {
-          name: 'student_id',
+          name: 'internal_group_id',
         },
         inverseJoinColumn: {
-          name: 'internal_group_id',
+          name: 'student_id',
         },
       },
     },
@@ -77,10 +77,10 @@ export const internalGroupSchema = new EntitySchema<InternalGroup>({
       joinTable: {
         name: 'internal_groups_edae_users',
         joinColumn: {
-          name: 'edae_user_id',
+          name: 'internal_group_id',
         },
         inverseJoinColumn: {
-          name: 'internal_group_id',
+          name: 'edae_user_id',
         },
       },
     },

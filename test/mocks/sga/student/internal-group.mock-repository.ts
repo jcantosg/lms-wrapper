@@ -7,4 +7,5 @@ export class InternalGroupMockRepository implements InternalGroupRepository {
   getByKeys = jest.fn();
   count = jest.fn();
   matching = jest.fn();
+  getByAdminUser = jest.fn();
 }

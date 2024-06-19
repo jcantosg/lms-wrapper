@@ -86,7 +86,9 @@ export class CreateStudentE2eSeed implements E2eSeed {
     const student = await this.studentRepository.findOne({
       where: { id: CreateStudentE2eSeed.studentId },
     });
-    await this.lmsRepository.delete(student!.lmsStudent!.value.id);
+    if (student && student.lmsStudent) {
+      await this.lmsRepository.delete(student.lmsStudent.value.id);
+    }
     await this.studentRepository.delete(this.existingStudent.id);
     await this.studentRepository.delete(CreateStudentE2eSeed.studentId);
 

@@ -62,7 +62,18 @@ export class InternalGroupPostgresRepository
   }
 
   async get(id: string): Promise<InternalGroup | null> {
-    return await this.repository.findOne({ where: { id: id } });
+    return await this.repository.findOne({
+      where: { id: id },
+      relations: {
+        businessUnit: true,
+        students: true,
+        teachers: true,
+        academicPeriod: true,
+        academicProgram: true,
+        periodBlock: true,
+        subject: true,
+      },
+    });
   }
 
   async getByKeys(
@@ -150,7 +161,30 @@ export class InternalGroupPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subject`, 'subject');
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.periodBlock`, 'period_block');
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.teachers`, 'teachers');
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.students`, 'students');
 
     return queryBuilder;
+  }
+
+  async getByAdminUser(
+    internalGroupId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<InternalGroup | null> {
+    if (isSuperAdmin) {
+      return await this.get(internalGroupId);
+    }
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder('internalGroup');
+
+    return await queryBuilder
+      .where('internalGroup.id = :id', { id: internalGroupId })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
   }
 }
