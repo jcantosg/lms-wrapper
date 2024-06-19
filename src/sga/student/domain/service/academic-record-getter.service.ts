@@ -5,6 +5,7 @@ import { AcademicRecordNotFoundException } from '#student/shared/exception/acade
 import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { StudentAcademicRecordNotFoundException } from '#/student/student/domain/exception/student-academic-record-not-found.exception';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export class AcademicRecordGetter {
   constructor(private readonly repository: AcademicRecordRepository) {}
@@ -51,6 +52,23 @@ export class AcademicRecordGetter {
     if (!academicRecord) {
       throw new StudentAcademicRecordNotFoundException();
     }
+    academicRecord.academicProgram.programBlocks.sort(
+      (firstProgramBlock: ProgramBlock, secondProgramBlock: ProgramBlock) => {
+        if (
+          firstProgramBlock.blockRelation!.periodBlock.startDate <
+          secondProgramBlock.blockRelation!.periodBlock.startDate
+        ) {
+          return -1;
+        } else if (
+          firstProgramBlock.blockRelation!.periodBlock.startDate >
+          secondProgramBlock.blockRelation!.periodBlock.startDate
+        ) {
+          return 1;
+        } else {
+          return 0;
+        }
+      },
+    );
 
     return academicRecord;
   }
