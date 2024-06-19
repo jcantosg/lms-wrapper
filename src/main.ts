@@ -22,11 +22,7 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL,
   });
   app.enableCors({
-    origin: [
-      'https://dev-360.universae.com',
-      'http://localhost:3001',
-      'https://frontdev-ucp.universae.com/',
-    ],
+    origin: true,
     methods: 'GET,HEAD,PUT,POST,DELETE,OPTIONS',
     credentials: true,
   });
