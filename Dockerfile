@@ -82,7 +82,7 @@ CMD [ "node", "src/main.js" ]
 #######################
 # Load Balancer Image #
 #######################
-FROM art.pmideep.com/dockerhub/nginx:1.25.5 AS load-balancer
+FROM public.ecr.aws/nginx/nginx:1.26.1 AS load-balancer
 LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
 
 ENV DNS_RESOLVER="auto"
