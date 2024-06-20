@@ -104,6 +104,7 @@ export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
         academicPeriod.businessUnit,
         existentInternalGroups.length === 0 || command.isDefaultGroup,
         command.adminUser,
+        subject.defaultTeacher,
       ),
     );
 

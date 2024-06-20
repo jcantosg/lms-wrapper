@@ -24,6 +24,7 @@ export class InternalGroup extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _defaultTeacher: EdaeUser | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -140,6 +141,14 @@ export class InternalGroup extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get defaultTeacher(): EdaeUser | null {
+    return this._defaultTeacher;
+  }
+
+  public set defaultTeacher(value: EdaeUser | null) {
+    this._defaultTeacher = value;
+  }
+
   static create(
     id: string,
     code: string,
@@ -152,6 +161,7 @@ export class InternalGroup extends BaseEntity {
     businessUnit: BusinessUnit,
     isDefault: boolean,
     user: AdminUser,
+    defaultTeacher: EdaeUser | null,
   ): InternalGroup {
     return new InternalGroup(
       id,
@@ -168,6 +178,7 @@ export class InternalGroup extends BaseEntity {
       new Date(),
       user,
       user,
+      defaultTeacher,
     );
   }
 }

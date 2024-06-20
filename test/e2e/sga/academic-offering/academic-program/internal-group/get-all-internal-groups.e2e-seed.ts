@@ -239,6 +239,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       this.businessUnit,
       true,
       this.superAdminUser,
+      this.subject.defaultTeacher,
     );
 
     await this.internalGroupRepository.save(this.internalGroup);

@@ -89,6 +89,7 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
                     academicPeriod.businessUnit,
                     existentInternalGroups.length === 0 || command.isDefault,
                     command.adminUser,
+                    subject.defaultTeacher,
                   ),
                 );
               }),

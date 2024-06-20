@@ -41,6 +41,7 @@ import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/
 import { SearchStudentsByAdministrativeGroupHandler } from '#student/application/search-students-by-administrative-group/search-students-by-administrative-group.handler';
 import { AddTeacherToInternalGroupHandler } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.handler';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
+import { GetInternalGroupDetailHandler } from '#student/application/get-internal-group-detail/get-internal-group-detail.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -271,6 +272,15 @@ const searchStudentsByAdministrativeGroupHandler = {
   ],
 };
 
+const getInternalGroupDetailHandler = {
+  provide: GetInternalGroupDetailHandler,
+  useFactory: (
+    internalGroupGetter: InternalGroupGetter,
+  ): GetInternalGroupDetailHandler =>
+    new GetInternalGroupDetailHandler(internalGroupGetter),
+  inject: [InternalGroupGetter],
+};
+
 const addTeacherToInternalGroupHandler = {
   provide: AddTeacherToInternalGroupHandler,
   useFactory: (
@@ -305,5 +315,6 @@ export const handlers = [
   createStudentFromCRMHandler,
   getAllStudentsByAdministrativeGroupHandler,
   searchStudentsByAdministrativeGroupHandler,
+  getInternalGroupDetailHandler,
   addTeacherToInternalGroupHandler,
 ];

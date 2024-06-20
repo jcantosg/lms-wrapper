@@ -72,6 +72,7 @@ export class InternalGroupPostgresRepository
         academicProgram: true,
         periodBlock: true,
         subject: true,
+        defaultTeacher: true,
       },
     });
   }
@@ -163,6 +164,10 @@ export class InternalGroupPostgresRepository
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.periodBlock`, 'period_block');
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.teachers`, 'teachers');
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.students`, 'students');
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.defaultTeacher`,
+      'default_teacher',
+    );
 
     return queryBuilder;
   }

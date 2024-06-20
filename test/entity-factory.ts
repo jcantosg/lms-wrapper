@@ -306,6 +306,7 @@ export const getAnInternalGroup = (
     getABusinessUnit(),
     true,
     getAnAdminUser(),
+    subject.defaultTeacher,
   );
 };
 

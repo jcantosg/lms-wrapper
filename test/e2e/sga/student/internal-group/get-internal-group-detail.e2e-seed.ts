@@ -31,7 +31,7 @@ import { internalGroupSchema } from '#student/infrastructure/config/schema/inter
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
 
-export class GetAllInternalGroupsE2eSeed implements E2eSeed {
+export class GetInternalGroupDetailE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
   public static superAdminUserPassword = 'pass123';
   public static superAdminUserId = uuid();
@@ -42,6 +42,10 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static businessUnitId = uuid();
   public static businessUnitName = 'Madrid';
   public static businessUnitCode = 'MAD';
+
+  public static internalGroupId = uuid();
+  public static internalGroupCode = 'IG001';
+  public static internalGroupIsDefault = false;
 
   public static academicPeriodId = uuid();
   public static academicPeriodName = 'Madrid 2023 2025';
@@ -64,9 +68,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static blockRelationId = uuid();
 
   public static subjectId = uuid();
-
-  public static internalGroupId = uuid();
-  public static internalGroupCode = 'code';
+  public static subjectName = 'matematicas';
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
@@ -77,7 +79,6 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   private programBlock: ProgramBlock;
   private periodBlock: PeriodBlock;
   private subject: Subject;
-  private internalGroup: InternalGroup;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -114,9 +115,9 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     });
 
     this.businessUnit = BusinessUnit.create(
-      GetAllInternalGroupsE2eSeed.businessUnitId,
-      GetAllInternalGroupsE2eSeed.businessUnitName,
-      GetAllInternalGroupsE2eSeed.businessUnitCode,
+      GetInternalGroupDetailE2eSeed.businessUnitId,
+      GetInternalGroupDetailE2eSeed.businessUnitName,
+      GetInternalGroupDetailE2eSeed.businessUnitCode,
       country,
       this.superAdminUser,
     );
@@ -124,18 +125,18 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
-      GetAllInternalGroupsE2eSeed.superAdminUserId,
-      GetAllInternalGroupsE2eSeed.superAdminUserEmail,
-      GetAllInternalGroupsE2eSeed.superAdminUserPassword,
+      GetInternalGroupDetailE2eSeed.superAdminUserId,
+      GetInternalGroupDetailE2eSeed.superAdminUserEmail,
+      GetInternalGroupDetailE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
       [this.businessUnit],
     );
 
     this.adminUser = await createAdminUser(
       this.datasource,
-      GetAllInternalGroupsE2eSeed.adminUserId,
-      GetAllInternalGroupsE2eSeed.adminUserEmail,
-      GetAllInternalGroupsE2eSeed.adminUserPassword,
+      GetInternalGroupDetailE2eSeed.adminUserId,
+      GetInternalGroupDetailE2eSeed.adminUserEmail,
+      GetInternalGroupDetailE2eSeed.adminUserPassword,
       [AdminUserRoles.SECRETARIA],
       [this.businessUnit],
     );
@@ -152,9 +153,9 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     await this.titleRepository.save(this.title);
 
     this.subject = Subject.create(
-      GetAllInternalGroupsE2eSeed.subjectId,
+      GetInternalGroupDetailE2eSeed.subjectId,
       null,
-      'subject',
+      GetInternalGroupDetailE2eSeed.subjectName,
       'code',
       null,
       null,
@@ -171,9 +172,9 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     await this.subjectRepository.save(this.subject);
 
     this.academicProgram = AcademicProgram.create(
-      GetAllInternalGroupsE2eSeed.academicProgramId,
-      GetAllInternalGroupsE2eSeed.academicProgramName,
-      GetAllInternalGroupsE2eSeed.academicProgramCode,
+      GetInternalGroupDetailE2eSeed.academicProgramId,
+      GetInternalGroupDetailE2eSeed.academicProgramName,
+      GetInternalGroupDetailE2eSeed.academicProgramCode,
       this.title,
       this.businessUnit,
       this.superAdminUser,
@@ -181,8 +182,8 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     );
 
     this.programBlock = ProgramBlock.create(
-      GetAllInternalGroupsE2eSeed.programBlockId,
-      GetAllInternalGroupsE2eSeed.programBlockName,
+      GetInternalGroupDetailE2eSeed.programBlockId,
+      GetInternalGroupDetailE2eSeed.programBlockName,
       this.academicProgram,
       this.superAdminUser,
     );
@@ -194,21 +195,21 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     await this.programBlockRepository.save(this.programBlock);
 
     this.academicPeriod = AcademicPeriod.create(
-      GetAllInternalGroupsE2eSeed.academicPeriodId,
-      GetAllInternalGroupsE2eSeed.academicPeriodName,
-      GetAllInternalGroupsE2eSeed.academicPeriodCode,
-      new Date(GetAllInternalGroupsE2eSeed.academicPeriodStartDate),
-      new Date(GetAllInternalGroupsE2eSeed.academicPeriodEndDate),
+      GetInternalGroupDetailE2eSeed.academicPeriodId,
+      GetInternalGroupDetailE2eSeed.academicPeriodName,
+      GetInternalGroupDetailE2eSeed.academicPeriodCode,
+      new Date(GetInternalGroupDetailE2eSeed.academicPeriodStartDate),
+      new Date(GetInternalGroupDetailE2eSeed.academicPeriodEndDate),
       this.businessUnit,
-      GetAllInternalGroupsE2eSeed.academicPeriodBlocksNumber,
+      GetInternalGroupDetailE2eSeed.academicPeriodBlocksNumber,
       this.superAdminUser,
     );
     this.academicPeriod.academicPrograms.push(this.academicProgram);
 
     this.periodBlock = PeriodBlock.create(
-      GetAllInternalGroupsE2eSeed.periodBlockId,
+      GetInternalGroupDetailE2eSeed.periodBlockId,
       this.academicPeriod,
-      GetAllInternalGroupsE2eSeed.name,
+      GetInternalGroupDetailE2eSeed.name,
       this.academicPeriod.startDate,
       this.academicPeriod.endDate,
       this.superAdminUser,
@@ -220,16 +221,16 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
 
     await this.blockRelationRepository.save(
       BlockRelation.create(
-        GetAllInternalGroupsE2eSeed.blockRelationId,
+        GetInternalGroupDetailE2eSeed.blockRelationId,
         this.periodBlock,
         this.programBlock,
         this.superAdminUser,
       ),
     );
 
-    this.internalGroup = InternalGroup.create(
-      GetAllInternalGroupsE2eSeed.internalGroupId,
-      GetAllInternalGroupsE2eSeed.internalGroupCode,
+    const internalGroup = InternalGroup.create(
+      GetInternalGroupDetailE2eSeed.internalGroupId,
+      GetInternalGroupDetailE2eSeed.internalGroupCode,
       [],
       [],
       this.academicPeriod,
@@ -237,12 +238,12 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       this.periodBlock,
       this.subject,
       this.businessUnit,
-      true,
+      GetInternalGroupDetailE2eSeed.internalGroupIsDefault,
       this.superAdminUser,
       this.subject.defaultTeacher,
     );
 
-    await this.internalGroupRepository.save(this.internalGroup);
+    await this.internalGroupRepository.save(internalGroup);
   }
 
   async clear(): Promise<void> {

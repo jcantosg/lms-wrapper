@@ -84,5 +84,12 @@ export const internalGroupSchema = new EntitySchema<InternalGroup>({
         },
       },
     },
+    defaultTeacher: {
+      type: 'many-to-one',
+      target: 'EdaeUser',
+      joinColumn: {
+        name: 'default_teacher_id',
+      },
+    },
   },
 });
