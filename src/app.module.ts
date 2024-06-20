@@ -52,8 +52,6 @@ const configModule = ConfigModule.forRoot({
     EMAIL_PORT: Joi.number().required(),
     FROM_EMAIL: Joi.string().required(),
     FROM_EMAIL_PASS: Joi.string().required(),
-    AWS_ACCESS_KEY: Joi.string().required(),
-    AWS_SECRET_KEY: Joi.string().required(),
     AWS_BUCKET_NAME: Joi.string().required(),
     AWS_REGION: Joi.string().required(),
     APP_URL: Joi.string().required(),

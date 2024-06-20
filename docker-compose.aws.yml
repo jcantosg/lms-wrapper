@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:16.2
+    environment:
+      POSTGRES_PASSWORD: universae360
+      POSTGRES_USER: universae360
+      POSTGRES_DB: universae360
+      PGDATA: /var/lib/postgresql/data/universae360
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - universae360-api
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U universae360 -d universae360"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  api:
+    build:
+      context: .
+      target: api
+    image: universae360/api
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=universae360
+      - DATABASE_USER=universae360
+      - DATABASE_PASSWORD=universae360
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    networks:
+      - universae360-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+  cron:
+    build:
+      context: .
+      target: cron
+    image: universae360/cron
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=universae360
+      - DATABASE_USER=universae360
+      - DATABASE_PASSWORD=universae360
+    env_file:
+      - .env
+    networks:
+      - universae360-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+  load-balancer:
+    build:
+      context: .
+      target: load-balancer
+    image: universae360/load-balancer
+    networks:
+      - universae360-api
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - loadbalancer-certs:/ssl
+    environment:
+      DNS_RESOLVER: "127.0.0.11"
+
+volumes:
+  postgresql-data:
+  loadbalancer-certs:
+
+networks:
+  universae360-api:
+    name: universae360-api
+
+
+

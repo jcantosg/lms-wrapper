@@ -12,7 +12,7 @@ clean: ## Remove generated directories
 	@rm -rf dist node_modules
 
 build: ## Build docker image
-	@docker build -t universae-api-sga .
+	@docker build -t universae-api-sga --target api .
 
 up: ## Start infrastructure
 	@docker compose up -d

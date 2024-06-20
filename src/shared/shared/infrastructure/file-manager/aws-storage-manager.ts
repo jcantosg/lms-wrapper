@@ -7,22 +7,17 @@ import {
 import { UploadFileException } from '#shared/domain/exception/shared/upload-file.exception';
 import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { DeleteFileException } from '#shared/domain/exception/shared/delete-file.exception';
+import { Logger } from '@nestjs/common';
 
 export class AWSStorageManager implements FileManager {
   private s3;
 
   constructor(
-    readonly accessKeyId: string,
-    readonly secretAccessKey: string,
     private readonly bucketName: string,
     readonly region: string,
+    private readonly logger: Logger,
   ) {
     this.s3 = new S3Client({
-      credentials: {
-        accessKeyId,
-        secretAccessKey,
-      },
-
       region,
     });
   }
@@ -39,6 +34,7 @@ export class AWSStorageManager implements FileManager {
     try {
       await this.s3.send(command);
     } catch (e) {
+      this.logger.error(e.mesagge);
       throw new UploadFileException();
     }
 
@@ -56,6 +52,7 @@ export class AWSStorageManager implements FileManager {
     try {
       await this.s3.send(command);
     } catch (e) {
+      this.logger.error(e.mesagge);
       throw new DeleteFileException();
     }
   }

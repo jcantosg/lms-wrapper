@@ -1,0 +1,110 @@
+---
+version: "0.2"
+
+# Expected environment variables:
+#  - ENVIRONMENT
+
+env:
+  variables:
+    CDK_VERSION: "2.146.0"
+    DOCKER_BUILDKIT: 1
+    TRIVY_RELEASE: "0.52.2"
+    REPO_NAME: "universae360/api"
+  exported-variables:
+    - IMAGE_TAG
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+      python: 3.12
+    commands:
+      - npm install --quiet --location=global aws-cdk@${CDK_VERSION}
+      - pip install -q -r cdk/requirements.txt
+      - pip install -q checkov
+      - rpm -ivh https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_RELEASE}/trivy_${TRIVY_RELEASE}_Linux-64bit.rpm
+
+  pre_build:
+    commands:
+      # Variable declaration
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
+      - ECR_BASE_URL=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+      - REPO_URL=${ECR_BASE_URL}/${REPO_NAME}
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - GIT_TAG=$(git describe --tags --abbrev=0 || true)
+      - |
+        if [ -z "${GIT_TAG}" ]
+        then
+          IMAGE_TAG=${COMMIT_HASH}
+        else
+          IMAGE_TAG=${GIT_TAG}
+        fi
+
+      # Docker login
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_BASE_URL}
+
+  build:
+    commands:
+      # Container images build
+      - |
+        for container in cron api; do
+          docker build -q -t ${REPO_URL}:${IMAGE_TAG}-${container} --target ${container} .
+        done
+
+      # CDK Synth & Diff
+      - cdk synth -q -c config_file=cdk/config/${ENVIRONMENT}.json
+      - cdk diff --no-color -c config_file=cdk/config/${ENVIRONMENT}.json -c image_tag=${IMAGE_TAG}
+
+  post_build:
+    commands:
+      # IaC Policy Checks
+      - |
+        checkov \
+          -d . \
+          -o cli -o junitxml \
+          --output-file-path console,checkov.xml \
+          --quiet \
+          --compact || true
+
+      # Vulnerability Assessment
+      - |
+        for container in cron api; do
+          trivy image \
+            --ignore-unfixed \
+            --no-progress \
+            --format template \
+            --severity HIGH,CRITICAL \
+            --template "@.trivy/junit.tpl" \
+            -o trivy-${container}.xml \
+            ${REPO_URL}:${IMAGE_TAG}-${container} || true
+        done
+
+      # Container images push
+      - |
+        for container in cron api; do
+          docker tag ${REPO_URL}:${IMAGE_TAG}-${container} ${REPO_URL}:${ENVIRONMENT}-${container}
+          docker tag ${REPO_URL}:${IMAGE_TAG}-${container} ${REPO_URL}:latest-${container}
+          docker push -q ${REPO_URL}:${IMAGE_TAG}-${container}
+          docker push -q ${REPO_URL}:${ENVIRONMENT}-${container}
+          docker push -q ${REPO_URL}:latest-${container}
+        done
+
+      # CDK Deploy
+      - |
+        cdk deploy \
+          --all \
+          --require-approval=never \
+          --no-color \
+          -c config_file=cdk/config/${ENVIRONMENT}.json \
+          -c image_tag=${IMAGE_TAG}
+
+reports:
+  checkov:
+    files:
+      - checkov.xml
+    file-format: JUNITXML
+  trivy:
+    files:
+      - trivy-cron.xml
+      - trivy-api.xml
+    file-format: JUNITXML

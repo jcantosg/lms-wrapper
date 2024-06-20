@@ -1,0 +1,118 @@
+{
+  "vpc-provider:account=603941717969:filter.isDefault=false:region=eu-west-3:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-074292b5bd744c3f1",
+    "vpcCidrBlock": "172.16.0.0/20",
+    "ownerAccountId": "603941717969",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-02780901dbb28a071",
+            "cidr": "172.16.4.0/22",
+            "availabilityZone": "eu-west-3a",
+            "routeTableId": "rtb-017f6808586865a39"
+          },
+          {
+            "subnetId": "subnet-0004954ed1273e6a1",
+            "cidr": "172.16.8.0/22",
+            "availabilityZone": "eu-west-3b",
+            "routeTableId": "rtb-0ac1ba3c68e45c0df"
+          }
+        ]
+      },
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-008314d9df904b8f5",
+            "cidr": "172.16.0.0/24",
+            "availabilityZone": "eu-west-3a",
+            "routeTableId": "rtb-053ec3640738b0c40"
+          },
+          {
+            "subnetId": "subnet-0236f100ed8377139",
+            "cidr": "172.16.1.0/24",
+            "availabilityZone": "eu-west-3b",
+            "routeTableId": "rtb-0721aa288e851e698"
+          }
+        ]
+      }
+    ]
+  },
+  "load-balancer:account=603941717969:loadBalancerTags.0.key=environment:loadBalancerTags.0.value=dev:loadBalancerTags.1.key=purpose:loadBalancerTags.1.value=public:loadBalancerType=application:region=eu-west-3": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-3:603941717969:loadbalancer/app/dev-public/414e72eb86142726",
+    "loadBalancerCanonicalHostedZoneId": "Z3Q77PNBQS71R4",
+    "loadBalancerDnsName": "dev-public-709371858.eu-west-3.elb.amazonaws.com",
+    "vpcId": "vpc-074292b5bd744c3f1",
+    "securityGroupIds": [
+      "sg-0ab83a3c98dd506c5"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "vpc-provider:account=603941717969:filter.vpc-id=vpc-074292b5bd744c3f1:region=eu-west-3:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-074292b5bd744c3f1",
+    "vpcCidrBlock": "172.16.0.0/20",
+    "ownerAccountId": "603941717969",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-02780901dbb28a071",
+            "cidr": "172.16.4.0/22",
+            "availabilityZone": "eu-west-3a",
+            "routeTableId": "rtb-017f6808586865a39"
+          },
+          {
+            "subnetId": "subnet-0004954ed1273e6a1",
+            "cidr": "172.16.8.0/22",
+            "availabilityZone": "eu-west-3b",
+            "routeTableId": "rtb-0ac1ba3c68e45c0df"
+          }
+        ]
+      },
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-008314d9df904b8f5",
+            "cidr": "172.16.0.0/24",
+            "availabilityZone": "eu-west-3a",
+            "routeTableId": "rtb-053ec3640738b0c40"
+          },
+          {
+            "subnetId": "subnet-0236f100ed8377139",
+            "cidr": "172.16.1.0/24",
+            "availabilityZone": "eu-west-3b",
+            "routeTableId": "rtb-0721aa288e851e698"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=603941717969:region=eu-west-3:securityGroupId=sg-0ab83a3c98dd506c5": {
+    "securityGroupId": "sg-0ab83a3c98dd506c5",
+    "allowAllOutbound": false
+  },
+  "load-balancer-listener:account=603941717969:listenerPort=80:loadBalancerArn=arn$:aws$:elasticloadbalancing$:eu-west-3$:603941717969$:loadbalancer/app/dev-public/414e72eb86142726:loadBalancerType=application:region=eu-west-3": {
+    "listenerArn": "arn:aws:elasticloadbalancing:eu-west-3:603941717969:listener/app/dev-public/414e72eb86142726/6fdfc92127703af2",
+    "listenerPort": 80,
+    "securityGroupIds": [
+      "sg-0ab83a3c98dd506c5"
+    ]
+  },
+  "load-balancer-listener:account=603941717969:listenerPort=443:loadBalancerArn=arn$:aws$:elasticloadbalancing$:eu-west-3$:603941717969$:loadbalancer/app/dev-public/414e72eb86142726:loadBalancerType=application:region=eu-west-3": {
+    "listenerArn": "arn:aws:elasticloadbalancing:eu-west-3:603941717969:listener/app/dev-public/414e72eb86142726/6fdfc92127703af2",
+    "listenerPort": 443,
+    "securityGroupIds": [
+      "sg-0ab83a3c98dd506c5"
+    ]
+  }
+}

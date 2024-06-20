@@ -1,65 +1,107 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
+#checkov:skip=CKV_DOCKER_2: Not aligned with security posture
 
-FROM node:20-alpine AS development
+##############
+# Base Image #
+##############
+FROM public.ecr.aws/docker/library/node:20.14.0-alpine AS base
+LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN apk upgrade --no-cache
 
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
-# Copying this first prevents re-running npm install on every code change.
-COPY --chown=node:node package*.json ./
+WORKDIR /universae360
 
-# Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
-# Build bcrypt from source
-RUN npm rebuild bcrypt
+#####################
+# Development build #
+#####################
+FROM base AS build-dev
+LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
 
-# Bundle app source
-COPY --chown=node:node . .
+COPY package*.json ./
+RUN npm ci \
+    && npm rebuild bcrypt
 
-# Use the node user from the image (instead of the root user)
-USER node
-
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:20-alpine AS build
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package*.json ./
-
-# In order to run `npm run build` we need access to the Nest CLI which is a dev dependency. In the previous development stage we ran `npm ci` which installed all dependencies, so we can copy over the node_modules directory from the development image
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-
-COPY --chown=node:node . .
-
-# Run the build command which creates the production bundle
+COPY . .
 RUN npm run build
 
-# Set NODE_ENV environment variable
+####################
+# Production build #
+####################
+FROM build-dev AS build-pro
+LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
+
 ENV NODE_ENV production
 
-# Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
-RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
-# Build bcrypt from source
-RUN npm rebuild bcrypt
+# Trim dev dependencies
+COPY package*.json ./
+RUN npm ci --production --ignore-scripts \
+    && npm prune \
+    && npm cache clean --force \
+    && npm rebuild bcrypt
+
+##############
+# Cron Image #
+##############
+FROM base AS cron
+LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
+
+ENV NODE_ENV production
+
+RUN apk add --no-cache make postgresql16-client aws-cli
+
+# Import dev dependencies, required for NPM tasks
+COPY --chown=node:node --from=build-dev /universae360/node_modules ./node_modules
+
+# Copy artifacts
+COPY . .
+COPY docker/cron/crontab /var/spool/cron/crontabs/root
+COPY docker/cron/entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "/usr/sbin/crond", "-f", "-d", "6" ]
+
+#############
+# API Image #
+#############
+FROM base AS api
+LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
+
+ENV NODE_ENV production
+
+WORKDIR /universae360
+
+# Import modules and artifacts from production build image
+COPY --chown=node:node --from=build-pro /universae360/node_modules ./node_modules
+COPY --chown=node:node --from=build-pro /universae360/dist .
 
 USER node
 
-###################
-# PRODUCTION
-###################
+EXPOSE 3000
 
-FROM node:20-alpine AS production
+CMD [ "node", "src/main.js" ]
 
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+#######################
+# Load Balancer Image #
+#######################
+FROM art.pmideep.com/dockerhub/nginx:1.25.5 AS load-balancer
+LABEL maintainer "Miguel Ángel Tomé Villas <ma.tome@qualoom.es>"
 
-# Start the server using the production build
-CMD [ "node", "dist/src/main.js" ]
+ENV DNS_RESOLVER="auto"
+ENV CERT_CN="local.universae.com"
+ENV REMOTE_URL_API="http://api:3000"
+
+# Install available patches and package dependencies
+RUN apt-get update -qq \
+    && apt-get upgrade -y -qq \
+    && apt-get install openssl -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Deploy configuration templates
+RUN mkdir /template && mkdir /ssl
+COPY docker/load-balancer/cert.conf /template/cert.conf
+COPY docker/load-balancer/templates /etc/nginx/templates
+
+# Custom Entrypoint
+COPY docker/load-balancer/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,38 @@
+{
+  "aws_account_id": "603941717969",
+  "aws_region": "eu-west-3",
+
+  "environment": "dev",
+
+  "alb_host": "back-ucp360.universae.com",
+  "alb_priority": 300,
+
+  "app_url": "https://ucp360.universae.com",
+
+  "cpu": 512,
+  "memory": 1024,
+  "min_tasks": 1,
+  "max_tasks": 1,
+  "spot_capacity_percent": 100,
+
+  "cron": {
+    "enable": true,
+    "cpu": 512,
+    "memory": 1024
+  },
+
+  "db": {
+    "instance_type": "t4g.micro",
+    "engine_full_version": "16.2",
+    "max_allocated_storage": 50,
+    "enable_performance_insights": false,
+    "multi_az": false,
+    "cloudwatch_logs_exports": ["postgresql", "upgrade"],
+    "preferred_maintenance_window": "sun:03:30-sun:04:30"
+  },
+
+  "monitoring": {
+    "enable": true,
+    "sns_topic_arn": null
+  }
+}

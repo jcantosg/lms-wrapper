@@ -1,4 +1,4 @@
-import { FactoryProvider, Module } from '@nestjs/common';
+import { FactoryProvider, Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { academicPeriodSchemas } from '#academic-offering/schemas';
 import { repositories } from '#academic-offering/repositories';
@@ -28,10 +28,9 @@ const fileManager: FactoryProvider = {
     }
 
     return new AWSStorageManager(
-      configService.get<string>('AWS_ACCESS_KEY')!,
-      configService.get<string>('AWS_SECRET_KEY')!,
       configService.get<string>('AWS_BUCKET_NAME')!,
       configService.get<string>('AWS_REGION')!,
+      new Logger(),
     );
   },
   inject: [ConfigService],
