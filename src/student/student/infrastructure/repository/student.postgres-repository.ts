@@ -150,9 +150,15 @@ export class StudentPostgresRepository
       .whereInIds(studentIdsInOrder)
       .getMany();
 
-    return studentIdsInOrder.map((id) =>
+    /*return studentIdsInOrder.map((id) =>
       students.find((student) => student.id === id),
-    ) as Student[];
+    ) as Student[];*/
+
+    return studentIdsInOrder.map((id) => {
+      const student = students.find((student) => student.id === id);
+
+      return student;
+    }) as Student[];
   }
 
   private initializeQueryBuilder(aliasQuery: string) {

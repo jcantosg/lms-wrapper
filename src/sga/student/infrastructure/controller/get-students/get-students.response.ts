@@ -41,14 +41,7 @@ export class GetStudentsResponse {
           universaeEmail: student.universaeEmail,
           avatar: student.avatar,
           identityDocument: student.identityDocument?.value ?? null,
-          businessUnit: student.academicRecords.map(
-            (academicRecord: AcademicRecord) => {
-              return {
-                id: academicRecord.businessUnit.id,
-                name: academicRecord.businessUnit.name,
-              };
-            },
-          ),
+          businessUnit: this.getUniqueBusinessUnits(student.academicRecords),
           academicProgram: student.academicRecords.map(
             (academicRecord: AcademicRecord) => {
               return {
@@ -60,5 +53,25 @@ export class GetStudentsResponse {
         };
       }),
     };
+  }
+
+  private static getUniqueBusinessUnits(academicRecords: AcademicRecord[]) {
+    const businessUnitNames = new Set<string>();
+
+    return academicRecords
+      .map((academicRecord: AcademicRecord) => {
+        return {
+          id: academicRecord.businessUnit.id,
+          name: academicRecord.businessUnit.name,
+        };
+      })
+      .filter((businessUnit) => {
+        if (businessUnitNames.has(businessUnit.name)) {
+          return false;
+        }
+        businessUnitNames.add(businessUnit.name);
+
+        return true;
+      });
   }
 }

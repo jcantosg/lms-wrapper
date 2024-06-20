@@ -40,6 +40,7 @@ export class GetEnrollmentsByAcademicRecordResponse {
             callDate: getDateFormattedMMYY(call.callDate),
             finalGrade: call.finalGrade,
             status: call.status,
+            number: call.callNumber,
           };
         }),
         maxCalls: enrollment.maxCalls,
