@@ -5,6 +5,7 @@ import { UpdateStudentPasswordController } from '#/student/student/infrastructur
 import { GetStudentAcademicRecordsController } from '#/student/academic-offering/academic-record/infrastructure/controller/get-student-academic-records/get-student-academic-records.controller';
 import { GetStudentAcademicRecordController } from '#/student/academic-offering/academic-record/infrastructure/controller/get-student-academic-record/get-student-academic-record.controller';
 import { LogoutStudentController } from '#/student/student/infrastructure/controller/logout-student.controller';
+import { StudentMeController } from '#/student/student/infrastructure/controller/me/student-me.controller';
 
 export const studentControllers = [
   LoginStudentController,
@@ -14,4 +15,5 @@ export const studentControllers = [
   GetStudentAcademicRecordsController,
   GetStudentAcademicRecordController,
   LogoutStudentController,
+  StudentMeController,
 ];
