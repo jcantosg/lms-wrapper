@@ -49,7 +49,7 @@ export class GetAllSubjectsCriteria extends Criteria {
       new Filter(
         'name',
         query.businessUnit,
-        FilterOperators.LIKE,
+        FilterOperators.EQUALS,
         GroupOperator.AND,
         'business_unit',
       ),

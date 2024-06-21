@@ -51,6 +51,7 @@ export class Student extends BaseEntity {
     private _password: string | null,
     private _lmsStudent: LmsStudent | null,
     private _administrativeGroups: AdministrativeGroup[],
+    private _leadId: string | null,
   ) {
     super(id, new Date(), new Date());
   }
@@ -319,6 +320,14 @@ export class Student extends BaseEntity {
     this._administrativeGroups = value;
   }
 
+  public get leadId(): string | null {
+    return this._leadId;
+  }
+
+  public set leadId(value: string | null) {
+    this._leadId = value;
+  }
+
   static createFromSGA(
     id: string,
     name: string,
@@ -365,6 +374,7 @@ export class Student extends BaseEntity {
       password,
       lmsStudent,
       [],
+      null,
     );
   }
 
@@ -387,6 +397,7 @@ export class Student extends BaseEntity {
     city: string | null,
     user: AdminUser,
     lmsStudent: LmsStudent | null,
+    leadId: string | null,
   ) {
     return new Student(
       id,
@@ -423,6 +434,7 @@ export class Student extends BaseEntity {
       password,
       lmsStudent,
       [],
+      leadId,
     );
   }
 
@@ -453,6 +465,7 @@ export class Student extends BaseEntity {
     guardianEmail: string | null,
     guardianPhone: string | null,
     lmsStudent: LmsStudent | null,
+    leadId: string | null,
   ) {
     this.name = name;
     this.surname = surname;
@@ -484,6 +497,7 @@ export class Student extends BaseEntity {
     if (lmsStudent) {
       this._lmsStudent = lmsStudent;
     }
+    this.leadId = leadId;
   }
 
   public updateLMSStudent(lmsStudent: LmsStudent): void {

@@ -138,6 +138,11 @@ export const studentSchema = new EntitySchema<Student>({
       transformer: ValueObjectTransformer(LmsStudent),
       default: {},
     },
+    leadId: {
+      name: 'lead_id',
+      type: String,
+      nullable: true,
+    },
   },
   relations: {
     ...BaseSchemaRelations,

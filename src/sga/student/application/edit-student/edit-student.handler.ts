@@ -62,6 +62,7 @@ export class EditStudentHandler implements CommandHandler {
       command.guardianEmail,
       command.guardianPhone,
       null,
+      student.leadId,
     );
     student.updated();
 
