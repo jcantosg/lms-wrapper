@@ -3,6 +3,7 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 export interface TeacherResponse {
   id: string;
   name: string;
+  surname1: string;
   avatar: string;
   isDefault: boolean;
 }
@@ -33,6 +34,7 @@ export class GetInternalGroupDetailResponse {
       teachers: internalGroup.teachers.map((teacher) => ({
         id: teacher.id,
         name: teacher.name,
+        surname1: teacher.surname1,
         avatar: teacher.avatar || '',
         isDefault: internalGroup.defaultTeacher?.id === teacher.id,
       })),
