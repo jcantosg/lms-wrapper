@@ -10,6 +10,7 @@ const orderByFields = [
   'modality',
   'type',
   'businessUnit',
+  'hours',
 ];
 
 export const getAllSubjectsSchema = createCollectionSchema(orderByFields, {

@@ -6,7 +6,6 @@ const orderByFields = [
   'programBlock',
   'type',
   'callDate',
-  'hours',
   'finalGrade',
   'status',
 ];

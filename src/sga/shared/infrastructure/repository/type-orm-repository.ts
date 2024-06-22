@@ -22,7 +22,6 @@ const fieldOrderByMapping: Record<string, string> = {
   identityDocumentNumber: `"student".identity_document->>'identityDocumentNumber'`,
   subjectName: 'subject.name',
   programBlock: 'programBlock.name',
-  hours: 'subject.hours',
   callDate: 'subjectCall.callDate',
   finalGrade: 'subjectCall.finalGrade',
   status: 'subjectCall.status',

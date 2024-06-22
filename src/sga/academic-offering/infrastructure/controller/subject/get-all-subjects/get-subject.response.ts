@@ -18,6 +18,7 @@ export interface SubjectResponse {
     name: string;
   };
   isRegulated: boolean;
+  hours: number;
 }
 
 export class GetSubjectResponse {
@@ -40,6 +41,7 @@ export class GetSubjectResponse {
         name: subject.businessUnit.name,
       },
       isRegulated: subject.isRegulated,
+      hours: subject.hours ?? 0,
     };
   }
 }
