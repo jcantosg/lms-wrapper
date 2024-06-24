@@ -126,5 +126,10 @@ export const subjectSchema = new EntitySchema<Subject>({
         },
       },
     },
+    enrollments: {
+      type: 'one-to-many',
+      target: 'Enrollment',
+      inverseSide: 'subject',
+    },
   },
 });

@@ -10,6 +10,7 @@ import { SubjectResource } from '#academic-offering/domain/entity/subject-resour
 import { SubjectInvalidEdaeUserRoleException } from '#shared/domain/exception/academic-offering/subject.invalid-edae-user-role.exception';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
+import { Enrollment } from '#student/domain/entity/enrollment.entity';
 
 export class Subject extends BaseEntity {
   private constructor(
@@ -35,6 +36,7 @@ export class Subject extends BaseEntity {
     private _defaultTeacher: EdaeUser | null,
     private _programBlocks: ProgramBlock[],
     private _lmsCourse: LmsCourse | null,
+    private _enrollments: Enrollment[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -191,6 +193,14 @@ export class Subject extends BaseEntity {
     this._lmsCourse = value;
   }
 
+  public get enrollments(): Enrollment[] {
+    return this._enrollments;
+  }
+
+  public set enrollments(value: Enrollment[]) {
+    this._enrollments = value;
+  }
+
   static create(
     id: string,
     imageUrl: string | null,
@@ -234,6 +244,7 @@ export class Subject extends BaseEntity {
       null,
       [],
       null,
+      [],
     );
   }
 

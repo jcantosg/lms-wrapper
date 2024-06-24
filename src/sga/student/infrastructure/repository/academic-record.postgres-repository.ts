@@ -202,6 +202,9 @@ export class AcademicRecordPostgresRepository
             },
             subjects: {
               defaultTeacher: true,
+              enrollments: {
+                academicRecord: true,
+              },
             },
           },
         },

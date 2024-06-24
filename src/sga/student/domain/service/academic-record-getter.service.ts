@@ -6,6 +6,7 @@ import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { StudentAcademicRecordNotFoundException } from '#/student/student/domain/exception/student-academic-record-not-found.exception';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 
 export class AcademicRecordGetter {
   constructor(private readonly repository: AcademicRecordRepository) {}
@@ -52,6 +53,18 @@ export class AcademicRecordGetter {
     if (!academicRecord) {
       throw new StudentAcademicRecordNotFoundException();
     }
+    academicRecord.academicProgram.programBlocks.map((programBlock) => {
+      programBlock.subjects = programBlock.subjects.filter((subject) => {
+        return (
+          subject.enrollments.length > 0 &&
+          subject.enrollments.filter(
+            (enrollment) =>
+              enrollment.visibility === EnrollmentVisibilityEnum.YES &&
+              enrollment.academicRecord.id === academicRecord.id,
+          )
+        );
+      });
+    });
     academicRecord.academicProgram.programBlocks.sort(
       (firstProgramBlock: ProgramBlock, secondProgramBlock: ProgramBlock) => {
         if (

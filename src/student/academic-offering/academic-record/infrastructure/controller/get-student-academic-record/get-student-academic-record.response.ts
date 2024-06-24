@@ -18,6 +18,7 @@ interface GetStudentAcademicRecordResponseBody {
       image: string | null;
       teacher: {
         name: string | undefined;
+        surname: string | undefined;
         id: string | undefined;
         avatar: string | null | undefined;
       };
@@ -50,6 +51,7 @@ export class GetStudentAcademicRecordResponse {
                 teacher: {
                   id: subject.defaultTeacher?.id,
                   name: subject.defaultTeacher?.name,
+                  surname: `${subject.defaultTeacher?.surname1} ${subject.defaultTeacher?.surname2}  `,
                   avatar: subject.defaultTeacher?.avatar,
                 },
               };
