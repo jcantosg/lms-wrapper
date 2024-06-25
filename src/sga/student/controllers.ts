@@ -16,6 +16,7 @@ import { GetAllStudentsByAdministrativeGroupController } from '#student/infrastr
 import { SearchStudentsByAdministrativeGroupController } from '#student/infrastructure/controller/search-students-by-administrative-group/search-students-by-administrative-group.controller';
 import { GetInternalGroupDetailController } from '#student/infrastructure/controller/internal-group/get-internal-group-detail/get-internal-group-detail.controller';
 import { AddTeacherToInternalGroupController } from '#student/infrastructure/controller/internal-group/add-teacher-to-internal-group.controller';
+import { EditInternalGroupController } from '#student/infrastructure/controller/internal-group/edit-internal-group/edit-internal-group.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -36,4 +37,5 @@ export const controllers = [
   GetAllStudentsByAdministrativeGroupController,
   SearchStudentsByAdministrativeGroupController,
   AddTeacherToInternalGroupController,
+  EditInternalGroupController,
 ];

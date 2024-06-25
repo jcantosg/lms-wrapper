@@ -181,4 +181,9 @@ export class InternalGroup extends BaseEntity {
       defaultTeacher,
     );
   }
+
+  update(code: string, isDefault: boolean) {
+    this._code = code;
+    this._isDefault = isDefault;
+  }
 }
