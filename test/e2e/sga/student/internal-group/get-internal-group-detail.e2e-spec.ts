@@ -52,9 +52,18 @@ describe('/internal-group/detail/:id (GET)', () => {
     expect(response.body).toEqual({
       id: GetInternalGroupDetailE2eSeed.internalGroupId,
       code: GetInternalGroupDetailE2eSeed.internalGroupCode,
-      subjectName: GetInternalGroupDetailE2eSeed.subjectName,
-      academicProgramName: GetInternalGroupDetailE2eSeed.academicProgramName,
-      academicPeriodName: GetInternalGroupDetailE2eSeed.academicPeriodName,
+      subject: {
+        id: GetInternalGroupDetailE2eSeed.subjectId,
+        name: GetInternalGroupDetailE2eSeed.subjectName,
+      },
+      academicProgram: {
+        id: GetInternalGroupDetailE2eSeed.academicProgramId,
+        name: GetInternalGroupDetailE2eSeed.academicProgramName,
+      },
+      academicPeriod: {
+        id: GetInternalGroupDetailE2eSeed.academicPeriodId,
+        name: GetInternalGroupDetailE2eSeed.academicPeriodName,
+      },
       businessUnitName: GetInternalGroupDetailE2eSeed.businessUnitName,
       startDate: new Date(response.body.startDate).toISOString(),
       isDefaultGroup: false,

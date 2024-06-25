@@ -11,9 +11,9 @@ export interface TeacherResponse {
 export interface InternalGroupDetailResponse {
   id: string;
   code: string;
-  subjectName: string;
-  academicProgramName: string;
-  academicPeriodName: string;
+  subject: { id: string; name: string };
+  academicProgram: { id: string; name: string };
+  academicPeriod: { id: string; name: string };
   businessUnitName: string;
   startDate: Date;
   isDefaultGroup: boolean;
@@ -25,9 +25,18 @@ export class GetInternalGroupDetailResponse {
     return {
       id: internalGroup.id,
       code: internalGroup.code,
-      subjectName: internalGroup.subject.name,
-      academicProgramName: internalGroup.academicProgram.name,
-      academicPeriodName: internalGroup.academicPeriod.name,
+      subject: {
+        id: internalGroup.subject.id,
+        name: internalGroup.subject.name,
+      },
+      academicProgram: {
+        id: internalGroup.academicProgram.id,
+        name: internalGroup.academicProgram.name,
+      },
+      academicPeriod: {
+        id: internalGroup.academicPeriod.id,
+        name: internalGroup.academicPeriod.name,
+      },
       businessUnitName: internalGroup.businessUnit.name,
       startDate: internalGroup.createdAt,
       isDefaultGroup: internalGroup.isDefault,
