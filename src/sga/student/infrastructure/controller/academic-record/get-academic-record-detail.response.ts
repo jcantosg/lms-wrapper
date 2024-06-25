@@ -19,6 +19,7 @@ interface AcademicRecordDetailResponse {
   isModular: boolean;
   status: AcademicRecordStatusEnum;
   block: number;
+  leadId: string | null;
 }
 
 export class GetAcademicRecordDetailResponse {
@@ -40,6 +41,7 @@ export class GetAcademicRecordDetailResponse {
       isModular: record.isModular,
       status: record.status,
       block: record.academicPeriod.blocksNumber,
+      leadId: record.leadId,
     };
   }
 }

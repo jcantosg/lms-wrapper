@@ -6,6 +6,7 @@ export enum SubjectCallStatusEnum {
   RENOUNCED = 'Renuncia',
   NOT_PRESENTED = 'No Presentado',
   ONGOING = 'En Curso',
+  NA = 'n/a',
 }
 
 export const getAllSubjectCallStatuses = (): SubjectCallStatusEnum[] =>

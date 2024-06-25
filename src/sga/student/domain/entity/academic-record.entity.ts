@@ -23,6 +23,7 @@ export class AcademicRecord extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
+    private _leadId: string | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -107,6 +108,14 @@ export class AcademicRecord extends BaseEntity {
     this._updatedBy = value;
   }
 
+  public get leadId(): string | null {
+    return this._leadId;
+  }
+
+  public set leadId(value: string | null) {
+    this._leadId = value;
+  }
+
   static create(
     id: string,
     businessUnit: BusinessUnit,
@@ -132,6 +141,37 @@ export class AcademicRecord extends BaseEntity {
       new Date(),
       user,
       user,
+      null,
+    );
+  }
+
+  static createFromCRM(
+    id: string,
+    businessUnit: BusinessUnit,
+    virtualCampus: VirtualCampus,
+    student: Student,
+    academicPeriod: AcademicPeriod,
+    academicProgram: AcademicProgram,
+    modality: AcademicRecordModalityEnum,
+    isModular: boolean,
+    user: AdminUser,
+    leadId: string | null,
+  ): AcademicRecord {
+    return new AcademicRecord(
+      id,
+      businessUnit,
+      virtualCampus,
+      student,
+      academicPeriod,
+      academicProgram,
+      modality,
+      isModular,
+      AcademicRecordStatusEnum.VALID,
+      new Date(),
+      new Date(),
+      user,
+      user,
+      leadId,
     );
   }
 

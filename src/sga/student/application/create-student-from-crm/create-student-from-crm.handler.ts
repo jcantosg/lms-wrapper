@@ -158,7 +158,6 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         null,
         null,
         null,
-        student.leadId ?? data.leadId,
       );
 
       const academicRecords =
@@ -241,10 +240,9 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.city,
         adminUser,
         null,
-        data.leadId,
       );
 
-      const newAcademicRecord = AcademicRecord.create(
+      const newAcademicRecord = AcademicRecord.createFromCRM(
         uuid(),
         businessUnit,
         virtualCampus,
@@ -254,6 +252,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.modality,
         true,
         adminUser,
+        data.leadId,
       );
 
       const enrollments =

@@ -27,6 +27,11 @@ export const academicRecordSchema = new EntitySchema<AcademicRecord>({
       enum: AcademicRecordStatusEnum,
       nullable: false,
     },
+    leadId: {
+      name: 'lead_id',
+      type: String,
+      nullable: true,
+    },
   },
   relations: {
     ...BaseSchemaRelations,

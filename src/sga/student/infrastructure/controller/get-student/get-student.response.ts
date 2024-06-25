@@ -30,7 +30,6 @@ interface GetStudentDetailResponse {
   guardianSurname: string | null;
   guardianEmail: string | null;
   guardianPhone: string | null;
-  leadId: string | null;
 }
 
 export class GetStudentResponse {
@@ -82,7 +81,6 @@ export class GetStudentResponse {
       guardianSurname: student.guardianSurname,
       guardianEmail: student.guardianEmail,
       guardianPhone: student.guardianPhone,
-      leadId: student.leadId,
     };
   }
 }

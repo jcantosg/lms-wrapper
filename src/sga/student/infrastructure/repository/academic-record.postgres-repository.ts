@@ -36,6 +36,7 @@ export class AcademicRecordPostgresRepository
       createdBy: academicRecord.createdBy,
       updatedAt: academicRecord.updatedAt,
       updatedBy: academicRecord.updatedBy,
+      leadId: academicRecord.leadId,
     });
   }
 
