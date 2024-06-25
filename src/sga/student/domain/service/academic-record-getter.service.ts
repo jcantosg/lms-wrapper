@@ -57,9 +57,9 @@ export class AcademicRecordGetter {
       programBlock.subjects = programBlock.subjects.filter((subject) => {
         return (
           subject.enrollments.length > 0 &&
-          subject.enrollments.filter(
+          subject.enrollments.some(
             (enrollment) =>
-              enrollment.visibility === EnrollmentVisibilityEnum.YES &&
+              enrollment.visibility !== EnrollmentVisibilityEnum.NO &&
               enrollment.academicRecord.id === academicRecord.id,
           )
         );
