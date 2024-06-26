@@ -64,7 +64,10 @@ describe('/internal-group/detail/:id (GET)', () => {
         id: GetInternalGroupDetailE2eSeed.academicPeriodId,
         name: GetInternalGroupDetailE2eSeed.academicPeriodName,
       },
-      businessUnitName: GetInternalGroupDetailE2eSeed.businessUnitName,
+      businessUnit: {
+        id: GetInternalGroupDetailE2eSeed.businessUnitId,
+        name: GetInternalGroupDetailE2eSeed.businessUnitName,
+      },
       startDate: new Date(response.body.startDate).toISOString(),
       isDefaultGroup: false,
       teachers: [],

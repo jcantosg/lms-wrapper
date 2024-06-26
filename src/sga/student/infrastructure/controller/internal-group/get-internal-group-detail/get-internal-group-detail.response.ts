@@ -14,7 +14,7 @@ export interface InternalGroupDetailResponse {
   subject: { id: string; name: string };
   academicProgram: { id: string; name: string };
   academicPeriod: { id: string; name: string };
-  businessUnitName: string;
+  businessUnit: { id: string; name: string };
   startDate: Date;
   isDefaultGroup: boolean;
   teachers: TeacherResponse[];
@@ -37,7 +37,10 @@ export class GetInternalGroupDetailResponse {
         id: internalGroup.academicPeriod.id,
         name: internalGroup.academicPeriod.name,
       },
-      businessUnitName: internalGroup.businessUnit.name,
+      businessUnit: {
+        id: internalGroup.businessUnit.id,
+        name: internalGroup.businessUnit.name,
+      },
       startDate: internalGroup.createdAt,
       isDefaultGroup: internalGroup.isDefault,
       teachers: internalGroup.teachers.map((teacher) => ({
