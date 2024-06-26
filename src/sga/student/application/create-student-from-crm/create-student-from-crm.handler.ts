@@ -27,6 +27,9 @@ import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-s
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { SubjectCall } from '#student/domain/entity/subject-call.entity';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
+import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -207,6 +210,17 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             enrollment.calls = oldEnrollment.calls;
             enrollment.visibility = oldEnrollment.visibility;
             enrollment.type = oldEnrollment.type;
+          } else {
+            const subjectCall = SubjectCall.create(
+              uuid(),
+              enrollment,
+              1,
+              new Date(),
+              SubjectCallFinalGradeEnum.ONGOING,
+              SubjectCallStatusEnum.ONGOING,
+              adminUser,
+            );
+            enrollment.addSubjectCall(subjectCall);
           }
         });
 
@@ -257,6 +271,19 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
 
       const enrollments =
         await this.enrollmentCreator.createForAcademicRecord(newAcademicRecord);
+
+      enrollments.forEach((enrollment) => {
+        const subjectCall = SubjectCall.create(
+          uuid(),
+          enrollment,
+          1,
+          new Date(),
+          SubjectCallFinalGradeEnum.ONGOING,
+          SubjectCallStatusEnum.ONGOING,
+          adminUser,
+        );
+        enrollment.addSubjectCall(subjectCall);
+      });
 
       student.academicRecords.push(newAcademicRecord);
 

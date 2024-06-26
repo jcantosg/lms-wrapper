@@ -48,11 +48,13 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       entities.student.lmsStudent = lmsStudent;
       await queryRunner.manager.save(entities.student);
       await queryRunner.manager.save(entities.academicRecord);
-      await Promise.all([
-        entities.enrollments.forEach(
-          async (enrollment) => await queryRunner.manager.save(enrollment),
-        ),
-      ]);
+
+      for (const enrollment of entities.enrollments) {
+        await queryRunner.manager.save(enrollment);
+        for (const subjectCall of enrollment.calls) {
+          await queryRunner.manager.save(subjectCall);
+        }
+      }
 
       await queryRunner.commitTransaction();
     } catch (error) {
