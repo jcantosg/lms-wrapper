@@ -21,7 +21,7 @@ down: ## Stop infrastructure
 	@docker compose down
 
 start-prod: ## Start project in production mode
-	@docker run -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga universae-api-sga
+	@docker run --mount type=bind,source="${PWD}"/ftp-files,target=/universae360/ftp-files -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga universae-api-sga
 
 start-dev: ## Start project in dev mode
 	@npm run start:dev

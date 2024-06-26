@@ -54,6 +54,6 @@ jobs:
               echo "Waiting stop container..."
               sleep 1
             done
-            cd /srv/www/api-sga/current/ && docker run -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga $ECR_REGISTRY/$ECR_REPOSITORY
+            cd /srv/www/api-sga/current/ && docker run --mount type=bind,source="${PWD}"/ftp-files,target=/universae360/ftp-files -d --rm  --env-file=".env" -p3000:3000 --network=universae-network --name universae-api-sga $ECR_REGISTRY/$ECR_REPOSITORY
 
 
