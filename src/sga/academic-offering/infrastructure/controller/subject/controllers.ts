@@ -11,6 +11,7 @@ import { RemoveEdaeUserFromSubjectController } from '#academic-offering/infrastr
 import { GetSubjectController } from '#academic-offering/infrastructure/controller/subject/get-subject/get-subject.controller';
 import { GetSubjectByBusinessUnitController } from '#academic-offering/infrastructure/controller/subject/get-subjects-by-business-unit/get-subject-by-business-unit.controller';
 import { SetDefaultTeacherToSubjectController } from '#academic-offering/infrastructure/controller/subject/set-default-teacher-to-subject.controller';
+import { GetAllSubjectEdaeUsersController } from '#academic-offering/infrastructure/controller/subject/get-all-subject-edae-users/get-all-subject-edae-users.controller';
 
 export const subjectControllers = [
   GetAllSubjectModalitiesController,
@@ -26,4 +27,5 @@ export const subjectControllers = [
   GetSubjectByBusinessUnitController,
   GetSubjectController,
   SetDefaultTeacherToSubjectController,
+  GetAllSubjectEdaeUsersController,
 ];

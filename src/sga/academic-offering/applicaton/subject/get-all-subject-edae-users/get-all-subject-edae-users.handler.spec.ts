@@ -30,8 +30,8 @@ describe('Get All Subject Edae Users Handler', () => {
     getSpy.mockImplementation((): Promise<Subject> => {
       return Promise.resolve(subject);
     });
-    const edaeUsers = await handler.handle(query);
-    expect(edaeUsers).toEqual(teachers);
+    const subjectEdaeUsers = await handler.handle(query);
+    expect(subjectEdaeUsers.teachers).toEqual(teachers);
   });
 
   it('should throw an SubjectNotFoundException', async () => {

@@ -62,7 +62,7 @@ describe('/internal-group/{id}/add-teacher (PUT)', () => {
       .put('/internal-group/4bc9cbfc-decf-4546-b4ac-483a93b8a33f/add-teacher')
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        teacherId: '4bc9cbfc-decf-4546-b4ac-483a93b8a33f',
+        teacherIds: ['4bc9cbfc-decf-4546-b4ac-483a93b8a33f'],
       })
       .expect(404);
 
@@ -74,7 +74,7 @@ describe('/internal-group/{id}/add-teacher (PUT)', () => {
       .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        teacherId: '4bc9cbfc-daaf-4546-b4ac-483222b8a33f',
+        teacherIds: ['4bc9cbfc-daaf-4546-b4ac-483222b8a33f'],
       })
       .expect(404);
 
@@ -86,7 +86,7 @@ describe('/internal-group/{id}/add-teacher (PUT)', () => {
       .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        teacherId: GetAllInternalGroupsE2eSeed.anotherEdaeUserId,
+        teacherIds: [GetAllInternalGroupsE2eSeed.anotherEdaeUserId],
       })
       .expect(404);
 
@@ -105,7 +105,7 @@ describe('/internal-group/{id}/add-teacher (PUT)', () => {
       .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        teacherId: GetAllInternalGroupsE2eSeed.edaeUserId,
+        teacherIds: [GetAllInternalGroupsE2eSeed.edaeUserId],
       })
       .expect(200);
 

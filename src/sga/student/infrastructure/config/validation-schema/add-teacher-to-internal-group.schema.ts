@@ -1,5 +1,5 @@
 import Joi from 'joi';
 
 export const addTeacherToInternalGroupSchema: Joi.ObjectSchema = Joi.object({
-  teacherId: Joi.string().guid().required(),
+  teacherIds: Joi.array().items(Joi.string().guid().required()).required(),
 });

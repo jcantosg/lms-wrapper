@@ -13,6 +13,7 @@ import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { GetAllSubjectEdaeUsersQuery } from '#academic-offering/applicaton/subject/get-all-subject-edae-users/get-all-subject-edae-users.query';
 import { GetAllSubjectEdaeUsersHandler } from '#academic-offering/applicaton/subject/get-all-subject-edae-users/get-all-subject-edae-users.handler';
+import { GetAllSubjectEdaeUsersResponse } from '#academic-offering/infrastructure/controller/subject/get-all-subject-edae-users/get-all-subject-edae-users.response';
 
 @Controller('subject')
 export class GetAllSubjectEdaeUsersController {
@@ -25,12 +26,14 @@ export class GetAllSubjectEdaeUsersController {
     @Param('id') id: string,
     @Req() req: AuthRequest,
   ) {
-    return await this.handler.handle(
+    const data = await this.handler.handle(
       new GetAllSubjectEdaeUsersQuery(
         id,
         req.user.businessUnits.map((bu) => bu.id),
         req.user.roles.includes(AdminUserRoles.SUPERADMIN),
       ),
     );
+
+    return GetAllSubjectEdaeUsersResponse.create(data);
   }
 }

@@ -21,21 +21,23 @@ export class AddTeacherToInternalGroupHandler implements CommandHandler {
         command.adminUser,
       );
 
-    const edaeUser = await this.edaeUserGetter.getByAdminUser(
-      command.edaeUserId,
-      command.adminUser.businessUnits.map((bu) => bu.id),
-      command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
-    );
+    for (const edaeUserId of command.edaeUserIds) {
+      const edaeUser = await this.edaeUserGetter.getByAdminUser(
+        edaeUserId,
+        command.adminUser.businessUnits.map((bu) => bu.id),
+        command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+      );
 
-    if (
-      !edaeUser.businessUnits
-        .map((bu) => bu.id)
-        .includes(internalGroup.businessUnit.id)
-    ) {
-      throw new EdaeUserNotFoundException();
+      if (
+        !edaeUser.businessUnits
+          .map((bu) => bu.id)
+          .includes(internalGroup.businessUnit.id)
+      ) {
+        throw new EdaeUserNotFoundException();
+      }
+
+      internalGroup.addTeachers([edaeUser]);
+      await this.internalGroupRepository.save(internalGroup);
     }
-
-    internalGroup.addTeachers([edaeUser]);
-    await this.internalGroupRepository.save(internalGroup);
   }
 }

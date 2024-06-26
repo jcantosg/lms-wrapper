@@ -18,7 +18,7 @@ import { AddTeacherToInternalGroupCommand } from '#student/application/add-teach
 import { AddTeacherToInternalGroupHandler } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.handler';
 
 interface AddTeacherToInternalGroupBody {
-  teacherId: string;
+  teacherIds: string[];
 }
 
 @Controller('internal-group')
@@ -40,7 +40,7 @@ export class AddTeacherToInternalGroupController {
   ): Promise<void> {
     const command = new AddTeacherToInternalGroupCommand(
       id,
-      body.teacherId,
+      body.teacherIds,
       request.user,
     );
 

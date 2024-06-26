@@ -24,6 +24,7 @@ import { GetAllSubjectTypesHandler } from '#academic-offering/applicaton/subject
 import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/subject/get-subjects-by-business-unit/get-subjects-by-business-unit.handler';
 import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
+import { GetAllSubjectEdaeUsersHandler } from '#academic-offering/applicaton/subject/get-all-subject-edae-users/get-all-subject-edae-users.handler';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -199,6 +200,14 @@ const setDefaultTeacherToSubjectHandler = {
   inject: [SubjectRepository, SubjectGetter, EdaeUserGetter],
 };
 
+const getAllSubjectEdaeUsersHandler = {
+  provide: GetAllSubjectEdaeUsersHandler,
+  useFactory: (subjectGetter: SubjectGetter) => {
+    return new GetAllSubjectEdaeUsersHandler(subjectGetter);
+  },
+  inject: [SubjectGetter],
+};
+
 export const subjectHandlers = [
   createSubjectHandler,
   getSubjectHandler,
@@ -213,4 +222,5 @@ export const subjectHandlers = [
   GetAllSubjectTypesHandler,
   getSubjectsByBusinessUnit,
   setDefaultTeacherToSubjectHandler,
+  getAllSubjectEdaeUsersHandler,
 ];

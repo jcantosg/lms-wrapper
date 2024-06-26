@@ -39,7 +39,7 @@ const edaeUser = getAnEdaeUser();
 
 const command = new AddTeacherToInternalGroupCommand(
   internalGroup.id,
-  edaeUser.id,
+  [edaeUser.id],
   getAnAdminUser(),
 );
 
