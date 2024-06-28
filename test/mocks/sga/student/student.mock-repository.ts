@@ -1,4 +1,4 @@
-import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
 
 export class StudentMockRepository implements StudentRepository {
   save = jest.fn();

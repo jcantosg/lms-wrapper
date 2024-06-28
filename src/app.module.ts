@@ -17,7 +17,7 @@ import { ApplicationExceptionFilter } from '#shared/infrastructure/filter/except
 import { EnvironmentHeaderMiddleware } from '#shared/infrastructure/middleware/environment-header.middleware';
 import { VersionHeaderMiddleware } from '#shared/infrastructure/middleware/version-header.middleware';
 import { SGAModule } from '#/sga/sga.module';
-import { StudentModule } from '#/student/student.module';
+import { StudentModule } from '#student-360/student.module';
 import { TeacherModule } from '#/teacher/Teacher.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EdaeUserModule } from '#edae-user/edae-user.module';

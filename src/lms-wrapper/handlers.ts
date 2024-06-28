@@ -5,6 +5,8 @@ import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/ge
 import { CreateLmsStudentHandler } from '#/lms-wrapper/application/create-lms-student/create-lms-student.handler';
 import { LmsStudentRepository } from '#/lms-wrapper/domain/repository/lms-student.repository';
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
+import { GetLmsCourseContentHandler } from '#/lms-wrapper/application/get-lms-course-content/get-lms-course-content.handler';
+import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -41,10 +43,21 @@ const deleteLmsStudentHandler = {
   inject: [LmsStudentRepository],
 };
 
+const getLmsCourseContentHandler = {
+  provide: GetLmsCourseContentHandler,
+  useFactory: (
+    subjectGetter: SubjectGetter,
+    repository: LmsCourseRepository,
+  ): GetLmsCourseContentHandler =>
+    new GetLmsCourseContentHandler(subjectGetter, repository),
+  inject: [SubjectGetter, LmsCourseRepository],
+};
+
 export const handlers = [
   getLmsCoursesHandler,
   createLmsCourseHandler,
   getLmsCourseHandler,
   createLmsStudentHandler,
   deleteLmsStudentHandler,
+  getLmsCourseContentHandler,
 ];

@@ -4,8 +4,8 @@ import { RefreshTokenRepository } from '#admin-user/domain/repository/refresh-to
 import { RefreshTokenPostgresRepository } from '#admin-user/infrastructure/repository/refresh-token.postgres-repository';
 import { RecoveryPasswordTokenRepository } from '#admin-user/domain/repository/recovery-password-token.repository';
 import { RecoveryPasswordTokenPostgresRepository } from '#admin-user/infrastructure/repository/recovery-password-token.postgres-repository';
-import { StudentRepository } from '#/student/student/domain/repository/student.repository';
-import { StudentPostgresRepository } from '#/student/student/infrastructure/repository/student.postgres-repository';
+import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentPostgresRepository } from '#/student-360/student/infrastructure/repository/student.postgres-repository';
 import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
 import { CRMImportPostgresRepository } from '#shared/infrastructure/repository/crm-import.postgres-repository';
 

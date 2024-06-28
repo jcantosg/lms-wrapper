@@ -1,6 +1,6 @@
 import { GetAccessQualificationsHandler } from '#student/application/get-access-qualifications/get-access-qualifications.handler';
 import { CreateStudentHandler } from '#student/application/create-student/create-student.handler';
-import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
 import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';

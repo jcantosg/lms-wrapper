@@ -1,5 +1,5 @@
 import { QueryHandler } from '#shared/domain/bus/query.handler';
-import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
 import { SearchStudentsQuery } from '#student/application/search-students/search-students.query';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
 import { Student } from '#shared/domain/entity/student.entity';

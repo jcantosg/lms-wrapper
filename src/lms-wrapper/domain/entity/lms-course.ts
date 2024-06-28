@@ -1,9 +1,10 @@
 import { ValueObject } from '#/sga/shared/domain/value-object/value-object';
 import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
 
-interface LmsModule {
+export interface LmsModule {
   id: number;
   name: string;
+  image: string;
 }
 
 export interface LmsCourseValues {

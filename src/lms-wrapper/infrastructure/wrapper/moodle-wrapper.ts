@@ -2,6 +2,8 @@ import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 import { LmsWrapper } from '#/lms-wrapper/domain/service/lms-wrapper';
 import { stringToCamelCase } from '#shared/domain/lib/string-to-camel-case';
+import { LmsModuleContent } from '#/lms-wrapper/domain/entity/lms-module-content';
+import { BadRequestException } from '@nestjs/common';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
@@ -26,7 +28,21 @@ interface MoodleCourseContentResponse {
   modules: {
     id: number;
     name: string;
+    url: string;
     image: string;
+    uservisible: boolean;
+    contents:
+      | {
+          filename: string;
+          fileurl: string;
+          mimetype: string;
+        }[]
+      | undefined;
+    contentinfo:
+      | {
+          mimetypes: string[];
+        }[]
+      | undefined;
   }[];
 }
 
@@ -38,6 +54,10 @@ interface MoodleLoginResponse {
 interface MoodleCreateUserResponse {
   id: number;
   username: string;
+}
+
+interface MoodleLoginResponse {
+  loginurl: string;
 }
 
 export class MoodleWrapper implements LmsWrapper {
@@ -132,12 +152,60 @@ export class MoodleWrapper implements LmsWrapper {
     service: string,
   ): Promise<string> {
     const queryParams = `username=${username}&password=${password}&service=${service}`;
-
     const response: MoodleLoginResponse = await this.wrapper.get(
       this.loginUrl,
       queryParams,
     );
 
     return response.token;
+  }
+
+  async getCourseContent(
+    id: number,
+    moduleId: number,
+  ): Promise<LmsModuleContent> {
+    const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
+    const courseContentResponse: MoodleCourseContentResponse[] =
+      await this.wrapper.get(
+        '/webservice/rest/server.php',
+        courseContentQueryParam,
+      );
+    const courseContentModule = courseContentResponse.find(
+      (contentResponse) => contentResponse.id == moduleId,
+    );
+    if (!courseContentModule) {
+      throw new BadRequestException();
+    }
+
+    return new LmsModuleContent({
+      id: courseContentModule.id,
+      name: courseContentModule.name,
+      modules: courseContentModule.modules.map((module) => {
+        return {
+          id: module.id,
+          name: module.name,
+          url: module.url,
+          contents: module.contents
+            ? module.contents.map((content) => {
+                return {
+                  name: content.filename,
+                  url: content.fileurl,
+                  mimeType: content.mimetype,
+                };
+              })
+            : null,
+        };
+      }),
+    });
+  }
+
+  private async getUrlWithSessionKey(email: string): Promise<string> {
+    const userKeyParams = `wstoken=${this.token}&wsfunction=auth_userkey_request_login_url&moodlewsrestformat=json&user[email]=${email}`;
+    const loginResponse: MoodleLoginResponse = await this.wrapper.get(
+      this.url,
+      userKeyParams,
+    );
+
+    return loginResponse.loginurl;
   }
 }

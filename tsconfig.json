@@ -38,6 +38,9 @@
       "#student/*": [
         "src/sga/student/*"
       ],
+      "#student-360/*": [
+        "src/student-360/*"
+      ],
       "#commands/*": [
         "src/commands/*"
       ],

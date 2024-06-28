@@ -10,7 +10,6 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-
   "moduleNameMapper": {
     "^#admin-user/(.*)$": "<rootDir>/../src/sga/admin-user/$1",
     "^#shared/(.*)$": "<rootDir>/../src/shared/shared/$1",
@@ -22,9 +21,12 @@
     "^#config/(.*)$": "<rootDir>/../config/$1",
     "^#test/(.*)$": "<rootDir>/../test/$1",
     "^#/(.*)$": "<rootDir>/../src/$1",
-    "^&/(.*)$": "<rootDir>/../$1"
+    "^&/(.*)$": "<rootDir>/../$1",
+    "^#student-360/(.*)$": "<rootDir>/../src/student-360/$1"
   },
   "globalSetup": "<rootDir>/../test/global-setup.ts",
   "globalTeardown": "<rootDir>/../test/global-teardown.ts",
-  "setupFilesAfterEnv": ["<rootDir>/../test/setup.ts"]
+  "setupFilesAfterEnv": [
+    "<rootDir>/../test/setup.ts"
+  ]
 }

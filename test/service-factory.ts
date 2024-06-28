@@ -31,7 +31,7 @@ import { AcademicRecordGetter } from '#student/domain/service/academic-record-ge
 import { PeriodBlockGetter } from '#academic-offering/domain/service/period-block/period-block-getter.service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
-import { StudentRecoveryPasswordTokenGetter } from '#/student/student/domain/service/student-recovery-password-token-getter.service';
+import { StudentRecoveryPasswordTokenGetter } from '#/student-360/student/domain/service/student-recovery-password-token-getter.service';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';

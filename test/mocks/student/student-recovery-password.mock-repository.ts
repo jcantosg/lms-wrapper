@@ -1,4 +1,4 @@
-import { StudentRecoveryPasswordTokenRepository } from '#/student/student/domain/repository/student-recovery-password-token.repository';
+import { StudentRecoveryPasswordTokenRepository } from '#/student-360/student/domain/repository/student-recovery-password-token.repository';
 
 export class StudentRecoveryPasswordMockRepository
   implements StudentRecoveryPasswordTokenRepository

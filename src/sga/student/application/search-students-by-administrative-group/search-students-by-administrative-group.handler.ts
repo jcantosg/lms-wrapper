@@ -1,4 +1,4 @@
-import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/administrative-group-status-student.getter.service';
@@ -16,6 +16,7 @@ export class SearchStudentsByAdministrativeGroupHandler {
     private readonly administrativeGroupGetter: AdministrativeGroupGetter,
     private readonly administrativeGroupStatusStudentGetter: AdministrativeGroupStatusStudentGetter,
   ) {}
+
   async handle(
     query: SearchStudentsByAdministrativeGroupQuery,
   ): Promise<CollectionHandlerResponse<StudentAdministrativeGroup>> {

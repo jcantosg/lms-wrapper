@@ -5,6 +5,7 @@ import {
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
+import { LmsModuleContent } from '#/lms-wrapper/domain/entity/lms-module-content';
 
 export const getAnIdentityDocument = (
   identityDocumentType: IdentityDocumentType = IdentityDocumentType.DNI,
@@ -18,7 +19,13 @@ export const getALmsCourse = (id: number = Math.random(), name: string) =>
     categoryId: LmsCourseCategoryEnum.MIXED,
     shortname: 'test',
     name: name,
-    modules: [],
+    modules: [
+      {
+        id: 1,
+        name: 'Test',
+        image: 'image.jpeg',
+      },
+    ],
   });
 
 export const getALmsStudent = (id: number = Math.random()) =>
@@ -29,4 +36,18 @@ export const getALmsStudent = (id: number = Math.random()) =>
     lastName: 'last name',
     email: 'email@test.com',
     password: 'password',
+  });
+
+export const getALmsContentModule = (id: number = Math.random()) =>
+  new LmsModuleContent({
+    id: id,
+    name: 'test',
+    modules: [
+      {
+        id: id,
+        name: 'test',
+        url: 'url',
+        contents: [],
+      },
+    ],
   });

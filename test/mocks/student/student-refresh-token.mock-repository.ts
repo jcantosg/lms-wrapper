@@ -1,4 +1,4 @@
-import { StudentRefreshTokenRepository } from '#/student/student/domain/repository/student-refresh-token.repository';
+import { StudentRefreshTokenRepository } from '#/student-360/student/domain/repository/student-refresh-token.repository';
 
 export class StudentRefreshTokenMockRepository
   implements StudentRefreshTokenRepository

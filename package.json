@@ -139,7 +139,8 @@
       "^#config/(.*)$": "<rootDir>/../config/$1",
       "^#test/(.*)$": "<rootDir>/../test/$1",
       "^#/(.*)$": "<rootDir>/$1",
-      "^&/(.*)$": "<rootDir>/../$1"
+      "^&/(.*)$": "<rootDir>/../$1",
+      "^#student-360/(.*)$": "<rootDir>/student-360/$1"
     }
   }
 }

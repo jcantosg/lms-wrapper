@@ -1,5 +1,5 @@
 import { CreateStudentHandler } from '#student/application/create-student/create-student.handler';
-import { StudentRepository } from '#/student/student/domain/repository/student.repository';
+import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
 import { CreateStudentCommand } from '#student/application/create-student/create-student.command';
 import { v4 as uuid } from 'uuid';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';

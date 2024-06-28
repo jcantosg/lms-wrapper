@@ -4,7 +4,7 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
 import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
-import { StudentAcademicRecordNotFoundException } from '#/student/student/domain/exception/student-academic-record-not-found.exception';
+import { StudentAcademicRecordNotFoundException } from '#/student-360/student/domain/exception/student-academic-record-not-found.exception';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 
