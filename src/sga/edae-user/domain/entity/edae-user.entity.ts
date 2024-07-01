@@ -26,6 +26,7 @@ export class EdaeUser extends BaseEntity {
     private _location: Country,
     private _subjects: Subject[],
     private _avatar: string | null,
+    private _password: string,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -126,6 +127,14 @@ export class EdaeUser extends BaseEntity {
     this._subjects = value;
   }
 
+  public get password(): string {
+    return this._password;
+  }
+
+  public set password(value: string) {
+    this._password = value;
+  }
+
   static create(
     id: string,
     name: string,
@@ -139,6 +148,7 @@ export class EdaeUser extends BaseEntity {
     isRemote: boolean,
     location: Country,
     avatar: string | null,
+    password: string,
   ): EdaeUser {
     return new this(
       id,
@@ -156,6 +166,7 @@ export class EdaeUser extends BaseEntity {
       location,
       [],
       avatar,
+      password,
     );
   }
 

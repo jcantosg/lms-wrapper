@@ -171,6 +171,7 @@ export class RemoveEdaeUserFromSubjectE2eSeed implements E2eSeed {
       true,
       country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.edaeUser);
 

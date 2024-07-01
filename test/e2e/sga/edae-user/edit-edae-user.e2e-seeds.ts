@@ -105,6 +105,7 @@ export class EditEdaeUserE2eSeed implements E2eSeed {
       true,
       this.country,
       null,
+      'password',
     );
 
     await this.edaeUserRepository.save(this.edaeUser);

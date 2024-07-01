@@ -12,6 +12,8 @@ import { GetEdaeUserHandler } from '#edae-user/application/get-edae-user/get-eda
 import { GetAllEdaeUsersHandler } from '#edae-user/application/get-all-edae-users/get-all-edae-users.handler';
 import { CreateEdaeUserHandler } from '#edae-user/application/edae-user/create-edae-user/create-edae-user.handler';
 import { GetAllEdaeUsersPlainHandler } from '#edae-user/application/get-all-edae-users-plain/get-all-edae-users-plain.handler';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-password-generator.service';
 
 const createEdaeUserHandler = {
   provide: CreateEdaeUserHandler,
@@ -20,12 +22,16 @@ const createEdaeUserHandler = {
     businessUnitGetter: BusinessUnitGetter,
     countryGetter: CountryGetter,
     imageUploader: ImageUploader,
+    eventDispatcher: EventDispatcher,
+    passwordGenerator: EdaeUserPasswordGenerator,
   ) => {
     return new CreateEdaeUserHandler(
       repository,
       businessUnitGetter,
       countryGetter,
       imageUploader,
+      eventDispatcher,
+      passwordGenerator,
     );
   },
   inject: [
@@ -33,6 +39,8 @@ const createEdaeUserHandler = {
     BusinessUnitGetter,
     CountryGetter,
     ImageUploader,
+    EventDispatcher,
+    EdaeUserPasswordGenerator,
   ],
 };
 

@@ -32,4 +32,6 @@ export abstract class EdaeUserRepository {
   ): Promise<EdaeUser | null>;
 
   abstract getByBusinessUnit(businessUnit: BusinessUnit): Promise<EdaeUser[]>;
+
+  abstract getByEmail(email: string): Promise<EdaeUser | null>;
 }

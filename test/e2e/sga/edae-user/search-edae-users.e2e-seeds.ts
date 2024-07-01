@@ -105,6 +105,7 @@ export class SearchEdaeUsersE2eSeed implements E2eSeed {
       true,
       this.country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.firstUser);
 
@@ -121,6 +122,7 @@ export class SearchEdaeUsersE2eSeed implements E2eSeed {
       true,
       this.country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.secondUser);
   }

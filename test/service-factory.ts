@@ -36,6 +36,7 @@ import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.s
 import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
+import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-password-generator.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -84,6 +85,12 @@ export function getImageUploaderMock(): ImageUploader {
 export function getPasswordGeneratorMock(): AdminUserPasswordGenerator {
   return (
     AdminUserPasswordGenerator as jest.Mocked<typeof AdminUserPasswordGenerator>
+  ).prototype;
+}
+
+export function getEdaeUserPasswordGeneratorMock(): EdaeUserPasswordGenerator {
+  return (
+    EdaeUserPasswordGenerator as jest.Mocked<typeof EdaeUserPasswordGenerator>
   ).prototype;
 }
 

@@ -179,6 +179,7 @@ export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
       true,
       country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.edaeUser);
 
@@ -195,6 +196,7 @@ export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
       true,
       country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.secondEdaeUser);
 
@@ -211,6 +213,7 @@ export class AddEdaeUsersToSubjectE2eSeed implements E2eSeed {
       true,
       country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.thirdEdaeUser);
   }

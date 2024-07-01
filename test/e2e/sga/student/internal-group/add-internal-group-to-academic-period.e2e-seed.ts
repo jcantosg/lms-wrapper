@@ -255,6 +255,7 @@ export class AddInternalGroupToAcademicPeriodE2eSeed implements E2eSeed {
         false,
         country,
         null,
+        'password',
       ),
     );
   }

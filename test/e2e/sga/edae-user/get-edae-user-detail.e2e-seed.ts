@@ -103,6 +103,7 @@ export class GetEdaeUserDetailE2eSeed implements E2eSeed {
         GetEdaeUserDetailE2eSeed.edaeUserIsRemote,
         country,
         '',
+        'password',
       ),
     );
   }

@@ -28,7 +28,7 @@ async function bootstrap() {
   await createAdminUser(logger, passwordEncoder, email, password);
   await seedBusinessUnits(logger);
   await seedAdminUsers(logger, passwordEncoder);
-  await seedEdaeUsers(logger);
+  await seedEdaeUsers(logger, passwordEncoder);
   await seedAcademicPeriods(logger);
   await seedTitles(logger);
   await seedAcademicPrograms(logger);

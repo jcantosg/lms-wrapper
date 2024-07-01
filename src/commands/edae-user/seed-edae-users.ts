@@ -5,8 +5,12 @@ import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { Country } from '#shared/domain/entity/country.entity';
 import { edaeUsers as edaeUsersRaw } from './edae-users';
 import { IdentityDocument } from '#/sga/shared/domain/value-object/identity-document';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 
-export async function seedEdaeUsers(logger: Logger) {
+export async function seedEdaeUsers(
+  logger: Logger,
+  passwordEncoder: PasswordEncoder,
+) {
   const businessUnitRepository = datasource.getRepository(BusinessUnit);
   const edaeUserRepository = datasource.getRepository(EdaeUser);
   const countryRepository = datasource.getRepository(Country);
@@ -15,8 +19,9 @@ export async function seedEdaeUsers(logger: Logger) {
   const allCountries = await countryRepository.find();
 
   const edaeUsers: EdaeUser[] = [];
+  const password = 'test123';
 
-  edaeUsersRaw.forEach((edaeUser) => {
+  for (const edaeUser of edaeUsersRaw) {
     edaeUsers.push(
       EdaeUser.create(
         edaeUser.id,
@@ -36,9 +41,10 @@ export async function seedEdaeUsers(logger: Logger) {
         edaeUser.isRemote,
         allCountries.find((c) => c.iso === edaeUser.locationIso) as Country,
         edaeUser.avatar,
+        await passwordEncoder.encodePassword(password),
       ),
     );
-  });
+  }
 
   await edaeUserRepository.save(edaeUsers);
   logger.log('Edae users created');

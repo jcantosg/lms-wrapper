@@ -37,6 +37,7 @@ export class EdaeUserPostgresRepository
       createdAt: edaeUser.createdAt,
       updatedAt: edaeUser.updatedAt,
       subjects: edaeUser.subjects,
+      password: edaeUser.password,
     });
   }
 
@@ -206,5 +207,12 @@ export class EdaeUserPostgresRepository
     });
 
     return edaeUsers.filter((edaeUser) => edaeUser.isTeacher());
+  }
+
+  async getByEmail(email: string): Promise<EdaeUser | null> {
+    return await this.repository.findOne({
+      where: { email },
+      relations: { businessUnits: true, location: true },
+    });
   }
 }

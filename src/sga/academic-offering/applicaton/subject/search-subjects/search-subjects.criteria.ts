@@ -11,7 +11,12 @@ export class SearchSubjectsCriteria extends Criteria {
   constructor(query: SearchSubjectsQuery) {
     super(
       SearchSubjectsCriteria.createFilters(query),
-      new Order(query.orderBy, query.orderType),
+      new Order(
+        query.orderBy === 'officialCode'
+          ? 'subjectOfficialCode'
+          : query.orderBy,
+        query.orderType,
+      ),
       query.page,
       query.limit,
     );

@@ -10,4 +10,5 @@ export class EdaeUserMockRepository implements EdaeUserRepository {
   count = jest.fn();
   getByAdminUser = jest.fn();
   getByBusinessUnit = jest.fn();
+  getByEmail = jest.fn();
 }

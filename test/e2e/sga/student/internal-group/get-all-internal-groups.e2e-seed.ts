@@ -184,6 +184,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
         true,
         country,
         null,
+        'password',
       ),
     );
 
@@ -204,6 +205,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
         true,
         country,
         null,
+        'password',
       ),
     );
 

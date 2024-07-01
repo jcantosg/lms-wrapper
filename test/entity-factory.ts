@@ -59,6 +59,7 @@ export const getAnEdaeUser = (id: string = uuid()): EdaeUser => {
     true,
     getACountry(),
     'avatar',
+    'password',
   );
 };
 

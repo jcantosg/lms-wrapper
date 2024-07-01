@@ -10,13 +10,21 @@ import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { CountryMockRepository } from '#test/mocks/shared/country.mock-repository';
 import { EdaeUserDuplicatedException } from '#shared/domain/exception/edae-user/edae-user-duplicated.exception';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
-import { getImageUploaderMock } from '#test/service-factory';
+import {
+  getEdaeUserPasswordGeneratorMock,
+  getImageUploaderMock,
+} from '#test/service-factory';
+import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-password-generator.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let businessUnitGetter: BusinessUnitGetter;
 let businessUnitMockRepository: BusinessUnitMockRepository;
 let countryGetter: CountryGetter;
 let countryMockRepository: CountryMockRepository;
 let imageUploader: ImageUploader;
+let eventDispatcher: EventDispatcher;
+let passwordGenerator: EdaeUserPasswordGenerator;
 
 let uploadImageSpy: jest.SpyInstance;
 
@@ -47,6 +55,8 @@ describe('CreateEdaeUserHandler', () => {
     mockRepository = new EdaeUserMockRepository();
     businessUnitMockRepository = new BusinessUnitMockRepository();
     countryMockRepository = new CountryMockRepository();
+    eventDispatcher = new EventDispatcherMock();
+    passwordGenerator = getEdaeUserPasswordGeneratorMock();
     countryGetter = new CountryGetter(countryMockRepository);
     imageUploader = getImageUploaderMock();
     uploadImageSpy = jest.spyOn(imageUploader, 'uploadImage');
@@ -59,6 +69,8 @@ describe('CreateEdaeUserHandler', () => {
       businessUnitGetter,
       countryGetter,
       imageUploader,
+      eventDispatcher,
+      passwordGenerator,
     );
   });
 

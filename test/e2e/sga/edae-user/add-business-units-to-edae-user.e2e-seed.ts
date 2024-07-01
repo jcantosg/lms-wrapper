@@ -146,6 +146,7 @@ export class AddBusinessUnitsToEdaeUserE2eSeeds implements E2eSeed {
       false,
       this.country,
       '',
+      'password',
     );
 
     await this.edaeUserRepository.save(this.edaeUser);

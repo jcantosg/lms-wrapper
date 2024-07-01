@@ -162,6 +162,7 @@ export class SetDefaultTeacherToSubjectE2eSeed implements E2eSeed {
       true,
       country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.edaeUser);
 
@@ -178,6 +179,7 @@ export class SetDefaultTeacherToSubjectE2eSeed implements E2eSeed {
       true,
       country,
       null,
+      'password',
     );
     await this.edaeUserRepository.save(this.secondEdaeUser);
     this.subject.addTeacher(this.edaeUser);

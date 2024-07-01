@@ -58,6 +58,10 @@ export const edaeUserSchema = new EntitySchema<EdaeUser>({
       type: String,
       nullable: true,
     },
+    password: {
+      type: String,
+      nullable: true,
+    },
   },
   relations: {
     businessUnits: {

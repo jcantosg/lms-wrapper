@@ -7,6 +7,9 @@ import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { EdaeUserRepository } from '#/sga/edae-user/domain/repository/edae-user.repository';
 import { EdaeUser } from '#/sga/edae-user/domain/entity/edae-user.entity';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { AdminUserPasswordGenerator } from '#admin-user/domain/service/admin-user-password-generator.service';
+import { EdaeUserCreatedEvent } from '#edae-user/domain/event/edae-user-created.event';
 
 export class CreateEdaeUserHandler implements CommandHandler {
   constructor(
@@ -14,6 +17,8 @@ export class CreateEdaeUserHandler implements CommandHandler {
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly countryGetter: CountryGetter,
     private readonly imageUploader: ImageUploader,
+    private readonly eventDispatcher: EventDispatcher,
+    private readonly passwordGenerator: AdminUserPasswordGenerator,
   ) {}
 
   async handle(command: CreateEdaeUserCommand): Promise<void> {
@@ -59,7 +64,12 @@ export class CreateEdaeUserHandler implements CommandHandler {
       command.isRemote,
       location,
       avatar,
+      this.passwordGenerator.generatePassword(),
     );
     await this.edaeUserRepository.save(edaeUser);
+
+    await this.eventDispatcher.dispatch(
+      new EdaeUserCreatedEvent(edaeUser.id, edaeUser.email, edaeUser.password),
+    );
   }
 }
