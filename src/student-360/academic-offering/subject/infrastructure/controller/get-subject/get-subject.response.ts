@@ -1,37 +1,88 @@
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
-import { LmsModule } from '#/lms-wrapper/domain/entity/lms-course';
+import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 interface GetSubjectResponseBody {
   id: string;
   name: string;
+  teacher: {
+    id: string;
+    name: string;
+    surname1: string;
+    surname2: string | null;
+    avatar: string | null;
+  };
+  academicRecord: {
+    id: string;
+    name: string;
+  };
   lmsCourse: {
     id: number;
     name: string;
     modules: {
-      id: number;
-      name: string;
-      image: string;
-    }[];
+      resources: {
+        id: number;
+        name: string;
+        image: string;
+      }[];
+      quizzes: {
+        id: number;
+        name: string;
+      }[];
+    };
   };
 }
 
 export class GetSubjectResponse {
-  static create(subject: Subject): GetSubjectResponseBody {
+  static create(
+    subject: Subject,
+    defaultTeacher: EdaeUser,
+    academicRecord: AcademicRecord,
+  ): GetSubjectResponseBody {
     return {
       id: subject.id,
       name: subject.name,
+      teacher: {
+        id: defaultTeacher!.id,
+        name: defaultTeacher!.name,
+        surname1: defaultTeacher!.surname1,
+        surname2: defaultTeacher!.surname2,
+        avatar: defaultTeacher!.avatar,
+      },
+      academicRecord: {
+        id: academicRecord.id,
+        name: academicRecord.academicProgram.title.name,
+      },
       lmsCourse: {
         id: subject.lmsCourse!.value.id,
         name: subject.lmsCourse!.value.name,
-        modules: subject.lmsCourse!.value.modules.map(
-          (lmsModule: LmsModule) => {
-            return {
-              id: lmsModule.id,
-              name: lmsModule.name,
-              image: lmsModule.image,
-            };
-          },
-        ),
+        modules: {
+          resources: subject
+            .lmsCourse!.value.modules.filter(
+              (module) =>
+                module.name !== 'pruebaSemestral' &&
+                module.name !== 'testDeEvaluacion',
+            )
+            .map((module) => {
+              return {
+                id: module.id,
+                name: module.name,
+                image: module.image,
+              };
+            }),
+          quizzes: subject
+            .lmsCourse!.value.modules.filter(
+              (module) =>
+                module.name === 'pruebaSemestral' ||
+                module.name === 'testDeEvaluacion',
+            )
+            .map((module) => {
+              return {
+                id: module.id,
+                name: module.name,
+              };
+            }),
+        },
       },
     };
   }

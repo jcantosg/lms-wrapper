@@ -36,6 +36,7 @@ import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.s
 import { SubjectUpToBlockGetter } from '#academic-offering/domain/service/subject/subject-up-to-block-getter.service';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
+import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
 import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-password-generator.service';
 
 export function getCountryGetterMock(): CountryGetter {
@@ -233,4 +234,12 @@ export function getAnEnrollmentCreatorMock(): EnrollmentCreator {
 export function getAInternalGroupGetterMock(): InternalGroupGetter {
   return (InternalGroupGetter as jest.Mocked<typeof InternalGroupGetter>)
     .prototype;
+}
+
+export function getAnInternalGroupDefaultTeacherGetterMock(): InternalGroupDefaultTeacherGetter {
+  return (
+    InternalGroupDefaultTeacherGetter as jest.Mocked<
+      typeof InternalGroupDefaultTeacherGetter
+    >
+  ).prototype;
 }

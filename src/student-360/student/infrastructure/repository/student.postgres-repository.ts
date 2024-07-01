@@ -157,9 +157,7 @@ export class StudentPostgresRepository
       .getMany();
 
     return studentIdsInOrder.map((id) => {
-      const student = students.find((student) => student.id === id);
-
-      return student;
+      return students.find((student) => student.id === id);
     }) as Student[];
   }
 

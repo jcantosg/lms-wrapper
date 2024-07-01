@@ -76,6 +76,10 @@ export class AcademicRecordPostgresRepository
       'academicProgramAcademicPeriods.periodBlocks',
       'academicProgramPeriodBlocks',
     );
+    queryBuilder.leftJoinAndSelect(
+      'academicProgramProgramBlocks.subjects',
+      'academicProgramBlockSubjects',
+    );
 
     return queryBuilder;
   }

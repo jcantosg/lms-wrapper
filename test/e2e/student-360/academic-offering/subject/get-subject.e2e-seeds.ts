@@ -34,7 +34,16 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
-import { getALmsCourse } from '#test/value-object-factory';
+import {
+  getALmsCourse,
+  getAnIdentityDocument,
+} from '#test/value-object-factory';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
+import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
+import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
+import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
+import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 
 export class GetSubjectE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -111,6 +120,8 @@ export class GetSubjectE2eSeed implements E2eSeed {
   private academicRecord: AcademicRecord;
   private subject: Subject;
   private nonEnrolledSubject: Subject;
+  private internalGroup: InternalGroup;
+  private edaeUser: EdaeUser;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -123,6 +134,8 @@ export class GetSubjectE2eSeed implements E2eSeed {
   private academicRecordRepository: Repository<AcademicRecord>;
   private evaluationTypeRepository: Repository<EvaluationType>;
   private subjectRepository: Repository<Subject>;
+  private internalGroupRepository: Repository<InternalGroup>;
+  private edaeUserRepository: Repository<EdaeUser>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -142,6 +155,9 @@ export class GetSubjectE2eSeed implements E2eSeed {
     this.subjectRepository = datasource.getRepository(subjectSchema);
     this.evaluationTypeRepository =
       datasource.getRepository(evaluationTypeSchema);
+    this.internalGroupRepository =
+      datasource.getRepository(internalGroupSchema);
+    this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
   }
 
   async arrange(): Promise<void> {
@@ -294,12 +310,46 @@ export class GetSubjectE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.academicRecordRepository.save(this.academicRecord);
+    this.edaeUser = EdaeUser.create(
+      uuid(),
+      'Jose',
+      'Cantos',
+      null,
+      'jose@universae.com',
+      getAnIdentityDocument(),
+      [EdaeRoles.DOCENTE],
+      [this.businessUnit],
+      TimeZoneEnum.GMT_MINUS_1,
+      true,
+      country,
+      null,
+      'ejemplo',
+    );
+    await this.edaeUserRepository.save(this.edaeUser);
+    this.internalGroup = InternalGroup.create(
+      uuid(),
+      'TEST',
+      [this.student],
+      [this.edaeUser],
+      this.academicPeriod,
+      this.academicProgram,
+      this.academicPeriod.periodBlocks[0],
+      this.subject,
+      this.businessUnit,
+      true,
+      this.superAdminUser,
+      this.edaeUser,
+    );
+
+    await this.internalGroupRepository.save(this.internalGroup);
   }
 
   async clear(): Promise<void> {
     await this.academicRecordRepository.delete(
       GetSubjectE2eSeed.academicRecordId,
     );
+    await this.internalGroupRepository.delete(this.internalGroup.id);
+    await this.edaeUserRepository.delete(this.edaeUser.id);
     await this.studentRepository.delete(this.student.id);
     await this.subjectRepository.delete(this.subject.id);
     await this.subjectRepository.delete(this.nonEnrolledSubject.id);

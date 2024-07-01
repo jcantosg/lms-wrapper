@@ -24,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
 import { TransferAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/transfer-academic-record.typeorm-transactional-service';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -154,6 +155,15 @@ const internalGroupGetter = {
   inject: [InternalGroupRepository],
 };
 
+const internalGroupDefaulTeacherGetter = {
+  provide: InternalGroupDefaultTeacherGetter,
+  useFactory: (
+    repository: InternalGroupRepository,
+  ): InternalGroupDefaultTeacherGetter =>
+    new InternalGroupDefaultTeacherGetter(repository),
+  inject: [InternalGroupRepository],
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
@@ -166,4 +176,5 @@ export const services = [
   enrollmentCreatorService,
   administrativeGroupStatusStudentGetterService,
   internalGroupGetter,
+  internalGroupDefaulTeacherGetter,
 ];

@@ -34,12 +34,15 @@ describe('/student-360/subject/:id (GET)', () => {
         id: GetSubjectE2eSeed.subjectId,
         name: GetSubjectE2eSeed.subjectName,
         lmsCourse: expect.objectContaining({
-          modules: expect.arrayContaining([
-            expect.objectContaining({
-              name: 'Test',
-              image: 'image.jpeg',
-            }),
-          ]),
+          modules: expect.objectContaining({
+            resources: expect.arrayContaining([
+              expect.objectContaining({
+                name: 'Test',
+                image: 'image.jpeg',
+              }),
+            ]),
+            quizzes: expect.arrayContaining([]),
+          }),
         }),
       }),
     );

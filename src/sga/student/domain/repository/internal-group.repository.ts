@@ -35,4 +35,9 @@ export abstract class InternalGroupRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<InternalGroup | null>;
+
+  abstract getByStudentAndSubject(
+    studentId: string,
+    subjectId: string,
+  ): Promise<InternalGroup | null>;
 }

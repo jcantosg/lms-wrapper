@@ -192,4 +192,25 @@ export class InternalGroupPostgresRepository
       })
       .getOne();
   }
+
+  async getByStudentAndSubject(
+    studentId: string,
+    subjectId: string,
+  ): Promise<InternalGroup | null> {
+    return await this.repository.findOne({
+      where: {
+        subject: {
+          id: subjectId,
+        },
+        students: {
+          id: studentId,
+        },
+      },
+      relations: {
+        defaultTeacher: true,
+        subject: true,
+        students: true,
+      },
+    });
+  }
 }
