@@ -10,11 +10,16 @@ import { GetSubjectAcademicRecordCriteria } from '#student-360/academic-offering
 import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
 
 interface GetSubjectHandlerResponse {
   subject: Subject;
   defaultTeacher: EdaeUser;
-  academicRecord: AcademicRecord;
+  breadCrumb: {
+    academicRecord: AcademicRecord;
+    programBlock: ProgramBlock;
+  };
 }
 
 export class GetSubjectHandler implements QueryHandler {
@@ -40,11 +45,23 @@ export class GetSubjectHandler implements QueryHandler {
     if (!academicRecord) {
       throw new AcademicRecordNotFoundException();
     }
+    const programBlock = academicRecord[0].academicProgram.programBlocks.find(
+      (programBlock) =>
+        programBlock.subjects.some(
+          (subjectProgramBlock) => subject.id === subjectProgramBlock.id,
+        ),
+    );
+    if (!programBlock) {
+      throw new ProgramBlockNotFoundException();
+    }
 
     return {
       subject: subject,
       defaultTeacher: defaultTeacher,
-      academicRecord: academicRecord[0],
+      breadCrumb: {
+        academicRecord: academicRecord[0],
+        programBlock: programBlock,
+      },
     };
   }
 

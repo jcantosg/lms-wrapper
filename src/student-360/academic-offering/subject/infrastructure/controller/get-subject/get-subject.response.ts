@@ -1,6 +1,7 @@
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 interface GetSubjectResponseBody {
   id: string;
@@ -13,6 +14,10 @@ interface GetSubjectResponseBody {
     avatar: string | null;
   };
   academicRecord: {
+    id: string;
+    name: string;
+  };
+  programBlock: {
     id: string;
     name: string;
   };
@@ -37,7 +42,7 @@ export class GetSubjectResponse {
   static create(
     subject: Subject,
     defaultTeacher: EdaeUser,
-    academicRecord: AcademicRecord,
+    breadCrumb: { academicRecord: AcademicRecord; programBlock: ProgramBlock },
   ): GetSubjectResponseBody {
     return {
       id: subject.id,
@@ -50,8 +55,12 @@ export class GetSubjectResponse {
         avatar: defaultTeacher!.avatar,
       },
       academicRecord: {
-        id: academicRecord.id,
-        name: academicRecord.academicProgram.title.name,
+        id: breadCrumb.academicRecord.id,
+        name: breadCrumb.academicRecord.academicProgram.title.name,
+      },
+      programBlock: {
+        id: breadCrumb.programBlock.id,
+        name: breadCrumb.programBlock.name,
       },
       lmsCourse: {
         id: subject.lmsCourse!.value.id,

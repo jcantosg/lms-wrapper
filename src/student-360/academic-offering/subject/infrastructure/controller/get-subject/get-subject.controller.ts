@@ -16,9 +16,9 @@ export class GetSubjectController {
     @Request() req: StudentAuthRequest,
   ): Promise<GetSubjectResponse> {
     const query = new GetSubjectQuery(id, req.user);
-    const { subject, defaultTeacher, academicRecord } =
+    const { subject, defaultTeacher, breadCrumb } =
       await this.handler.handle(query);
 
-    return GetSubjectResponse.create(subject, defaultTeacher, academicRecord);
+    return GetSubjectResponse.create(subject, defaultTeacher, breadCrumb);
   }
 }

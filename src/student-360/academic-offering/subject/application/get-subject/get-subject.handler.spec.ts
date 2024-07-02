@@ -58,7 +58,7 @@ describe('Get Subject Handler Unit Test', () => {
       Promise.resolve(getAnEdaeUser()),
     );
     getAcademicRecordSpy.mockImplementation(() =>
-      Promise.resolve([getAnAcademicRecord()]),
+      Promise.resolve([academicRecord]),
     );
     const response = await handler.handle(query);
     expect(response).toEqual(expect.objectContaining({ subject: subject }));
