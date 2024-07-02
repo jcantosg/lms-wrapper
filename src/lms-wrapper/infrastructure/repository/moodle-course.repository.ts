@@ -21,4 +21,8 @@ export class MoodleCourseRepository implements LmsCourseRepository {
   async getContent(id: number, contentId: number): Promise<LmsModuleContent> {
     return this.moodleWrapper.getCourseContent(id, contentId);
   }
+
+  async getByName(name: string): Promise<LmsCourse> {
+    return this.moodleWrapper.getByName(name);
+  }
 }

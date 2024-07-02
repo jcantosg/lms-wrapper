@@ -22,8 +22,10 @@ import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type
 import { CreateSubjectHandler } from '#academic-offering/applicaton/subject/create-subject/create-subject.handler';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
 import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
-import clearAllMocks = jest.clearAllMocks;
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
+import { CreateLmsCourseHandler } from '#/lms-wrapper/application/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.handler';
+import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateSubjectHandler;
 let repository: SubjectRepository;
@@ -31,6 +33,8 @@ let evaluationTypeGetter: EvaluationTypeGetter;
 let businessUnitGetter: BusinessUnitGetter;
 let imageUploader: ImageUploader;
 let lmsCourseHandler: GetLmsCourseHandler;
+let createLmsCourseHandler: CreateLmsCourseHandler;
+let getLmsCourseByName: GetLmsCourseByNameHandler;
 
 let saveSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -65,12 +69,20 @@ describe('Create Subject Handler', () => {
     businessUnitGetter = getBusinessUnitGetterMock();
     imageUploader = getImageUploaderMock();
     lmsCourseHandler = new GetLmsCourseHandler(new LmsCourseMockRepository());
+    createLmsCourseHandler = new CreateLmsCourseHandler(
+      new LmsCourseMockRepository(),
+    );
+    getLmsCourseByName = new GetLmsCourseByNameHandler(
+      new LmsCourseMockRepository(),
+    );
     handler = new CreateSubjectHandler(
       repository,
       evaluationTypeGetter,
       businessUnitGetter,
       imageUploader,
       lmsCourseHandler,
+      createLmsCourseHandler,
+      getLmsCourseByName,
     );
     saveSpy = jest.spyOn(repository, 'save');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');

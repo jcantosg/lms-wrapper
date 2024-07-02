@@ -5,4 +5,5 @@ export class LmsCourseMockRepository implements LmsCourseRepository {
   getAll = jest.fn();
   save = jest.fn();
   getContent = jest.fn();
+  getByName = jest.fn();
 }

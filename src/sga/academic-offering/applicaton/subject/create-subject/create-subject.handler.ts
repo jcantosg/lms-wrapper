@@ -9,7 +9,12 @@ import { SubjectDuplicatedException } from '#shared/domain/exception/academic-of
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
-import { GetLMSCourseQuery } from '#/lms-wrapper/application/get-lms-course/get-lms-course.command';
+import { GetLMSCourseQuery } from '#/lms-wrapper/application/get-lms-course/get-lms-course.query';
+import { CreateLmsCourseHandler } from '#/lms-wrapper/application/create-lms-course/create-lms-course.handler';
+import { CreateLmsCourseCommand } from '#/lms-wrapper/application/create-lms-course/create-lms-course.command';
+import { getLmsCourseCategoryEnumValue } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
+import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { GetLMSCourseByNameQuery } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.query';
 
 export class CreateSubjectHandler implements CommandHandler {
   constructor(
@@ -18,6 +23,8 @@ export class CreateSubjectHandler implements CommandHandler {
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly imageUploader: ImageUploader,
     private readonly getLMSCourseHandler: GetLmsCourseHandler,
+    private readonly createLMSCourseHandler: CreateLmsCourseHandler,
+    private readonly getLMSCourseByNameHandler: GetLmsCourseByNameHandler,
   ) {}
 
   async handle(command: CreateSubjectCommand): Promise<void> {
@@ -62,12 +69,28 @@ export class CreateSubjectHandler implements CommandHandler {
       command.adminUser,
       command.officialRegionalCode,
     );
-    const lmsCourse = command.lmsCourseId
-      ? await this.getLMSCourseHandler.handle(
-          new GetLMSCourseQuery(command.lmsCourseId),
-        )
-      : null;
+    let lmsCourse;
+    if (command.lmsCourseId) {
+      lmsCourse = await this.getLMSCourseHandler.handle(
+        new GetLMSCourseQuery(command.lmsCourseId),
+      );
+    } else {
+      await this.createLMSCourseHandler.handle(
+        new CreateLmsCourseCommand(
+          command.name,
+          command.code,
+          getLmsCourseCategoryEnumValue(this.parseModality(command.modality)),
+        ),
+      );
+      lmsCourse = await this.getLMSCourseByNameHandler.handle(
+        new GetLMSCourseByNameQuery(command.name),
+      );
+    }
     subject.addLmsCourse(lmsCourse);
     await this.repository.save(subject);
+  }
+
+  private parseModality(modality: string): string {
+    return modality.replace('-', '_').toUpperCase();
   }
 }

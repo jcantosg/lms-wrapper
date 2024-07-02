@@ -25,6 +25,8 @@ import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/
 import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
 import { GetAllSubjectEdaeUsersHandler } from '#academic-offering/applicaton/subject/get-all-subject-edae-users/get-all-subject-edae-users.handler';
+import { CreateLmsCourseHandler } from '#/lms-wrapper/application/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.handler';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -34,6 +36,8 @@ const createSubjectHandler = {
     businessUnitGetter: BusinessUnitGetter,
     imageUploader: ImageUploader,
     lmsCourseHandler: GetLmsCourseHandler,
+    createLmsCourseHandler: CreateLmsCourseHandler,
+    getLmsCourseByNameHandler: GetLmsCourseByNameHandler,
   ) =>
     new CreateSubjectHandler(
       repository,
@@ -41,6 +45,8 @@ const createSubjectHandler = {
       businessUnitGetter,
       imageUploader,
       lmsCourseHandler,
+      createLmsCourseHandler,
+      getLmsCourseByNameHandler,
     ),
   inject: [
     SubjectRepository,
@@ -48,6 +54,8 @@ const createSubjectHandler = {
     BusinessUnitGetter,
     ImageUploader,
     GetLmsCourseHandler,
+    CreateLmsCourseHandler,
+    GetLmsCourseByNameHandler,
   ],
 };
 

@@ -199,6 +199,19 @@ export class MoodleWrapper implements LmsWrapper {
     });
   }
 
+  public async getByName(name: string): Promise<LmsCourse> {
+    const allCourses = await this.getAllCourses();
+
+    const course = allCourses.find(
+      (course: LmsCourse) => course.value.name === name,
+    );
+    if (!course) {
+      throw new BadRequestException();
+    }
+
+    return course;
+  }
+
   private async getUrlWithSessionKey(email: string): Promise<string> {
     const userKeyParams = `wstoken=${this.token}&wsfunction=auth_userkey_request_login_url&moodlewsrestformat=json&user[email]=${email}`;
     const loginResponse: MoodleLoginResponse = await this.wrapper.get(

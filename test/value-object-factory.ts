@@ -16,7 +16,7 @@ export const getAnIdentityDocument = (
 export const getALmsCourse = (id: number = Math.random(), name: string) =>
   new LmsCourse({
     id: id,
-    categoryId: LmsCourseCategoryEnum.MIXED,
+    categoryId: LmsCourseCategoryEnum.MIXTA,
     shortname: 'test',
     name: name,
     modules: [

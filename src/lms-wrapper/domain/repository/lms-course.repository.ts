@@ -9,4 +9,6 @@ export abstract class LmsCourseRepository {
   abstract save(lmsCourse: LmsCourse): Promise<void>;
 
   abstract getContent(id: number, contentId: number): Promise<LmsModuleContent>;
+
+  abstract getByName(name: string): Promise<LmsCourse>;
 }

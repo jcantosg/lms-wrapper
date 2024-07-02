@@ -31,7 +31,7 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   public static subjectCode = 'AED2';
   public static subjectOfficialCode = 'BOE-231';
   public static subjectHours = 20;
-  public static subjectModality = SubjectModality.PRESENCIAL;
+  public static subjectModality = SubjectModality.ELEARNING;
   public static subjectEvaluationType = '8adeb962-3669-4c37-ada0-01328ef74c00';
   public static subjectType = SubjectType.SUBJECT;
   public static subjectIsRegulated = true;

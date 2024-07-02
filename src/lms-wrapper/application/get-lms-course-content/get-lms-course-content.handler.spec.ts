@@ -17,7 +17,7 @@ let lmsCourseRepository: LmsCourseRepository;
 const subject = getASubject();
 subject.lmsCourse = new LmsCourse({
   id: 2,
-  categoryId: LmsCourseCategoryEnum.MIXED,
+  categoryId: LmsCourseCategoryEnum.MIXTA,
   name: 'test',
   shortname: 'test',
   modules: [],
