@@ -25,4 +25,8 @@ export class MoodleCourseRepository implements LmsCourseRepository {
   async getByName(name: string): Promise<LmsCourse> {
     return this.moodleWrapper.getByName(name);
   }
+
+  async delete(lmsCourse: LmsCourse): Promise<void> {
+    await this.moodleWrapper.deleteCourse(lmsCourse);
+  }
 }

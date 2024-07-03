@@ -15,6 +15,12 @@ import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { businessUnitSchema } from '#business-unit/infrastructure/config/schema/business-unit.schema';
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
+import { MoodleCourseRepository } from '#/lms-wrapper/infrastructure/repository/moodle-course.repository';
+import { MoodleWrapper } from '#/lms-wrapper/infrastructure/wrapper/moodle-wrapper';
+import * as process from 'node:process';
+import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
+import { Logger } from '@nestjs/common';
 
 export class CreateSubjectE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'super-create-subject@email.com';
@@ -47,11 +53,18 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   private businessUnitRepository: Repository<BusinessUnit>;
   private countryRepository: Repository<Country>;
   private subjectRepository: Repository<Subject>;
+  private lmsCourseRepository: LmsCourseRepository;
 
   constructor(private datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
     this.countryRepository = datasource.getRepository(CountrySchema);
     this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.lmsCourseRepository = new MoodleCourseRepository(
+      new MoodleWrapper(
+        new FetchWrapper(process.env.LMS_URL!, new Logger()),
+        process.env.LMS_TOKEN!,
+      ),
+    );
   }
 
   async arrange(): Promise<void> {
@@ -85,6 +98,10 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   }
 
   async clear(): Promise<void> {
+    const subject = await this.subjectRepository.findOneByOrFail({
+      id: CreateSubjectE2eSeed.subjectId,
+    });
+    await this.lmsCourseRepository.delete(subject.lmsCourse!);
     await this.subjectRepository.delete(CreateSubjectE2eSeed.subjectId);
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await removeAdminUser(this.datasource, this.superAdminUser);

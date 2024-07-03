@@ -221,4 +221,9 @@ export class MoodleWrapper implements LmsWrapper {
 
     return loginResponse.loginurl;
   }
+
+  async deleteCourse(lmsCourse: LmsCourse) {
+    const deleteCourseQueryParam = `wstoken=${this.token}&wsfunction=core_course_delete_courses&moodlewsrestformat=json&courseids[0]=${lmsCourse.value.id}`;
+    await this.wrapper.post(this.url, deleteCourseQueryParam);
+  }
 }

@@ -14,6 +14,8 @@ import { adminUserSchema } from '#admin-user/infrastructure/config/schema/admin-
 import { CountrySchema } from '#shared/infrastructure/config/schema/country.schema';
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
+import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
 
 export class GetSubjectDetailE2eSeed implements E2eSeed {
   public static subjectId = '83670209-9598-41d5-9c57-a393493f1b98';
@@ -96,24 +98,30 @@ export class GetSubjectDetailE2eSeed implements E2eSeed {
         [this.businessUnit],
       ),
     );
-    this.subjectRepository.save(
-      Subject.create(
-        GetSubjectDetailE2eSeed.subjectId,
-        GetSubjectDetailE2eSeed.subjectImage,
-        GetSubjectDetailE2eSeed.subjectName,
-        GetSubjectDetailE2eSeed.subjectCode,
-        GetSubjectDetailE2eSeed.subjectOfficialCode,
-        100,
-        GetSubjectDetailE2eSeed.subjectModality,
-        this.evaluationType,
-        GetSubjectDetailE2eSeed.subjectType,
-        this.businessUnit,
-        GetSubjectDetailE2eSeed.subjectIsRegulated,
-        true,
-        this.superAdminUser,
-        GetSubjectDetailE2eSeed.subjectOfficialRegionalCode,
-      ),
+    const subject = Subject.create(
+      GetSubjectDetailE2eSeed.subjectId,
+      GetSubjectDetailE2eSeed.subjectImage,
+      GetSubjectDetailE2eSeed.subjectName,
+      GetSubjectDetailE2eSeed.subjectCode,
+      GetSubjectDetailE2eSeed.subjectOfficialCode,
+      100,
+      GetSubjectDetailE2eSeed.subjectModality,
+      this.evaluationType,
+      GetSubjectDetailE2eSeed.subjectType,
+      this.businessUnit,
+      GetSubjectDetailE2eSeed.subjectIsRegulated,
+      true,
+      this.superAdminUser,
+      GetSubjectDetailE2eSeed.subjectOfficialRegionalCode,
     );
+    subject.lmsCourse = new LmsCourse({
+      id: 1,
+      categoryId: LmsCourseCategoryEnum.E_LEARNING,
+      name: 'Test',
+      shortname: 'test',
+      modules: [],
+    });
+    await this.subjectRepository.save(subject);
   }
 
   async clear() {

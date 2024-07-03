@@ -46,6 +46,10 @@ export interface SubjectResponse {
   isCore: boolean;
   resources: SubjectResourceResponse[];
   officialRegionalCode: string | null;
+  lmsCourse: {
+    id: number;
+    name: string;
+  };
 }
 
 export class GetSubjectResponse {
@@ -90,6 +94,10 @@ export class GetSubjectResponse {
         },
       ),
       officialRegionalCode: subject.officialRegionalCode,
+      lmsCourse: {
+        id: subject.lmsCourse!.value.id,
+        name: subject.lmsCourse!.value.name,
+      },
     };
   }
 }
