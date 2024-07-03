@@ -9,10 +9,12 @@
 
   "app_url": "https://ucp360.universae.com",
 
+  "enable_cloudflare_auth_header": false,
+
   "cpu": 512,
   "memory": 1024,
-  "min_tasks": 1,
-  "max_tasks": 1,
+  "min_tasks": 0,
+  "max_tasks": 0,
   "spot_capacity_percent": 100,
 
   "cron": {

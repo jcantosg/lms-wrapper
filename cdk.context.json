@@ -114,5 +114,26 @@
     "securityGroupIds": [
       "sg-0ab83a3c98dd506c5"
     ]
+  },
+  "load-balancer:account=603941717969:loadBalancerTags.0.key=environment:loadBalancerTags.0.value=pre:loadBalancerTags.1.key=purpose:loadBalancerTags.1.value=public:loadBalancerType=application:region=eu-west-3": {
+    "loadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-3:603941717969:loadbalancer/app/pre-public/5effc2abd3c7f8b5",
+    "loadBalancerCanonicalHostedZoneId": "Z3Q77PNBQS71R4",
+    "loadBalancerDnsName": "pre-public-1414842708.eu-west-3.elb.amazonaws.com",
+    "vpcId": "vpc-074292b5bd744c3f1",
+    "securityGroupIds": [
+      "sg-0a2b28138fccb5d79"
+    ],
+    "ipAddressType": "ipv4"
+  },
+  "security-group:account=603941717969:region=eu-west-3:securityGroupId=sg-0a2b28138fccb5d79": {
+    "securityGroupId": "sg-0a2b28138fccb5d79",
+    "allowAllOutbound": false
+  },
+  "load-balancer-listener:account=603941717969:listenerPort=443:loadBalancerArn=arn$:aws$:elasticloadbalancing$:eu-west-3$:603941717969$:loadbalancer/app/pre-public/5effc2abd3c7f8b5:loadBalancerType=application:region=eu-west-3": {
+    "listenerArn": "arn:aws:elasticloadbalancing:eu-west-3:603941717969:listener/app/pre-public/5effc2abd3c7f8b5/ed2324f2986bc067",
+    "listenerPort": 443,
+    "securityGroupIds": [
+      "sg-0a2b28138fccb5d79"
+    ]
   }
 }

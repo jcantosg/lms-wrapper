@@ -44,6 +44,7 @@ DB_USERNAME = "universae360"
 SES_IDENTITY_NAME = "universae.com"
 SES_SMTP_HOST = "email-smtp.eu-west-3.amazonaws.com"
 
+CLOUDFLARE_SECRET_HEADER = "X-Universae-CloudFlare-Auth"
 
 class APIStack(Stack):
     def __init__(
@@ -72,6 +73,7 @@ class APIStack(Stack):
         db_cloudwatch_logs_exports: list[str] = ["postgresql"],
         enable_monitoring: bool = False,
         sns_topic_arn: str = None,
+        enable_cloudflare_auth_header: bool = False,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -231,6 +233,16 @@ class APIStack(Stack):
                 password_length=128,
                 exclude_punctuation=True,
                 exclude_uppercase=True,
+            ),
+        )
+
+        self.secret_cloudflare = secrets.Secret(
+            self,
+            "SecretCloudflare",
+            secret_name=f"{Stack.of(self).stack_name}-cloudflare",
+            generate_secret_string=secrets.SecretStringGenerator(
+                password_length=128,
+                exclude_punctuation=True,
             ),
         )
 
@@ -440,10 +452,22 @@ class APIStack(Stack):
             target_type=alb.TargetType.IP,
         )
 
+        target_group_conditions = [
+            alb.ListenerCondition.host_headers(values=[alb_host])
+        ]
+
+        if enable_cloudflare_auth_header:
+            target_group_conditions.append(
+                alb.ListenerCondition.http_header(
+                    name=CLOUDFLARE_SECRET_HEADER,
+                    values=[self.secret_cloudflare.secret_value.to_string()],
+                ),
+            )
+
         self.alb_listener.add_target_groups(
             Stack.of(self).stack_name,
             target_groups=[self.target_group],
-            conditions=[alb.ListenerCondition.host_headers(values=[alb_host])],
+            conditions=target_group_conditions,
             priority=alb_priority,
         )
 
@@ -589,7 +613,16 @@ class APIStack(Stack):
             suppressions=[
                 NagPackSuppression(
                     id="AwsSolutions-SMG4",
-                    reason="RDS master secret does not need rotation (for now)",
+                    reason="SMTP secret does not need rotation (for now)",
+                ),
+            ],
+        )
+        NagSuppressions.add_resource_suppressions(
+            construct=self.secret_cloudflare,
+            suppressions=[
+                NagPackSuppression(
+                    id="AwsSolutions-SMG4",
+                    reason="Cloudflare secret does not need rotation",
                 ),
             ],
         )

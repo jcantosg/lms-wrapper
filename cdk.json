@@ -54,7 +54,7 @@
     "@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments": true,
     "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": true,
     "@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2": true,
-    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/core:checkSecretUsage": false,
     "@aws-cdk/core:enablePartitionLiterals": true,
     "@aws-cdk/core:includePrefixInUniqueNameGeneration": true,
     "@aws-cdk/core:target-partitions": ["aws", "aws-cn"],

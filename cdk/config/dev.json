@@ -9,6 +9,8 @@
 
   "app_url": "https://dev-ucp360.universae.com",
 
+  "enable_cloudflare_auth_header": false,
+
   "cpu": 512,
   "memory": 1024,
   "min_tasks": 1,
