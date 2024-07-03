@@ -48,10 +48,11 @@ const configModule = ConfigModule.forRoot({
     JWT_SECRET: Joi.string().required(),
     JWT_TTL: Joi.string().required(),
     DEFAULT_AVATAR: Joi.string().required(),
-    EMAIL_HOST: Joi.string().required(),
-    EMAIL_PORT: Joi.number().required(),
+    SMTP_HOST: Joi.string().required(),
+    SMTP_PORT: Joi.number().required(),
+    SMTP_USERNAME: Joi.string().required(),
+    SMTP_PASSWORD: Joi.string().required(),
     FROM_EMAIL: Joi.string().required(),
-    FROM_EMAIL_PASS: Joi.string().required(),
     AWS_BUCKET_NAME: Joi.string().required(),
     AWS_REGION: Joi.string().required(),
     APP_URL: Joi.string().required(),
@@ -123,11 +124,11 @@ const mailerModule = MailerModule.forRootAsync({
   imports: [ConfigModule],
   useFactory: (configService: ConfigService, i18n: I18nService) => ({
     transport: {
-      host: configService.getOrThrow<string>('EMAIL_HOST'),
-      port: configService.getOrThrow<number>('EMAIL_PORT'),
+      host: configService.getOrThrow<string>('SMTP_HOST'),
+      port: configService.getOrThrow<number>('SMTP_PORT'),
       auth: {
-        user: configService.getOrThrow<string>('FROM_EMAIL'),
-        pass: configService.getOrThrow<string>('FROM_EMAIL_PASS'),
+        user: configService.getOrThrow<string>('SMTP_USERNAME'),
+        pass: configService.getOrThrow<string>('SMTP_PASSWORD'),
       },
     },
     defaults: {

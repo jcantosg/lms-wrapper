@@ -32,7 +32,7 @@
   },
 
   "monitoring": {
-    "enable": false,
+    "enable": true,
     "sns_topic_arn": null
   }
 }

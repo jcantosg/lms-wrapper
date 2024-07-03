@@ -2,17 +2,16 @@ from aws_cdk import (
     Duration,
     RemovalPolicy,
     Stack,
-    aws_cloudwatch as cloudwatch,
     aws_ec2 as ec2,
     aws_ecr as ecr,
     aws_ecs as ecs,
-    aws_efs as efs,
     aws_elasticloadbalancingv2 as alb,
     aws_logs as logs,
     aws_rds as rds,
-    aws_secretsmanager as secrets,
-    aws_sns as sns,
     aws_s3 as s3,
+    aws_secretsmanager as secrets,
+    aws_ses as ses,
+    aws_sns as sns,
 )
 from constructs import Construct
 from cdk_nag import NagSuppressions, NagPackSuppression
@@ -21,11 +20,11 @@ from cdk_monitoring_constructs import (
     HighConnectionCountThreshold,
     MinUsageCountThreshold,
     MonitoringFacade,
-    RunningTaskCountThreshold,
     SnsAlarmActionStrategy,
     UnhealthyTaskCountThreshold,
     UsageThreshold,
 )
+from pepperize_cdk_ses_smtp_credentials import SesSmtpCredentials
 
 import json
 
@@ -41,6 +40,9 @@ ENVVARS_OBJECT_KEY = "api/.env"
 
 DB_NAME = "universae360"
 DB_USERNAME = "universae360"
+
+SES_IDENTITY_NAME = "universae.com"
+SES_SMTP_HOST = "email-smtp.eu-west-3.amazonaws.com"
 
 
 class APIStack(Stack):
@@ -77,7 +79,10 @@ class APIStack(Stack):
         ###########
         # Lookups #
         ###########
+        _desired_count = 0 if min_tasks == 0 and max_tasks == 0 else None
+
         self.vpc = ec2.Vpc.from_lookup(self, "VPC", is_default=False)
+
         self.alb = alb.ApplicationLoadBalancer.from_lookup(
             self,
             "LoadBalancer",
@@ -95,7 +100,9 @@ class APIStack(Stack):
             self, "ECSCluster", cluster_name=environment, vpc=self.vpc
         )
 
-        _desired_count = 0 if min_tasks == 0 and max_tasks == 0 else None
+        self.ses_identity = ses.EmailIdentity.from_email_identity_name(
+            self, "SesEmailIdentity", email_identity_name=SES_IDENTITY_NAME
+        )
 
         self.envvars_bucket = s3.Bucket.from_bucket_name(
             self,
@@ -198,6 +205,21 @@ class APIStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
+        ########
+        # SMTP #
+        ########
+        self.secret_smtp = secrets.Secret(
+            self,
+            "SecretSMTP",
+            secret_name=f"{Stack.of(self).stack_name}-smtp",
+        )
+        self.smtp_credentiales = SesSmtpCredentials(
+            self,
+            "SesSmtpCredentials",
+            secret=self.secret_smtp,
+            user_name=f"{Stack.of(self).stack_name}-smtp",
+        )
+
         ###########################
         # Environment and Secrets #
         ###########################
@@ -220,8 +242,13 @@ class APIStack(Stack):
             "DATABASE_PASSWORD": ecs.Secret.from_secrets_manager(
                 self.secret_db, "password"
             ),
+            "SMTP_USERNAME": ecs.Secret.from_secrets_manager(
+                self.secret_smtp, "username"
+            ),
+            "SMTP_PASSWORD": ecs.Secret.from_secrets_manager(
+                self.secret_smtp, "password"
+            ),
         }
-
         ecs_environment = {
             "APP_URL": app_url,
             "DATABASE_HOST": self.database_instance.db_instance_endpoint_address,
@@ -229,6 +256,8 @@ class APIStack(Stack):
             "DATABASE_PORT": self.database_instance.db_instance_endpoint_port,
             "AWS_BUCKET_NAME": self.media_bucket.bucket_name,
             "NO_COLOR": "1",
+            "SMTP_HOST": SES_SMTP_HOST,
+            "SMTP_PORT": "587",
         }
 
         ########
@@ -468,23 +497,11 @@ class APIStack(Stack):
                 add_unhealthy_task_count_alarm={
                     "0": UnhealthyTaskCountThreshold(max_unhealthy_tasks=0),
                 },
-                add_running_task_count_alarm={
-                    str(min_tasks): RunningTaskCountThreshold(
-                        comparison_operator_override=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-                        max_running_tasks=min_tasks,
-                    )
-                },
             )
             self.monitoring.monitor_simple_fargate_service(
                 fargate_service=self.cron_service,
                 add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
                 add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
-                add_running_task_count_alarm={
-                    "1": RunningTaskCountThreshold(
-                        comparison_operator_override=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-                        max_running_tasks=min_tasks,
-                    )
-                },
             )
             self.monitoring.monitor_rds_instance(
                 instance=self.database_instance,
@@ -515,6 +532,10 @@ class APIStack(Stack):
                 NagPackSuppression(
                     id="AwsSolutions-RDS11",
                     reason="Not aligned with security posture",
+                ),
+                NagPackSuppression(
+                    id="AwsSolutions-L1",
+                    reason="Runtime managed at the module level",
                 ),
             ],
         )
@@ -556,6 +577,15 @@ class APIStack(Stack):
         )
         NagSuppressions.add_resource_suppressions(
             construct=self.secret_db,
+            suppressions=[
+                NagPackSuppression(
+                    id="AwsSolutions-SMG4",
+                    reason="RDS master secret does not need rotation (for now)",
+                ),
+            ],
+        )
+        NagSuppressions.add_resource_suppressions(
+            construct=self.secret_smtp,
             suppressions=[
                 NagPackSuppression(
                     id="AwsSolutions-SMG4",

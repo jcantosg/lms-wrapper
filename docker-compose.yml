@@ -20,8 +20,8 @@ services:
   container_name: universae_mail
   image: maildev/maildev
   environment:
-   MAILDEV_OUTGOING_USER: "${FROM_EMAIL}"
-   MAILDEV_OUTGOING_PASS: "${FROM_EMAIL_PASS}"
+   MAILDEV_OUTGOING_USER: "${SMTP_USERNAME}"
+   MAILDEV_OUTGOING_PASS: "${SMTP_PASSWORD}"
   ports:
    - "1025:1025"
    - "1080:1080"
