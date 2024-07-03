@@ -15,7 +15,7 @@ import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic
 
 interface GetSubjectHandlerResponse {
   subject: Subject;
-  defaultTeacher: EdaeUser;
+  defaultTeacher: EdaeUser | null;
   breadCrumb: {
     academicRecord: AcademicRecord;
     programBlock: ProgramBlock;

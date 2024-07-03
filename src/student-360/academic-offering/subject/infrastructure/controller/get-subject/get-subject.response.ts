@@ -12,7 +12,7 @@ interface GetSubjectResponseBody {
     surname1: string;
     surname2: string | null;
     avatar: string | null;
-  };
+  } | null;
   academicRecord: {
     id: string;
     name: string;
@@ -41,19 +41,21 @@ interface GetSubjectResponseBody {
 export class GetSubjectResponse {
   static create(
     subject: Subject,
-    defaultTeacher: EdaeUser,
+    defaultTeacher: EdaeUser | null,
     breadCrumb: { academicRecord: AcademicRecord; programBlock: ProgramBlock },
   ): GetSubjectResponseBody {
     return {
       id: subject.id,
       name: subject.name,
-      teacher: {
-        id: defaultTeacher!.id,
-        name: defaultTeacher!.name,
-        surname1: defaultTeacher!.surname1,
-        surname2: defaultTeacher!.surname2,
-        avatar: defaultTeacher!.avatar,
-      },
+      teacher: defaultTeacher
+        ? {
+            id: defaultTeacher!.id,
+            name: defaultTeacher!.name,
+            surname1: defaultTeacher!.surname1,
+            surname2: defaultTeacher!.surname2,
+            avatar: defaultTeacher!.avatar,
+          }
+        : null,
       academicRecord: {
         id: breadCrumb.academicRecord.id,
         name: breadCrumb.academicRecord.academicProgram.title.name,
