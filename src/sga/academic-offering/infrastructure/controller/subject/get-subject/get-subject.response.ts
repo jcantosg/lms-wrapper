@@ -49,7 +49,7 @@ export interface SubjectResponse {
   lmsCourse: {
     id: number;
     name: string;
-  };
+  } | null;
 }
 
 export class GetSubjectResponse {
@@ -94,10 +94,12 @@ export class GetSubjectResponse {
         },
       ),
       officialRegionalCode: subject.officialRegionalCode,
-      lmsCourse: {
-        id: subject.lmsCourse!.value.id,
-        name: subject.lmsCourse!.value.name,
-      },
+      lmsCourse: subject.lmsCourse
+        ? {
+            id: subject.lmsCourse.value.id,
+            name: subject.lmsCourse.value.name,
+          }
+        : null,
     };
   }
 }
