@@ -27,9 +27,12 @@ import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-s
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -47,6 +50,8 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly enrollmentCreator: EnrollmentCreator,
     private readonly createStudentFromCRMTransactionalService: CreateStudentFromCRMTransactionalService,
     private readonly enrollmentGetter: EnrollmentGetter,
+    private readonly administrativeGroupRepository: AdministrativeGroupRepository,
+    private readonly internalGroupRepository: InternalGroupRepository,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -224,13 +229,34 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           }
         });
 
+        const administrativeGroup =
+          await this.administrativeGroupRepository.getByAcademicPeriodAndProgramAndFirstBlock(
+            academicPeriod.id,
+            academicProgram.id,
+          );
+
+        const internalGroups: InternalGroup[] = [];
+        for (const enrollment of enrollments) {
+          const groups = await this.internalGroupRepository.getByKeys(
+            academicPeriod,
+            academicProgram,
+            enrollment.subject,
+          );
+          const defaultGroup = groups.find((group) => group.isDefault === true);
+          if (defaultGroup) {
+            defaultGroup.addStudents([student]);
+            internalGroups.push(defaultGroup);
+          }
+        }
+
         await this.createStudentFromCRMTransactionalService.execute({
           student,
           academicRecord: newAcademicRecord,
           enrollments,
+          administrativeGroup,
+          internalGroups,
         });
       }
-      this.repository.save(student);
     } else {
       student = Student.createFromCRM(
         id,
@@ -287,10 +313,26 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
 
       student.academicRecords.push(newAcademicRecord);
 
+      const internalGroups: InternalGroup[] = [];
+      for (const enrollment of enrollments) {
+        const groups = await this.internalGroupRepository.getByKeys(
+          academicPeriod,
+          academicProgram,
+          enrollment.subject,
+        );
+        const defaultGroup = groups.find((group) => group.isDefault === true);
+        if (defaultGroup) {
+          defaultGroup.addStudents([student]);
+          internalGroups.push(defaultGroup);
+        }
+      }
+
       await this.createStudentFromCRMTransactionalService.execute({
         student,
         academicRecord: newAcademicRecord,
         enrollments,
+        administrativeGroup: null,
+        internalGroups,
       });
     }
 

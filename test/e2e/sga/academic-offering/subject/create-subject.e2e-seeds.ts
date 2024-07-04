@@ -33,9 +33,9 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   public static businessUnitName = 'Murcia';
   public static businessUnitCode = 'MUR';
   public static subjectId = 'd66ffa3e-22e4-48ca-aeea-0c3b37fc70c3';
-  public static subjectName = 'Algoritmos y Estructuras de Datos II';
-  public static subjectCode = 'AED2';
-  public static subjectOfficialCode = 'BOE-231';
+  public static subjectName = 'Algoritmos y Estructuras de Datos III';
+  public static subjectCode = 'AED3';
+  public static subjectOfficialCode = 'BOE-232';
   public static subjectHours = 20;
   public static subjectModality = SubjectModality.ELEARNING;
   public static subjectEvaluationType = '8adeb962-3669-4c37-ada0-01328ef74c00';

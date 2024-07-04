@@ -3,6 +3,7 @@ import { CreateLmsStudentHandler } from '#/lms-wrapper/application/create-lms-st
 import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.command';
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import {
   CreateStudentFromCRMTransactionParams,
   CreateStudentFromCRMTransactionalService,
@@ -18,6 +19,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     private readonly deleteLmsStudentHandler: DeleteLmsStudentHandler,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
+    private readonly administrativeGroupRepository: AdministrativeGroupRepository,
   ) {
     super();
     this.logger = new Logger(CreateStudentFromCRMTransactionalService.name);
@@ -56,12 +58,25 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         }
       }
 
+      if (entities.administrativeGroup) {
+        entities.administrativeGroup.addStudent(entities.student);
+        await this.administrativeGroupRepository.save(
+          entities.administrativeGroup,
+        );
+      }
+
+      for (const group of entities.internalGroups) {
+        await queryRunner.manager.save(group);
+      }
+
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
-      await this.deleteLmsStudentHandler.handle(
-        new DeleteLmsStudentCommand(lmsId!),
-      );
+      if (!!lmsId) {
+        await this.deleteLmsStudentHandler.handle(
+          new DeleteLmsStudentCommand(lmsId),
+        );
+      }
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();

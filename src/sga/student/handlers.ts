@@ -41,6 +41,7 @@ import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/
 import { SearchStudentsByAdministrativeGroupHandler } from '#student/application/search-students-by-administrative-group/search-students-by-administrative-group.handler';
 import { AddTeacherToInternalGroupHandler } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.handler';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
+import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { GetInternalGroupDetailHandler } from '#student/application/get-internal-group-detail/get-internal-group-detail.handler';
 import { EditInternalGroupHandler } from '#student/application/edit-internal-group/edit-internal-group.handler';
 
@@ -188,6 +189,8 @@ const createStudentFromCRMHandler = {
     enrollmentCreator: EnrollmentCreator,
     createStudentFromCRMTransactionalService: CreateStudentFromCRMTransactionalService,
     enrollmentGetter: EnrollmentGetter,
+    administrativeGroupRepository: AdministrativeGroupRepository,
+    internalGroupRepository: InternalGroupRepository,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
       'ADMIN_USER_EMAIL',
@@ -209,6 +212,8 @@ const createStudentFromCRMHandler = {
       enrollmentCreator,
       createStudentFromCRMTransactionalService,
       enrollmentGetter,
+      administrativeGroupRepository,
+      internalGroupRepository,
     );
   },
   inject: [
@@ -226,6 +231,8 @@ const createStudentFromCRMHandler = {
     EnrollmentCreator,
     CreateStudentFromCRMTransactionalService,
     EnrollmentGetter,
+    AdministrativeGroupRepository,
+    InternalGroupRepository,
   ],
 };
 

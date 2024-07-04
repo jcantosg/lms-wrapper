@@ -29,4 +29,8 @@ export abstract class AdministrativeGroupRepository {
     academicProgramId: string,
     periodBlockName: string,
   ): Promise<AdministrativeGroup | null>;
+  abstract getByAcademicPeriodAndProgramAndFirstBlock(
+    academicPeriodId: string,
+    academicProgramId: string,
+  ): Promise<AdministrativeGroup | null>;
 }

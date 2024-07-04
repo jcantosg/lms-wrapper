@@ -11,4 +11,5 @@ export class AdministrativeGroupMockRepository
   matching = jest.fn();
   getByAdminUser = jest.fn();
   getByAcademicPeriodAndProgramAndBlock = jest.fn();
+  getByAcademicPeriodAndProgramAndFirstBlock = jest.fn();
 }
