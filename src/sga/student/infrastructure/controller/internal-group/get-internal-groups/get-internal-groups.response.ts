@@ -5,6 +5,7 @@ export interface GetInternalGroupResponse {
   id: string;
   code: string;
   startDate: Date;
+  isDefault: boolean;
   businessUnit: {
     id: string;
     name: string;
@@ -42,6 +43,7 @@ export class GetInternalGroupsResponse {
             id: internalGroup.id,
             code: internalGroup.code,
             startDate: internalGroup.periodBlock.startDate,
+            isDefault: internalGroup.isDefault,
             businessUnit: {
               id: internalGroup.businessUnit.id,
               name: internalGroup.businessUnit.name,
