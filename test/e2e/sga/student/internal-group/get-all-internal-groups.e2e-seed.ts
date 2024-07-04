@@ -82,6 +82,8 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
 
   public static edaeUserId = '71aedcb1-b310-442d-817b-1bd8a9648e24';
   public static anotherEdaeUserId = '98434bcd-4c08-4757-ac26-131ec1cc18fd';
+  public static alreadyAddedEdaeUserId = 'fcd35c0a-1889-4b15-a298-817dc7db91fc';
+  public static defaultEdaeUserId = 'e712136f-1ea9-4d79-8a25-f94602a04dc5';
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
@@ -167,7 +169,45 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       [this.businessUnit],
     );
 
-    await this.edaeUserRepository.save(
+    const alreadyAddedTeacher = EdaeUser.create(
+      GetAllInternalGroupsE2eSeed.alreadyAddedEdaeUserId,
+      'antonio',
+      'antoniez',
+      null,
+      'antonio@email.com',
+      new IdentityDocument({
+        identityDocumentNumber: '73211519N',
+        identityDocumentType: IdentityDocumentType.DNI,
+      }),
+      [EdaeRoles.TUTOR],
+      [this.businessUnit],
+      TimeZoneEnum.GMT,
+      true,
+      country,
+      null,
+      'password',
+    );
+
+    const defaultTeacher = EdaeUser.create(
+      GetAllInternalGroupsE2eSeed.defaultEdaeUserId,
+      'default',
+      'deafultez',
+      null,
+      'default@email.com',
+      new IdentityDocument({
+        identityDocumentNumber: '73211519N',
+        identityDocumentType: IdentityDocumentType.DNI,
+      }),
+      [EdaeRoles.TUTOR],
+      [this.businessUnit],
+      TimeZoneEnum.GMT,
+      true,
+      country,
+      null,
+      'password',
+    );
+
+    await this.edaeUserRepository.save([
       EdaeUser.create(
         GetAllInternalGroupsE2eSeed.anotherEdaeUserId,
         'name',
@@ -186,9 +226,6 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
         null,
         'password',
       ),
-    );
-
-    await this.edaeUserRepository.save(
       EdaeUser.create(
         GetAllInternalGroupsE2eSeed.edaeUserId,
         'pepe',
@@ -207,7 +244,9 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
         null,
         'password',
       ),
-    );
+      alreadyAddedTeacher,
+      defaultTeacher,
+    ]);
 
     this.title = Title.create(
       uuid(),
@@ -236,6 +275,8 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
+
+    this.subject.defaultTeacher = defaultTeacher;
 
     await this.subjectRepository.save(this.subject);
 
@@ -300,7 +341,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       GetAllInternalGroupsE2eSeed.internalGroupId,
       GetAllInternalGroupsE2eSeed.internalGroupCode,
       [],
-      [],
+      [alreadyAddedTeacher, defaultTeacher],
       this.academicPeriod,
       this.academicProgram,
       this.periodBlock,
