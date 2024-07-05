@@ -185,6 +185,10 @@ export class StudentPostgresRepository
       `${aliasQuery}.administrativeGroups`,
       'administrativeGroups',
     );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.internalGroups`,
+      'internalGroups',
+    );
 
     return queryBuilder;
   }

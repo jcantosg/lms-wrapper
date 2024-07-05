@@ -183,5 +183,18 @@ export const studentSchema = new EntitySchema<Student>({
         },
       },
     },
+    internalGroups: {
+      type: 'many-to-many',
+      target: 'InternalGroup',
+      joinTable: {
+        name: 'internal_group_students',
+        joinColumn: {
+          name: 'student_id',
+        },
+        inverseJoinColumn: {
+          name: 'internal_group_id',
+        },
+      },
+    },
   },
 });

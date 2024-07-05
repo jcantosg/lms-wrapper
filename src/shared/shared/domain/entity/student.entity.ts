@@ -12,6 +12,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 
 export const DEFAULT_PASSWORD = 'Universa3€';
 
@@ -51,6 +52,7 @@ export class Student extends BaseEntity {
     private _password: string | null,
     private _lmsStudent: LmsStudent | null,
     private _administrativeGroups: AdministrativeGroup[],
+    private _internalGroups: InternalGroup[],
   ) {
     super(id, new Date(), new Date());
   }
@@ -319,6 +321,14 @@ export class Student extends BaseEntity {
     this._administrativeGroups = value;
   }
 
+  public get internalGroups(): InternalGroup[] {
+    return this._internalGroups;
+  }
+
+  public set internalGroups(value: InternalGroup[]) {
+    this._internalGroups = value;
+  }
+
   static createFromSGA(
     id: string,
     name: string,
@@ -364,6 +374,7 @@ export class Student extends BaseEntity {
       [],
       password,
       lmsStudent,
+      [],
       [],
     );
   }
@@ -422,6 +433,7 @@ export class Student extends BaseEntity {
       [],
       password,
       lmsStudent,
+      [],
       [],
     );
   }

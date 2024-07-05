@@ -30,6 +30,25 @@ import { periodBlockSchema } from '#academic-offering/infrastructure/config/sche
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
+import { Student } from '#shared/domain/entity/student.entity';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { Enrollment } from '#student/domain/entity/enrollment.entity';
+import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
+import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
+import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
+import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
+import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
+import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
+import { SubjectCall } from '#student/domain/entity/subject-call.entity';
+import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
+import {
+  IdentityDocument,
+  IdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
+import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
 
 export class GetInternalGroupDetailE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -70,6 +89,13 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
   public static subjectId = uuid();
   public static subjectName = 'matematicas';
 
+  public static studentId = uuid();
+  public static studentName = 'pepe';
+  public static studentDocumentNumber = '73211519N';
+
+  public static enrollmentId = uuid();
+  public static callStatus = SubjectCallStatusEnum.ONGOING;
+
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
   private businessUnit: BusinessUnit;
@@ -79,6 +105,11 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
   private programBlock: ProgramBlock;
   private periodBlock: PeriodBlock;
   private subject: Subject;
+  private student: Student;
+  private academicRecord: AcademicRecord;
+  private virtualCampus: VirtualCampus;
+  private enrollment: Enrollment;
+  private subjectCall: SubjectCall;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -90,6 +121,11 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
   private internalGroupRepository: Repository<InternalGroup>;
   private blockRelationRepository: Repository<BlockRelation>;
   private subjectRepository: Repository<Subject>;
+  private studentRepository: Repository<Student>;
+  private academicRecordRepository: Repository<AcademicRecord>;
+  private enrollmentRepository: Repository<Enrollment>;
+  private virtualCampusRepository: Repository<VirtualCampus>;
+  private subjectCallRepository: Repository<SubjectCall>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -107,6 +143,13 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
     this.blockRelationRepository =
       datasource.getRepository(blockRelationSchema);
     this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.studentRepository = datasource.getRepository(studentSchema);
+    this.academicRecordRepository =
+      datasource.getRepository(academicRecordSchema);
+    this.enrollmentRepository = datasource.getRepository(enrollmentSchema);
+    this.virtualCampusRepository =
+      datasource.getRepository(virtualCampusSchema);
+    this.subjectCallRepository = datasource.getRepository(subjectCallSchema);
   }
 
   async arrange(): Promise<void> {
@@ -122,6 +165,16 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.businessUnitRepository.save(this.businessUnit);
+
+    this.virtualCampus = VirtualCampus.create(
+      uuid(),
+      'virtual-campus-123',
+      'VC123',
+      this.businessUnit,
+      this.adminUser,
+    );
+
+    await this.virtualCampusRepository.save(this.virtualCampus);
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
@@ -228,6 +281,24 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
       ),
     );
 
+    this.student = Student.createFromSGA(
+      GetInternalGroupDetailE2eSeed.studentId,
+      GetInternalGroupDetailE2eSeed.studentName,
+      'surname',
+      'surname2',
+      'email321@gemail.com',
+      `${GetInternalGroupDetailE2eSeed.studentName}123@universae.com`,
+      this.superAdminUser,
+      'pass123',
+      null,
+    );
+
+    this.student.identityDocument = new IdentityDocument({
+      identityDocumentNumber:
+        GetInternalGroupDetailE2eSeed.studentDocumentNumber,
+      identityDocumentType: IdentityDocumentType.DNI,
+    });
+
     const internalGroup = InternalGroup.create(
       GetInternalGroupDetailE2eSeed.internalGroupId,
       GetInternalGroupDetailE2eSeed.internalGroupCode,
@@ -244,10 +315,53 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
     );
 
     await this.internalGroupRepository.save(internalGroup);
+
+    this.student.internalGroups.push(internalGroup);
+    await this.studentRepository.save(this.student);
+
+    this.academicRecord = AcademicRecord.create(
+      uuid(),
+      this.businessUnit,
+      this.virtualCampus,
+      this.student,
+      this.academicPeriod,
+      this.academicProgram,
+      AcademicRecordModalityEnum.ELEARNING,
+      true,
+      this.adminUser,
+    );
+
+    await this.academicRecordRepository.save(this.academicRecord);
+
+    this.enrollment = Enrollment.create(
+      GetInternalGroupDetailE2eSeed.enrollmentId,
+      this.subject,
+      this.academicRecord,
+      EnrollmentVisibilityEnum.PD,
+      EnrollmentTypeEnum.UNIVERSAE,
+      this.programBlock,
+      this.adminUser,
+    );
+    await this.enrollmentRepository.save(this.enrollment);
+
+    this.subjectCall = SubjectCall.create(
+      uuid(),
+      this.enrollment,
+      1,
+      new Date(),
+      SubjectCallFinalGradeEnum.ONGOING,
+      GetInternalGroupDetailE2eSeed.callStatus,
+      this.adminUser,
+    );
+    await this.subjectCallRepository.save(this.subjectCall);
   }
 
   async clear(): Promise<void> {
     await this.internalGroupRepository.delete({});
+    await this.subjectCallRepository.delete({});
+    await this.enrollmentRepository.delete({});
+    await this.academicRecordRepository.delete({});
+    await this.studentRepository.delete({});
     await this.blockRelationRepository.delete({});
     await this.periodBlockRepository.delete({});
     await this.academicPeriodRepository.delete({});
@@ -255,6 +369,7 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
     await this.academicProgramRepository.delete({});
     await this.subjectRepository.delete({});
     await this.titleRepository.delete({});
+    await this.virtualCampusRepository.delete({});
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.adminUser);

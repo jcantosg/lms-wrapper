@@ -44,6 +44,7 @@ import { InternalGroupGetter } from '#student/domain/service/internal-group.gett
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { GetInternalGroupDetailHandler } from '#student/application/get-internal-group-detail/get-internal-group-detail.handler';
 import { EditInternalGroupHandler } from '#student/application/edit-internal-group/edit-internal-group.handler';
+import { GetInternalGroupStudentsHandler } from '#student/application/get-internal-group-students/get-internal-group-students.handler';
 import { RemoveTeacherFromInternalGroupHandler } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.handler';
 
 const getAccessQualificationsHandler = {
@@ -330,6 +331,21 @@ const editInternalGroupHandler = {
   inject: [InternalGroupRepository, InternalGroupGetter],
 };
 
+const getInternalGroupStudentsHandler = {
+  provide: GetInternalGroupStudentsHandler,
+  useFactory: (
+    repository: StudentRepository,
+    internalGroupGetter: InternalGroupGetter,
+    enrollmentGetter: EnrollmentGetter,
+  ): GetInternalGroupStudentsHandler =>
+    new GetInternalGroupStudentsHandler(
+      repository,
+      internalGroupGetter,
+      enrollmentGetter,
+    ),
+  inject: [StudentRepository, InternalGroupGetter, EnrollmentGetter],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -353,4 +369,5 @@ export const handlers = [
   addTeacherToInternalGroupHandler,
   removeTeacherFromInternalGroupHandler,
   editInternalGroupHandler,
+  getInternalGroupStudentsHandler,
 ];
