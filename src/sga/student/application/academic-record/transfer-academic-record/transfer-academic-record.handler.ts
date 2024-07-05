@@ -17,6 +17,8 @@ import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-t
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.not-included-in-academic-period.exception';
+import { SubjectCall } from '#student/domain/entity/subject-call.entity';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 
 export class TransferAcademicRecordHandler implements CommandHandler {
   constructor(
@@ -29,6 +31,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     private readonly fileManager: FileManager,
     private readonly enrollmentCreatorService: EnrollmentCreator,
     private readonly enrollmentGetter: EnrollmentGetter,
+    private uuidService: UUIDGeneratorService,
   ) {}
 
   async handle(command: TransferAcademicRecordCommand) {
@@ -107,6 +110,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     const enrollments =
       await this.enrollmentCreatorService.createForAcademicRecord(
         newAcademicRecord,
+        command.adminUser,
       );
 
     const oldEnrollments =
@@ -117,7 +121,20 @@ export class TransferAcademicRecordHandler implements CommandHandler {
         (oe) => oe.subject.officialCode === enrollment.subject.officialCode,
       );
       if (oldEnrollment) {
-        enrollment.calls = oldEnrollment.calls;
+        enrollment.calls = [];
+        oldEnrollment.calls.forEach((call) => {
+          enrollment.addSubjectCall(
+            SubjectCall.create(
+              this.uuidService.generate(),
+              enrollment,
+              call.callNumber,
+              call.callDate,
+              call.finalGrade,
+              call.status,
+              command.adminUser,
+            ),
+          );
+        });
         enrollment.visibility = oldEnrollment.visibility;
         enrollment.type = oldEnrollment.type;
       }

@@ -1,4 +1,6 @@
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { Enrollment } from '#student/domain/entity/enrollment.entity';
+import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import {
   TransferAcademicRecordTransactionalService,
   TransferAcademicRecordTransactionParams,
@@ -32,11 +34,12 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
       await queryRunner.manager.save(entities.academicRecordTransfer);
 
       this.logger.log('creating enrollments');
-      await Promise.all([
-        entities.enrollments.forEach(
-          async (enrollment) => await queryRunner.manager.save(enrollment),
-        ),
-      ]);
+      for (const enrollment of entities.enrollments) {
+        await queryRunner.manager.save<Enrollment>(enrollment);
+        for (const call of enrollment.calls) {
+          await queryRunner.manager.save<SubjectCall>(call);
+        }
+      }
 
       this.logger.log('done');
       await queryRunner.commitTransaction();

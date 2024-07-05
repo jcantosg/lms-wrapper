@@ -42,6 +42,8 @@ import { BusinessUnitNotFoundException } from '#shared/domain/exception/business
 import { File } from '#shared/domain/file-manager/file';
 import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-transfer.entity';
 import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.not-included-in-academic-period.exception';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
 
 let handler: TransferAcademicRecordHandler;
 let businessUnitGetter: BusinessUnitGetter;
@@ -53,6 +55,7 @@ let academicRecordGetter: AcademicRecordGetter;
 let fileManager: FileManager;
 let enrollmentCreatorService: EnrollmentCreator;
 let enrollmentGetter: EnrollmentGetter;
+let uuidGenerator: UUIDGeneratorService;
 
 let getAcademicRecordSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -112,6 +115,7 @@ describe('Transfer Academic Record Handler', () => {
     fileManager = new LocalStorageManager();
     enrollmentCreatorService = getAnEnrollmentCreatorMock();
     enrollmentGetter = getAnEnrollmentGetterMock();
+    uuidGenerator = new UUIDv4GeneratorService();
 
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
@@ -136,6 +140,7 @@ describe('Transfer Academic Record Handler', () => {
       fileManager,
       enrollmentCreatorService,
       enrollmentGetter,
+      uuidGenerator,
     );
   });
 
@@ -268,7 +273,12 @@ describe('Transfer Academic Record Handler', () => {
         }),
         enrollments: [
           expect.objectContaining({
-            calls: oldEnrollment.calls,
+            calls: expect.arrayContaining([
+              expect.objectContaining({
+                callNumber: 2,
+                finalGrade: '8',
+              }),
+            ]),
           }),
         ],
       }),

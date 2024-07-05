@@ -202,6 +202,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         const enrollments =
           await this.enrollmentCreator.createForAcademicRecord(
             newAcademicRecord,
+            adminUser,
           );
 
         const oldEnrollments =
@@ -295,8 +296,10 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.leadId,
       );
 
-      const enrollments =
-        await this.enrollmentCreator.createForAcademicRecord(newAcademicRecord);
+      const enrollments = await this.enrollmentCreator.createForAcademicRecord(
+        newAcademicRecord,
+        adminUser,
+      );
 
       enrollments.forEach((enrollment) => {
         const subjectCall = SubjectCall.create(

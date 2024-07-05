@@ -3,6 +3,7 @@ import {
   getASubject,
   getAnAcademicProgram,
   getAnAcademicRecord,
+  getAnAdminUser,
 } from '#test/entity-factory';
 import clearAllMocks = jest.clearAllMocks;
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
@@ -27,6 +28,8 @@ subjects.forEach((subject) => (subject.programBlocks = [programBlock]));
 
 const subjectNotFound = getASubject();
 
+const adminUser = getAnAdminUser();
+
 describe('Enrollment Creator Service Unit Test', () => {
   beforeAll(() => {
     subjectRepository = new SubjectMockRepository();
@@ -41,16 +44,19 @@ describe('Enrollment Creator Service Unit Test', () => {
   it('should return three enrollment', async () => {
     getSubjectsSpy.mockImplementation(() => Promise.resolve(subjects));
 
-    const response = await service.createForAcademicRecord(academicRecord);
+    const response = await service.createForAcademicRecord(
+      academicRecord,
+      adminUser,
+    );
     expect(response.length).toBe(3);
   });
 
   it('should throw an ProgramBlockNotFoundException', () => {
     getSubjectsSpy.mockImplementation(() => Promise.resolve([subjectNotFound]));
 
-    expect(service.createForAcademicRecord(academicRecord)).rejects.toThrow(
-      ProgramBlockNotFoundException,
-    );
+    expect(
+      service.createForAcademicRecord(academicRecord, adminUser),
+    ).rejects.toThrow(ProgramBlockNotFoundException);
   });
 
   afterAll(() => {
