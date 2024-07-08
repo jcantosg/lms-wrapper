@@ -26,6 +26,8 @@ import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-s
 import { EditSubjectHandler } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.handler';
 import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
+import { CreateLmsCourseHandler } from '#lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseByNameHandler } from '#lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: EditSubjectHandler;
@@ -36,6 +38,8 @@ let imageUploader: ImageUploader;
 let evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker;
 let subjectBusinessUnitChecker: SubjectBusinessUnitChecker;
 let lmsCourseHandler: GetLmsCourseHandler;
+let createLmsCourseHandler: CreateLmsCourseHandler;
+let getLmsCourseByNameHandler: GetLmsCourseByNameHandler;
 const subject = getASubject();
 const evaluationType = getAnEvaluationType();
 const adminUser = getAnAdminUser();
@@ -73,6 +77,12 @@ describe('Edit Subject Handler Unit Test', () => {
       getAnEvaluationTypeBusinessUnitCheckerMock();
     subjectBusinessUnitChecker = getASubjectBusinessUnitCheckerMock();
     lmsCourseHandler = new GetLmsCourseHandler(new LmsCourseMockRepository());
+    createLmsCourseHandler = new CreateLmsCourseHandler(
+      new LmsCourseMockRepository(),
+    );
+    getLmsCourseByNameHandler = new GetLmsCourseByNameHandler(
+      new LmsCourseMockRepository(),
+    );
     handler = new EditSubjectHandler(
       repository,
       subjectGetter,
@@ -81,6 +91,8 @@ describe('Edit Subject Handler Unit Test', () => {
       evaluationTypeBusinessUnitChecker,
       subjectBusinessUnitChecker,
       lmsCourseHandler,
+      createLmsCourseHandler,
+      getLmsCourseByNameHandler,
     );
     saveSpy = jest.spyOn(repository, 'save');
     getEvaluationTypeSpy = jest.spyOn(evaluationTypeGetter, 'get');

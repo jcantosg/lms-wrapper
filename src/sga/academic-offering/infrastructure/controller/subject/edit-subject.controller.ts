@@ -33,7 +33,7 @@ interface EditSubjectBody {
   isRegulated: boolean;
   isCore: boolean;
   officialRegionalCode: string | null;
-  lmsCourseId: number | null;
+  lmsCourseId: number | null | undefined;
 }
 
 @Controller('subject')

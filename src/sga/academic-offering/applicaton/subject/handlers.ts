@@ -25,8 +25,8 @@ import { GetSubjectsByBusinessUnitHandler } from '#academic-offering/applicaton/
 import { SetDefaultTeacherToSubjectHandler } from '#academic-offering/applicaton/subject/set-default-teacher-to-subject/set-default-teacher-to-subject.handler';
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
 import { GetAllSubjectEdaeUsersHandler } from '#academic-offering/applicaton/subject/get-all-subject-edae-users/get-all-subject-edae-users.handler';
-import { CreateLmsCourseHandler } from '#/lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
-import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { CreateLmsCourseHandler } from '#lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseByNameHandler } from '#lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
 
 const createSubjectHandler = {
   provide: CreateSubjectHandler,
@@ -35,27 +35,18 @@ const createSubjectHandler = {
     evaluationTypeGetter: EvaluationTypeGetter,
     businessUnitGetter: BusinessUnitGetter,
     imageUploader: ImageUploader,
-    lmsCourseHandler: GetLmsCourseHandler,
-    createLmsCourseHandler: CreateLmsCourseHandler,
-    getLmsCourseByNameHandler: GetLmsCourseByNameHandler,
   ) =>
     new CreateSubjectHandler(
       repository,
       evaluationTypeGetter,
       businessUnitGetter,
       imageUploader,
-      lmsCourseHandler,
-      createLmsCourseHandler,
-      getLmsCourseByNameHandler,
     ),
   inject: [
     SubjectRepository,
     EvaluationTypeGetter,
     BusinessUnitGetter,
     ImageUploader,
-    GetLmsCourseHandler,
-    CreateLmsCourseHandler,
-    GetLmsCourseByNameHandler,
   ],
 };
 
@@ -77,6 +68,8 @@ const editSubjectHandler = {
     evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker,
     subjectBusinessUnitChecker: SubjectBusinessUnitChecker,
     lmsCourseHandler: GetLmsCourseHandler,
+    createLmsCourseHandler: CreateLmsCourseHandler,
+    getLmsCourseByNameHandler: GetLmsCourseByNameHandler,
   ): EditSubjectHandler =>
     new EditSubjectHandler(
       repository,
@@ -86,6 +79,8 @@ const editSubjectHandler = {
       evaluationTypeBusinessUnitChecker,
       subjectBusinessUnitChecker,
       lmsCourseHandler,
+      createLmsCourseHandler,
+      getLmsCourseByNameHandler,
     ),
   inject: [
     SubjectRepository,
@@ -94,6 +89,8 @@ const editSubjectHandler = {
     ImageUploader,
     EvaluationTypeBusinessUnitChecker,
     SubjectBusinessUnitChecker,
+    GetLmsCourseHandler,
+    CreateLmsCourseHandler,
     GetLmsCourseHandler,
   ],
 };

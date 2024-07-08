@@ -9,6 +9,11 @@ import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academi
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
 import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
 import { GetLMSCourseQuery } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.query';
+import { CreateLmsCourseHandler } from '#lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseByNameHandler } from '#lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { CreateLmsCourseCommand } from '#lms-wrapper/application/lms-course/create-lms-course/create-lms-course.command';
+import { getLmsCourseCategoryEnumValue } from '#lms-wrapper/domain/enum/lms-course-category.enum';
+import { GetLMSCourseByNameQuery } from '#lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.query';
 
 export class EditSubjectHandler implements CommandHandler {
   constructor(
@@ -19,6 +24,8 @@ export class EditSubjectHandler implements CommandHandler {
     private readonly evaluationTypeBusinessUnitChecker: EvaluationTypeBusinessUnitChecker,
     private readonly subjectBusinessUnitChecker: SubjectBusinessUnitChecker,
     private readonly lmsCourseHandler: GetLmsCourseHandler,
+    private readonly createLmsCourseHandler: CreateLmsCourseHandler,
+    private readonly getLmsCourseByNameHandler: GetLmsCourseByNameHandler,
   ) {}
 
   async handle(command: EditSubjectCommand): Promise<void> {
@@ -49,12 +56,23 @@ export class EditSubjectHandler implements CommandHandler {
         : null;
     }
     let lmsCourse = subject.lmsCourse;
-    if (command.lmsCourseId === null) {
-      lmsCourse = null;
-    } else if (command.lmsCourseId !== undefined) {
-      lmsCourse = await this.lmsCourseHandler.handle(
-        new GetLMSCourseQuery(command.lmsCourseId),
-      );
+    if (command.lmsCourseId !== undefined) {
+      if (command.lmsCourseId !== null) {
+        lmsCourse = await this.lmsCourseHandler.handle(
+          new GetLMSCourseQuery(command.lmsCourseId),
+        );
+      } else {
+        await this.createLmsCourseHandler.handle(
+          new CreateLmsCourseCommand(
+            command.code,
+            command.code,
+            getLmsCourseCategoryEnumValue(this.parseModality(command.modality)),
+          ),
+        );
+        lmsCourse = await this.getLmsCourseByNameHandler.handle(
+          new GetLMSCourseByNameQuery(command.code),
+        );
+      }
     }
 
     subject.update(
@@ -74,5 +92,9 @@ export class EditSubjectHandler implements CommandHandler {
     );
 
     await this.repository.save(subject);
+  }
+
+  private parseModality(modality: string): string {
+    return modality.replace('-', '_').toUpperCase();
   }
 }
