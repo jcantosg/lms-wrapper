@@ -52,9 +52,27 @@ services:
       - .env
     networks:
       - universae360-api
+    volumes:
+      - sftp-data:/srv/sftp
     depends_on:
       postgres:
         condition: service_healthy
+  sftp:
+    image: drakkan/sftpgo:v2.6.2-alpine
+    networks:
+      - universae360-api
+    ports:
+      - 2022:2022
+      - 8080:8080
+    volumes:
+      - sftp-config:/var/lib/sftpgo
+      - sftp-data:/srv/sftpgo
+    environment:
+      SFTPGO_HTTPD__ENABLE_WEB_ADMIN: "true"
+      SFTPGO_HTTPD__ENABLE_WEB_CLIENT: "false"
+      SFTPGO_HTTPD__ENABLE_REST_API: "false"
+      SFTPGO_HTTPD__BINDINGS__0__ENABLE_HTTPS: "false"  # SSL offloading handled by load balancer
+      SFTPGO_LOG_LEVEL: "info"
   load-balancer:
     build:
       context: .
@@ -73,6 +91,8 @@ services:
 volumes:
   postgresql-data:
   loadbalancer-certs:
+  sftp-config:
+  sftp-data:
 
 networks:
   universae360-api:

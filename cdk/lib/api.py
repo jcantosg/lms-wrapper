@@ -1,11 +1,14 @@
 from aws_cdk import (
+    CfnOutput,
     Duration,
     RemovalPolicy,
     Stack,
+    aws_cloudwatch as cloudwatch,
     aws_ec2 as ec2,
     aws_ecr as ecr,
     aws_ecs as ecs,
-    aws_elasticloadbalancingv2 as alb,
+    aws_efs as efs,
+    aws_elasticloadbalancingv2 as elbv2,
     aws_logs as logs,
     aws_rds as rds,
     aws_s3 as s3,
@@ -17,6 +20,8 @@ from constructs import Construct
 from cdk_nag import NagSuppressions, NagPackSuppression
 from cdk_monitoring_constructs import (
     AlarmFactoryDefaults,
+    CustomMetricGroup,
+    GraphWidgetType,
     HighConnectionCountThreshold,
     MinUsageCountThreshold,
     MonitoringFacade,
@@ -29,8 +34,14 @@ from pepperize_cdk_ses_smtp_credentials import SesSmtpCredentials
 import json
 
 BASTION_SECURITY_GROUP_ID = "sg-072fa653d753959a1"
+VPN_CIDRS = ["10.90.0.0/21"]  # Users
 
-LISTEN_PORT = 3000
+API_LISTEN_PORT = 3000
+
+SFTP_ADMIN_LISTEN_PORT = 8080
+SFTP_LISTEN_PORT = 2022
+SFTP_SHUTDOWN_GRACE_TIME = 60
+
 ALB_LISTENER_PORT = 443
 ALB_LISTENER_SCHEMA = "https"
 
@@ -41,10 +52,14 @@ ENVVARS_OBJECT_KEY = "api/.env"
 DB_NAME = "universae360"
 DB_USERNAME = "universae360"
 
+POSIX_USER = "1000"
+POSIX_GROUP = "1000"
+
 SES_IDENTITY_NAME = "universae.com"
 SES_SMTP_HOST = "email-smtp.eu-west-3.amazonaws.com"
 
 CLOUDFLARE_SECRET_HEADER = "X-Universae-CloudFlare-Auth"
+
 
 class APIStack(Stack):
     def __init__(
@@ -53,17 +68,24 @@ class APIStack(Stack):
         construct_id: str,
         environment: str,
         app_url: str,
-        alb_host: str,
-        alb_priority: int = 100,
+        api_alb_host: str,
+        sftp_alb_host: str,
         image_tag: str = "latest",
-        cpu: int = 256,
-        memory: int = 512,
-        min_tasks: int = 1,
-        max_tasks: int = 1,
+        api_alb_priority: int = 100,
+        api_cpu: int = 256,
+        api_memory: int = 512,
+        api_min_tasks: int = 1,
+        api_max_tasks: int = 1,
         spot_capacity_percent: int = 100,
         cron_enable: bool = False,
         cron_cpu: int = 256,
         cron_memory: int = 512,
+        sftp_alb_priority: int = 101,
+        sftp_cpu: int = 256,
+        sftp_memory: int = 512,
+        sftp_min_tasks: int = 1,
+        sftp_max_tasks: int = 1,
+        sftp_allowed_cidrs: list[str] = ["0.0.0.0/0"],
         db_instance_type: str = "t4g.micro",
         db_engine_full_version: str = "16.3",
         db_max_allocated_storage: int = 100,
@@ -81,17 +103,18 @@ class APIStack(Stack):
         ###########
         # Lookups #
         ###########
-        _desired_count = 0 if min_tasks == 0 and max_tasks == 0 else None
+        _api_desired_count = 0 if api_min_tasks == 0 and api_max_tasks == 0 else None
+        _sftp_desired_count = 0 if sftp_min_tasks == 0 and sftp_max_tasks == 0 else None
 
         self.vpc = ec2.Vpc.from_lookup(self, "VPC", is_default=False)
 
-        self.alb = alb.ApplicationLoadBalancer.from_lookup(
+        self.alb = elbv2.ApplicationLoadBalancer.from_lookup(
             self,
             "LoadBalancer",
             load_balancer_tags={"environment": environment, "purpose": "public"},
         )
 
-        self.alb_listener = alb.ApplicationListener.from_lookup(
+        self.alb_listener = elbv2.ApplicationListener.from_lookup(
             self,
             "Listener",
             load_balancer_arn=self.alb.load_balancer_arn,
@@ -183,6 +206,12 @@ class APIStack(Stack):
         self.database_instance.connections.allow_default_port_from(
             bastion_security_group, "Bastion access to RDS"
         )
+        for cidr in VPN_CIDRS:
+            self.database_instance.connections.allow_default_port_from(
+                ec2.Peer.ipv4(cidr), "VPN access to RDS"
+            )
+
+        CfnOutput(self, "DatabaseSecretName", value=self.secret_db.secret_name)
 
         ######
         # S3 #
@@ -205,6 +234,55 @@ class APIStack(Stack):
             ],
             auto_delete_objects=True,
             removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        CfnOutput(self, "MediaBucketName", value=self.secret_db.secret_name)
+
+        #######
+        # EFS #
+        #######
+        self.efs_filesystem = efs.FileSystem(
+            self,
+            "FileSystem",
+            vpc=self.vpc,
+            vpc_subnets=ec2.SubnetSelection(
+                subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
+            ),
+            encrypted=True,
+            performance_mode=efs.PerformanceMode.GENERAL_PURPOSE,
+            throughput_mode=efs.ThroughputMode.BURSTING,
+            removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        self.efs_sftp_config = efs.AccessPoint(
+            self,
+            "SFTPConfigAccessPoint",
+            file_system=self.efs_filesystem,
+            path="/sftp-config",
+            posix_user=efs.PosixUser(uid=POSIX_USER, gid=POSIX_GROUP),
+            create_acl=efs.Acl(
+                owner_uid=POSIX_USER, owner_gid=POSIX_GROUP, permissions="750"
+            ),
+        )
+        self.efs_sftp_data = efs.AccessPoint(
+            self,
+            "SFTPDataAccessPoint",
+            file_system=self.efs_filesystem,
+            path="/sftp-data",
+            posix_user=efs.PosixUser(uid=POSIX_USER, gid=POSIX_GROUP),
+            create_acl=efs.Acl(
+                owner_uid=POSIX_USER, owner_gid=POSIX_GROUP, permissions="750"
+            ),
+        )
+
+        CfnOutput(self, "FileSystemID", value=self.efs_filesystem.file_system_id)
+        CfnOutput(
+            self,
+            "SFTPConfigEFSAccessPointID",
+            value=self.efs_sftp_config.access_point_id,
+        )
+        CfnOutput(
+            self, "SFTPDataEFSAccessPointID", value=self.efs_sftp_data.access_point_id
         )
 
         ########
@@ -246,7 +324,7 @@ class APIStack(Stack):
             ),
         )
 
-        ecs_secrets = {
+        api_ecs_secrets = {
             "JWT_SECRET": ecs.Secret.from_secrets_manager(self.secret_jwt),
             "DATABASE_USER": ecs.Secret.from_secrets_manager(
                 self.secret_db, "username"
@@ -261,7 +339,7 @@ class APIStack(Stack):
                 self.secret_smtp, "password"
             ),
         }
-        ecs_environment = {
+        api_ecs_environment = {
             "APP_URL": app_url,
             "DATABASE_HOST": self.database_instance.db_instance_endpoint_address,
             "DATABASE_NAME": DB_NAME,
@@ -270,6 +348,30 @@ class APIStack(Stack):
             "NO_COLOR": "1",
             "SMTP_HOST": SES_SMTP_HOST,
             "SMTP_PORT": "587",
+        }
+
+        sftp_ecs_secrets = {
+            "SFTPGO_HTTPD__SIGNING_PASSPHRASE": ecs.Secret.from_secrets_manager(
+                self.secret_jwt
+            ),
+            "SFTPGO_SMTP__USER": ecs.Secret.from_secrets_manager(
+                self.secret_smtp, "username"
+            ),
+            "SFTPGO_SMTP__PASSWORD": ecs.Secret.from_secrets_manager(
+                self.secret_smtp, "password"
+            ),
+        }
+        sftp_ecs_environment = {
+            "SFTPGO_HTTPD__ENABLE_WEB_ADMIN": "true",
+            "SFTPGO_HTTPD__ENABLE_WEB_CLIENT": "false",
+            "SFTPGO_HTTPD__ENABLE_REST_API": "false",
+            "SFTPGO_HTTPD__BINDINGS__0__ENABLE_HTTPS": "false",
+            "SFTPGO_SMTP__HOST": SES_SMTP_HOST,
+            "SFTPGO_SMTP__PORT": "587",
+            "SFTPGO_SMTP__AUTH_TYPE": "1",  # Login
+            "SFTPGO_SMTP__ENCRYPTION": "2",  # STARTTLS
+            "SFTPGO_SMTP__FROM": f"SFTP Universae360 ({environment}) <{environment}-sftp360@{SES_IDENTITY_NAME}>",
+            "SFTPGO_GRACE_TIME": str(SFTP_SHUTDOWN_GRACE_TIME),
         }
 
         ########
@@ -289,6 +391,13 @@ class APIStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
             retention=logs.RetentionDays.ONE_MONTH,
         )
+        self.sftp_log_group = logs.LogGroup(
+            self,
+            "SFTPLogGroup",
+            log_group_name=f"/aws/ecs/{Stack.of(self).stack_name.replace('-', '/')}/sftp",
+            removal_policy=RemovalPolicy.DESTROY,
+            retention=logs.RetentionDays.ONE_MONTH,
+        )
 
         #######
         # ECS #
@@ -297,8 +406,8 @@ class APIStack(Stack):
             self,
             "APITaskDefinition",
             family="api",
-            cpu=cpu,
-            memory_limit_mib=memory,
+            cpu=api_cpu,
+            memory_limit_mib=api_memory,
         )
         self.cron_task_definition = ecs.FargateTaskDefinition(
             self,
@@ -306,6 +415,50 @@ class APIStack(Stack):
             family="api",
             cpu=cron_cpu,
             memory_limit_mib=cron_memory,
+            volumes=[
+                ecs.Volume(
+                    name="sftp-data",
+                    efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                        file_system_id=self.efs_filesystem.file_system_id,
+                        transit_encryption="ENABLED",
+                        authorization_config=ecs.AuthorizationConfig(
+                            access_point_id=self.efs_sftp_data.access_point_id,
+                            iam="ENABLED",
+                        ),
+                    ),
+                ),
+            ],
+        )
+        self.sftp_task_definition = ecs.FargateTaskDefinition(
+            self,
+            "SFTPTaskDefinition",
+            family="sftp",
+            cpu=sftp_cpu,
+            memory_limit_mib=sftp_memory,
+            volumes=[
+                ecs.Volume(
+                    name="sftp-config",
+                    efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                        file_system_id=self.efs_filesystem.file_system_id,
+                        transit_encryption="ENABLED",
+                        authorization_config=ecs.AuthorizationConfig(
+                            access_point_id=self.efs_sftp_config.access_point_id,
+                            iam="ENABLED",
+                        ),
+                    ),
+                ),
+                ecs.Volume(
+                    name="sftp-data",
+                    efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                        file_system_id=self.efs_filesystem.file_system_id,
+                        transit_encryption="ENABLED",
+                        authorization_config=ecs.AuthorizationConfig(
+                            access_point_id=self.efs_sftp_data.access_point_id,
+                            iam="ENABLED",
+                        ),
+                    ),
+                ),
+            ],
         )
 
         self.ecr_repository = ecr.Repository.from_repository_name(
@@ -318,23 +471,26 @@ class APIStack(Stack):
         self.cron_image = ecs.ContainerImage.from_ecr_repository(
             repository=self.ecr_repository, tag=f"{image_tag}-cron"
         )
+        self.sftp_image = ecs.ContainerImage.from_registry(
+            name="drakkan/sftpgo:v2.6.2-alpine"
+        )
 
-        self.api_task_definition.add_container(
+        self.api_container = self.api_task_definition.add_container(
             "APIContainer",
             container_name="api",
             image=self.api_image,
-            environment=ecs_environment,
+            environment=api_ecs_environment,
             environment_files=[
                 ecs.EnvironmentFile.from_bucket(
                     bucket=self.envvars_bucket, key=ENVVARS_OBJECT_KEY
                 )
             ],
-            secrets=ecs_secrets,
+            secrets=api_ecs_secrets,
             essential=True,
             port_mappings=[
                 ecs.PortMapping(
-                    host_port=LISTEN_PORT,
-                    container_port=LISTEN_PORT,
+                    host_port=API_LISTEN_PORT,
+                    container_port=API_LISTEN_PORT,
                     protocol=ecs.Protocol.TCP,
                 )
             ],
@@ -342,21 +498,65 @@ class APIStack(Stack):
                 stream_prefix="fargate", log_group=self.api_log_group
             ),
         )
-
-        self.cron_task_definition.add_container(
+        self.cron_container = self.cron_task_definition.add_container(
             "CronContainer",
             container_name="cron",
             image=self.cron_image,
-            environment=ecs_environment,
+            environment=api_ecs_environment,
             environment_files=[
                 ecs.EnvironmentFile.from_bucket(
                     bucket=self.envvars_bucket, key=ENVVARS_OBJECT_KEY
                 )
             ],
-            secrets=ecs_secrets,
+            secrets=api_ecs_secrets,
             essential=True,
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.cron_log_group
+            ),
+        )
+        self.sftp_container = self.sftp_task_definition.add_container(
+            "SFTPContainer",
+            container_name="sftpgo",
+            image=self.sftp_image,
+            environment=sftp_ecs_environment,
+            secrets=sftp_ecs_secrets,
+            essential=True,
+            port_mappings=[
+                ecs.PortMapping(
+                    host_port=SFTP_ADMIN_LISTEN_PORT,
+                    container_port=SFTP_ADMIN_LISTEN_PORT,
+                    protocol=ecs.Protocol.TCP,
+                ),
+                ecs.PortMapping(
+                    host_port=SFTP_LISTEN_PORT,
+                    container_port=SFTP_LISTEN_PORT,
+                    protocol=ecs.Protocol.TCP,
+                ),
+            ],
+            logging=ecs.AwsLogDriver(
+                stream_prefix="fargate", log_group=self.sftp_log_group
+            ),
+        )
+
+        self.cron_container.add_mount_points(
+            ecs.MountPoint(
+                container_path="/var/lib/sftp",
+                source_volume="sftp-data",
+                read_only=False,
+            ),
+        )
+        self.sftp_container.add_mount_points(
+            ecs.MountPoint(
+                container_path="/var/lib/sftpgo",
+                source_volume="sftp-config",
+                read_only=False,
+            ),
+        )
+        self.sftp_container.add_mount_points(
+            ecs.MountPoint(
+                container_path="/srv/sftpgo",
+                source_volume="sftp-data",
+                read_only=False,
             ),
         )
 
@@ -365,7 +565,7 @@ class APIStack(Stack):
             "APIService",
             task_definition=self.api_task_definition,
             cluster=self.ecs_cluster,
-            desired_count=_desired_count,
+            desired_count=_api_desired_count,
             min_healthy_percent=100,
             max_healthy_percent=200,
             health_check_grace_period=Duration.seconds(60),
@@ -385,13 +585,34 @@ class APIStack(Stack):
             ],
             enable_execute_command=True,
         )
-
         self.cron_service = ecs.FargateService(
             self,
             "CronService",
             task_definition=self.cron_task_definition,
             cluster=self.ecs_cluster,
             desired_count=1 if cron_enable else 0,
+            assign_public_ip=False,
+            vpc_subnets=ec2.SubnetSelection(
+                subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
+            ),
+            platform_version=ecs.FargatePlatformVersion.LATEST,
+            circuit_breaker=ecs.DeploymentCircuitBreaker(rollback=True),
+            capacity_provider_strategies=[
+                ecs.CapacityProviderStrategy(
+                    capacity_provider="FARGATE", weight=100 - spot_capacity_percent
+                ),
+                ecs.CapacityProviderStrategy(
+                    capacity_provider="FARGATE_SPOT", weight=spot_capacity_percent
+                ),
+            ],
+            enable_execute_command=True,
+        )
+        self.sftp_service = ecs.FargateService(
+            self,
+            "SFTPService",
+            task_definition=self.sftp_task_definition,
+            cluster=self.ecs_cluster,
+            desired_count=_sftp_desired_count,
             assign_public_ip=False,
             vpc_subnets=ec2.SubnetSelection(
                 subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
@@ -430,16 +651,73 @@ class APIStack(Stack):
         self.media_bucket.grant_put_acl(self.api_task_definition.task_role)
         self.media_bucket.grant_put_acl(self.cron_task_definition.task_role)
 
+        self.efs_filesystem.grant_read_write(self.cron_task_definition.task_role)
+        self.efs_filesystem.grant_read_write(self.sftp_task_definition.task_role)
+
+        self.efs_filesystem.connections.allow_default_port_from(
+            self.cron_service.connections, "Allow Cron to access EFS"
+        )
+        self.efs_filesystem.connections.allow_default_port_from(
+            self.sftp_service.connections, "Allow SFTP to access EFS"
+        )
+
+        CfnOutput(self, "APIECSServiceARN", value=self.api_service.service_arn)
+        CfnOutput(self, "CronECSServiceARN", value=self.cron_service.service_arn)
+        CfnOutput(self, "SFTPECSServiceARN", value=self.sftp_service.service_arn)
+
         ##################
         # Load Balancing #
         ##################
-        self.target_group = alb.ApplicationTargetGroup(
+        self.sftpd_nlb_sg = ec2.SecurityGroup(
+            self, "SFTPDLoadBalancerSecurityGroup", vpc=self.vpc
+        )
+
+        for cidr in sftp_allowed_cidrs:
+            self.sftpd_nlb_sg.add_ingress_rule(
+                peer=ec2.Peer.ipv4(cidr_ip=cidr),
+                connection=ec2.Port.tcp(SFTP_LISTEN_PORT),
+            )
+
+        self.sftp_service.connections.allow_from(
+            other=self.sftpd_nlb_sg, port_range=ec2.Port.tcp(SFTP_LISTEN_PORT)
+        )
+
+        self.sftpd_nlb = elbv2.NetworkLoadBalancer(
+            self,
+            "SFTPDLoadBalancer",
+            load_balancer_name=f"{environment}-sftpd",
+            vpc=self.vpc,
+            vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
+            internet_facing=True,
+            deletion_protection=False,
+            security_groups=[self.sftpd_nlb_sg],
+        )
+
+        self.sftpd_nlb_listener = self.sftpd_nlb.add_listener(
+            "SFTPDListener",
+            port=SFTP_LISTEN_PORT,
+        )
+
+        self.sftpd_target_group = self.sftpd_nlb_listener.add_targets(
+            "SFTPDTarget",
+            targets=[
+                self.sftp_service.load_balancer_target(
+                    container_name="sftpgo",
+                    container_port=SFTP_LISTEN_PORT,
+                    protocol=ecs.Protocol.TCP,
+                )
+            ],
+            port=SFTP_LISTEN_PORT,
+            protocol=elbv2.Protocol.TCP,
+        )
+
+        self.api_target_group = elbv2.ApplicationTargetGroup(
             self,
             "TargetGroup",
-            port=LISTEN_PORT,
-            protocol=alb.ApplicationProtocol.HTTP,
+            port=API_LISTEN_PORT,
+            protocol=elbv2.ApplicationProtocol.HTTP,
             deregistration_delay=Duration.seconds(60),
-            health_check=alb.HealthCheck(
+            health_check=elbv2.HealthCheck(
                 enabled=True,
                 path="/health",
                 healthy_http_codes="200",
@@ -449,16 +727,44 @@ class APIStack(Stack):
                 timeout=Duration.seconds(5),
             ),
             vpc=self.vpc,
-            target_type=alb.TargetType.IP,
+            target_type=elbv2.TargetType.IP,
+        )
+        self.sftp_target_group = elbv2.ApplicationTargetGroup(
+            self,
+            "SFTPTargetGroup",
+            port=SFTP_ADMIN_LISTEN_PORT,
+            protocol=elbv2.ApplicationProtocol.HTTP,
+            deregistration_delay=Duration.seconds(60),
+            health_check=elbv2.HealthCheck(
+                enabled=True,
+                path="/web/admin/login",
+                healthy_http_codes="200,302",
+                healthy_threshold_count=4,
+                unhealthy_threshold_count=2,
+                interval=Duration.seconds(15),
+                timeout=Duration.seconds(5),
+            ),
+            vpc=self.vpc,
+            target_type=elbv2.TargetType.IP,
         )
 
-        target_group_conditions = [
-            alb.ListenerCondition.host_headers(values=[alb_host])
+        api_target_group_conditions = [
+            elbv2.ListenerCondition.host_headers(values=[api_alb_host])
+        ]
+        sftp_target_group_conditions = [
+            elbv2.ListenerCondition.host_headers(values=[sftp_alb_host]),
+            elbv2.ListenerCondition.source_ips(sftp_allowed_cidrs),
         ]
 
         if enable_cloudflare_auth_header:
-            target_group_conditions.append(
-                alb.ListenerCondition.http_header(
+            api_target_group_conditions.append(
+                elbv2.ListenerCondition.http_header(
+                    name=CLOUDFLARE_SECRET_HEADER,
+                    values=[self.secret_cloudflare.secret_value.to_string()],
+                ),
+            )
+            sftp_target_group_conditions.append(
+                elbv2.ListenerCondition.http_header(
                     name=CLOUDFLARE_SECRET_HEADER,
                     values=[self.secret_cloudflare.secret_value.to_string()],
                 ),
@@ -466,20 +772,34 @@ class APIStack(Stack):
 
         self.alb_listener.add_target_groups(
             Stack.of(self).stack_name,
-            target_groups=[self.target_group],
-            conditions=target_group_conditions,
-            priority=alb_priority,
+            target_groups=[self.api_target_group],
+            conditions=api_target_group_conditions,
+            priority=api_alb_priority,
+        )
+        self.alb_listener.add_target_groups(
+            f"{Stack.of(self).stack_name}-sftp",
+            target_groups=[self.sftp_target_group],
+            conditions=sftp_target_group_conditions,
+            priority=sftp_alb_priority,
         )
 
-        self.api_service.attach_to_application_target_group(self.target_group)
+        self.api_service.attach_to_application_target_group(self.api_target_group)
+        self.sftp_service.attach_to_application_target_group(self.sftp_target_group)
 
         ###############
         # Autoscaling #
         ###############
-        self.scalable_task_count = self.api_service.auto_scale_task_count(
-            min_capacity=min_tasks, max_capacity=max_tasks
+        self.api_scalable_task_count = self.api_service.auto_scale_task_count(
+            min_capacity=api_min_tasks, max_capacity=api_max_tasks
         )
-        self.scalable_task_count.scale_on_cpu_utilization(
+        self.api_scalable_task_count.scale_on_cpu_utilization(
+            "CPUScaling", target_utilization_percent=60
+        )
+
+        self.sftp_scalable_task_count = self.sftp_service.auto_scale_task_count(
+            min_capacity=sftp_min_tasks, max_capacity=sftp_max_tasks
+        )
+        self.sftp_scalable_task_count.scale_on_cpu_utilization(
             "CPUScaling", target_utilization_percent=60
         )
 
@@ -510,12 +830,89 @@ class APIStack(Stack):
                 self, self.stack_name, alarm_factory_defaults=alarm_factory_defaults
             )
 
+            api_alb_services_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="APILoadBalancer",
+            )
+
+            api_response_time_alarm = api_alb_services_alarm_factory.add_alarm(
+                alarm_description="Response Time",
+                alarm_name_suffix="TargetResponseTime",
+                metric=self.api_target_group.metrics.target_response_time(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=5,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            api_alb_services_alarm_factory.add_alarm(
+                alarm_description="HTTP 5xx Errors",
+                alarm_name_suffix="HTTP-5xx",
+                metric=self.api_target_group.metrics.http_code_target(
+                    code=elbv2.HttpCodeTarget.TARGET_5XX_COUNT
+                ),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=0,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+
+            self.monitoring.monitor_custom(
+                alarm_friendly_name="API Load Balancer",
+                human_readable_name="API Load Balancer",
+                metric_groups=[
+                    CustomMetricGroup(
+                        title="Health",
+                        metrics=[
+                            self.api_target_group.metrics.healthy_host_count(
+                                label="Healthy", color=cloudwatch.Color.BLUE
+                            ),
+                            self.api_target_group.metrics.unhealthy_host_count(
+                                label="Unhealthy", color=cloudwatch.Color.RED
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                    ),
+                    CustomMetricGroup(
+                        title="Latency",
+                        metrics=[self.api_target_group.metrics.target_response_time()],
+                        graph_widget_axis=cloudwatch.YAxisProps(min=0),
+                        horizontal_annotations=[api_response_time_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Target Response Codes",
+                        metrics=[
+                            self.api_target_group.metrics.http_code_target(
+                                code=elbv2.HttpCodeTarget.TARGET_2XX_COUNT,
+                                color=cloudwatch.Color.GREEN,
+                                label="2xx",
+                            ),
+                            self.api_target_group.metrics.http_code_target(
+                                code=elbv2.HttpCodeTarget.TARGET_3XX_COUNT,
+                                color=cloudwatch.Color.BLUE,
+                                label="3xx",
+                            ),
+                            self.api_target_group.metrics.http_code_target(
+                                code=elbv2.HttpCodeTarget.TARGET_4XX_COUNT,
+                                color=cloudwatch.Color.ORANGE,
+                                label="4xx",
+                            ),
+                            self.api_target_group.metrics.http_code_target(
+                                code=elbv2.HttpCodeTarget.TARGET_5XX_COUNT,
+                                color=cloudwatch.Color.RED,
+                                label="5xx",
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                    ),
+                ],
+            )
             self.monitoring.monitor_fargate_application_load_balancer(
                 fargate_service=self.api_service,
-                min_auto_scaling_task_count=min_tasks,
-                max_auto_scaling_task_count=max_tasks,
+                min_auto_scaling_task_count=api_min_tasks,
+                max_auto_scaling_task_count=api_max_tasks,
                 application_load_balancer=self.alb,
-                application_target_group=self.target_group,
+                application_target_group=self.api_target_group,
                 add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
                 add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
                 add_unhealthy_task_count_alarm={
@@ -524,6 +921,15 @@ class APIStack(Stack):
             )
             self.monitoring.monitor_simple_fargate_service(
                 fargate_service=self.cron_service,
+                add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
+                add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
+            )
+            self.monitoring.monitor_fargate_network_load_balancer(
+                fargate_service=self.sftp_service,
+                min_auto_scaling_task_count=sftp_min_tasks,
+                max_auto_scaling_task_count=sftp_max_tasks,
+                network_load_balancer=self.sftpd_nlb,
+                network_target_group=self.sftpd_target_group,
                 add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
                 add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
             )
@@ -538,6 +944,112 @@ class APIStack(Stack):
                 },
             )
             self.monitoring.monitor_s3_bucket(bucket=self.media_bucket)
+
+            efs_services_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="EFS",
+            )
+
+            efs_burst_credit_balance_alarm = efs_services_alarm_factory.add_alarm(
+                alarm_description="Burst Credit Balance",
+                alarm_name_suffix="BurstCreditBalance",
+                metric=cloudwatch.Metric(
+                    metric_name="BurstCreditBalance",
+                    namespace="AWS/EFS",
+                    dimensions_map={"FileSystemId": self.efs_filesystem.file_system_id},
+                    statistic="Average",
+                ),
+                comparison_operator=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+                threshold=500000000000,
+                datapoints_to_alarm=5,
+                evaluation_periods=5,
+                period=Duration.seconds(60),
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+            )
+            efs_percent_io_limit_alarm = efs_services_alarm_factory.add_alarm(
+                alarm_description="Percent IO Limit",
+                alarm_name_suffix="PercentIOLimit",
+                metric=cloudwatch.Metric(
+                    metric_name="PercentIOLimit",
+                    namespace="AWS/EFS",
+                    dimensions_map={"FileSystemId": self.efs_filesystem.file_system_id},
+                    statistic="Average",
+                ),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=80,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+                period=Duration.seconds(300),
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+            )
+            efs_permitted_throughput_alarm = efs_services_alarm_factory.add_alarm(
+                alarm_description="Permitted Throughput",
+                alarm_name_suffix="PermittedThroughput",
+                metric=cloudwatch.Metric(
+                    metric_name="PermittedThroughput",
+                    namespace="AWS/EFS",
+                    dimensions_map={"FileSystemId": self.efs_filesystem.file_system_id},
+                    statistic="Average",
+                ),
+                comparison_operator=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+                threshold=25,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+                period=Duration.seconds(300),
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+            )
+
+            self.monitoring.monitor_custom(
+                alarm_friendly_name="EFS Filesystem",
+                human_readable_name="EFS Filesystem",
+                metric_groups=[
+                    CustomMetricGroup(
+                        title="BurstCreditBalance",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="BurstCreditBalance",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Average",
+                            )
+                        ],
+                        horizontal_annotations=[
+                            efs_burst_credit_balance_alarm.annotation
+                        ],
+                    ),
+                    CustomMetricGroup(
+                        title="PercentIOLimit",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="PercentIOLimit",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Average",
+                            )
+                        ],
+                        horizontal_annotations=[efs_percent_io_limit_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="PermittedThroughput",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="PermittedThroughput",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Average",
+                            )
+                        ],
+                        horizontal_annotations=[
+                            efs_permitted_throughput_alarm.annotation
+                        ],
+                    ),
+                ],
+            )
 
         #######################
         # CDK NAG Supressions #
@@ -561,20 +1073,6 @@ class APIStack(Stack):
                     id="AwsSolutions-L1",
                     reason="Runtime managed at the module level",
                 ),
-            ],
-        )
-        NagSuppressions.add_resource_suppressions(
-            construct=self.api_task_definition,
-            suppressions=[
-                NagPackSuppression(
-                    id="AwsSolutions-ECS2",
-                    reason="Injected environment variables are calculated and non sensitive",
-                ),
-            ],
-        )
-        NagSuppressions.add_resource_suppressions(
-            construct=self.cron_task_definition,
-            suppressions=[
                 NagPackSuppression(
                     id="AwsSolutions-ECS2",
                     reason="Injected environment variables are calculated and non sensitive",
@@ -632,6 +1130,24 @@ class APIStack(Stack):
                 NagPackSuppression(
                     id="AwsSolutions-RDS3",
                     reason="Not aligned with security posture",
+                ),
+            ],
+        )
+        NagSuppressions.add_resource_suppressions(
+            construct=self.sftpd_nlb,
+            suppressions=[
+                NagPackSuppression(
+                    id="AwsSolutions-ELB2",
+                    reason="Not aligned with security posture",
+                ),
+            ],
+        )
+        NagSuppressions.add_resource_suppressions(
+            construct=self.sftpd_nlb_sg,
+            suppressions=[
+                NagPackSuppression(
+                    id="AwsSolutions-EC23",
+                    reason="Required during tests phase",
                 ),
             ],
         )

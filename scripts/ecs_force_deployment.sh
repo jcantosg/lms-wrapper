@@ -10,6 +10,12 @@ usage() {
   exit 2
 }
 
+get_stack_output_value() {
+  local stack_name=$1
+  local output_key=$2
+  aws cloudformation describe-stacks --stack-name "$stack_name" --query "Stacks[0].Outputs[?OutputKey=='$output_key'].OutputValue" | jq -r '.[0]'
+}
+
 while getopts "e:" opt; do
   case "${opt}" in
   e)
@@ -37,8 +43,9 @@ dev | pre | pro)
   ;;
 esac
 
-API_SERVICE_ARN=$(aws cloudformation describe-stack-resources --stack-name $CLOUDFORMATION_STACK | jq -r '.StackResources[].PhysicalResourceId' | grep 'arn:aws:ecs' | grep service | grep API)
-CRON_SERVICE_ARN=$(aws cloudformation describe-stack-resources --stack-name $CLOUDFORMATION_STACK | jq -r '.StackResources[].PhysicalResourceId' | grep 'arn:aws:ecs' | grep service | grep Cron)
+API_SERVICE_ARN=$(get_stack_output_value "$CLOUDFORMATION_STACK" "APIECSServiceARN")
+CRON_SERVICE_ARN=$(get_stack_output_value "$CLOUDFORMATION_STACK" "CronECSServiceARN")
+SFTP_SERVICE_ARN=$(get_stack_output_value "$CLOUDFORMATION_STACK" "SFTPECSServiceARN")
 
 aws ecs update-service \
   --cluster $ECS_CLUSTER \
@@ -50,6 +57,11 @@ aws ecs update-service \
   --service $CRON_SERVICE_ARN \
   --force-new-deployment
 
+aws ecs update-service \
+  --cluster $ECS_CLUSTER \
+  --service $SFTP_SERVICE_ARN \
+  --force-new-deployment
+
 echo "Waiting for services to become stable"
 aws ecs wait services-stable \
   --cluster $ECS_CLUSTER \
@@ -58,3 +70,7 @@ aws ecs wait services-stable \
 aws ecs wait services-stable \
   --cluster $ECS_CLUSTER \
   --services $CRON_SERVICE_ARN
+
+aws ecs wait services-stable \
+  --cluster $ECS_CLUSTER \
+  --services $SFTP_SERVICE_ARN

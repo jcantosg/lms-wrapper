@@ -8,8 +8,14 @@
 usage() {
   echo "Usage: $0 -e <env> -s <service>"
   echo " <env>: dev|pre|pro"
-  echo " <service>: api|cron"
+  echo " <service>: api|cron|sftp"
   exit 2
+}
+
+get_stack_output_value() {
+  local stack_name=$1
+  local output_key=$2
+  aws cloudformation describe-stacks --stack-name "$stack_name" --query "Stacks[0].Outputs[?OutputKey=='$output_key'].OutputValue" | jq -r '.[0]'
 }
 
 while getopts "e:s:" opt; do
@@ -44,15 +50,20 @@ esac
 
 case "${ECS_SERVICE}" in
 api)
-  SERVICE_ARN=$(aws cloudformation describe-stack-resources --stack-name $CLOUDFORMATION_STACK | jq -r '.StackResources[].PhysicalResourceId' | grep 'arn:aws:ecs' | grep service | grep API)
+  CFN_OUTPUT_VALUE=APIECSServiceARN
   ECS_CONTAINER=api
   ;;
 cron)
-  SERVICE_ARN=$(aws cloudformation describe-stack-resources --stack-name $CLOUDFORMATION_STACK | jq -r '.StackResources[].PhysicalResourceId' | grep 'arn:aws:ecs' | grep service | grep Cron)
+  CFN_OUTPUT_VALUE=CronECSServiceARN
   ECS_CONTAINER=cron
+  ;;
+sftp)
+  CFN_OUTPUT_VALUE=SFTPECSServiceARN
+  ECS_CONTAINER=sftpgo
   ;;
 esac
 
+SERVICE_ARN=$(get_stack_output_value "$CLOUDFORMATION_STACK" "$CFN_OUTPUT_VALUE")
 ECS_TASK=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service-name $SERVICE_ARN --output json | jq -r '.taskArns[0]' | cut -d/ -f3)
 
 aws ecs execute-command \

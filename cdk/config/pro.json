@@ -2,25 +2,36 @@
   "aws_account_id": "603941717969",
   "aws_region": "eu-west-3",
 
-  "environment": "dev",
-
-  "alb_host": "back-ucp360.universae.com",
-  "alb_priority": 300,
+  "environment": "pro",
 
   "app_url": "https://ucp360.universae.com",
 
+  "spot_capacity_percent": 100,
   "enable_cloudflare_auth_header": false,
 
-  "cpu": 512,
-  "memory": 1024,
-  "min_tasks": 0,
-  "max_tasks": 0,
-  "spot_capacity_percent": 100,
+  "api": {
+    "alb_host": "back-ucp360.universae.com",
+    "alb_priority": 300,
+    "cpu": 512,
+    "memory": 1024,
+    "min_tasks": 1,
+    "max_tasks": 1
+  },
 
   "cron": {
     "enable": true,
     "cpu": 512,
     "memory": 1024
+  },
+
+  "sftp": {
+    "alb_host": "sftp.universae.com",
+    "alb_priority": 301,
+    "cpu": 512,
+    "memory": 1024,
+    "min_tasks": 0,
+    "max_tasks": 0,
+    "allowed_cidrs": ["0.0.0.0/0"]
   },
 
   "db": {
