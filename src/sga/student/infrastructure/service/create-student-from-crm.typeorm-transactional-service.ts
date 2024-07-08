@@ -3,8 +3,8 @@ import { CreateLmsStudentHandler } from '#/lms-wrapper/application/lms-student/c
 import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.command';
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
-import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import {
   CreateStudentFromCRMTransactionalService,
   CreateStudentFromCRMTransactionParams,
@@ -21,7 +21,6 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     private readonly deleteLmsStudentHandler: DeleteLmsStudentHandler,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
-    private readonly administrativeGroupRepository: AdministrativeGroupRepository,
   ) {
     super();
     this.logger = new Logger(CreateStudentFromCRMTransactionalService.name);
@@ -62,26 +61,20 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
 
       if (entities.administrativeGroup) {
         entities.administrativeGroup.addStudent(entities.student);
-        await this.administrativeGroupRepository.save(
-          entities.administrativeGroup,
-        );
+        await queryRunner.manager.save(AdministrativeGroup, {
+          id: entities.administrativeGroup.id,
+          students: entities.administrativeGroup.students,
+          updatedAt: entities.administrativeGroup.updatedAt,
+          updatedBy: entities.administrativeGroup.updatedBy,
+        });
       }
 
       for (const group of entities.internalGroups) {
+        group.addStudents([entities.student]);
         await queryRunner.manager.save(InternalGroup, {
           id: group.id,
-          academicPeriod: group.academicPeriod,
-          academicProgram: group.academicProgram,
-          businessUnit: group.businessUnit,
-          code: group.code,
-          createdAt: group.createdAt,
-          isDefault: group.isDefault,
-          periodBlock: group.periodBlock,
           students: group.students,
-          subject: group.subject,
-          teachers: group.teachers,
           updatedAt: group.updatedAt,
-          createdBy: group.createdBy,
           updatedBy: group.updatedBy,
         });
       }

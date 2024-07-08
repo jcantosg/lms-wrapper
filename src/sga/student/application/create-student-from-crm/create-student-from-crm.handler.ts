@@ -216,17 +216,6 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             enrollment.calls = oldEnrollment.calls;
             enrollment.visibility = oldEnrollment.visibility;
             enrollment.type = oldEnrollment.type;
-          } else {
-            const subjectCall = SubjectCall.create(
-              uuid(),
-              enrollment,
-              1,
-              new Date(),
-              SubjectCallFinalGradeEnum.ONGOING,
-              SubjectCallStatusEnum.ONGOING,
-              adminUser,
-            );
-            enrollment.addSubjectCall(subjectCall);
           }
         });
 
@@ -235,6 +224,10 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             academicPeriod.id,
             academicProgram.id,
           );
+        if (administrativeGroup) {
+          administrativeGroup.updated();
+          administrativeGroup.updatedBy = adminUser;
+        }
 
         const internalGroups: InternalGroup[] = [];
         for (const enrollment of enrollments) {
@@ -245,7 +238,8 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           );
           const defaultGroup = groups.find((group) => group.isDefault);
           if (defaultGroup) {
-            defaultGroup.addStudents([student]);
+            defaultGroup.updatedAt = new Date();
+            defaultGroup.updatedBy = adminUser;
             internalGroups.push(defaultGroup);
           }
         }
@@ -326,6 +320,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         const defaultGroup = groups.find((group) => group.isDefault);
         if (defaultGroup) {
           defaultGroup.addStudents([student]);
+          defaultGroup.updatedBy = adminUser;
           internalGroups.push(defaultGroup);
         }
       }

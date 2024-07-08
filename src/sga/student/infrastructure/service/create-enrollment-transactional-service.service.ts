@@ -1,3 +1,4 @@
+import { Student } from '#shared/domain/entity/student.entity';
 import {
   TransactionalService,
   TransactionParams,
@@ -12,6 +13,7 @@ export interface CreateEnrollmentTransactionParams extends TransactionParams {
   enrollment: Enrollment;
   subjectCall: SubjectCall;
   internalGroup: InternalGroup;
+  student: Student;
 }
 
 export class CreateEnrollmentTransactionalService extends TransactionalService {
@@ -28,20 +30,11 @@ export class CreateEnrollmentTransactionalService extends TransactionalService {
       await queryRunner.manager.save(entities.enrollment);
       await queryRunner.manager.save(entities.subjectCall);
 
+      entities.internalGroup.addStudents([entities.student]);
       await queryRunner.manager.save(InternalGroup, {
         id: entities.internalGroup.id,
-        academicPeriod: entities.internalGroup.academicPeriod,
-        academicProgram: entities.internalGroup.academicProgram,
-        businessUnit: entities.internalGroup.businessUnit,
-        code: entities.internalGroup.code,
-        createdAt: entities.internalGroup.createdAt,
-        isDefault: entities.internalGroup.isDefault,
-        periodBlock: entities.internalGroup.periodBlock,
         students: entities.internalGroup.students,
-        subject: entities.internalGroup.subject,
-        teachers: entities.internalGroup.teachers,
         updatedAt: entities.internalGroup.updatedAt,
-        createdBy: entities.internalGroup.createdBy,
         updatedBy: entities.internalGroup.updatedBy,
       });
 

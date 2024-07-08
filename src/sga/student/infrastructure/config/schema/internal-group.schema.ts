@@ -62,7 +62,7 @@ export const internalGroupSchema = new EntitySchema<InternalGroup>({
       type: 'many-to-many',
       target: 'Student',
       joinTable: {
-        name: 'internal_groups_students',
+        name: 'internal_group_students',
         joinColumn: {
           name: 'internal_group_id',
         },

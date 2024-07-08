@@ -72,12 +72,14 @@ export class CreateEnrollmentHandler implements CommandHandler {
         enrollment.subject,
         academicRecord,
       );
-      internalGroup.students.push(academicRecord.student);
+      internalGroup.updatedBy = command.user;
+      internalGroup.updatedAt = new Date();
 
       await this.transactionalService.execute({
         subjectCall: subjectCall,
         enrollment: enrollment,
         internalGroup,
+        student: academicRecord.student,
       });
     }
   }

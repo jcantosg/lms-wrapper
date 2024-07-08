@@ -329,6 +329,18 @@ export class Student extends BaseEntity {
     this._internalGroups = value;
   }
 
+  public addInternalGroup(group: InternalGroup) {
+    if (!this._internalGroups.find((ig) => ig.id === group.id)) {
+      this._internalGroups.push(group);
+    }
+  }
+
+  public addAdministrativeGroup(group: AdministrativeGroup) {
+    if (!this._administrativeGroups.find((ag) => ag.id === group.id)) {
+      this._administrativeGroups.push(group);
+    }
+  }
+
   static createFromSGA(
     id: string,
     name: string,

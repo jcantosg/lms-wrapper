@@ -103,7 +103,6 @@ const createStudentFromCRMTransactionalService = {
     deleteLmsStudentHandler: DeleteLmsStudentHandler,
     passwordEncoder: PasswordEncoder,
     configService: ConfigService,
-    administrativeGroupRepository: AdministrativeGroupRepository,
   ): CreateStudentFromCRMTypeormTransactionalService => {
     const defaultPassword = configService.get<string>(
       'DEFAULT_LMS_PASSWORD',
@@ -116,7 +115,6 @@ const createStudentFromCRMTransactionalService = {
       deleteLmsStudentHandler,
       passwordEncoder,
       defaultPassword,
-      administrativeGroupRepository,
     );
   },
   inject: [
@@ -124,7 +122,6 @@ const createStudentFromCRMTransactionalService = {
     DeleteLmsStudentHandler,
     PasswordEncoder,
     ConfigService,
-    AdministrativeGroupRepository,
   ],
 };
 
