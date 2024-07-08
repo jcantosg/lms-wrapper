@@ -88,6 +88,9 @@ export class InternalGroupPostgresRepository
         academicProgram: { id: academicProgram.id },
         subject: { id: subject.id },
       },
+      relations: {
+        students: true,
+      },
     });
   }
 

@@ -37,6 +37,8 @@ import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema
 import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 
 export class CreateEnrollmentE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -79,7 +81,11 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
   private static subjectIsRegulated = true;
   private static subjectIsCore = true;
 
-  private static studentId = uuid();
+  public static otherSubjectId = 'ad1b657b-c378-4b55-a97f-d5050856ea65';
+  private static otherSubjectName = 'Algoritmos y Estructuras de Datos 2';
+  private static otherSubjectCode = 'UniversaeAED2';
+
+  public static studentId = uuid();
   private static studentName = 'Juan';
   private static studentSurname = 'Ros';
   private static studentSurname2 = 'Lopez';
@@ -89,6 +95,8 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
   public static academicRecordId = 'a4d5dfb8-9609-444c-9d5e-7d05bf6d4df7';
 
   public static enrollmentId = 'd3087949-3d62-4eaf-a179-c569d02b6ee6';
+
+  public static internalGroupId = uuid();
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
@@ -101,6 +109,8 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
   private student: Student;
   private title: Title;
   private subject: Subject;
+  private otherSubject: Subject;
+  private internalGroup: InternalGroup;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -115,6 +125,7 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
   private subjectRepository: Repository<Subject>;
   private enrollmentRepository: Repository<Enrollment>;
   private subjectCallRepository: Repository<SubjectCall>;
+  private internalGroupRepository: Repository<InternalGroup>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -136,6 +147,8 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
       datasource.getRepository(academicRecordSchema);
     this.enrollmentRepository = datasource.getRepository(enrollmentSchema);
     this.subjectCallRepository = datasource.getRepository(subjectCallSchema);
+    this.internalGroupRepository =
+      datasource.getRepository(internalGroupSchema);
   }
 
   async arrange(): Promise<void> {
@@ -240,9 +253,43 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
       null,
     );
     await this.subjectRepository.save(this.subject);
+
+    this.otherSubject = Subject.create(
+      CreateEnrollmentE2eSeed.otherSubjectId,
+      null,
+      CreateEnrollmentE2eSeed.otherSubjectName,
+      CreateEnrollmentE2eSeed.otherSubjectCode,
+      null,
+      CreateEnrollmentE2eSeed.subjectHours,
+      CreateEnrollmentE2eSeed.subjectModality,
+      evaluationType,
+      CreateEnrollmentE2eSeed.subjectType,
+      this.businessUnit,
+      CreateEnrollmentE2eSeed.subjectIsRegulated,
+      CreateEnrollmentE2eSeed.subjectIsCore,
+      this.superAdminUser,
+      null,
+    );
+    await this.subjectRepository.save(this.otherSubject);
+
     this.programBlock.addSubject(this.subject, this.superAdminUser);
+    this.programBlock.addSubject(this.otherSubject, this.superAdminUser);
     await this.programBlockRepository.save(this.programBlock);
     this.academicProgram.programBlocks = [this.programBlock];
+
+    this.student = Student.createFromSGA(
+      CreateEnrollmentE2eSeed.studentId,
+      CreateEnrollmentE2eSeed.studentName,
+      CreateEnrollmentE2eSeed.studentSurname,
+      CreateEnrollmentE2eSeed.studentSurname2,
+      CreateEnrollmentE2eSeed.studentEmail,
+      CreateEnrollmentE2eSeed.universaeEmail,
+      this.superAdminUser,
+      'test123',
+      null,
+    );
+    await this.studentRepository.save(this.student);
+
     this.academicRecord = AcademicRecord.create(
       CreateEnrollmentE2eSeed.academicRecordId,
       this.businessUnit,
@@ -257,34 +304,36 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
 
     await this.academicRecordRepository.save(this.academicRecord);
 
-    this.student = Student.createFromSGA(
-      CreateEnrollmentE2eSeed.studentId,
-      CreateEnrollmentE2eSeed.studentName,
-      CreateEnrollmentE2eSeed.studentSurname,
-      CreateEnrollmentE2eSeed.studentSurname2,
-      CreateEnrollmentE2eSeed.studentEmail,
-      CreateEnrollmentE2eSeed.universaeEmail,
-      this.superAdminUser,
-      'test123',
-      null,
+    await this.internalGroupRepository.save(
+      InternalGroup.create(
+        CreateEnrollmentE2eSeed.internalGroupId,
+        'intgrocod',
+        [],
+        [],
+        this.academicPeriod,
+        this.academicProgram,
+        this.academicPeriod.periodBlocks[0],
+        this.otherSubject,
+        this.businessUnit,
+        true,
+        this.superAdminUser,
+        null,
+      ),
     );
-    await this.studentRepository.save(this.student);
   }
 
   async clear(): Promise<void> {
-    const subjectCalls = await this.subjectCallRepository.find();
-    await this.subjectCallRepository.delete(
-      subjectCalls.map((subject) => subject.id),
-    );
+    this.internalGroupRepository.delete({});
+    await this.subjectCallRepository.delete({});
     await this.enrollmentRepository.delete(
       CreateEnrollmentE2eSeed.enrollmentId,
     );
     await this.academicRecordRepository.delete(
       CreateEnrollmentE2eSeed.academicRecordId,
     );
-    await this.studentRepository.delete(this.student.id);
-    await this.subjectRepository.delete(this.subject.id);
-    await this.programBlockRepository.delete(this.programBlock.id);
+    await this.studentRepository.delete({});
+    await this.subjectRepository.delete({});
+    await this.programBlockRepository.delete({});
     await this.academicRecordRepository.delete(
       CreateEnrollmentE2eSeed.academicRecordId,
     );

@@ -14,6 +14,7 @@ import { GetEnrollmentsByAcademicRecordHandler } from '#student/application/enro
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { DeleteEnrollmentHandler } from '#student/application/enrollment/delete-enrollment/delete-enrollment.handler';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 
 const getSubjectsNotEnrolledHandler = {
   provide: GetSubjectsNotEnrolledHandler,
@@ -30,6 +31,7 @@ const createEnrollmentHandler = {
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
     subjectGetter: SubjectGetter,
+    internalGroupRepository: InternalGroupRepository,
   ) => {
     const transactionalService = new CreateEnrollmentTransactionalService(
       datasource,
@@ -39,9 +41,10 @@ const createEnrollmentHandler = {
       academicRecordGetter,
       subjectGetter,
       transactionalService,
+      internalGroupRepository,
     );
   },
-  inject: [AcademicRecordGetter, SubjectGetter],
+  inject: [AcademicRecordGetter, SubjectGetter, InternalGroupRepository],
 };
 
 const editEnrollmentHandler = {

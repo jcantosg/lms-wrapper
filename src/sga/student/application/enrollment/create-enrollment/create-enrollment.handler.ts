@@ -13,12 +13,17 @@ import { v4 as uuid } from 'uuid';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 
 export class CreateEnrollmentHandler implements CommandHandler {
   constructor(
     private readonly academicRecordGetter: AcademicRecordGetter,
     private readonly subjectGetter: SubjectGetter,
     private readonly transactionalService: TransactionalService,
+    private readonly internalGroupRepository: InternalGroupRepository,
   ) {}
 
   async handle(command: CreateEnrollmentCommand): Promise<void> {
@@ -62,10 +67,35 @@ export class CreateEnrollmentHandler implements CommandHandler {
         command.user,
       );
       enrollment.addSubjectCall(subjectCall);
+
+      const internalGroup = await this.getInternalGroup(
+        enrollment.subject,
+        academicRecord,
+      );
+      internalGroup.students.push(academicRecord.student);
+
       await this.transactionalService.execute({
         subjectCall: subjectCall,
         enrollment: enrollment,
+        internalGroup,
       });
     }
+  }
+
+  private async getInternalGroup(
+    subject: Subject,
+    academicRecord: AcademicRecord,
+  ): Promise<InternalGroup> {
+    const internalGroups = await this.internalGroupRepository.getByKeys(
+      academicRecord.academicPeriod,
+      academicRecord.academicProgram,
+      subject,
+    );
+    const defaultGroup = internalGroups.find((group) => group.isDefault);
+    if (!defaultGroup) {
+      throw new InternalGroupNotFoundException();
+    }
+
+    return defaultGroup;
   }
 }
