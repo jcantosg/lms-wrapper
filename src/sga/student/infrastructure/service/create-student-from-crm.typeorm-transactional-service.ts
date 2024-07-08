@@ -3,6 +3,7 @@ import { CreateLmsStudentHandler } from '#/lms-wrapper/application/lms-student/c
 import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.command';
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import {
   CreateStudentFromCRMTransactionalService,
@@ -67,7 +68,22 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       }
 
       for (const group of entities.internalGroups) {
-        await queryRunner.manager.save(group);
+        await queryRunner.manager.save(InternalGroup, {
+          id: group.id,
+          academicPeriod: group.academicPeriod,
+          academicProgram: group.academicProgram,
+          businessUnit: group.businessUnit,
+          code: group.code,
+          createdAt: group.createdAt,
+          isDefault: group.isDefault,
+          periodBlock: group.periodBlock,
+          students: group.students,
+          subject: group.subject,
+          teachers: group.teachers,
+          updatedAt: group.updatedAt,
+          createdBy: group.createdBy,
+          updatedBy: group.updatedBy,
+        });
       }
 
       await queryRunner.commitTransaction();
