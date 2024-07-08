@@ -1,9 +1,16 @@
 import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
-import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
-import { LmsWrapper } from '#/lms-wrapper/domain/service/lms-wrapper';
+import { LmsCourse } from '#lms-wrapper/domain/entity/lms-course';
+import { LmsWrapper } from '#lms-wrapper/domain/service/lms-wrapper';
 import { stringToCamelCase } from '#shared/domain/lib/string-to-camel-case';
-import { LmsModuleContent } from '#/lms-wrapper/domain/entity/lms-module-content';
+import { LmsModuleContent } from '#lms-wrapper/domain/entity/lms-module-content';
 import { BadRequestException } from '@nestjs/common';
+import {
+  MoodleCourseActivitiesCompletionResponse,
+  MoodleCourseContentResponse,
+  MoodleCourseResponse,
+  MoodleCreateUserResponse,
+  MoodleLoginResponse,
+} from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
@@ -15,49 +22,9 @@ const moodleCourseContentIcon: { [id: string]: string } = {
   simuladores3DAR: '/simuladores.svg',
 };
 
-interface MoodleCourseResponse {
-  id: number;
-  categoryid: number;
-  shortname: string;
-  displayname: string;
-}
-
-interface MoodleCourseContentResponse {
-  id: number;
-  name: string;
-  modules: {
-    id: number;
-    name: string;
-    url: string;
-    image: string;
-    uservisible: boolean;
-    contents:
-      | {
-          filename: string;
-          fileurl: string;
-          mimetype: string;
-        }[]
-      | undefined;
-    contentinfo:
-      | {
-          mimetypes: string[];
-        }[]
-      | undefined;
-  }[];
-}
-
-interface MoodleLoginResponse {
-  token: string;
-  privatetoken: string | null;
-}
-
-interface MoodleCreateUserResponse {
-  id: number;
-  username: string;
-}
-
-interface MoodleLoginResponse {
-  loginurl: string;
+export enum MoodleCourseModuleStatus {
+  NON_COMPLETED,
+  COMPLETED,
 }
 
 export class MoodleWrapper implements LmsWrapper {
@@ -163,6 +130,7 @@ export class MoodleWrapper implements LmsWrapper {
   async getCourseContent(
     id: number,
     moduleId: number,
+    studentId: number,
   ): Promise<LmsModuleContent> {
     const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
     const courseContentResponse: MoodleCourseContentResponse[] =
@@ -176,6 +144,9 @@ export class MoodleWrapper implements LmsWrapper {
     if (!courseContentModule) {
       throw new BadRequestException();
     }
+    const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${studentId}`;
+    const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
+      await this.wrapper.get(this.url, courseActivityStatusQueryParam);
 
     return new LmsModuleContent({
       id: courseContentModule.id,
@@ -185,6 +156,14 @@ export class MoodleWrapper implements LmsWrapper {
           id: module.id,
           name: module.name,
           url: module.url,
+          isCompleted: courseActivitiesCompletionResponse.statuses.some(
+            (response) => {
+              return (
+                response.cmid === module.id &&
+                response.state === MoodleCourseModuleStatus.COMPLETED
+              );
+            },
+          ),
           contents: module.contents
             ? module.contents.map((content) => {
                 return {
@@ -222,8 +201,31 @@ export class MoodleWrapper implements LmsWrapper {
     return loginResponse.loginurl;
   }
 
+  async getCourseProgress(courseId: number, studentId: number) {
+    const queryParams = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${courseId}&userid=${studentId}`;
+    const response: MoodleCourseActivitiesCompletionResponse =
+      await this.wrapper.get(this.url, queryParams);
+    const modulesNumber = response.statuses.length;
+    const completedModulesNumber = response.statuses.filter(
+      (modules) =>
+        modules.state === 1 &&
+        modules.details.some((detail) => detail.rulevalue.status === 1),
+    ).length;
+
+    return Math.round((completedModulesNumber / modulesNumber) * 100);
+  }
+
   async deleteCourse(lmsCourse: LmsCourse) {
     const deleteCourseQueryParam = `wstoken=${this.token}&wsfunction=core_course_delete_courses&moodlewsrestformat=json&courseids[0]=${lmsCourse.value.id}`;
     await this.wrapper.post(this.url, deleteCourseQueryParam);
+  }
+
+  async updateCourseCompletionStatus(
+    lmsCourseModuleId: number,
+    studentId: Number,
+    newStatus: MoodleCourseModuleStatus,
+  ) {
+    const updateCourseCompletionStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_override_activity_completion_status&moodlewsrestformat=json&cmid=${lmsCourseModuleId}&userid=${studentId}&newstate=${newStatus}`;
+    await this.wrapper.post(this.url, updateCourseCompletionStatusQueryParam);
   }
 }

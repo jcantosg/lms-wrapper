@@ -18,15 +18,38 @@ export class MoodleCourseRepository implements LmsCourseRepository {
     await this.moodleWrapper.saveCourse(lmsCourse);
   }
 
-  async getContent(id: number, contentId: number): Promise<LmsModuleContent> {
-    return this.moodleWrapper.getCourseContent(id, contentId);
+  async getContent(
+    id: number,
+    contentId: number,
+    studentId: number,
+  ): Promise<LmsModuleContent> {
+    return this.moodleWrapper.getCourseContent(id, contentId, studentId);
   }
 
   async getByName(name: string): Promise<LmsCourse> {
     return this.moodleWrapper.getByName(name);
   }
 
+  async getCourseProgress(
+    courseId: number,
+    studentId: number,
+  ): Promise<number> {
+    return this.moodleWrapper.getCourseProgress(courseId, studentId);
+  }
+
   async delete(lmsCourse: LmsCourse): Promise<void> {
     await this.moodleWrapper.deleteCourse(lmsCourse);
+  }
+
+  async updateCourseModuleStatus(
+    courseModuleId: number,
+    studentId: number,
+    newStatus: number,
+  ): Promise<void> {
+    await this.moodleWrapper.updateCourseCompletionStatus(
+      courseModuleId,
+      studentId,
+      newStatus,
+    );
   }
 }

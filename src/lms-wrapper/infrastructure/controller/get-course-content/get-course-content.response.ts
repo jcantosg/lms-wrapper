@@ -7,6 +7,7 @@ interface LmsCourseModuleBodyResponse {
     id: number;
     url: string;
     name: string;
+    isCompleted: boolean;
     contents: {
       name: string;
       url: string;
@@ -25,6 +26,7 @@ export class GetCourseContentResponse {
           id: module.id,
           name: module.name,
           url: module.url,
+          isCompleted: module.isCompleted,
           contents: module.contents
             ? module.contents.map((content) => {
                 return {

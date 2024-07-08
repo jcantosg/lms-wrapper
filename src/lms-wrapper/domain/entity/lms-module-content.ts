@@ -7,6 +7,7 @@ export interface LmsModuleContentBody {
     id: number;
     name: string;
     url: string;
+    isCompleted: boolean;
     contents:
       | {
           name: string;

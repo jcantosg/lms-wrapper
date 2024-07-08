@@ -1,13 +1,15 @@
-import { GetLmsCoursesHandler } from '#/lms-wrapper/application/get-lms-courses/get-lms-courses.handler';
+import { GetLmsCoursesHandler } from '#/lms-wrapper/application/lms-course/get-lms-courses/get-lms-courses.handler';
 import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.repository';
-import { CreateLmsCourseHandler } from '#/lms-wrapper/application/create-lms-course/create-lms-course.handler';
-import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
-import { CreateLmsStudentHandler } from '#/lms-wrapper/application/create-lms-student/create-lms-student.handler';
+import { CreateLmsCourseHandler } from '#/lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
+import { CreateLmsStudentHandler } from '#/lms-wrapper/application/lms-student/create-lms-student/create-lms-student.handler';
 import { LmsStudentRepository } from '#/lms-wrapper/domain/repository/lms-student.repository';
-import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
-import { GetLmsCourseContentHandler } from '#/lms-wrapper/application/get-lms-course-content/get-lms-course-content.handler';
+import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.handler';
+import { GetLmsCourseContentHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-content/get-lms-course-content.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
-import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { GetLmsCourseProgressHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-progress/get-lms-course-progress.handler';
+import { UpdateCourseModuleProgressHandler } from '#lms-wrapper/application/lms-course/update-course-module-progress/update-course-module-progress.handler';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -60,6 +62,22 @@ const getLmsCourseByNameHandler = {
   inject: [LmsCourseRepository],
 };
 
+const getLmsCourseProgressHandler = {
+  provide: GetLmsCourseProgressHandler,
+  useFactory: (repository: LmsCourseRepository): GetLmsCourseProgressHandler =>
+    new GetLmsCourseProgressHandler(repository),
+  inject: [LmsCourseRepository],
+};
+
+const updateLmsCourseModuleProgressHandler = {
+  provide: UpdateCourseModuleProgressHandler,
+  useFactory: (
+    repository: LmsCourseRepository,
+  ): UpdateCourseModuleProgressHandler =>
+    new UpdateCourseModuleProgressHandler(repository),
+  inject: [LmsCourseRepository],
+};
+
 export const handlers = [
   getLmsCoursesHandler,
   createLmsCourseHandler,
@@ -68,4 +86,6 @@ export const handlers = [
   deleteLmsStudentHandler,
   getLmsCourseContentHandler,
   getLmsCourseByNameHandler,
+  getLmsCourseProgressHandler,
+  updateLmsCourseModuleProgressHandler,
 ];

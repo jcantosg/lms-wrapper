@@ -243,7 +243,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             academicProgram,
             enrollment.subject,
           );
-          const defaultGroup = groups.find((group) => group.isDefault === true);
+          const defaultGroup = groups.find((group) => group.isDefault);
           if (defaultGroup) {
             defaultGroup.addStudents([student]);
             internalGroups.push(defaultGroup);
@@ -323,7 +323,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           academicProgram,
           enrollment.subject,
         );
-        const defaultGroup = groups.find((group) => group.isDefault === true);
+        const defaultGroup = groups.find((group) => group.isDefault);
         if (defaultGroup) {
           defaultGroup.addStudents([student]);
           internalGroups.push(defaultGroup);

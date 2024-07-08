@@ -25,8 +25,8 @@ import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academi
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
 import { EditSubjectHandler } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.handler';
 import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
 import clearAllMocks = jest.clearAllMocks;
-import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
 
 let handler: EditSubjectHandler;
 let repository: SubjectRepository;

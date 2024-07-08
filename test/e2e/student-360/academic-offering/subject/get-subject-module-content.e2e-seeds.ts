@@ -34,7 +34,7 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
-import { getALmsCourse } from '#test/value-object-factory';
+import { getALmsCourse, getALmsStudent } from '#test/value-object-factory';
 
 export class GetSubjectModuleE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -254,7 +254,7 @@ export class GetSubjectModuleE2eSeed implements E2eSeed {
       await passwordEncoder.encodePassword(
         GetSubjectModuleE2eSeed.studentPassword,
       ),
-      null,
+      getALmsStudent(2),
     );
     await this.studentRepository.save(this.student);
 

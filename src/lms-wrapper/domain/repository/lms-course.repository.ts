@@ -8,9 +8,24 @@ export abstract class LmsCourseRepository {
 
   abstract save(lmsCourse: LmsCourse): Promise<void>;
 
-  abstract getContent(id: number, contentId: number): Promise<LmsModuleContent>;
+  abstract getContent(
+    id: number,
+    contentId: number,
+    studentId: number,
+  ): Promise<LmsModuleContent>;
 
   abstract getByName(name: string): Promise<LmsCourse>;
 
+  abstract getCourseProgress(
+    courseId: number,
+    studentId: number,
+  ): Promise<number>;
+
   abstract delete(lmsCourse: LmsCourse): Promise<void>;
+
+  abstract updateCourseModuleStatus(
+    courseModuleId: number,
+    studentId: number,
+    newStatus: number,
+  ): Promise<void>;
 }

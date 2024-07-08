@@ -7,8 +7,8 @@ import { SubjectBusinessUnitChecker } from '#academic-offering/domain/service/su
 import { EvaluationTypeBusinessUnitChecker } from '#academic-offering/domain/service/examination-type/evaluation-type-business-unit-checker.service';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { EditSubjectCommand } from '#academic-offering/applicaton/subject/edit-subject/edit-subject.command';
-import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
-import { GetLMSCourseQuery } from '#/lms-wrapper/application/get-lms-course/get-lms-course.query';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
+import { GetLMSCourseQuery } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.query';
 
 export class EditSubjectHandler implements CommandHandler {
   constructor(

@@ -16,6 +16,7 @@ import { SGAStudentModule } from '#student/student.module';
 import { JwtStrategy } from '#student-360/student/infrastructure/auth/jwt.strategy';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
+import { LmsWrapperModule } from '#/lms-wrapper/lms-wrapper.module';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -43,6 +44,7 @@ const jwtStrategy = {
     SharedModule,
     SGAStudentModule,
     AcademicOfferingModule,
+    LmsWrapperModule,
   ],
   providers: [
     ...repositories,

@@ -140,7 +140,8 @@
       "^#test/(.*)$": "<rootDir>/../test/$1",
       "^#/(.*)$": "<rootDir>/$1",
       "^&/(.*)$": "<rootDir>/../$1",
-      "^#student-360/(.*)$": "<rootDir>/student-360/$1"
+      "^#student-360/(.*)$": "<rootDir>/student-360/$1",
+      "^#lms-wrapper/(.*)$": "<rootDir>/lms-wrapper/$1"
     }
   }
 }

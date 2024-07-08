@@ -1,18 +1,19 @@
-import { CreateLmsStudentCommand } from '#/lms-wrapper/application/create-lms-student/create-lms-student.command';
-import { CreateLmsStudentHandler } from '#/lms-wrapper/application/create-lms-student/create-lms-student.handler';
-import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.command';
-import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/delete-lms-student/delete-lms-student.handler';
+import { CreateLmsStudentCommand } from '#/lms-wrapper/application/lms-student/create-lms-student/create-lms-student.command';
+import { CreateLmsStudentHandler } from '#/lms-wrapper/application/lms-student/create-lms-student/create-lms-student.handler';
+import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.command';
+import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import {
-  CreateStudentFromCRMTransactionParams,
   CreateStudentFromCRMTransactionalService,
+  CreateStudentFromCRMTransactionParams,
 } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 export class CreateStudentFromCRMTypeormTransactionalService extends CreateStudentFromCRMTransactionalService {
   private logger: Logger;
+
   constructor(
     private readonly datasource: DataSource,
     private readonly createLmsStudentHandler: CreateLmsStudentHandler,

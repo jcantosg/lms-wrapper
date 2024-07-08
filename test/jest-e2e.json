@@ -22,7 +22,8 @@
     "^#test/(.*)$": "<rootDir>/../test/$1",
     "^#/(.*)$": "<rootDir>/../src/$1",
     "^&/(.*)$": "<rootDir>/../$1",
-    "^#student-360/(.*)$": "<rootDir>/../src/student-360/$1"
+    "^#student-360/(.*)$": "<rootDir>/../src/student-360/$1",
+    "^#lms-wrapper/(.*)$": "<rootDir>/../src/lms-wrapper/$1"
   },
   "globalSetup": "<rootDir>/../test/global-setup.ts",
   "globalTeardown": "<rootDir>/../test/global-teardown.ts",

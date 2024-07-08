@@ -8,13 +8,13 @@ import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { SubjectDuplicatedException } from '#shared/domain/exception/academic-offering/subject.duplicated.exception';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
-import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
-import { GetLMSCourseQuery } from '#/lms-wrapper/application/get-lms-course/get-lms-course.query';
-import { CreateLmsCourseHandler } from '#/lms-wrapper/application/create-lms-course/create-lms-course.handler';
-import { CreateLmsCourseCommand } from '#/lms-wrapper/application/create-lms-course/create-lms-course.command';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
+import { GetLMSCourseQuery } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.query';
+import { CreateLmsCourseHandler } from '#/lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
+import { CreateLmsCourseCommand } from '#/lms-wrapper/application/lms-course/create-lms-course/create-lms-course.command';
 import { getLmsCourseCategoryEnumValue } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
-import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.handler';
-import { GetLMSCourseByNameQuery } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.query';
+import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { GetLMSCourseByNameQuery } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.query';
 
 export class CreateSubjectHandler implements CommandHandler {
   constructor(

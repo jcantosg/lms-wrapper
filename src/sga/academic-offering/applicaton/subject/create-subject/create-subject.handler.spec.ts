@@ -22,9 +22,9 @@ import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type
 import { CreateSubjectHandler } from '#academic-offering/applicaton/subject/create-subject/create-subject.handler';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
 import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
-import { GetLmsCourseHandler } from '#/lms-wrapper/application/get-lms-course/get-lms-course.handler';
-import { CreateLmsCourseHandler } from '#/lms-wrapper/application/create-lms-course/create-lms-course.handler';
-import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/get-lms-course-by-name/get-lms-course-by-name.handler';
+import { GetLmsCourseHandler } from '#/lms-wrapper/application/lms-course/get-lms-course/get-lms-course.handler';
+import { CreateLmsCourseHandler } from '#/lms-wrapper/application/lms-course/create-lms-course/create-lms-course.handler';
+import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateSubjectHandler;

@@ -41,6 +41,9 @@
       "#student-360/*": [
         "src/student-360/*"
       ],
+      "#lms-wrapper/*": [
+        "src/lms-wrapper/*"
+      ],
       "#commands/*": [
         "src/commands/*"
       ],
