@@ -91,7 +91,7 @@ const editSubjectHandler = {
     SubjectBusinessUnitChecker,
     GetLmsCourseHandler,
     CreateLmsCourseHandler,
-    GetLmsCourseHandler,
+    GetLmsCourseByNameHandler,
   ],
 };
 
