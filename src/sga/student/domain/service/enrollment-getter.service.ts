@@ -5,6 +5,7 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Student } from '#shared/domain/entity/student.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 export class EnrollmentGetter {
   constructor(private readonly repository: EnrollmentRepository) {}
@@ -49,5 +50,16 @@ export class EnrollmentGetter {
     }
 
     return enrollment;
+  }
+
+  public async getBySubject(
+    subject: Subject,
+    adminUser: AdminUser,
+  ): Promise<Enrollment[]> {
+    return await this.repository.getBySubject(
+      subject,
+      adminUser.businessUnits.map((bu) => bu.id),
+      adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+    );
   }
 }

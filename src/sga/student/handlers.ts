@@ -44,6 +44,8 @@ import { InternalGroupGetter } from '#student/domain/service/internal-group.gett
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { GetInternalGroupDetailHandler } from '#student/application/get-internal-group-detail/get-internal-group-detail.handler';
 import { EditInternalGroupHandler } from '#student/application/edit-internal-group/edit-internal-group.handler';
+import { GetCoursingSubjectStudentsHandler } from '#student/application/get-coursing-subject-students/get-coursing-subject-students.handler';
+import { AddStudentToInternalGroupHandler } from '#student/application/add-student-to-internal-group/add-student-to-internal-group.handler';
 import { GetInternalGroupStudentsHandler } from '#student/application/get-internal-group-students/get-internal-group-students.handler';
 import { RemoveTeacherFromInternalGroupHandler } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.handler';
 
@@ -331,6 +333,31 @@ const editInternalGroupHandler = {
   inject: [InternalGroupRepository, InternalGroupGetter],
 };
 
+const getCoursingSubjectStudentsHandler = {
+  provide: GetCoursingSubjectStudentsHandler,
+  useFactory: (
+    subjectGetter: SubjectGetter,
+    enrollmentGetter: EnrollmentGetter,
+  ): GetCoursingSubjectStudentsHandler =>
+    new GetCoursingSubjectStudentsHandler(subjectGetter, enrollmentGetter),
+  inject: [SubjectGetter, EnrollmentGetter],
+};
+
+const addStudentToInternalGroupHandler = {
+  provide: AddStudentToInternalGroupHandler,
+  useFactory: (
+    repository: InternalGroupRepository,
+    internalGroupGetter: InternalGroupGetter,
+    studentGetter: StudentGetter,
+  ): AddStudentToInternalGroupHandler =>
+    new AddStudentToInternalGroupHandler(
+      repository,
+      internalGroupGetter,
+      studentGetter,
+    ),
+  inject: [InternalGroupRepository, InternalGroupGetter, StudentGetter],
+};
+
 const getInternalGroupStudentsHandler = {
   provide: GetInternalGroupStudentsHandler,
   useFactory: (
@@ -369,5 +396,7 @@ export const handlers = [
   addTeacherToInternalGroupHandler,
   removeTeacherFromInternalGroupHandler,
   editInternalGroupHandler,
+  getCoursingSubjectStudentsHandler,
+  addStudentToInternalGroupHandler,
   getInternalGroupStudentsHandler,
 ];

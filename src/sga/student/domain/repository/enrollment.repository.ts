@@ -1,6 +1,7 @@
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 export abstract class EnrollmentRepository {
   abstract save(enrollment: Enrollment): Promise<void>;
@@ -20,4 +21,10 @@ export abstract class EnrollmentRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<Enrollment | null>;
+
+  abstract getBySubject(
+    subject: Subject,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment[]>;
 }

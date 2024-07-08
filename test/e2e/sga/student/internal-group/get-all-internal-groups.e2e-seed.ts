@@ -38,6 +38,8 @@ import {
 } from '#/sga/shared/domain/value-object/identity-document';
 import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
+import { Student } from '#shared/domain/entity/student.entity';
+import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 
 export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -85,6 +87,8 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static alreadyAddedEdaeUserId = 'fcd35c0a-1889-4b15-a298-817dc7db91fc';
   public static defaultEdaeUserId = 'e712136f-1ea9-4d79-8a25-f94602a04dc5';
 
+  public static studentId = '22b13592-8b8e-4da0-be54-6ad2f94e63fb';
+
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
   private businessUnit: BusinessUnit;
@@ -108,6 +112,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   private blockRelationRepository: Repository<BlockRelation>;
   private subjectRepository: Repository<Subject>;
   private edaeUserRepository: Repository<EdaeUser>;
+  private studentRepository: Repository<Student>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -126,6 +131,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       datasource.getRepository(blockRelationSchema);
     this.subjectRepository = datasource.getRepository(subjectSchema);
     this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
+    this.studentRepository = datasource.getRepository(studentSchema);
   }
 
   async arrange(): Promise<void> {
@@ -248,6 +254,20 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       defaultTeacher,
     ]);
 
+    await this.studentRepository.save(
+      Student.createFromSGA(
+        GetAllInternalGroupsE2eSeed.studentId,
+        'Romualdo',
+        'Gómez',
+        'De la Serna',
+        'romi@gmail.com',
+        'romualdo@universae.com',
+        this.adminUser,
+        'pass123',
+        null,
+      ),
+    );
+
     this.title = Title.create(
       uuid(),
       'title',
@@ -364,6 +384,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     await this.academicProgramRepository.delete({});
     await this.subjectRepository.delete({});
     await this.titleRepository.delete({});
+    await this.studentRepository.delete({});
     await this.edaeUserRepository.delete({});
     await this.businessUnitRepository.delete({});
     await removeAdminUser(this.datasource, this.superAdminUser);

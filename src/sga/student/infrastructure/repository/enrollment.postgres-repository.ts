@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 export class EnrollmentPostgresRepository
   extends TypeOrmRepository<Enrollment>
@@ -96,6 +97,7 @@ export class EnrollmentPostgresRepository
       'academicRecord.businessUnit',
       'businessUnit',
     );
+    queryBuilder.leftJoinAndSelect('academicRecord.student', 'student');
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subject`, 'subject');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.programBlock`,
@@ -128,5 +130,33 @@ export class EnrollmentPostgresRepository
       .orderBy('subjectCall.callNumber', 'DESC')
       .addOrderBy('subjectCall.callDate', 'DESC')
       .getOne();
+  }
+
+  async getBySubject(
+    subject: Subject,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment[]> {
+    const queryBuilder = this.initializeQueryBuilder('enrollment');
+
+    if (isSuperAdmin) {
+      return await this.repository.find({
+        where: { subject: { id: subject.id } },
+        relations: {
+          academicRecord: true,
+        },
+      });
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+
+    return await queryBuilder
+      .where('subject.id = :id', { id: subject.id })
+      .andWhere('academicRecord.businessUnit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getMany();
   }
 }
