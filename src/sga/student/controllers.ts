@@ -21,6 +21,7 @@ import { GetCoursingSubjectStudentsController } from '#student/infrastructure/co
 import { AddStudentToInternalGroupController } from '#student/infrastructure/controller/internal-group/add-student-to-internal-group/add-student-to-internal-group.controller';
 import { GetInternalGroupStudentsController } from '#student/infrastructure/controller/internal-group/get-internal-group-students/get-internal-group-students.controller';
 import { RemoveTeacherFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-teacher-from-internal-group.controller';
+import { RemoveStudentFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-student-from-internal-group.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -46,4 +47,5 @@ export const controllers = [
   GetCoursingSubjectStudentsController,
   RemoveTeacherFromInternalGroupController,
   GetInternalGroupStudentsController,
+  RemoveStudentFromInternalGroupController,
 ];

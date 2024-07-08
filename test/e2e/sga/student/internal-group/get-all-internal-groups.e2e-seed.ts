@@ -87,7 +87,8 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static alreadyAddedEdaeUserId = 'fcd35c0a-1889-4b15-a298-817dc7db91fc';
   public static defaultEdaeUserId = 'e712136f-1ea9-4d79-8a25-f94602a04dc5';
 
-  public static studentId = '22b13592-8b8e-4da0-be54-6ad2f94e63fb';
+  public static studentId = '96880b57-0b9d-4fb4-8480-19f8fb4f649a';
+  public static studentToAddId = '96880b57-0b9d-4fb4-8480-19f8fb4f649b';
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
@@ -100,6 +101,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   private periodBlock: PeriodBlock;
   private subject: Subject;
   private internalGroup: InternalGroup;
+  private student: Student;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -254,20 +256,6 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       defaultTeacher,
     ]);
 
-    await this.studentRepository.save(
-      Student.createFromSGA(
-        GetAllInternalGroupsE2eSeed.studentId,
-        'Romualdo',
-        'Gómez',
-        'De la Serna',
-        'romi@gmail.com',
-        'romualdo@universae.com',
-        this.adminUser,
-        'pass123',
-        null,
-      ),
-    );
-
     this.title = Title.create(
       uuid(),
       'title',
@@ -357,10 +345,38 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
       ),
     );
 
+    this.student = Student.createFromSGA(
+      GetAllInternalGroupsE2eSeed.studentId,
+      'Miguel',
+      'Fernandez',
+      'Lopez',
+      'miguelillo@gmail.com',
+      'miguel@universae.com',
+      this.adminUser,
+      'pass123',
+      null,
+    );
+
+    await this.studentRepository.save(this.student);
+
+    const studentToAdd = Student.createFromSGA(
+      GetAllInternalGroupsE2eSeed.studentToAddId,
+      'Marcio',
+      'Fernandez',
+      'Lopez',
+      'marcito@gmail.com',
+      'marcio@universae.com',
+      this.adminUser,
+      'pass123',
+      null,
+    );
+
+    await this.studentRepository.save(studentToAdd);
+
     this.internalGroup = InternalGroup.create(
       GetAllInternalGroupsE2eSeed.internalGroupId,
       GetAllInternalGroupsE2eSeed.internalGroupCode,
-      [],
+      [this.student],
       [alreadyAddedTeacher, defaultTeacher],
       this.academicPeriod,
       this.academicProgram,
@@ -377,6 +393,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
 
   async clear(): Promise<void> {
     await this.internalGroupRepository.delete({});
+    await this.studentRepository.delete({});
     await this.blockRelationRepository.delete({});
     await this.periodBlockRepository.delete({});
     await this.academicPeriodRepository.delete({});
@@ -384,7 +401,6 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     await this.academicProgramRepository.delete({});
     await this.subjectRepository.delete({});
     await this.titleRepository.delete({});
-    await this.studentRepository.delete({});
     await this.edaeUserRepository.delete({});
     await this.businessUnitRepository.delete({});
     await removeAdminUser(this.datasource, this.superAdminUser);

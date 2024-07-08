@@ -10,9 +10,9 @@ import { GetAllInternalGroupsE2eSeed } from '#test/e2e/sga/student/internal-grou
 import { Student } from '#shared/domain/entity/student.entity';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 
-const path = `/internal-group/${GetAllInternalGroupsE2eSeed.internalGroupId}/add-student`;
+const path = `/internal-group/${GetAllInternalGroupsE2eSeed.internalGroupId}/remove-student`;
 
-describe('/internal-group/{id}/add-student (PUT)', () => {
+describe('/internal-group/{id}/remove-teacher (PUT)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
@@ -59,10 +59,12 @@ describe('/internal-group/{id}/add-student (PUT)', () => {
 
   it('should return 404 internal group not found', async () => {
     const response = await supertest(httpServer)
-      .put('/internal-group/4bc9cbfc-decf-4546-b4ac-483a93b8a33f/add-student')
+      .put(
+        '/internal-group/4bc9cbfc-decf-4546-b4ac-483a93b8a33f/remove-student',
+      )
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        studentIds: ['4bc9cbfc-decf-4546-b4ac-483a93b8a33f'],
+        studentId: '4bc9cbfc-decf-4546-b4ac-483a93b8a33f',
       })
       .expect(404);
 
@@ -74,40 +76,26 @@ describe('/internal-group/{id}/add-student (PUT)', () => {
       .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        studentIds: ['4bc9cbfc-daaf-4546-b4ac-483222b8a33f'],
+        studentId: '4bc9cbfc-daaf-4546-b4ac-483222b8a33f',
       })
       .expect(404);
 
     expect(response.body.message).toEqual('sga.student.not-found');
   });
 
-  it('should return 409 student already in group', async () => {
-    const response = await supertest(httpServer)
-      .put(path)
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .send({
-        studentIds: [GetAllInternalGroupsE2eSeed.studentId],
-      })
-      .expect(409);
-
-    expect(response.body.message).toEqual(
-      'sga.student.already-in-internal-group',
-    );
-  });
-
-  it('should add a student to the internal group', async () => {
+  it('should remove a student from the internal group', async () => {
     internalGroupRepository = datasource.getRepository(internalGroupSchema);
     studentRepository = datasource.getRepository(studentSchema);
 
     const student = await studentRepository.findOne({
-      where: { id: GetAllInternalGroupsE2eSeed.studentToAddId },
+      where: { id: GetAllInternalGroupsE2eSeed.studentId },
     });
 
     await supertest(httpServer)
       .put(path)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .send({
-        studentIds: [GetAllInternalGroupsE2eSeed.studentToAddId],
+        studentId: GetAllInternalGroupsE2eSeed.studentId,
       })
       .expect(200);
 
@@ -118,7 +106,7 @@ describe('/internal-group/{id}/add-student (PUT)', () => {
       relations: { students: true },
     });
 
-    expect(internalGroup!.students.map((student) => student.id)).toContain(
+    expect(internalGroup!.students.map((student) => student.id)).not.toContain(
       student!.id,
     );
   });
