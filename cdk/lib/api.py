@@ -4,6 +4,8 @@ from aws_cdk import (
     RemovalPolicy,
     Stack,
     aws_cloudwatch as cloudwatch,
+    aws_cloudfront as cloudfront,
+    aws_cloudfront_origins as cloudfront_origins,
     aws_ec2 as ec2,
     aws_ecr as ecr,
     aws_ecs as ecs,
@@ -14,6 +16,7 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_secretsmanager as secrets,
     aws_ses as ses,
+    aws_certificatemanager as acm,
     aws_sns as sns,
 )
 from constructs import Construct
@@ -70,6 +73,8 @@ class APIStack(Stack):
         app_url: str,
         api_alb_host: str,
         sftp_alb_host: str,
+        media_domain_name: str,
+        media_certificate_arn: str,
         image_tag: str = "latest",
         api_alb_priority: int = 100,
         api_cpu: int = 256,
@@ -139,6 +144,10 @@ class APIStack(Stack):
             self,
             "BastionSecurityGroup",
             security_group_id=BASTION_SECURITY_GROUP_ID,
+        )
+
+        media_certificate = acm.Certificate.from_certificate_arn(
+            self, "MediaCertificate", certificate_arn=media_certificate_arn
         )
 
         #######
@@ -213,15 +222,15 @@ class APIStack(Stack):
 
         CfnOutput(self, "DatabaseSecretName", value=self.secret_db.secret_name)
 
-        ######
-        # S3 #
-        ######
+        #########
+        # Media #
+        #########
         self.media_bucket = s3.Bucket(
             self,
             "MediaBucket",
             bucket_name=f"media-api-{environment}-{self.region}-{self.account}",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
             enforce_ssl=True,
             versioned=True,
@@ -234,6 +243,19 @@ class APIStack(Stack):
             ],
             auto_delete_objects=True,
             removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        self.media_cloudfront_distribution = cloudfront.Distribution(
+            self,
+            "MediaCloudfrontDistribution",
+            default_behavior=cloudfront.BehaviorOptions(
+                origin=cloudfront_origins.S3Origin(self.media_bucket),
+                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            ),
+            domain_names=[media_domain_name],
+            certificate=media_certificate,
+            minimum_protocol_version=cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
+            publish_additional_metrics=enable_monitoring,
         )
 
         CfnOutput(self, "MediaBucketName", value=self.secret_db.secret_name)
@@ -348,6 +370,7 @@ class APIStack(Stack):
             "NO_COLOR": "1",
             "SMTP_HOST": SES_SMTP_HOST,
             "SMTP_PORT": "587",
+            "MEDIA_DOMAIN": media_domain_name,
         }
 
         sftp_ecs_secrets = {
@@ -943,6 +966,16 @@ class APIStack(Stack):
                     "100": HighConnectionCountThreshold(max_connection_count=100)
                 },
             )
+            self.monitoring.monitor_cloud_front_distribution(
+                distribution=self.media_cloudfront_distribution,
+                additional_metrics_enabled=True,
+                # add_error4xx_rate={
+                #     "GreaterThan10Percent": ErrorRateThreshold(max_error_rate=10)
+                # },
+                # add_fault5xx_rate={
+                #     "GreaterThan1Percent": ErrorRateThreshold(max_error_rate=1)
+                # },
+            )
             self.monitoring.monitor_s3_bucket(bucket=self.media_bucket)
 
             efs_services_alarm_factory = self.monitoring.create_alarm_factory(
@@ -1148,6 +1181,23 @@ class APIStack(Stack):
                 NagPackSuppression(
                     id="AwsSolutions-EC23",
                     reason="Required during tests phase",
+                ),
+            ],
+        )
+        NagSuppressions.add_resource_suppressions(
+            construct=self.media_cloudfront_distribution,
+            suppressions=[
+                NagPackSuppression(
+                    id="AwsSolutions-CFR1",
+                    reason="Not aligned with security posture",
+                ),
+                NagPackSuppression(
+                    id="AwsSolutions-CFR2",
+                    reason="Not aligned with security posture",
+                ),
+                NagPackSuppression(
+                    id="AwsSolutions-CFR3",
+                    reason="Not yet decided if access log required at this level",
                 ),
             ],
         )

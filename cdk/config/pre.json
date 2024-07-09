@@ -6,6 +6,11 @@
 
   "app_url": "https://pre-ucp360.universae.com",
 
+  "media": {
+    "domain_name": "pre-media360.universae.com",
+    "certificate_arn": "arn:aws:acm:us-east-1:603941717969:certificate/7626222a-1d74-4d2c-a50d-53ec147e9346"
+  },
+
   "spot_capacity_percent": 100,
   "enable_cloudflare_auth_header": false,
 

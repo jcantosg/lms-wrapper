@@ -55,6 +55,8 @@ APIStack(
     db_preferred_maintenance_window=config_data["db"]["preferred_maintenance_window"],
     enable_monitoring=config_data["monitoring"]["enable"],
     sns_topic_arn=config_data["monitoring"]["sns_topic_arn"],
+    media_domain_name=config_data["media"]["domain_name"],
+    media_certificate_arn=config_data["media"]["certificate_arn"],
     tags={
         "environment": config_data["environment"],
         "app": "universae360",

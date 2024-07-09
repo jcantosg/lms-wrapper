@@ -15,6 +15,7 @@ export class AWSStorageManager implements FileManager {
   constructor(
     private readonly bucketName: string,
     readonly region: string,
+    private readonly mediaDomain: string,
     private readonly logger: Logger,
   ) {
     this.s3 = new S3Client({
@@ -27,7 +28,6 @@ export class AWSStorageManager implements FileManager {
       Bucket: this.bucketName,
       Key: `${file.directory}/${file.fileName}`,
       Body: file.content,
-      ACL: 'public-read',
       ContentType: file.contentType ?? 'image',
     });
 
@@ -38,7 +38,7 @@ export class AWSStorageManager implements FileManager {
       throw new UploadFileException();
     }
 
-    return `https://${this.bucketName}.s3.${this.region}.amazonaws.com/${file.directory}/${file.fileName}`;
+    return `https://${this.mediaDomain}/${file.directory}/${file.fileName}`;
   }
 
   public async deleteFile(url: string): Promise<void> {

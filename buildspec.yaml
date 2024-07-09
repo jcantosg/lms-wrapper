@@ -6,7 +6,7 @@ version: "0.2"
 
 env:
   variables:
-    CDK_VERSION: "2.147.1"
+    CDK_VERSION: "2.148.0"
     DOCKER_BUILDKIT: 1
     TRIVY_RELEASE: "0.52.2"
     REPO_NAME: "universae360/api"

@@ -56,6 +56,7 @@ const configModule = ConfigModule.forRoot({
     AWS_BUCKET_NAME: Joi.string().required(),
     AWS_REGION: Joi.string().required(),
     APP_URL: Joi.string().required(),
+    MEDIA_DOMAIN_NAME: Joi.string().required(),
     RECOVERY_TOKEN_TTL: Joi.number().required(),
     GEONAMES_URL: Joi.string().required(),
     GEONAMES_NAME: Joi.string().required(),
