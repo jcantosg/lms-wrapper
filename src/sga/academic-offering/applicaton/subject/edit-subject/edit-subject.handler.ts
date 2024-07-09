@@ -64,7 +64,7 @@ export class EditSubjectHandler implements CommandHandler {
       } else {
         await this.createLmsCourseHandler.handle(
           new CreateLmsCourseCommand(
-            command.code,
+            command.name,
             command.code,
             getLmsCourseCategoryEnumValue(this.parseModality(command.modality)),
           ),
