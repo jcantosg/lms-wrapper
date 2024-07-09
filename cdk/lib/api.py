@@ -370,7 +370,7 @@ class APIStack(Stack):
             "NO_COLOR": "1",
             "SMTP_HOST": SES_SMTP_HOST,
             "SMTP_PORT": "587",
-            "MEDIA_DOMAIN": media_domain_name,
+            "MEDIA_DOMAIN_NAME": media_domain_name,
         }
 
         sftp_ecs_secrets = {
