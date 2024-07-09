@@ -18,12 +18,12 @@ import { LmsWrapperModule } from '#/lms-wrapper/lms-wrapper.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature(studentSchemas),
-    BusinessUnitModule,
+    forwardRef(() => BusinessUnitModule),
     EdaeUserModule,
     forwardRef(() => AcademicOfferingModule),
-    SharedModule,
-    AdminUserModule,
+    forwardRef(() => SharedModule),
     LmsWrapperModule,
+    forwardRef(() => AdminUserModule),
   ],
   providers: [
     ...repositories,

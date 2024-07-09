@@ -179,6 +179,8 @@ export class Enrollment extends BaseEntity {
       return null;
     }
 
+    this.calls.sort((a, b) => b.callNumber - a.callNumber);
+
     return this.calls[0];
   }
 }

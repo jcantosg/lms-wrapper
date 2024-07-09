@@ -203,16 +203,20 @@ export class AcademicRecordPostgresRepository
           programBlocks: {
             blockRelation: {
               programBlock: true,
-              periodBlock: true,
+              periodBlock: {
+                academicPeriod: true,
+              },
             },
             subjects: {
               defaultTeacher: true,
               enrollments: {
                 academicRecord: true,
+                calls: true,
               },
             },
           },
         },
+        academicPeriod: true,
       },
     });
   }

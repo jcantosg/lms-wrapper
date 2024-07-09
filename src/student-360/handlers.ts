@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { ExpireStudentRefreshTokenHandler } from '#student-360/student/application/expire-refresh-token/expire-student-refresh-token.handler';
 import { studentAcademicRecordHandlers } from '#student-360/academic-offering/academic-record/handlers';
 import { studentSubjectHandlers } from '#student-360/academic-offering/subject/handlers';
+import { chatHandlers } from '#student-360/chat/handlers';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -96,4 +97,5 @@ export const handlers = [
   expireStudentRefreshTokenHandler,
   ...studentAcademicRecordHandlers,
   ...studentSubjectHandlers,
+  ...chatHandlers,
 ];

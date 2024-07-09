@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { repositories } from '#admin-user/repositories';
@@ -42,9 +42,9 @@ const jwtStrategy = {
 @Module({
   imports: [
     TypeOrmModule.forFeature(adminUserSchemas),
+    forwardRef(() => BusinessUnitModule),
     jwtModule,
-    BusinessUnitModule,
-    SharedModule,
+    forwardRef(() => SharedModule),
   ],
   providers: [
     ...repositories,

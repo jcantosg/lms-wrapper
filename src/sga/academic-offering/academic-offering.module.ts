@@ -1,4 +1,4 @@
-import { FactoryProvider, Logger, Module } from '@nestjs/common';
+import { FactoryProvider, forwardRef, Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { academicPeriodSchemas } from '#academic-offering/schemas';
 import { repositories } from '#academic-offering/repositories';
@@ -41,9 +41,9 @@ const fileManager: FactoryProvider = {
     TypeOrmModule.forFeature(academicPeriodSchemas),
     BusinessUnitModule,
     EdaeUserModule,
-    SGAStudentModule,
+    forwardRef(() => SGAStudentModule),
     LmsWrapperModule,
-    SharedModule,
+    forwardRef(() => SharedModule),
   ],
   providers: [
     fileManager,

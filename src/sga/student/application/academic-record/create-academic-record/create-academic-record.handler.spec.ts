@@ -57,6 +57,7 @@ const businessUnit = getABusinessUnit();
 const virtualCampus = getAVirtualCampus();
 const academicPeriod = getAnAcademicPeriod();
 const periodBlock = getAPeriodBlock();
+const secondPeriodBlock = getAPeriodBlock();
 const academicProgram = getAnAcademicProgram();
 const adminUser = getAnAdminUser();
 const student = getASGAStudent();
@@ -146,7 +147,7 @@ describe('Create Academic Record Handler', () => {
     getAcademicProgramSpy.mockImplementation(() =>
       Promise.resolve(academicProgram),
     );
-    academicPeriod.periodBlocks = [periodBlock];
+    academicPeriod.periodBlocks = [periodBlock, secondPeriodBlock];
 
     virtualCampus.businessUnit = businessUnit;
     academicPeriod.businessUnit = businessUnit;
@@ -197,7 +198,11 @@ describe('Create Academic Record Handler', () => {
       Promise.resolve(administrativeGroup),
     );
 
+    academicPeriod.periodBlocks = [periodBlock, secondPeriodBlock];
+    virtualCampus.businessUnit = businessUnit;
+    academicPeriod.businessUnit = businessUnit;
     academicProgram.businessUnit = businessUnit;
+    academicPeriod.academicPrograms = [academicProgram];
 
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);

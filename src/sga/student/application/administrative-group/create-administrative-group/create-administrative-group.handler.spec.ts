@@ -44,11 +44,13 @@ const businessUnit = getABusinessUnit();
 const academicPeriod = getAnAcademicPeriod();
 const academicProgram = getAnAcademicProgram();
 const programBlock = getAProgramBlock();
+const secondProgramBlock = getAProgramBlock();
 const periodBlock = getAPeriodBlock();
 const blockRelation = getABlockRelation(periodBlock, programBlock);
+
 const adminUser = getAnAdminUser();
 
-academicProgram.programBlocks = [programBlock];
+academicProgram.programBlocks = [programBlock, secondProgramBlock];
 
 const command = new CreateAdministrativeGroupCommand(
   [academicProgram.id],

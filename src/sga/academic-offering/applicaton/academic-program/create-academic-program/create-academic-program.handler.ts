@@ -14,6 +14,7 @@ import { TransactionalService } from '#shared/domain/service/transactional-servi
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { TitleNotFoundException } from '#shared/domain/exception/academic-offering/title-not-found.exception';
+import { SECOND_IN_MS } from '#shared/domain/lib/date';
 
 export class CreateAcademicProgramHandler implements CommandHandler {
   constructor(
@@ -96,9 +97,15 @@ export class CreateAcademicProgramHandler implements CommandHandler {
 
       const programBlock = ProgramBlock.create(
         block,
-        `${blockPrefix} ${index + 1}`,
+        `${blockPrefix} ${index}`,
         academicProgram,
         command.adminUser,
+      );
+      programBlock.createdAt = new Date(
+        new Date().getTime() + index * SECOND_IN_MS,
+      );
+      programBlock.updatedAt = new Date(
+        new Date().getTime() + index * SECOND_IN_MS,
       );
       programBlocksToAdd.push(programBlock);
     }

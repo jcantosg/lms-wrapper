@@ -14,7 +14,7 @@ export class ProgramBlock extends BaseEntity {
     updatedAt: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
-    private _blockRelation: BlockRelation | null,
+    private _blockRelation: BlockRelation[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -59,11 +59,11 @@ export class ProgramBlock extends BaseEntity {
     this._updatedBy = value;
   }
 
-  public get blockRelation(): BlockRelation | null {
+  public get blockRelation(): BlockRelation[] {
     return this._blockRelation;
   }
 
-  public set blockRelation(value: BlockRelation | null) {
+  public set blockRelation(value: BlockRelation[]) {
     this._blockRelation = value;
   }
 
@@ -82,7 +82,7 @@ export class ProgramBlock extends BaseEntity {
       new Date(),
       user,
       user,
-      null,
+      [],
     );
   }
 

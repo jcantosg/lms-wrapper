@@ -7,6 +7,8 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { StudentAcademicRecordNotFoundException } from '#/student-360/student/domain/exception/student-academic-record-not-found.exception';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
+import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
+import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 
 export class AcademicRecordGetter {
   constructor(private readonly repository: AcademicRecordRepository) {}
@@ -50,31 +52,46 @@ export class AcademicRecordGetter {
     student: Student,
   ): Promise<AcademicRecord> {
     const academicRecord = await this.repository.getByStudent(id, student);
+
     if (!academicRecord) {
       throw new StudentAcademicRecordNotFoundException();
     }
+
+    academicRecord.academicProgram.programBlocks.map((programBlock) => {
+      programBlock.blockRelation =
+        this.filterBlockRelationByProgramBlockAndPeriod(
+          programBlock.blockRelation,
+          programBlock,
+          academicRecord.academicPeriod,
+        );
+    });
+
     academicRecord.academicProgram.programBlocks.map((programBlock) => {
       programBlock.subjects = programBlock.subjects.filter((subject) => {
-        return (
-          subject.enrollments.length > 0 &&
-          subject.enrollments.some(
+        const programBlockStartDate =
+          programBlock.blockRelation[0].periodBlock.startDate;
+        if (subject.enrollments.length > 0) {
+          return subject.enrollments.some(
             (enrollment) =>
-              enrollment.visibility !== EnrollmentVisibilityEnum.NO &&
+              (enrollment.visibility === EnrollmentVisibilityEnum.YES ||
+                (enrollment.visibility === EnrollmentVisibilityEnum.PD &&
+                  programBlockStartDate <= new Date())) &&
               enrollment.academicRecord.id === academicRecord.id,
-          )
-        );
+          );
+        }
       });
     });
+
     academicRecord.academicProgram.programBlocks.sort(
       (firstProgramBlock: ProgramBlock, secondProgramBlock: ProgramBlock) => {
         if (
-          firstProgramBlock.blockRelation!.periodBlock.startDate <
-          secondProgramBlock.blockRelation!.periodBlock.startDate
+          firstProgramBlock.blockRelation[0].periodBlock.startDate <
+          secondProgramBlock.blockRelation[0].periodBlock.startDate
         ) {
           return -1;
         } else if (
-          firstProgramBlock.blockRelation!.periodBlock.startDate >
-          secondProgramBlock.blockRelation!.periodBlock.startDate
+          firstProgramBlock.blockRelation[0].periodBlock.startDate >
+          secondProgramBlock.blockRelation[0].periodBlock.startDate
         ) {
           return 1;
         } else {
@@ -84,5 +101,18 @@ export class AcademicRecordGetter {
     );
 
     return academicRecord;
+  }
+
+  private filterBlockRelationByProgramBlockAndPeriod(
+    blockRelation: BlockRelation[],
+    programBlock: ProgramBlock,
+    academicPeriod: AcademicPeriod,
+  ) {
+    return blockRelation.filter((blockRelation) => {
+      return (
+        blockRelation.programBlock.id === programBlock.id &&
+        blockRelation.periodBlock.academicPeriod.id === academicPeriod.id
+      );
+    });
   }
 }

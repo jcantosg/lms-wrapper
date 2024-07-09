@@ -20,6 +20,7 @@ import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-storage-manager';
 import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
 import { controllers } from '#shared/controllers';
+import { SGAStudentModule } from '#student/student.module';
 
 const fileManager: FactoryProvider = {
   provide: FileManager,
@@ -58,6 +59,7 @@ const providers: Provider[] = [
     }),
     TerminusModule,
     HttpModule,
+    SGAStudentModule,
     TypeOrmModule.forFeature(sharedSchemas),
   ],
   providers,

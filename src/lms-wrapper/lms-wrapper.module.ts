@@ -7,7 +7,10 @@ import { lmsWrapperControllers } from '#/lms-wrapper/infrastructure/controller/c
 import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
 
 @Module({
-  imports: [SharedModule, forwardRef(() => AcademicOfferingModule)],
+  imports: [
+    forwardRef(() => SharedModule),
+    forwardRef(() => AcademicOfferingModule),
+  ],
   controllers: [...lmsWrapperControllers],
   providers: [...repositories, ...services, ...handlers],
   exports: [...handlers],

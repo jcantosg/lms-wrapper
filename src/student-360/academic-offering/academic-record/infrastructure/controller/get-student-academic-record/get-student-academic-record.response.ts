@@ -38,17 +38,15 @@ export class GetStudentAcademicRecordResponse {
           return {
             id: programBlock.id,
             name: programBlock.name,
-            isBlock: !(
-              programBlock.blockRelation!.periodBlock.startDate <= new Date()
-            ),
+            isBlock: programBlock.subjects.length === 0,
             subjects: programBlock.subjects.map((subject: Subject) => {
               return {
                 id: subject.id,
-                lmsId: subject.lmsCourse!.value.id,
+                lmsId: subject.lmsCourse?.value?.id ?? 0,
                 name: subject.name,
                 type: subject.type,
                 image: subject.image,
-                unitsNumber: subject.lmsCourse!.value.modules.length,
+                unitsNumber: subject.lmsCourse?.value?.modules?.length ?? 0,
                 teacher: {
                   id: subject.defaultTeacher?.id,
                   name: subject.defaultTeacher?.name,

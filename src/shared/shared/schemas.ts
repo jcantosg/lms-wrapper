@@ -3,6 +3,7 @@ import { studentSchema } from '#shared/infrastructure/config/schema/student.sche
 import { refreshTokenSchema } from '#admin-user/infrastructure/config/schema/refresh-token.schema';
 import { recoveryPasswordTokenSchema } from '#admin-user/infrastructure/config/schema/recovery-password-token.schema';
 import { crmImportSchema } from '#shared/infrastructure/config/schema/crm-import.schema';
+import { chatroomSchema } from '#shared/infrastructure/config/schema/chatroom.schema';
 
 export const sharedSchemas = [
   CountrySchema,
@@ -10,4 +11,5 @@ export const sharedSchemas = [
   refreshTokenSchema,
   recoveryPasswordTokenSchema,
   crmImportSchema,
+  chatroomSchema,
 ];

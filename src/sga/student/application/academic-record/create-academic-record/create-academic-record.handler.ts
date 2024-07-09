@@ -77,7 +77,7 @@ export class CreateAcademicRecordHandler implements CommandHandler {
       await this.administrativeGroupRepository.getByAcademicPeriodAndProgramAndBlock(
         academicPeriod.id,
         academicProgram.id,
-        sortedBlocks[0].name,
+        sortedBlocks[1]?.name,
       );
 
     if (!administrativeGroup) {

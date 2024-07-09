@@ -104,9 +104,8 @@ describe('/administrative-group (POST)', () => {
 
     const administrativeGroups = await administrativeGroupRepository.find({});
 
-    expect(administrativeGroups.length).toBe(2);
+    expect(administrativeGroups.length).toBe(1);
     expect(administrativeGroups[0].code).toBe('M-23-25_MAD-INAS_1');
-    expect(administrativeGroups[1].code).toBe('M-23-25_MAD-INAS_2');
   });
 
   it('should throw a duplicated code error', async () => {

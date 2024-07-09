@@ -1,6 +1,6 @@
 import { MonthEnum } from '#/sga/shared/domain/enum/month.enum';
 
-const SECOND_IN_MS = 1000;
+export const SECOND_IN_MS = 1000;
 const DAY_IN_MS = SECOND_IN_MS * 60 * 60 * 24;
 
 function getDateMillisecondsAgo(milliseconds: number): Date {

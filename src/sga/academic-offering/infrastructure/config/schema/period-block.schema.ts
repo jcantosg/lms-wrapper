@@ -46,7 +46,7 @@ export const periodBlockSchema = new EntitySchema<PeriodBlock>({
       },
     },
     blockRelation: {
-      type: 'one-to-one',
+      type: 'one-to-many',
       target: 'BlockRelation',
       inverseSide: 'periodBlock',
     },

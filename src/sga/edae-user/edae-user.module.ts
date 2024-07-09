@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';
 import { repositories } from '#edae-user/repositories';
@@ -15,7 +15,7 @@ import { NestEventDispatcher } from '#shared/infrastructure/event/nest-event-dis
   imports: [
     TypeOrmModule.forFeature([edaeUserSchema]),
     BusinessUnitModule,
-    SharedModule,
+    forwardRef(() => SharedModule),
   ],
   controllers: [...controllers],
   providers: [

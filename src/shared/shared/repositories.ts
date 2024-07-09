@@ -8,6 +8,8 @@ import { StudentRepository } from '#/student-360/student/domain/repository/stude
 import { StudentPostgresRepository } from '#/student-360/student/infrastructure/repository/student.postgres-repository';
 import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
 import { CRMImportPostgresRepository } from '#shared/infrastructure/repository/crm-import.postgres-repository';
+import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
+import { ChatroomPostgresRepository } from '#shared/infrastructure/repository/chatroom.postgres-repository';
 
 export const repositories = [
   {
@@ -29,5 +31,9 @@ export const repositories = [
   {
     provide: CRMImportRepository,
     useClass: CRMImportPostgresRepository,
+  },
+  {
+    provide: ChatroomRepository,
+    useClass: ChatroomPostgresRepository,
   },
 ];

@@ -19,6 +19,9 @@ import { Logger } from '@nestjs/common';
 import { ExcelFileParser } from '#shared/domain/service/excel-file-parser.service';
 import { ExcelJSFileParser } from '#shared/infrastructure/service/exceljs-file-parser.service';
 import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
+import { ChatroomsByInternalGroupCreator } from '#shared/domain/service/chatrooms-by-internal-group-creator.service';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -84,6 +87,22 @@ const excelFileParser = {
   inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
 };
 
+const chatroomsByInternalGroupCreator = {
+  provide: ChatroomsByInternalGroupCreator,
+  useFactory: (
+    internalGroupRepository: InternalGroupRepository,
+    chatroomRepository: ChatroomRepository,
+    uuidGenerator: UUIDGeneratorService,
+  ) => {
+    return new ChatroomsByInternalGroupCreator(
+      internalGroupRepository,
+      chatroomRepository,
+      uuidGenerator,
+    );
+  },
+  inject: [InternalGroupRepository, ChatroomRepository, UUIDGeneratorService],
+};
+
 export const services = [
   countryGetter,
   imageUploader,
@@ -93,4 +112,5 @@ export const services = [
   passwordEncoder,
   passwordChecker,
   excelFileParser,
+  chatroomsByInternalGroupCreator,
 ];

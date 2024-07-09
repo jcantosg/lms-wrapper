@@ -22,7 +22,7 @@ export class PeriodBlock extends BaseEntity {
     private _endDate: Date,
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
-    private _blockRelation: BlockRelation | null,
+    private _blockRelation: BlockRelation[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -91,11 +91,11 @@ export class PeriodBlock extends BaseEntity {
     this._academicYear = value;
   }
 
-  public get blockRelation(): BlockRelation | null {
+  public get blockRelation(): BlockRelation[] {
     return this._blockRelation;
   }
 
-  public set blockRelation(value: BlockRelation | null) {
+  public set blockRelation(value: BlockRelation[]) {
     this._blockRelation = value;
   }
 
@@ -117,7 +117,7 @@ export class PeriodBlock extends BaseEntity {
       endDate,
       user,
       user,
-      null,
+      [],
     );
 
     periodBlock._startMonth = calculateStartMonth(startDate);
