@@ -18,8 +18,8 @@ export interface InternalGroupStudent {
   surname: string;
   surname2: string;
   documentNumber: string;
-  enrollmentId: string | undefined;
-  subjectStatus: SubjectCallStatusEnum | undefined;
+  enrollmentId: string | null;
+  subjectStatus: SubjectCallStatusEnum | null;
   avatar: string | null;
 }
 
@@ -62,10 +62,8 @@ export class GetInternalGroupStudentsHandler implements QueryHandler {
         surname: student.surname,
         surname2: student.surname2,
         documentNumber: student.identityDocument?.identityDocumentNumber ?? '',
-        enrollmentId: enrollment ? enrollment.id : undefined,
-        subjectStatus: enrollment
-          ? this.getSubjectStatus(enrollment)
-          : undefined,
+        enrollmentId: enrollment ? enrollment.id : null,
+        subjectStatus: enrollment ? this.getSubjectStatus(enrollment) : null,
         avatar: student.avatar,
       });
     }
@@ -76,10 +74,14 @@ export class GetInternalGroupStudentsHandler implements QueryHandler {
     };
   }
 
-  private getSubjectStatus(enrollment: Enrollment): SubjectCallStatusEnum {
-    return enrollment.calls.sort(
+  private getSubjectStatus(
+    enrollment: Enrollment,
+  ): SubjectCallStatusEnum | null {
+    const lastEnrollment = enrollment.calls.sort(
       (a, b) => b.callDate.getTime() - a.callDate.getTime(),
-    )[0].status;
+    )[0];
+
+    return lastEnrollment ? lastEnrollment.status : null;
   }
 
   private async getEnrollment(
@@ -98,9 +100,7 @@ export class GetInternalGroupStudentsHandler implements QueryHandler {
         (enrollment) => enrollment.subject.id === internalGroup.subject.id,
       );
 
-      if (enrollment) {
-        return enrollment;
-      }
+      return enrollment;
     }
   }
 }

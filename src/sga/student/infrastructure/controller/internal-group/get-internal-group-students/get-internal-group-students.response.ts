@@ -8,8 +8,8 @@ export interface GetInternalGroupStudentResponse {
   surname: string;
   surname2: string | null;
   documentNumber: string;
-  enrollmentId: string | undefined;
-  subjectStatus: SubjectCallStatusEnum | undefined;
+  enrollmentId: string | null;
+  subjectStatus: SubjectCallStatusEnum | null;
   avatar: string | null;
 }
 
