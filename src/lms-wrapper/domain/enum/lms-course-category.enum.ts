@@ -1,7 +1,7 @@
 export enum LmsCourseCategoryEnum {
-  E_LEARNING = 1,
-  MIXTA = 2,
-  PRESENCIAL = 3,
+  E_LEARNING = 1443,
+  MIXTA = 1444,
+  PRESENCIAL = 1445,
 }
 
 export const getAllLmsCourseCategories = () => {
