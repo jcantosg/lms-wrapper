@@ -17,8 +17,8 @@
   "api": {
     "alb_host": "dev-back-ucp360.universae.com",
     "alb_priority": 300,
-    "cpu": 512,
-    "memory": 1024,
+    "cpu": 1024,
+    "memory": 2048,
     "min_tasks": 1,
     "max_tasks": 1
   },
