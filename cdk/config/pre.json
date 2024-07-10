@@ -15,7 +15,7 @@
   "enable_cloudflare_auth_header": false,
 
   "api": {
-    "alb_host": "dev-back-ucp360.universae.com",
+    "alb_host": "pre-back-ucp360.universae.com",
     "alb_priority": 300,
     "cpu": 512,
     "memory": 1024,
@@ -30,19 +30,19 @@
   },
 
   "sftp": {
-    "alb_host": "pre-sftp.universae.com",
+    "alb_host": "pre-adm-sftp360.universae.com",
     "alb_priority": 301,
     "cpu": 512,
     "memory": 1024,
-    "min_tasks": 0,
-    "max_tasks": 0,
-    "allowed_cidrs": ["0.0.0.0/0"]
+    "min_tasks": 1,
+    "max_tasks": 1,
+    "allowed_cidrs": ["79.117.39.158/32"]
   },
 
   "db": {
     "instance_type": "t4g.micro",
     "engine_full_version": "16.2",
-    "max_allocated_storage": 50,
+    "allocated_storage": 50,
     "enable_performance_insights": false,
     "multi_az": false,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],

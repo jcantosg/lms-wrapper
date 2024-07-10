@@ -50,7 +50,7 @@ APIStack(
     db_enable_performance_insights=config_data["db"]["enable_performance_insights"],
     db_engine_full_version=config_data["db"]["engine_full_version"],
     db_instance_type=config_data["db"]["instance_type"],
-    db_max_allocated_storage=config_data["db"]["max_allocated_storage"],
+    db_allocated_storage=config_data["db"]["allocated_storage"],
     db_multi_az=config_data["db"]["multi_az"],
     db_preferred_maintenance_window=config_data["db"]["preferred_maintenance_window"],
     enable_monitoring=config_data["monitoring"]["enable"],

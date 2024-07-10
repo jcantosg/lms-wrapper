@@ -11,40 +11,40 @@
     "certificate_arn": "arn:aws:acm:us-east-1:603941717969:certificate/7626222a-1d74-4d2c-a50d-53ec147e9346"
   },
 
-  "spot_capacity_percent": 100,
+  "spot_capacity_percent": 50,
   "enable_cloudflare_auth_header": false,
 
   "api": {
     "alb_host": "back-ucp360.universae.com",
     "alb_priority": 300,
-    "cpu": 512,
-    "memory": 1024,
-    "min_tasks": 1,
-    "max_tasks": 1
+    "cpu": 1024,
+    "memory": 2048,
+    "min_tasks": 2,
+    "max_tasks": 32
   },
 
   "cron": {
     "enable": true,
-    "cpu": 512,
-    "memory": 1024
+    "cpu": 1024,
+    "memory": 2048
   },
 
   "sftp": {
-    "alb_host": "sftp.universae.com",
+    "alb_host": "adm-sftp360.universae.com",
     "alb_priority": 301,
     "cpu": 512,
     "memory": 1024,
-    "min_tasks": 0,
-    "max_tasks": 0,
-    "allowed_cidrs": ["0.0.0.0/0"]
+    "min_tasks": 2,
+    "max_tasks": 8,
+    "allowed_cidrs": ["79.117.39.158/32"]
   },
 
   "db": {
-    "instance_type": "t4g.micro",
+    "instance_type": "t4g.medium",
     "engine_full_version": "16.2",
-    "max_allocated_storage": 50,
-    "enable_performance_insights": false,
-    "multi_az": false,
+    "allocated_storage": 50,
+    "enable_performance_insights": true,
+    "multi_az": true,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
     "preferred_maintenance_window": "sun:03:30-sun:04:30"
   },
