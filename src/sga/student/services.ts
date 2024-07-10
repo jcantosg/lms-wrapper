@@ -27,6 +27,7 @@ import { InternalGroupRepository } from '#student/domain/repository/internal-gro
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 
@@ -195,6 +196,14 @@ const studentAdministrativeGroupByAcademicRecordGetter = {
   inject: [AcademicRecordGetter, StudentGetter],
 };
 
+const updateInternalGroupsService = {
+  provide: UpdateInternalGroupsService,
+  useFactory: (
+    repository: InternalGroupRepository,
+  ): UpdateInternalGroupsService => new UpdateInternalGroupsService(repository),
+  inject: [InternalGroupRepository],
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
@@ -209,4 +218,5 @@ export const services = [
   internalGroupGetter,
   studentAdministrativeGroupByAcademicRecordGetter,
   internalGroupDefaulTeacherGetter,
+  updateInternalGroupsService,
 ];

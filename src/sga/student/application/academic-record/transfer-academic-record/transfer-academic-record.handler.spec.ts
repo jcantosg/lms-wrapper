@@ -4,6 +4,7 @@ import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campu
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import {
+  getAUpdateInternalGroupsServiceMock,
   getAnAcademicPeriodGetterMock,
   getAnAcademicProgramGetterMock,
   getAnAcademicRecordGetterMock,
@@ -44,6 +45,7 @@ import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-t
 import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.not-included-in-academic-period.exception';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 let handler: TransferAcademicRecordHandler;
 let businessUnitGetter: BusinessUnitGetter;
@@ -56,6 +58,7 @@ let fileManager: FileManager;
 let enrollmentCreatorService: EnrollmentCreator;
 let enrollmentGetter: EnrollmentGetter;
 let uuidGenerator: UUIDGeneratorService;
+let updateInternalGroupsService: UpdateInternalGroupsService;
 
 let getAcademicRecordSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -66,6 +69,7 @@ let uploadFileSpy: jest.SpyInstance;
 let createEnrollmentsSpy: jest.SpyInstance;
 let getEnrollmentsSpy: jest.SpyInstance;
 let executeTransactionSpy: jest.SpyInstance;
+let updateInternalGroupsSpy: jest.SpyInstance;
 
 const oldAcademicRecord = getAnAcademicRecord();
 const newAcademicRecord = getAnAcademicRecord();
@@ -116,6 +120,7 @@ describe('Transfer Academic Record Handler', () => {
     enrollmentCreatorService = getAnEnrollmentCreatorMock();
     enrollmentGetter = getAnEnrollmentGetterMock();
     uuidGenerator = new UUIDv4GeneratorService();
+    updateInternalGroupsService = getAUpdateInternalGroupsServiceMock();
 
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
@@ -129,6 +134,7 @@ describe('Transfer Academic Record Handler', () => {
     );
     getEnrollmentsSpy = jest.spyOn(enrollmentGetter, 'getByAcademicRecord');
     executeTransactionSpy = jest.spyOn(transactionalService, 'execute');
+    updateInternalGroupsSpy = jest.spyOn(updateInternalGroupsService, 'update');
 
     handler = new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -141,6 +147,7 @@ describe('Transfer Academic Record Handler', () => {
       enrollmentCreatorService,
       enrollmentGetter,
       uuidGenerator,
+      updateInternalGroupsService,
     );
   });
 
@@ -243,6 +250,7 @@ describe('Transfer Academic Record Handler', () => {
     getEnrollmentsSpy.mockImplementation(() =>
       Promise.resolve([oldEnrollment]),
     );
+    updateInternalGroupsSpy.mockImplementation(() => Promise.resolve([]));
 
     const academicRecordTransfer = AcademicRecordTransfer.create(
       uuid(),

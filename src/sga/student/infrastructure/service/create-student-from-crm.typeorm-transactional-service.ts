@@ -86,7 +86,6 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       }
 
       for (const group of entities.internalGroups) {
-        group.addStudents([entities.student]);
         await queryRunner.manager.save(InternalGroup, {
           id: group.id,
           students: group.students,

@@ -49,6 +49,7 @@ import { AddStudentToInternalGroupHandler } from '#student/application/add-stude
 import { GetInternalGroupStudentsHandler } from '#student/application/get-internal-group-students/get-internal-group-students.handler';
 import { RemoveTeacherFromInternalGroupHandler } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.handler';
 import { RemoveStudentFromInternalGroupHandler } from '#student/application/remove-student-from-internal-group/remove-student-from-internal-group.handler';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -196,6 +197,7 @@ const createStudentFromCRMHandler = {
     enrollmentGetter: EnrollmentGetter,
     administrativeGroupRepository: AdministrativeGroupRepository,
     internalGroupRepository: InternalGroupRepository,
+    updateInternalGroupsService: UpdateInternalGroupsService,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
       'ADMIN_USER_EMAIL',
@@ -219,6 +221,7 @@ const createStudentFromCRMHandler = {
       enrollmentGetter,
       administrativeGroupRepository,
       internalGroupRepository,
+      updateInternalGroupsService,
     );
   },
   inject: [
@@ -238,6 +241,7 @@ const createStudentFromCRMHandler = {
     EnrollmentGetter,
     AdministrativeGroupRepository,
     InternalGroupRepository,
+    UpdateInternalGroupsService,
   ],
 };
 

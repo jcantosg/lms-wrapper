@@ -19,6 +19,7 @@ import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.serv
 import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/domain/exception/academic-offering/academic-program.not-included-in-academic-period.exception';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 export class TransferAcademicRecordHandler implements CommandHandler {
   constructor(
@@ -32,6 +33,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     private readonly enrollmentCreatorService: EnrollmentCreator,
     private readonly enrollmentGetter: EnrollmentGetter,
     private uuidService: UUIDGeneratorService,
+    private readonly updateInternalGroupsService: UpdateInternalGroupsService,
   ) {}
 
   async handle(command: TransferAcademicRecordCommand) {
@@ -138,11 +140,20 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       }
     });
 
+    const internalGroups = await this.updateInternalGroupsService.update(
+      newAcademicRecord.student,
+      enrollments,
+      academicPeriod,
+      academicProgram,
+      command.adminUser,
+    );
+
     await this.transactionalService.execute({
       oldAcademicRecord,
       newAcademicRecord,
       academicRecordTransfer,
       enrollments,
+      internalGroups,
       oldEnrollments,
     });
   }

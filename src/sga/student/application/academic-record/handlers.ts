@@ -19,6 +19,7 @@ import { FileManager } from '#shared/domain/file-manager/file-manager';
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -95,6 +96,7 @@ const transferAcademicRecordHandler = {
     enrollmentCreatorService: EnrollmentCreator,
     enrollmentGetter: EnrollmentGetter,
     uuidService: UUIDGeneratorService,
+    updateInternalGroupsService: UpdateInternalGroupsService,
   ): TransferAcademicRecordHandler =>
     new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -107,6 +109,7 @@ const transferAcademicRecordHandler = {
       enrollmentCreatorService,
       enrollmentGetter,
       uuidService,
+      updateInternalGroupsService,
     ),
   inject: [
     BusinessUnitGetter,
@@ -119,6 +122,7 @@ const transferAcademicRecordHandler = {
     EnrollmentCreator,
     EnrollmentGetter,
     UUIDGeneratorService,
+    UpdateInternalGroupsService,
   ],
 };
 

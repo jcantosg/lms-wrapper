@@ -40,4 +40,6 @@ export abstract class InternalGroupRepository {
     studentId: string,
     subjectId: string,
   ): Promise<InternalGroup | null>;
+
+  abstract getAllByStudent(studentId: string): Promise<InternalGroup[]>;
 }

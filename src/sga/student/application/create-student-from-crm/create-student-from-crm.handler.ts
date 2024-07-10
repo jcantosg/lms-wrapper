@@ -33,6 +33,7 @@ import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subje
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -52,6 +53,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly enrollmentGetter: EnrollmentGetter,
     private readonly administrativeGroupRepository: AdministrativeGroupRepository,
     private readonly internalGroupRepository: InternalGroupRepository,
+    private readonly updateInternalGroupsService: UpdateInternalGroupsService,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -229,20 +231,13 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           administrativeGroup.updatedBy = adminUser;
         }
 
-        const internalGroups: InternalGroup[] = [];
-        for (const enrollment of enrollments) {
-          const groups = await this.internalGroupRepository.getByKeys(
-            academicPeriod,
-            academicProgram,
-            enrollment.subject,
-          );
-          const defaultGroup = groups.find((group) => group.isDefault);
-          if (defaultGroup) {
-            defaultGroup.updatedAt = new Date();
-            defaultGroup.updatedBy = adminUser;
-            internalGroups.push(defaultGroup);
-          }
-        }
+        const internalGroups = await this.updateInternalGroupsService.update(
+          student,
+          enrollments,
+          academicPeriod,
+          academicProgram,
+          adminUser,
+        );
 
         await this.createStudentFromCRMTransactionalService.execute({
           student,

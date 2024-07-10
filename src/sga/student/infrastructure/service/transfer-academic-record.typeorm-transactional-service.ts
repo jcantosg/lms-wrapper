@@ -1,5 +1,6 @@
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
+import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import {
   TransferAcademicRecordTransactionalService,
@@ -68,6 +69,16 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
           ),
         );
         oldEnrollmentIds.push(oldEnrollment.lmsEnrollment!.value.courseId);
+      }
+
+      this.logger.log('updating internal groups');
+      for (const group of entities.internalGroups) {
+        await queryRunner.manager.save(InternalGroup, {
+          id: group.id,
+          students: group.students,
+          updatedAt: group.updatedAt,
+          updatedBy: group.updatedBy,
+        });
       }
 
       this.logger.log('done');
