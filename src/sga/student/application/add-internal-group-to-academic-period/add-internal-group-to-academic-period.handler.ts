@@ -92,9 +92,11 @@ export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
     await this.repository.save(
       InternalGroup.create(
         command.id,
-        `${command.prefix ?? ''}${academicProgram.code}${subject.code}${
-          academicPeriod.code
-        }${existentInternalGroups.length}${command.sufix ?? ''}`,
+        `${command.prefix ?? ''}${command.prefix ? ' ' : ''}${
+          academicProgram.code
+        } ${subject.code} ${academicPeriod.code} ${
+          existentInternalGroups.length
+        }${command.sufix ? ' ' : ''}${command.sufix ?? ''}`,
         [],
         teachers,
         academicPeriod,
