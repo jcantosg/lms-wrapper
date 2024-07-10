@@ -14,6 +14,8 @@ import { GetLmsCourseByNameHandler } from '#lms-wrapper/application/lms-course/g
 import { CreateLmsCourseCommand } from '#lms-wrapper/application/lms-course/create-lms-course/create-lms-course.command';
 import { getLmsCourseCategoryEnumValue } from '#lms-wrapper/domain/enum/lms-course-category.enum';
 import { GetLMSCourseByNameQuery } from '#lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.query';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { InvalidEvaluationTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-evaluation-type.exception';
 
 export class EditSubjectHandler implements CommandHandler {
   constructor(
@@ -40,6 +42,14 @@ export class EditSubjectHandler implements CommandHandler {
       evaluationType,
       command.adminUser.businessUnits,
     );
+
+    if (
+      command.type === SubjectType.SPECIALTY &&
+      evaluationType?.name !== 'No Evaluable'
+    ) {
+      throw new InvalidEvaluationTypeException();
+    }
+
     const subject = await this.subjectGetter.get(command.id);
     this.subjectBusinessUnitChecker.checkSubjectBusinessUnit(
       subject,

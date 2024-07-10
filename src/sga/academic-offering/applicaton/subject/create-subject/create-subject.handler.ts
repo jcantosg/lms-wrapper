@@ -8,6 +8,8 @@ import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { SubjectDuplicatedException } from '#shared/domain/exception/academic-offering/subject.duplicated.exception';
 import { SubjectDuplicatedCodeException } from '#shared/domain/exception/academic-offering/subject.duplicated-code.exception';
 import { CreateSubjectCommand } from '#academic-offering/applicaton/subject/create-subject/create-subject.command';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { InvalidEvaluationTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-evaluation-type.exception';
 
 export class CreateSubjectHandler implements CommandHandler {
   constructor(
@@ -42,6 +44,13 @@ export class CreateSubjectHandler implements CommandHandler {
           'subject',
         )
       : null;
+
+    if (
+      command.type === SubjectType.SPECIALTY &&
+      evaluationType?.name !== 'No Evaluable'
+    ) {
+      throw new InvalidEvaluationTypeException();
+    }
 
     const subject = Subject.create(
       command.id,

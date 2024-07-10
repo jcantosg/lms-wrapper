@@ -34,10 +34,12 @@ export class CreateSubjectE2eSeed implements E2eSeed {
   public static subjectModality = SubjectModality.ELEARNING;
   public static subjectEvaluationType = '8adeb962-3669-4c37-ada0-01328ef74c00';
   public static subjectType = SubjectType.SUBJECT;
+  public static subjectTypeSpecialty = SubjectType.SPECIALTY;
   public static subjectIsRegulated = true;
   public static subjectIsCore = true;
   public static secondSubjectId = '720d2d75-baea-4705-b926-6f004bf26192';
   public static secondSubjectCode = 'code';
+  public static alreadyInsertedSubjectCode = 'the-code';
   public static subjectOfficialRegionalCode = 'MUR';
 
   private businessUnit: BusinessUnit;
@@ -82,10 +84,29 @@ export class CreateSubjectE2eSeed implements E2eSeed {
       [AdminUserRoles.SECRETARIA],
       [this.businessUnit],
     );
+
+    await this.subjectRepository.save(
+      Subject.create(
+        uuid(),
+        null,
+        'subject name',
+        CreateSubjectE2eSeed.alreadyInsertedSubjectCode,
+        null,
+        null,
+        SubjectModality.ELEARNING,
+        null,
+        SubjectType.SUBJECT,
+        this.businessUnit,
+        false,
+        false,
+        this.superAdminUser,
+        null,
+      ),
+    );
   }
 
   async clear(): Promise<void> {
-    await this.subjectRepository.delete(CreateSubjectE2eSeed.subjectId);
+    await this.subjectRepository.delete({});
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.secretaryUser);

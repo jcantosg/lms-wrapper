@@ -26,6 +26,7 @@ export class EditSubjectE2eSeed implements E2eSeed {
   public static subjectModality = SubjectModality.PRESENCIAL;
   public static subjectEvaluationType = 'dd716f57-0609-4f53-96a7-e6231bc889af';
   public static subjectType = SubjectType.SUBJECT;
+  public static subjectTypeSpecialty = SubjectType.SPECIALTY;
   public static subjectIsRegulated = true;
   public static subjectIsCore = true;
 
