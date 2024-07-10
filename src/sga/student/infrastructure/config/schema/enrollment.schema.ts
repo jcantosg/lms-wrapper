@@ -6,6 +6,8 @@ import {
 } from '#shared/infrastructure/config/schema/base.schema';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
+import { ValueObjectTransformer } from '#shared/infrastructure/value-object/value-object-transformer';
+import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 
 export const enrollmentSchema = new EntitySchema<Enrollment>({
   name: 'Enrollment',
@@ -26,6 +28,13 @@ export const enrollmentSchema = new EntitySchema<Enrollment>({
     maxCalls: {
       name: 'max_calls',
       type: Number,
+    },
+    lmsEnrollment: {
+      name: 'lms_enrollment',
+      type: 'json',
+      nullable: true,
+      transformer: ValueObjectTransformer(LmsEnrollment),
+      default: {},
     },
   },
   relations: {

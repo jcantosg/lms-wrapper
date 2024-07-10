@@ -40,6 +40,7 @@ import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-c
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { StudentRecoveryPasswordToken } from '#/student-360/student/domain/entity/student-recovery-password-token.entity';
+import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 
 export const getACountry = (id = uuid()): Country => {
@@ -367,6 +368,14 @@ export const getAStudentRecoveryPasswordToken =
       getASGAStudent(),
     );
   };
+
+export const getALmsEnrollment = () =>
+  new LmsEnrollment({
+    courseId: 1,
+    studentId: 4,
+    startDate: new Date().getTime(),
+    endDate: new Date().getTime(),
+  });
 
 export const getAChatroom = (internalGroup: InternalGroup, id = uuid()) => {
   return Chatroom.create(id, internalGroup, getASGAStudent(), getAnEdaeUser());

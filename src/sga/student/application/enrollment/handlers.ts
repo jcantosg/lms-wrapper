@@ -15,6 +15,8 @@ import { AcademicRecordRepository } from '#student/domain/repository/academic-re
 import { DeleteEnrollmentHandler } from '#student/application/enrollment/delete-enrollment/delete-enrollment.handler';
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 
 const getSubjectsNotEnrolledHandler = {
   provide: GetSubjectsNotEnrolledHandler,
@@ -32,9 +34,13 @@ const createEnrollmentHandler = {
     academicRecordGetter: AcademicRecordGetter,
     subjectGetter: SubjectGetter,
     internalGroupRepository: InternalGroupRepository,
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
   ) => {
     const transactionalService = new CreateEnrollmentTransactionalService(
       datasource,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
     );
 
     return new CreateEnrollmentHandler(
@@ -44,7 +50,13 @@ const createEnrollmentHandler = {
       internalGroupRepository,
     );
   },
-  inject: [AcademicRecordGetter, SubjectGetter, InternalGroupRepository],
+  inject: [
+    AcademicRecordGetter,
+    SubjectGetter,
+    InternalGroupRepository,
+    CreateLmsEnrollmentHandler,
+    DeleteLmsEnrollmentHandler,
+  ],
 };
 
 const editEnrollmentHandler = {
@@ -76,13 +88,20 @@ const deleteEnrollmentHandler = {
     enrollmentGetter: EnrollmentGetter,
     enrollmentRepository: EnrollmentRepository,
     subjectCallRepository: SubjectCallRepository,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
   ): DeleteEnrollmentHandler =>
     new DeleteEnrollmentHandler(
       enrollmentGetter,
       enrollmentRepository,
       subjectCallRepository,
+      deleteLmsEnrollmentHandler,
     ),
-  inject: [EnrollmentGetter, EnrollmentRepository, SubjectCallRepository],
+  inject: [
+    EnrollmentGetter,
+    EnrollmentRepository,
+    SubjectCallRepository,
+    DeleteLmsEnrollmentHandler,
+  ],
 };
 
 export const enrollmentHandlers = [

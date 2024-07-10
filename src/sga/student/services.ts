@@ -27,6 +27,8 @@ import { InternalGroupRepository } from '#student/domain/repository/internal-gro
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -64,9 +66,16 @@ const enrollmentCreator = {
 
 const transferAcademicRecordTransactionalService = {
   provide: TransferAcademicRecordTransactionalService,
-  useFactory: (): TransferAcademicRecordTypeormTransactionalService =>
-    new TransferAcademicRecordTypeormTransactionalService(datasource),
-  inject: [],
+  useFactory: (
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+  ): TransferAcademicRecordTypeormTransactionalService =>
+    new TransferAcademicRecordTypeormTransactionalService(
+      datasource,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
+    ),
+  inject: [CreateLmsEnrollmentHandler, DeleteLmsEnrollmentHandler],
 };
 
 const createStudentFromSGATransactionService = {
@@ -105,6 +114,8 @@ const createStudentFromCRMTransactionalService = {
     deleteLmsStudentHandler: DeleteLmsStudentHandler,
     passwordEncoder: PasswordEncoder,
     configService: ConfigService,
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
   ): CreateStudentFromCRMTypeormTransactionalService => {
     const defaultPassword = configService.get<string>(
       'DEFAULT_LMS_PASSWORD',
@@ -115,6 +126,8 @@ const createStudentFromCRMTransactionalService = {
       datasource,
       createLmsStudentHandler,
       deleteLmsStudentHandler,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
       passwordEncoder,
       defaultPassword,
     );
@@ -124,6 +137,9 @@ const createStudentFromCRMTransactionalService = {
     DeleteLmsStudentHandler,
     PasswordEncoder,
     ConfigService,
+    AdministrativeGroupRepository,
+    CreateLmsEnrollmentHandler,
+    DeleteLmsEnrollmentHandler,
   ],
 };
 

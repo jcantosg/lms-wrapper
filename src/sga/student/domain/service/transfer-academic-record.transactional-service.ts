@@ -1,6 +1,6 @@
 import {
-  TransactionParams,
   TransactionalService,
+  TransactionParams,
 } from '#shared/domain/service/transactional-service.service';
 import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-transfer.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
@@ -12,6 +12,7 @@ export interface TransferAcademicRecordTransactionParams
   newAcademicRecord: AcademicRecord;
   academicRecordTransfer: AcademicRecordTransfer;
   enrollments: Enrollment[];
+  oldEnrollments: Enrollment[];
 }
 
 export abstract class TransferAcademicRecordTransactionalService extends TransactionalService {

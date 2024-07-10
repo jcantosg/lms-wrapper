@@ -216,7 +216,7 @@ export class GetSubjectModuleE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
-    this.subject.addLmsCourse(getALmsCourse(4, 'Test'));
+    this.subject.addLmsCourse(getALmsCourse(5606, 'Test'));
     await this.subjectRepository.save(this.subject);
 
     this.academicPeriod = AcademicPeriod.create(
@@ -254,7 +254,7 @@ export class GetSubjectModuleE2eSeed implements E2eSeed {
       await passwordEncoder.encodePassword(
         GetSubjectModuleE2eSeed.studentPassword,
       ),
-      getALmsStudent(2),
+      getALmsStudent(8389),
     );
     await this.studentRepository.save(this.student);
 

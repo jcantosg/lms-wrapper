@@ -7,6 +7,7 @@ import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enroll
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 import { isSubjectCallTaken } from '#student/domain/enum/enrollment/subject-call-status.enum';
+import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 
 const MAX_CALLS = 4;
 export const FIRST_CALL_NUMBER = 1;
@@ -25,6 +26,7 @@ export class Enrollment extends BaseEntity {
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
     private _maxCalls: number = MAX_CALLS,
+    private _lmsEnrollment: LmsEnrollment | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -50,6 +52,8 @@ export class Enrollment extends BaseEntity {
       new Date(),
       user,
       user,
+      MAX_CALLS,
+      null,
     );
   }
 
@@ -72,6 +76,8 @@ export class Enrollment extends BaseEntity {
       new Date(),
       user,
       user,
+      MAX_CALLS,
+      null,
     );
   }
 
@@ -145,6 +151,14 @@ export class Enrollment extends BaseEntity {
 
   set updatedBy(value: AdminUser) {
     this._updatedBy = value;
+  }
+
+  public get lmsEnrollment(): LmsEnrollment | null {
+    return this._lmsEnrollment;
+  }
+
+  public set lmsEnrollment(value: LmsEnrollment | null) {
+    this._lmsEnrollment = value;
   }
 
   public addSubjectCall(subjectCall: SubjectCall): void {

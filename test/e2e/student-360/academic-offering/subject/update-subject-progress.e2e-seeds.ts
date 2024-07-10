@@ -118,7 +118,7 @@ export class UpdateSubjectProgressE2Seed implements E2eSeed {
     SubjectModality.PRESENCIAL;
   private static nonEnrolledSubjectType: SubjectType = SubjectType.SUBJECT;
 
-  public static courseModuleId = 142;
+  public static courseModuleId = 512453;
 
   private superAdminUser: AdminUser;
   private businessUnit: BusinessUnit;
@@ -260,7 +260,7 @@ export class UpdateSubjectProgressE2Seed implements E2eSeed {
       this.superAdminUser,
       null,
     );
-    this.subject.addLmsCourse(getALmsCourse(2, 'Test'));
+    this.subject.addLmsCourse(getALmsCourse(5635, 'Test'));
     await this.subjectRepository.save(this.subject);
     this.nonEnrolledSubject = Subject.create(
       UpdateSubjectProgressE2Seed.nonEnrolledSubjectId,
@@ -317,7 +317,7 @@ export class UpdateSubjectProgressE2Seed implements E2eSeed {
       ),
       null,
     );
-    this.student.lmsStudent = getALmsStudent(272);
+    this.student.lmsStudent = getALmsStudent(8389);
     await this.studentRepository.save(this.student);
 
     this.academicRecord = AcademicRecord.create(

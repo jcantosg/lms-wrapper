@@ -29,6 +29,7 @@ export class EnrollmentPostgresRepository
       programBlock: enrollment.programBlock,
       calls: enrollment.calls,
       maxCalls: enrollment.maxCalls,
+      lmsEnrollment: enrollment.lmsEnrollment,
     });
   }
 

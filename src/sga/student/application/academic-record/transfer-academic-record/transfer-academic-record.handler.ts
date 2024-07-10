@@ -92,11 +92,9 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     );
 
     const fileURLs: string[] = [];
-    await Promise.all([
-      command.files.forEach(async (file) =>
-        fileURLs.push(await this.fileManager.uploadFile(file)),
-      ),
-    ]);
+    for (const file of command.files) {
+      fileURLs.push(await this.fileManager.uploadFile(file));
+    }
 
     const academicRecordTransfer = AcademicRecordTransfer.create(
       uuid(),
@@ -145,6 +143,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       newAcademicRecord,
       academicRecordTransfer,
       enrollments,
+      oldEnrollments,
     });
   }
 }

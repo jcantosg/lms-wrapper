@@ -7,11 +7,19 @@ import {
 } from '#student/domain/service/transfer-academic-record.transactional-service';
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
+import { CreateLmsEnrollmentCommand } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.command';
+import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
 
 export class TransferAcademicRecordTypeormTransactionalService extends TransferAcademicRecordTransactionalService {
   private logger: Logger;
 
-  constructor(private readonly datasource: DataSource) {
+  constructor(
+    private readonly datasource: DataSource,
+    private readonly createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    private readonly deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+  ) {
     super();
     this.logger = new Logger(TransferAcademicRecordTransactionalService.name);
   }
@@ -20,6 +28,8 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
     entities: TransferAcademicRecordTransactionParams,
   ): Promise<void> {
     const queryRunner = this.datasource.createQueryRunner();
+    const newEnrollmentIds: number[] = [];
+    const oldEnrollmentIds: number[] = [];
     await queryRunner.startTransaction();
     try {
       this.logger.log('updating old academic record');
@@ -34,11 +44,30 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
       await queryRunner.manager.save(entities.academicRecordTransfer);
 
       this.logger.log('creating enrollments');
+
       for (const enrollment of entities.enrollments) {
         await queryRunner.manager.save<Enrollment>(enrollment);
         for (const call of enrollment.calls) {
           await queryRunner.manager.save<SubjectCall>(call);
         }
+        await this.createLmsEnrollmentHandler.handle(
+          new CreateLmsEnrollmentCommand(
+            enrollment.subject.lmsCourse!.value.id,
+            enrollment.academicRecord.student.lmsStudent!.value.id,
+            enrollment.academicRecord.academicPeriod.startDate,
+            enrollment.academicRecord.academicPeriod.endDate,
+          ),
+        );
+        newEnrollmentIds.push(enrollment.subject.lmsCourse!.value.id);
+      }
+      for (const oldEnrollment of entities.oldEnrollments) {
+        await this.deleteLmsEnrollmentHandler.handle(
+          new DeleteLmsEnrollmentCommand(
+            oldEnrollment.lmsEnrollment!.value.courseId,
+            oldEnrollment.academicRecord.student.lmsStudent!.value.id,
+          ),
+        );
+        oldEnrollmentIds.push(oldEnrollment.lmsEnrollment!.value.courseId);
       }
 
       this.logger.log('done');
@@ -46,6 +75,28 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
     } catch (error) {
       this.logger.error(error);
       await queryRunner.rollbackTransaction();
+      if (newEnrollmentIds.length > 0) {
+        for (const newEnrollment of newEnrollmentIds) {
+          await this.deleteLmsEnrollmentHandler.handle(
+            new DeleteLmsEnrollmentCommand(
+              newEnrollment,
+              entities.newAcademicRecord.student.lmsStudent!.value.id,
+            ),
+          );
+        }
+      }
+      if (oldEnrollmentIds.length > 0) {
+        for (const oldEnrollment of oldEnrollmentIds) {
+          await this.createLmsEnrollmentHandler.handle(
+            new CreateLmsEnrollmentCommand(
+              oldEnrollment,
+              entities.oldAcademicRecord.student.lmsStudent!.value.id,
+              entities.oldAcademicRecord.academicPeriod.startDate,
+              entities.oldAcademicRecord.academicPeriod.endDate,
+            ),
+          );
+        }
+      }
     } finally {
       await queryRunner.release();
     }

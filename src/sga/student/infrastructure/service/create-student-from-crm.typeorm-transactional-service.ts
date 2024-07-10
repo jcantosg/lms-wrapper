@@ -11,6 +11,10 @@ import {
 } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
+import { CreateLmsEnrollmentCommand } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.command';
+import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
 
 export class CreateStudentFromCRMTypeormTransactionalService extends CreateStudentFromCRMTransactionalService {
   private logger: Logger;
@@ -19,6 +23,8 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     private readonly datasource: DataSource,
     private readonly createLmsStudentHandler: CreateLmsStudentHandler,
     private readonly deleteLmsStudentHandler: DeleteLmsStudentHandler,
+    private readonly createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    private readonly deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
   ) {
@@ -32,6 +38,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.startTransaction();
     let lmsId;
+    const lmsEnrollmentsId: number[] = [];
     try {
       const lmsStudent = await this.createLmsStudentHandler.handle(
         new CreateLmsStudentCommand(
@@ -57,6 +64,15 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         for (const subjectCall of enrollment.calls) {
           await queryRunner.manager.save(subjectCall);
         }
+        await this.createLmsEnrollmentHandler.handle(
+          new CreateLmsEnrollmentCommand(
+            enrollment.subject.lmsCourse!.value.id,
+            enrollment.academicRecord.student.lmsStudent!.value.id,
+            enrollment.academicRecord.academicPeriod.startDate,
+            enrollment.academicRecord.academicPeriod.endDate,
+          ),
+        );
+        lmsEnrollmentsId.push(enrollment.subject.lmsCourse!.value.id);
       }
 
       if (entities.administrativeGroup) {
@@ -86,6 +102,13 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         await this.deleteLmsStudentHandler.handle(
           new DeleteLmsStudentCommand(lmsId),
         );
+      }
+      if (lmsEnrollmentsId.length > 0 && !!lmsId) {
+        for (const lmsEnrollmentId of lmsEnrollmentsId) {
+          await this.deleteLmsEnrollmentHandler.handle(
+            new DeleteLmsEnrollmentCommand(lmsEnrollmentId, lmsId),
+          );
+        }
       }
       await queryRunner.rollbackTransaction();
     } finally {

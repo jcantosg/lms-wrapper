@@ -27,6 +27,8 @@ export enum MoodleCourseModuleStatus {
   COMPLETED,
 }
 
+const STUDENT_ROLE_ID = 5;
+
 export class MoodleWrapper implements LmsWrapper {
   constructor(
     private readonly wrapper: FetchWrapper,
@@ -227,5 +229,20 @@ export class MoodleWrapper implements LmsWrapper {
   ) {
     const updateCourseCompletionStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_override_activity_completion_status&moodlewsrestformat=json&cmid=${lmsCourseModuleId}&userid=${studentId}&newstate=${newStatus}`;
     await this.wrapper.post(this.url, updateCourseCompletionStatusQueryParam);
+  }
+
+  async createEnrollment(
+    courseId: number,
+    studentId: number,
+    startDate: number,
+    endDate: number,
+  ): Promise<void> {
+    const queryParams = `wstoken=${this.token}&wsfunction=enrol_manual_enrol_users&moodlewsrestformat=json&enrolments[0][userid]=${studentId}&enrolments[0][courseid]=${courseId}&enrolments[0][roleid]=${STUDENT_ROLE_ID}&enrolments[0][timestart]=${startDate}&enrolments[0][timeend]=${endDate}`;
+    await this.wrapper.post(this.url, queryParams);
+  }
+
+  async deleteEnrollment(courseId: number, studentId: number): Promise<void> {
+    const queryParams = `wstoken=${this.token}&wsfunction=enrol_manual_enrol_users&moodlewsrestformat=json&enrolments[0][userid]=${studentId}&enrolments[0][courseid]=${courseId}`;
+    await this.wrapper.post(this.url, queryParams);
   }
 }

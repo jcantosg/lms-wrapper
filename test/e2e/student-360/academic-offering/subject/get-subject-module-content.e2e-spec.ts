@@ -5,7 +5,7 @@ import { loginStudent } from '#test/e2e/sga/e2e-auth-helper';
 import supertest from 'supertest';
 import { GetSubjectModuleE2eSeed } from '#test/e2e/student-360/academic-offering/subject/get-subject-module-content.e2e-seeds';
 
-const path = `/wrapper/subject/${GetSubjectModuleE2eSeed.subjectId}/content/47`;
+const path = `/wrapper/subject/${GetSubjectModuleE2eSeed.subjectId}/content/51302`;
 
 describe('/wrapper/subject/:id/content/:id (GET)', () => {
   let httpServer: HttpServer;
@@ -31,7 +31,7 @@ describe('/wrapper/subject/:id/content/:id (GET)', () => {
       .expect(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        id: 47,
+        id: 51302,
         name: 'Infografías',
       }),
     );

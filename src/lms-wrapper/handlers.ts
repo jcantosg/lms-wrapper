@@ -10,6 +10,9 @@ import { SubjectGetter } from '#academic-offering/domain/service/subject/subject
 import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
 import { GetLmsCourseProgressHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-progress/get-lms-course-progress.handler';
 import { UpdateCourseModuleProgressHandler } from '#lms-wrapper/application/lms-course/update-course-module-progress/update-course-module-progress.handler';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { LmsEnrollmentRepository } from '#lms-wrapper/domain/repository/lms-enrollment.repository';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -78,6 +81,22 @@ const updateLmsCourseModuleProgressHandler = {
   inject: [LmsCourseRepository],
 };
 
+const createLmsEnrollmentHandler = {
+  provide: CreateLmsEnrollmentHandler,
+  useFactory: (
+    repository: LmsEnrollmentRepository,
+  ): CreateLmsEnrollmentHandler => new CreateLmsEnrollmentHandler(repository),
+  inject: [LmsEnrollmentRepository],
+};
+
+const deleteLmsEnrollmentHandler = {
+  provide: DeleteLmsEnrollmentHandler,
+  useFactory: (
+    repository: LmsEnrollmentRepository,
+  ): DeleteLmsEnrollmentHandler => new DeleteLmsEnrollmentHandler(repository),
+  inject: [LmsEnrollmentRepository],
+};
+
 export const handlers = [
   getLmsCoursesHandler,
   createLmsCourseHandler,
@@ -88,4 +107,6 @@ export const handlers = [
   getLmsCourseByNameHandler,
   getLmsCourseProgressHandler,
   updateLmsCourseModuleProgressHandler,
+  createLmsEnrollmentHandler,
+  deleteLmsEnrollmentHandler,
 ];

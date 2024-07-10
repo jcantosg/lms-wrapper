@@ -242,7 +242,7 @@ export class GetSubjectProgressE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
-    this.subject.addLmsCourse(getALmsCourse(2, 'Test'));
+    this.subject.addLmsCourse(getALmsCourse(5635, 'Test'));
     await this.subjectRepository.save(this.subject);
     this.nonEnrolledSubject = Subject.create(
       GetSubjectProgressE2eSeed.nonEnrolledSubjectId,
@@ -299,7 +299,7 @@ export class GetSubjectProgressE2eSeed implements E2eSeed {
       ),
       null,
     );
-    this.student.lmsStudent = getALmsStudent(272);
+    this.student.lmsStudent = getALmsStudent(8389);
     await this.studentRepository.save(this.student);
 
     this.academicRecord = AcademicRecord.create(
