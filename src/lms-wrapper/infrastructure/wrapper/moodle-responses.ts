@@ -57,3 +57,7 @@ export interface MoodleCourseActivitiesCompletionResponse {
     }[];
   }[];
 }
+
+export interface MoodleCourseByFieldResponse {
+  courses: MoodleCourseResponse[];
+}

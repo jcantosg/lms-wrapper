@@ -6,6 +6,7 @@ import { LmsModuleContent } from '#lms-wrapper/domain/entity/lms-module-content'
 import { BadRequestException } from '@nestjs/common';
 import {
   MoodleCourseActivitiesCompletionResponse,
+  MoodleCourseByFieldResponse,
   MoodleCourseContentResponse,
   MoodleCourseResponse,
   MoodleCreateUserResponse,
@@ -181,16 +182,20 @@ export class MoodleWrapper implements LmsWrapper {
   }
 
   public async getByName(name: string): Promise<LmsCourse> {
-    const allCourses = await this.getAllCourses();
-
-    const course = allCourses.find(
-      (course: LmsCourse) => course.value.name === name,
+    const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses_by_field&moodlewsrestformat=json&field=shortname&value=${name}`;
+    const courseResponse: MoodleCourseByFieldResponse = await this.wrapper.get(
+      this.url,
+      queryParams,
     );
-    if (!course) {
-      throw new BadRequestException();
-    }
+    const course = courseResponse.courses[0];
 
-    return course;
+    return new LmsCourse({
+      id: course.id,
+      categoryId: course.categoryid,
+      shortname: course.shortname,
+      name: course.displayname,
+      modules: [],
+    });
   }
 
   private async getUrlWithSessionKey(email: string): Promise<string> {
