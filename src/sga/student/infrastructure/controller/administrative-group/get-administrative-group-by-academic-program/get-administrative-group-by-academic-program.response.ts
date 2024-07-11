@@ -3,7 +3,7 @@ import { AdministrativeGroup } from '#student/domain/entity/administrative-group
 export interface GetAdministrativeGroupByAcademicProgramResponseInterface {
   id: string;
   name: string;
-  blockName: string;
+  code: string;
 }
 
 export class GetAdministrativeGroupByAcademicProgramResponse {
@@ -13,7 +13,7 @@ export class GetAdministrativeGroupByAcademicProgramResponse {
     return administrativeGroups.map((ag) => ({
       id: ag.id,
       name: ag.programBlock.name,
-      blockName: ag.programBlock.name,
+      code: ag.code,
     }));
   }
 }
