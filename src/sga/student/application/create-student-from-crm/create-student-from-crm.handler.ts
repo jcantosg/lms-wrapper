@@ -303,6 +303,19 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         enrollment.addSubjectCall(subjectCall);
       });
 
+      enrollments.forEach((enrollment) => {
+        const subjectCall = SubjectCall.create(
+          uuid(),
+          enrollment,
+          1,
+          new Date(),
+          SubjectCallFinalGradeEnum.ONGOING,
+          SubjectCallStatusEnum.ONGOING,
+          adminUser,
+        );
+        enrollment.addSubjectCall(subjectCall);
+      });
+
       student.academicRecords.push(newAcademicRecord);
 
       const internalGroups: InternalGroup[] = [];

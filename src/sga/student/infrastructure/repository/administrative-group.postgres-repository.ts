@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
@@ -7,17 +7,20 @@ import { Repository } from 'typeorm';
 import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 
 @Injectable()
 export class AdministrativeGroupPostgresRepository
   extends TypeOrmRepository<AdministrativeGroup>
   implements AdministrativeGroupRepository
 {
+  private readonly logger: Logger;
   constructor(
     @InjectRepository(administrativeGroupSchema)
     private readonly repository: Repository<AdministrativeGroup>,
   ) {
     super();
+    this.logger = new Logger(AdministrativeGroupPostgresRepository.name);
   }
 
   async save(administrativeGroup: AdministrativeGroup): Promise<void> {
@@ -196,6 +199,28 @@ export class AdministrativeGroupPostgresRepository
     });
   }
 
+  async getByAcademicProgram(
+    academicProgramId: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AdministrativeGroup[]> {
+    const aliasQuery = 'administrativeGroup';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    if (!isSuperAdmin) {
+      adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+        adminUserBusinessUnits,
+      );
+      queryBuilder.andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      });
+    }
+
+    return await queryBuilder
+      .where('academic_program.id = :academicProgramId', { academicProgramId })
+      .getMany();
+  }
+
   async getByAcademicPeriodAndProgramAndFirstBlock(
     academicPeriodId: string,
     academicProgramId: string,
@@ -215,5 +240,38 @@ export class AdministrativeGroupPostgresRepository
         periodBlock: { startDate: 'ASC' },
       },
     });
+  }
+
+  async moveStudents(
+    students: Student[],
+    originGroup: AdministrativeGroup,
+    destinationGroup: AdministrativeGroup,
+  ): Promise<void> {
+    const queryRunner = this.repository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      for (const student of students) {
+        await queryRunner.manager
+          .createQueryBuilder()
+          .relation(AdministrativeGroup, 'students')
+          .of(originGroup)
+          .remove(student);
+
+        await queryRunner.manager
+          .createQueryBuilder()
+          .relation(AdministrativeGroup, 'students')
+          .of(destinationGroup)
+          .add(student);
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
