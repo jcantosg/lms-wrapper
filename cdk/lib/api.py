@@ -63,6 +63,8 @@ SES_SMTP_HOST = "email-smtp.eu-west-3.amazonaws.com"
 
 CLOUDFLARE_SECRET_HEADER = "X-Universae-CloudFlare-Auth"
 
+CRM_IMPORTS_PATH_MOUNTDIR = "/var/lib/sftp"
+
 
 class APIStack(Stack):
     def __init__(
@@ -371,6 +373,7 @@ class APIStack(Stack):
             "SMTP_HOST": SES_SMTP_HOST,
             "SMTP_PORT": "587",
             "MEDIA_DOMAIN_NAME": media_domain_name,
+            "CRM_IMPORTS_PATH": f"{CRM_IMPORTS_PATH_MOUNTDIR}/data/crm",
         }
 
         sftp_ecs_secrets = {
@@ -563,7 +566,7 @@ class APIStack(Stack):
 
         self.cron_container.add_mount_points(
             ecs.MountPoint(
-                container_path="/var/lib/sftp",
+                container_path=CRM_IMPORTS_PATH_MOUNTDIR,
                 source_volume="sftp-data",
                 read_only=False,
             ),
@@ -775,8 +778,7 @@ class APIStack(Stack):
             elbv2.ListenerCondition.host_headers(values=[api_alb_host])
         ]
         sftp_target_group_conditions = [
-            elbv2.ListenerCondition.host_headers(values=[sftp_alb_host]),
-            elbv2.ListenerCondition.source_ips(sftp_allowed_cidrs),
+            elbv2.ListenerCondition.host_headers(values=[sftp_alb_host])
         ]
 
         if enable_cloudflare_auth_header:

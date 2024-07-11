@@ -36,7 +36,7 @@
     "memory": 1024,
     "min_tasks": 1,
     "max_tasks": 1,
-    "allowed_cidrs": ["79.117.39.158/32"]
+    "allowed_cidrs": ["0.0.0.0/0"]
   },
 
   "db": {
