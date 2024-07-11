@@ -36,7 +36,13 @@ export class EnrollmentPostgresRepository
   async get(id: string): Promise<Enrollment | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { calls: true },
+      relations: {
+        calls: true,
+        academicRecord: {
+          student: true,
+        },
+        subject: true,
+      },
       order: {
         calls: {
           callNumber: 'DESC',

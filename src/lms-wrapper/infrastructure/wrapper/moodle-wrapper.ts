@@ -247,7 +247,7 @@ export class MoodleWrapper implements LmsWrapper {
   }
 
   async deleteEnrollment(courseId: number, studentId: number): Promise<void> {
-    const queryParams = `wstoken=${this.token}&wsfunction=enrol_manual_enrol_users&moodlewsrestformat=json&enrolments[0][userid]=${studentId}&enrolments[0][courseid]=${courseId}`;
+    const queryParams = `wstoken=${this.token}&wsfunction=enrol_manual_unenrol_users&moodlewsrestformat=json&enrolments[0][userid]=${studentId}&enrolments[0][courseid]=${courseId}`;
     await this.wrapper.post(this.url, queryParams);
   }
 }
