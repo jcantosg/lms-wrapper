@@ -24,7 +24,7 @@ async function readFiles(filesPath: string): Promise<File[]> {
   const rawFileNames = filterFileType(fs.readdirSync(filesPath), 'xlsx');
 
   rawFileNames.forEach((fileName) => {
-    const rawFile = fs.readFileSync(`${filesPath}${fileName}`);
+    const rawFile = fs.readFileSync(`${filesPath}/${fileName}`);
     files.push(new File(filesPath, fileName, rawFile));
   });
 
@@ -32,7 +32,10 @@ async function readFiles(filesPath: string): Promise<File[]> {
 }
 
 function moveImportedFile(filesPath: string, fileName: string): void {
-  fs.renameSync(`${filesPath}${fileName}`, `${filesPath}processed/${fileName}`);
+  fs.renameSync(
+    `${filesPath}/${fileName}`,
+    `${filesPath}/processed/${fileName}`,
+  );
 }
 
 async function bootstrap() {
