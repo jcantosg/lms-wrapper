@@ -2,6 +2,7 @@ import { TeacherChatsHandler } from '#student-360/chat/application/teacher-chats
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
+import { EditChatroomHandler } from '#student-360/chat/application/edit-chatroom/edit-chatroom.handler';
 
 const teacherChatsHandler = {
   provide: TeacherChatsHandler,
@@ -18,4 +19,11 @@ const teacherChatsHandler = {
   inject: [AcademicRecordRepository, AcademicRecordGetter, ChatroomRepository],
 };
 
-export const chatHandlers = [teacherChatsHandler];
+const editChatroomHandler = {
+  provide: EditChatroomHandler,
+  useFactory: (chatroomRepository: ChatroomRepository): EditChatroomHandler =>
+    new EditChatroomHandler(chatroomRepository),
+  inject: [ChatroomRepository],
+};
+
+export const chatHandlers = [teacherChatsHandler, editChatroomHandler];

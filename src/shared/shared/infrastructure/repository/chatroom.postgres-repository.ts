@@ -15,6 +15,7 @@ export class ChatroomPostgresRepository implements ChatroomRepository {
   async save(chatroom: Chatroom): Promise<void> {
     await this.repository.save({
       id: chatroom.id,
+      chatroomId: chatroom.chatroomId,
       student: chatroom.student,
       teacher: chatroom.teacher,
       internalGroup: chatroom.internalGroup,
@@ -73,5 +74,18 @@ export class ChatroomPostgresRepository implements ChatroomRepository {
     });
 
     return !!chatroom;
+  }
+
+  async get(id: string): Promise<Chatroom | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: {
+        internalGroup: {
+          subject: true,
+        },
+        teacher: true,
+        student: true,
+      },
+    });
   }
 }

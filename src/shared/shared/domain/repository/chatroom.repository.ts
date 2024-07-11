@@ -9,4 +9,5 @@ export abstract class ChatroomRepository {
     teacherId: string,
     internalGroupId: string,
   ): Promise<boolean>;
+  abstract get(id: string): Promise<Chatroom | null>;
 }

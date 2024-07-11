@@ -64,4 +64,9 @@ export class Chatroom extends BaseEntity {
   set chatroomId(chatroomId: string | null) {
     this._chatroomId = chatroomId;
   }
+
+  public update(chatroomId: string): void {
+    this._chatroomId = chatroomId;
+    this.updatedAt = new Date();
+  }
 }
