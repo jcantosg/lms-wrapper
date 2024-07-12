@@ -55,14 +55,17 @@ describe('/internal-group/detail/:id (GET)', () => {
       subject: {
         id: GetInternalGroupDetailE2eSeed.subjectId,
         name: GetInternalGroupDetailE2eSeed.subjectName,
+        code: GetInternalGroupDetailE2eSeed.subjectCode,
       },
       academicProgram: {
         id: GetInternalGroupDetailE2eSeed.academicProgramId,
         name: GetInternalGroupDetailE2eSeed.academicProgramName,
+        code: GetInternalGroupDetailE2eSeed.academicProgramCode,
       },
       academicPeriod: {
         id: GetInternalGroupDetailE2eSeed.academicPeriodId,
         name: GetInternalGroupDetailE2eSeed.academicPeriodName,
+        code: GetInternalGroupDetailE2eSeed.academicPeriodCode,
       },
       businessUnit: {
         id: GetInternalGroupDetailE2eSeed.businessUnitId,

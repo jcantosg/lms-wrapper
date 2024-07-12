@@ -13,14 +13,17 @@ export interface GetInternalGroupResponse {
   academicProgram: {
     id: string;
     name: string;
+    code: string;
   };
   academicPeriod: {
     id: string;
     name: string;
+    code: string;
   };
   subject: {
     id: string;
     name: string;
+    code: string;
   };
 }
 
@@ -51,14 +54,17 @@ export class GetInternalGroupsResponse {
             academicPeriod: {
               id: internalGroup.academicPeriod.id,
               name: internalGroup.academicPeriod.name,
+              code: internalGroup.academicPeriod.code,
             },
             academicProgram: {
               id: internalGroup.academicProgram.id,
               name: internalGroup.academicProgram.name,
+              code: internalGroup.academicProgram.code,
             },
             subject: {
               id: internalGroup.subject.id,
               name: internalGroup.subject.name,
+              code: internalGroup.subject.code,
             },
           };
         },

@@ -88,6 +88,7 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
 
   public static subjectId = uuid();
   public static subjectName = 'matematicas';
+  public static subjectCode = 'code';
 
   public static studentId = uuid();
   public static studentName = 'pepe';
@@ -209,7 +210,7 @@ export class GetInternalGroupDetailE2eSeed implements E2eSeed {
       GetInternalGroupDetailE2eSeed.subjectId,
       null,
       GetInternalGroupDetailE2eSeed.subjectName,
-      'code',
+      GetInternalGroupDetailE2eSeed.subjectCode,
       null,
       null,
       SubjectModality.ELEARNING,

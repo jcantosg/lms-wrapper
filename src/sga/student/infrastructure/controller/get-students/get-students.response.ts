@@ -17,6 +17,7 @@ export interface GetStudentResponse {
   academicProgram: {
     id: string;
     name: string;
+    code: string;
   }[];
 }
 
@@ -47,6 +48,7 @@ export class GetStudentsResponse {
               return {
                 id: academicRecord.academicProgram.id,
                 name: academicRecord.academicProgram.name,
+                code: academicRecord.academicProgram.code,
               };
             },
           ),

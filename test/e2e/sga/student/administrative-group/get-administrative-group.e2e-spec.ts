@@ -63,11 +63,13 @@ describe('/administrative-group/:id (GET)', () => {
         academicProgram: {
           id: GetAdministrativeGroupE2eSeed.academicProgramId,
           name: GetAdministrativeGroupE2eSeed.academicProgramName,
+          code: GetAdministrativeGroupE2eSeed.academicProgramCode,
         },
         block: 1,
         academicPeriod: {
           id: GetAdministrativeGroupE2eSeed.academicPeriodId,
           name: GetAdministrativeGroupE2eSeed.academicPeriodName,
+          code: GetAdministrativeGroupE2eSeed.academicPeriodCode,
         },
         startMonth: 8,
         businessUnit: {
