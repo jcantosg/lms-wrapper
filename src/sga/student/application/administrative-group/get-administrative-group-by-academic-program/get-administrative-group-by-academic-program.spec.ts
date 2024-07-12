@@ -13,6 +13,7 @@ let handler: GetAdministrativeGroupByAcademicProgramHandler;
 let repository: AdministrativeGroupRepository;
 
 let getByAcademicProgramSpy: jest.SpyInstance;
+let getByAdminUserSpy: jest.SpyInstance;
 
 const adminUser = getAnAdminUser();
 adminUser.businessUnits = [getABusinessUnit()];
@@ -20,6 +21,7 @@ adminUser.roles = [AdminUserRoles.SUPERADMIN];
 
 const query = new GetAdministrativeGroupByAcademicProgramQuery(
   'academic-program-id',
+  'current-administrative-group-id',
   adminUser,
 );
 
@@ -32,9 +34,11 @@ describe('GetAdministrativeGroupByAcademicProgramHandler', () => {
   beforeAll(async () => {
     repository = {
       getByAcademicProgram: jest.fn().mockResolvedValue(administrativeGroups),
+      getByAdminUser: jest.fn().mockResolvedValue(getAnAdministrativeGroup()),
     } as unknown as AdministrativeGroupRepository;
 
     getByAcademicProgramSpy = jest.spyOn(repository, 'getByAcademicProgram');
+    getByAdminUserSpy = jest.spyOn(repository, 'getByAdminUser');
 
     handler = new GetAdministrativeGroupByAcademicProgramHandler(repository);
   });
@@ -48,7 +52,25 @@ describe('GetAdministrativeGroupByAcademicProgramHandler', () => {
       true,
     );
 
-    expect(result).toEqual(administrativeGroups);
+    expect(getByAdminUserSpy).toHaveBeenCalledWith(
+      'current-administrative-group-id',
+      adminUser.businessUnits.map((bu) => bu.id),
+      true,
+    );
+
+    const currentAdministrativeGroup = await repository.getByAdminUser(
+      'current-administrative-group-id',
+      adminUser.businessUnits.map((bu) => bu.id),
+      true,
+    );
+
+    const filteredResponse = administrativeGroups.filter(
+      (ag) =>
+        currentAdministrativeGroup &&
+        ag.programBlock.id !== currentAdministrativeGroup.programBlock.id,
+    );
+
+    expect(result).toEqual(filteredResponse);
   });
 
   it('should call getByAcademicProgram', async () => {
@@ -61,9 +83,31 @@ describe('GetAdministrativeGroupByAcademicProgramHandler', () => {
     );
   });
 
+  it('should call getByAdminUser', async () => {
+    await handler.handle(query);
+
+    expect(getByAdminUserSpy).toHaveBeenCalledWith(
+      'current-administrative-group-id',
+      adminUser.businessUnits.map((bu) => bu.id),
+      true,
+    );
+  });
+
   it('should return the expected administrative groups', async () => {
     const result = await handler.handle(query);
 
-    expect(result).toEqual(administrativeGroups);
+    const currentAdministrativeGroup = await repository.getByAdminUser(
+      'current-administrative-group-id',
+      adminUser.businessUnits.map((bu) => bu.id),
+      true,
+    );
+
+    const filteredResponse = administrativeGroups.filter(
+      (ag) =>
+        currentAdministrativeGroup &&
+        ag.programBlock.id !== currentAdministrativeGroup.programBlock.id,
+    );
+
+    expect(result).toEqual(filteredResponse);
   });
 });

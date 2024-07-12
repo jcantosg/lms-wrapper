@@ -18,6 +18,7 @@ import { GetAdministrativeGroupByAcademicProgramResponse } from '#student/infras
 import { GetAdministrativeGroupByAcademicProgramQuery } from '#student/application/administrative-group/get-administrative-group-by-academic-program/get-administrative-group-by-academic-program.query';
 
 type GetAdministrativeGroupByAcademicProgramQueryParams = {
+  currentAdministrativeGroupId: string;
   academicProgramId: string;
 };
 
@@ -47,6 +48,7 @@ export class GetAdministrativeGroupByAcademicProgramController {
   ): Promise<GetAdministrativeGroupByAcademicProgramResponse[]> {
     const query = new GetAdministrativeGroupByAcademicProgramQuery(
       queryParam.academicProgramId,
+      queryParam.currentAdministrativeGroupId,
       req.user,
     );
 

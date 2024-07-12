@@ -14,10 +14,29 @@ export class GetAdministrativeGroupByAcademicProgramHandler
   async handle(
     query: GetAdministrativeGroupByAcademicProgramQuery,
   ): Promise<AdministrativeGroup[]> {
-    return await this.administrativeGroupRepository.getByAcademicProgram(
-      query.academicProgramId,
-      query.adminUser.businessUnits.map((bu) => bu.id),
-      query.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
-    );
+    const response =
+      await this.administrativeGroupRepository.getByAcademicProgram(
+        query.academicProgramId,
+        query.adminUser.businessUnits.map((bu) => bu.id),
+        query.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+      );
+
+    const currentAdministrativeGroup =
+      await this.administrativeGroupRepository.getByAdminUser(
+        query.currentAdministrativeGroupId,
+        query.adminUser.businessUnits.map((bu) => bu.id),
+        query.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+      );
+
+    if (currentAdministrativeGroup) {
+      const filteredResponse = response.filter(
+        (ag) =>
+          ag.programBlock.id !== currentAdministrativeGroup.programBlock.id,
+      );
+
+      return filteredResponse;
+    }
+
+    return response;
   }
 }
