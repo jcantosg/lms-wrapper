@@ -1,5 +1,4 @@
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
-import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 
 export class InternalGroupDefaultTeacherGetter {
@@ -10,10 +9,7 @@ export class InternalGroupDefaultTeacherGetter {
       studentId,
       subjectId,
     );
-    if (!internalGroup) {
-      throw new InternalGroupNotFoundException();
-    }
 
-    return internalGroup.defaultTeacher;
+    return internalGroup ? internalGroup.defaultTeacher : null;
   }
 }
