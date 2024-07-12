@@ -10,6 +10,7 @@ import {
   MoodleCourseContentResponse,
   MoodleCourseResponse,
   MoodleCreateUserResponse,
+  MoodleGetUserResponse,
   MoodleLoginResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
 
@@ -114,6 +115,19 @@ export class MoodleWrapper implements LmsWrapper {
     );
 
     return response[0].id;
+  }
+
+  async getStudentByEmail(
+    universaeEmail: string,
+    personalEmail: string,
+  ): Promise<any> {
+    const queryParams = `wstoken=${this.token}&wsfunction=core_user_get_users_by_field&moodlewsrestformat=json&field=email&values[0]=${universaeEmail}&values[1]=${personalEmail}`;
+    const response: MoodleGetUserResponse[] = await this.wrapper.post(
+      this.url,
+      queryParams,
+    );
+
+    return response.length > 0 ? response[0] : null;
   }
 
   async login(

@@ -13,6 +13,7 @@ import { UpdateCourseModuleProgressHandler } from '#lms-wrapper/application/lms-
 import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
 import { LmsEnrollmentRepository } from '#lms-wrapper/domain/repository/lms-enrollment.repository';
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
+import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -97,6 +98,13 @@ const deleteLmsEnrollmentHandler = {
   inject: [LmsEnrollmentRepository],
 };
 
+const getLmsStudentHandler = {
+  provide: GetLmsStudentHandler,
+  useFactory: (repository: LmsStudentRepository): GetLmsStudentHandler =>
+    new GetLmsStudentHandler(repository),
+  inject: [LmsStudentRepository],
+};
+
 export const handlers = [
   getLmsCoursesHandler,
   createLmsCourseHandler,
@@ -109,4 +117,5 @@ export const handlers = [
   updateLmsCourseModuleProgressHandler,
   createLmsEnrollmentHandler,
   deleteLmsEnrollmentHandler,
+  getLmsStudentHandler,
 ];

@@ -1,6 +1,7 @@
 import { MoodleWrapper } from '#/lms-wrapper/infrastructure/wrapper/moodle-wrapper';
 import { LmsStudentRepository } from '#/lms-wrapper/domain/repository/lms-student.repository';
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
+import { MoodleGetUserResponse } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
 
 export class MoodleStudentRepository implements LmsStudentRepository {
   constructor(private readonly moodleWrapper: MoodleWrapper) {}
@@ -28,6 +29,25 @@ export class MoodleStudentRepository implements LmsStudentRepository {
       email,
       password,
     });
+  }
+
+  async getByEmail(
+    universaeEmail: string,
+    personalEmail: string,
+  ): Promise<LmsStudent | null> {
+    const rawLmsStudent: MoodleGetUserResponse | null =
+      await this.moodleWrapper.getStudentByEmail(universaeEmail, personalEmail);
+
+    return rawLmsStudent
+      ? new LmsStudent({
+          id: rawLmsStudent.id,
+          username: rawLmsStudent.username,
+          firstName: rawLmsStudent.firstname,
+          lastName: rawLmsStudent.lastname,
+          email: rawLmsStudent.email,
+          password: '',
+        })
+      : null;
   }
 
   async delete(id: number): Promise<void> {

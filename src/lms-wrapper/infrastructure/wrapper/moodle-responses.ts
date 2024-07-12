@@ -39,6 +39,27 @@ export interface MoodleCreateUserResponse {
   username: string;
 }
 
+export interface MoodleGetUserResponse {
+  id: number;
+  username: string;
+  firstname: string;
+  lastname: string;
+  fullname: string;
+  email: string;
+  department: string;
+  firstaccess: number;
+  lastaccess: number;
+  auth: string;
+  suspended: boolean;
+  confirmed: boolean;
+  lang: string;
+  theme: string;
+  timezone: string;
+  mailformat: number;
+  profileimageurlsmall: string;
+  profileimageurl: string;
+}
+
 export interface MoodleLoginResponse {
   loginurl: string;
 }

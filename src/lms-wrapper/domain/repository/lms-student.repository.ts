@@ -9,5 +9,10 @@ export abstract class LmsStudentRepository {
     password: string,
   ): Promise<LmsStudent>;
 
+  abstract getByEmail(
+    universaeEmail: string,
+    personalEmail: string,
+  ): Promise<LmsStudent | null>;
+
   abstract delete(id: number): Promise<void>;
 }

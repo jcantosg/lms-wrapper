@@ -15,6 +15,8 @@ import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 import { CreateLmsEnrollmentCommand } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.command';
 import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
+import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
+import { GetLmsStudentCommand } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.command';
 
 export class CreateStudentFromCRMTypeormTransactionalService extends CreateStudentFromCRMTransactionalService {
   private logger: Logger;
@@ -27,6 +29,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     private readonly deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
+    private readonly getLmsStudentHandler: GetLmsStudentHandler,
   ) {
     super();
     this.logger = new Logger(CreateStudentFromCRMTransactionalService.name);
@@ -40,18 +43,27 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     let lmsId;
     const lmsEnrollmentsId: number[] = [];
     try {
-      const lmsStudent = await this.createLmsStudentHandler.handle(
-        new CreateLmsStudentCommand(
-          this.normalizeUsername(
-            `${entities.student.name}-${entities.student.surname}-${entities.student.surname2}`,
-          ),
-          entities.student.name,
-          `${entities.student.surname} ${entities.student.surname2}`,
+      let lmsStudent;
+      lmsStudent = await this.getLmsStudentHandler.handle(
+        new GetLmsStudentCommand(
           entities.student.email,
-          this.rawPassword,
+          entities.student.universaeEmail,
         ),
       );
-      lmsId = lmsStudent.value.id;
+      if (!lmsStudent) {
+        lmsStudent = await this.createLmsStudentHandler.handle(
+          new CreateLmsStudentCommand(
+            this.normalizeUsername(
+              `${entities.student.name}-${entities.student.surname}-${entities.student.surname2}`,
+            ),
+            entities.student.name,
+            `${entities.student.surname} ${entities.student.surname2}`,
+            entities.student.email,
+            this.rawPassword,
+          ),
+        );
+        lmsId = lmsStudent.value.id;
+      }
       lmsStudent.value.password = await this.passwordEncoder.encodePassword(
         this.rawPassword,
       );
