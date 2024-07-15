@@ -20,11 +20,14 @@ import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AddStudentToInternalGroupCommand } from '#student/application/add-student-to-internal-group/add-student-to-internal-group.command';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 import { AlreadyInInternalGroupException } from '#shared/domain/exception/sga-student/already-in-internal-group.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: AddStudentToInternalGroupHandler;
 let repository: InternalGroupRepository;
 let internalGroupGetter: InternalGroupGetter;
 let studentGetter: StudentGetter;
+let eventDispatcher: EventDispatcher;
 
 let internalGroupGetByAdminUserSpy: jest.SpyInstance;
 let internalGroupGetByStudentSpy: jest.SpyInstance;
@@ -50,6 +53,7 @@ describe('Add Student to Internal Group Handler', () => {
     repository = new InternalGroupMockRepository();
     internalGroupGetter = getAInternalGroupGetterMock();
     studentGetter = getAStudentGetterMock();
+    eventDispatcher = new EventDispatcherMock();
 
     internalGroupGetByAdminUserSpy = jest.spyOn(
       internalGroupGetter,
@@ -66,6 +70,7 @@ describe('Add Student to Internal Group Handler', () => {
       repository,
       internalGroupGetter,
       studentGetter,
+      eventDispatcher,
     );
   });
 

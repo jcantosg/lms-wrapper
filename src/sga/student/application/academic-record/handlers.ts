@@ -97,6 +97,7 @@ const transferAcademicRecordHandler = {
     enrollmentGetter: EnrollmentGetter,
     uuidService: UUIDGeneratorService,
     updateInternalGroupsService: UpdateInternalGroupsService,
+    eventDispatcher: EventDispatcher,
   ): TransferAcademicRecordHandler =>
     new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -110,6 +111,7 @@ const transferAcademicRecordHandler = {
       enrollmentGetter,
       uuidService,
       updateInternalGroupsService,
+      eventDispatcher,
     ),
   inject: [
     BusinessUnitGetter,

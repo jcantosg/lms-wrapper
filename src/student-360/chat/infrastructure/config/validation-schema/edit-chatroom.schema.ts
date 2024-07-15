@@ -1,5 +1,5 @@
 import Joi from 'joi';
 
 export const editChatroomSchema: Joi.ObjectSchema = Joi.object({
-  chatroomId: Joi.string().required(),
+  chatroomId: Joi.string().allow(null).required(),
 });

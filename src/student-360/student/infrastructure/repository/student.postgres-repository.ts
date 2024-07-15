@@ -192,7 +192,7 @@ export class StudentPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(
       'academicRecords.businessUnit',
-      'academic_record_business_unit',
+      'business_unit',
     );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.administrativeGroups`,

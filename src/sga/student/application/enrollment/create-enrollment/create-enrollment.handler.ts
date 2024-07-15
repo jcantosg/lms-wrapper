@@ -17,6 +17,8 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 
 export class CreateEnrollmentHandler implements CommandHandler {
   constructor(
@@ -24,6 +26,7 @@ export class CreateEnrollmentHandler implements CommandHandler {
     private readonly subjectGetter: SubjectGetter,
     private readonly transactionalService: TransactionalService,
     private readonly internalGroupRepository: InternalGroupRepository,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: CreateEnrollmentCommand): Promise<void> {
@@ -81,6 +84,10 @@ export class CreateEnrollmentHandler implements CommandHandler {
         internalGroup,
         student: academicRecord.student,
       });
+
+      await this.eventDispatcher.dispatch(
+        new InternalGroupMemberAddedEvent(internalGroup),
+      );
     }
   }
 

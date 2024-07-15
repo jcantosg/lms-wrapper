@@ -19,11 +19,14 @@ import { InternalGroupGetter } from '#student/domain/service/internal-group.gett
 import { AddTeacherToInternalGroupCommand } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.command';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: AddTeacherToInternalGroupHandler;
 let repository: InternalGroupRepository;
 let internalGroupGetter: InternalGroupGetter;
 let edaeUserGetter: EdaeUserGetter;
+let eventDispatcher: EventDispatcher;
 
 let internalGroupGetByAdminUserSpy: jest.SpyInstance;
 let edaeUserGetByAdminUserSpy: jest.SpyInstance;
@@ -48,6 +51,7 @@ describe('Add Teacher to Internal Group Handler', () => {
     repository = new InternalGroupMockRepository();
     internalGroupGetter = getAInternalGroupGetterMock();
     edaeUserGetter = getEdaeUserGetterMock();
+    eventDispatcher = new EventDispatcherMock();
 
     internalGroupGetByAdminUserSpy = jest.spyOn(
       internalGroupGetter,
@@ -60,6 +64,7 @@ describe('Add Teacher to Internal Group Handler', () => {
       repository,
       internalGroupGetter,
       edaeUserGetter,
+      eventDispatcher,
     );
   });
 

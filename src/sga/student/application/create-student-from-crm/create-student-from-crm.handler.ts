@@ -34,6 +34,8 @@ import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-c
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -54,6 +56,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly administrativeGroupRepository: AdministrativeGroupRepository,
     private readonly internalGroupRepository: InternalGroupRepository,
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -246,6 +249,12 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           administrativeGroup,
           internalGroups,
         });
+
+        internalGroups.map(async (group) => {
+          await this.eventDispatcher.dispatch(
+            new InternalGroupMemberAddedEvent(group),
+          );
+        });
       }
     } else {
       student = Student.createFromCRM(
@@ -339,6 +348,12 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         enrollments,
         administrativeGroup: null,
         internalGroups,
+      });
+
+      internalGroups.map(async (group) => {
+        await this.eventDispatcher.dispatch(
+          new InternalGroupMemberAddedEvent(group),
+        );
       });
     }
 

@@ -21,12 +21,15 @@ import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subje
 import clearAllMocks = jest.clearAllMocks;
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: CreateEnrollmentHandler;
 let academicRecordGetter: AcademicRecordGetter;
 let subjectGetter: SubjectGetter;
 let transactionalService: TransactionalService;
 let internalGroupRepository: InternalGroupRepository;
+let eventDispatcher: EventDispatcher;
 
 let getAcademicRecordSpy: jest.SpyInstance;
 let getSubjectSpy: jest.SpyInstance;
@@ -63,11 +66,13 @@ describe('Create Enrollment Unit Test', () => {
     subjectGetter = getASubjectGetterMock();
     transactionalService = new TransactionalServiceMock();
     internalGroupRepository = new InternalGroupMockRepository();
+    eventDispatcher = new EventDispatcherMock();
     handler = new CreateEnrollmentHandler(
       academicRecordGetter,
       subjectGetter,
       transactionalService,
       internalGroupRepository,
+      eventDispatcher,
     );
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getSubjectSpy = jest.spyOn(subjectGetter, 'getByAdminUser');

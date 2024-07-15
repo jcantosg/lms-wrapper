@@ -74,6 +74,11 @@ export class AcademicProgramPostgresRepository
     );
 
     queryBuilder.leftJoinAndSelect(
+      `programBlockSubject.defaultTeacher`,
+      'defaultTeacher',
+    );
+
+    queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPeriods`,
       'academicPeriods',
     );
@@ -87,7 +92,11 @@ export class AcademicProgramPostgresRepository
       relations: {
         businessUnit: true,
         title: true,
-        programBlocks: { subjects: true },
+        programBlocks: {
+          subjects: {
+            defaultTeacher: true,
+          },
+        },
         academicPeriods: true,
       },
     });

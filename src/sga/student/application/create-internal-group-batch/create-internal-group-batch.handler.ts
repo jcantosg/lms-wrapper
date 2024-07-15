@@ -78,7 +78,7 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
                       command.sufix ? ' ' : ''
                     }${command.sufix ?? ''}`,
                     [],
-                    [],
+                    subject.defaultTeacher ? [subject.defaultTeacher] : [],
                     academicPeriod,
                     academicProgram,
                     periodBlock,

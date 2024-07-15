@@ -46,6 +46,8 @@ import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/dom
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: TransferAcademicRecordHandler;
 let businessUnitGetter: BusinessUnitGetter;
@@ -59,6 +61,7 @@ let enrollmentCreatorService: EnrollmentCreator;
 let enrollmentGetter: EnrollmentGetter;
 let uuidGenerator: UUIDGeneratorService;
 let updateInternalGroupsService: UpdateInternalGroupsService;
+let eventDispatcher: EventDispatcher;
 
 let getAcademicRecordSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -121,6 +124,7 @@ describe('Transfer Academic Record Handler', () => {
     enrollmentGetter = getAnEnrollmentGetterMock();
     uuidGenerator = new UUIDv4GeneratorService();
     updateInternalGroupsService = getAUpdateInternalGroupsServiceMock();
+    eventDispatcher = new EventDispatcherMock();
 
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
@@ -148,6 +152,7 @@ describe('Transfer Academic Record Handler', () => {
       enrollmentGetter,
       uuidGenerator,
       updateInternalGroupsService,
+      eventDispatcher,
     );
   });
 

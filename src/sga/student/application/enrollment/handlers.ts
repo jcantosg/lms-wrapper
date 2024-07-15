@@ -17,6 +17,7 @@ import { SubjectCallRepository } from '#student/domain/repository/subject-call.r
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const getSubjectsNotEnrolledHandler = {
   provide: GetSubjectsNotEnrolledHandler,
@@ -36,6 +37,7 @@ const createEnrollmentHandler = {
     internalGroupRepository: InternalGroupRepository,
     createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
     deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+    eventDispatcher: EventDispatcher,
   ) => {
     const transactionalService = new CreateEnrollmentTransactionalService(
       datasource,
@@ -48,6 +50,7 @@ const createEnrollmentHandler = {
       subjectGetter,
       transactionalService,
       internalGroupRepository,
+      eventDispatcher,
     );
   },
   inject: [
@@ -56,6 +59,7 @@ const createEnrollmentHandler = {
     InternalGroupRepository,
     CreateLmsEnrollmentHandler,
     DeleteLmsEnrollmentHandler,
+    EventDispatcher,
   ],
 };
 

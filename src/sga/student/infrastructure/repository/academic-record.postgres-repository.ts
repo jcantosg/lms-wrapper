@@ -61,6 +61,10 @@ export class AcademicRecordPostgresRepository
       'academicProgram',
     );
     queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPeriod`,
+      'academicPeriod',
+    );
+    queryBuilder.leftJoinAndSelect(
       'academicProgram.title',
       'academicProgramTitle',
     );

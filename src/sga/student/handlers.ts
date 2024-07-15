@@ -50,6 +50,7 @@ import { GetInternalGroupStudentsHandler } from '#student/application/get-intern
 import { RemoveTeacherFromInternalGroupHandler } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.handler';
 import { RemoveStudentFromInternalGroupHandler } from '#student/application/remove-student-from-internal-group/remove-student-from-internal-group.handler';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -198,6 +199,7 @@ const createStudentFromCRMHandler = {
     administrativeGroupRepository: AdministrativeGroupRepository,
     internalGroupRepository: InternalGroupRepository,
     updateInternalGroupsService: UpdateInternalGroupsService,
+    eventDispatcher: EventDispatcher,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
       'ADMIN_USER_EMAIL',
@@ -222,6 +224,7 @@ const createStudentFromCRMHandler = {
       administrativeGroupRepository,
       internalGroupRepository,
       updateInternalGroupsService,
+      eventDispatcher,
     );
   },
   inject: [
@@ -304,13 +307,20 @@ const addTeacherToInternalGroupHandler = {
     repository: InternalGroupRepository,
     internalGroupGetter: InternalGroupGetter,
     edaeUserGetter: EdaeUserGetter,
+    eventDispatcher: EventDispatcher,
   ): AddTeacherToInternalGroupHandler =>
     new AddTeacherToInternalGroupHandler(
       repository,
       internalGroupGetter,
       edaeUserGetter,
+      eventDispatcher,
     ),
-  inject: [InternalGroupRepository, InternalGroupGetter, EdaeUserGetter],
+  inject: [
+    InternalGroupRepository,
+    InternalGroupGetter,
+    EdaeUserGetter,
+    EventDispatcher,
+  ],
 };
 
 const removeTeacherFromInternalGroupHandler = {
@@ -354,13 +364,20 @@ const addStudentToInternalGroupHandler = {
     repository: InternalGroupRepository,
     internalGroupGetter: InternalGroupGetter,
     studentGetter: StudentGetter,
+    eventDispatcher: EventDispatcher,
   ): AddStudentToInternalGroupHandler =>
     new AddStudentToInternalGroupHandler(
       repository,
       internalGroupGetter,
       studentGetter,
+      eventDispatcher,
     ),
-  inject: [InternalGroupRepository, InternalGroupGetter, StudentGetter],
+  inject: [
+    InternalGroupRepository,
+    InternalGroupGetter,
+    StudentGetter,
+    EventDispatcher,
+  ],
 };
 
 const getInternalGroupStudentsHandler = {

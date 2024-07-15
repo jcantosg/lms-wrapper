@@ -20,6 +20,8 @@ import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/dom
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 
 export class TransferAcademicRecordHandler implements CommandHandler {
   constructor(
@@ -34,6 +36,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     private readonly enrollmentGetter: EnrollmentGetter,
     private uuidService: UUIDGeneratorService,
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: TransferAcademicRecordCommand) {
@@ -155,6 +158,12 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       enrollments,
       internalGroups,
       oldEnrollments,
+    });
+
+    internalGroups.map(async (group) => {
+      await this.eventDispatcher.dispatch(
+        new InternalGroupMemberAddedEvent(group),
+      );
     });
   }
 }

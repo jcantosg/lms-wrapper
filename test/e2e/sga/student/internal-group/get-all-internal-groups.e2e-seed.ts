@@ -40,6 +40,8 @@ import { EdaeRoles } from '#/sga/shared/domain/enum/edae-user-roles.enum';
 import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import { Student } from '#shared/domain/entity/student.entity';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
+import { Chatroom } from '#shared/domain/entity/chatroom.entity';
+import { chatroomSchema } from '#shared/infrastructure/config/schema/chatroom.schema';
 
 export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -115,6 +117,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   private subjectRepository: Repository<Subject>;
   private edaeUserRepository: Repository<EdaeUser>;
   private studentRepository: Repository<Student>;
+  private chatroomRepository: Repository<Chatroom>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -134,6 +137,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
     this.subjectRepository = datasource.getRepository(subjectSchema);
     this.edaeUserRepository = datasource.getRepository(edaeUserSchema);
     this.studentRepository = datasource.getRepository(studentSchema);
+    this.chatroomRepository = datasource.getRepository(chatroomSchema);
   }
 
   async arrange(): Promise<void> {
@@ -392,6 +396,7 @@ export class GetAllInternalGroupsE2eSeed implements E2eSeed {
   }
 
   async clear(): Promise<void> {
+    await this.chatroomRepository.delete({});
     await this.internalGroupRepository.delete({});
     await this.studentRepository.delete({});
     await this.blockRelationRepository.delete({});
