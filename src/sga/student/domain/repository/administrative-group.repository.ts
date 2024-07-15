@@ -44,4 +44,9 @@ export abstract class AdministrativeGroupRepository {
     originGroup: AdministrativeGroup,
     destinationGroup: AdministrativeGroup,
   ): Promise<void>;
+  abstract getByStudentAndAcademicPeriodAndAcademicProgram(
+    studentId: string,
+    academicPeriodId: string,
+    academicProgramId: string,
+  ): Promise<AdministrativeGroup[]>;
 }

@@ -166,4 +166,8 @@ export class AdministrativeGroup extends BaseEntity {
       this._studentsNumber = this._students.length;
     }
   }
+
+  removeStudent(student: Student) {
+    this._students = this._students.filter((st) => st.id !== student.id);
+  }
 }

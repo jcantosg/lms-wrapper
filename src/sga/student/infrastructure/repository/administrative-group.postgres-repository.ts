@@ -274,4 +274,25 @@ export class AdministrativeGroupPostgresRepository
       await queryRunner.release();
     }
   }
+
+  async getByStudentAndAcademicPeriodAndAcademicProgram(
+    studentId: string,
+    academicPeriodId: string,
+    academicProgramId: string,
+  ): Promise<AdministrativeGroup[]> {
+    return await this.repository.find({
+      relations: {
+        academicPeriod: true,
+        academicProgram: true,
+        periodBlock: true,
+        programBlock: true,
+        students: true,
+      },
+      where: {
+        students: { id: studentId },
+        academicPeriod: { id: academicPeriodId },
+        academicProgram: { id: academicProgramId },
+      },
+    });
+  }
 }

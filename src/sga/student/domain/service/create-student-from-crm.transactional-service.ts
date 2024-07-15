@@ -13,7 +13,7 @@ export interface CreateStudentFromCRMTransactionParams
   student: Student;
   academicRecord: AcademicRecord;
   enrollments: Enrollment[];
-  administrativeGroup: AdministrativeGroup | null;
+  administrativeGroups: AdministrativeGroup[];
   internalGroups: InternalGroup[];
 }
 

@@ -20,6 +20,7 @@ import { AcademicProgramNotIncludedInAcademicPeriodException } from '#shared/dom
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 
@@ -36,6 +37,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     private readonly enrollmentGetter: EnrollmentGetter,
     private uuidService: UUIDGeneratorService,
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
+    private readonly updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     private readonly eventDispatcher: EventDispatcher,
   ) {}
 
@@ -143,8 +145,17 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       }
     });
 
+    const administrativeGroups =
+      await this.updateAdministrativeGroupsService.update(
+        oldAcademicRecord.student,
+        oldAcademicRecord,
+        newAcademicRecord,
+        command.adminUser,
+      );
+
     const internalGroups = await this.updateInternalGroupsService.update(
-      newAcademicRecord.student,
+      oldAcademicRecord.student,
+      oldAcademicRecord,
       enrollments,
       academicPeriod,
       academicProgram,
@@ -158,6 +169,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       enrollments,
       internalGroups,
       oldEnrollments,
+      administrativeGroups,
     });
 
     internalGroups.map(async (group) => {

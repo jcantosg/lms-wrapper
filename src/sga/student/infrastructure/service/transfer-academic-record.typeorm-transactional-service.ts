@@ -12,6 +12,7 @@ import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 import { CreateLmsEnrollmentCommand } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.command';
 import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 
 export class TransferAcademicRecordTypeormTransactionalService extends TransferAcademicRecordTransactionalService {
   private logger: Logger;
@@ -69,6 +70,16 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
           ),
         );
         oldEnrollmentIds.push(oldEnrollment.lmsEnrollment!.value.courseId);
+      }
+
+      this.logger.log('updating administrative groups');
+      for (const group of entities.administrativeGroups) {
+        await queryRunner.manager.save(AdministrativeGroup, {
+          id: group.id,
+          students: group.students,
+          updatedAt: group.updatedAt,
+          updatedBy: group.updatedBy,
+        });
       }
 
       this.logger.log('updating internal groups');

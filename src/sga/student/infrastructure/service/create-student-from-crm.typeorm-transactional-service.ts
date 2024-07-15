@@ -87,13 +87,12 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         lmsEnrollmentsId.push(enrollment.subject.lmsCourse!.value.id);
       }
 
-      if (entities.administrativeGroup) {
-        entities.administrativeGroup.addStudent(entities.student);
+      for (const group of entities.administrativeGroups) {
         await queryRunner.manager.save(AdministrativeGroup, {
-          id: entities.administrativeGroup.id,
-          students: entities.administrativeGroup.students,
-          updatedAt: entities.administrativeGroup.updatedAt,
-          updatedBy: entities.administrativeGroup.updatedBy,
+          id: group.id,
+          students: group.students,
+          updatedAt: group.updatedAt,
+          updatedBy: group.updatedBy,
         });
       }
 

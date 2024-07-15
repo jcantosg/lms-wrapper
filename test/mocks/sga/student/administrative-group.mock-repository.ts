@@ -14,4 +14,5 @@ export class AdministrativeGroupMockRepository
   getByAcademicProgram = jest.fn();
   getByAcademicPeriodAndProgramAndFirstBlock = jest.fn();
   moveStudents = jest.fn();
+  getByStudentAndAcademicPeriodAndAcademicProgram = jest.fn();
 }

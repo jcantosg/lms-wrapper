@@ -5,12 +5,14 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export class UpdateInternalGroupsService {
   constructor(private readonly repository: InternalGroupRepository) {}
 
   public async update(
     student: Student,
+    oldAcademicRecord: AcademicRecord | null,
     enrollments: Enrollment[],
     academicPeriod: AcademicPeriod,
     academicProgram: AcademicProgram,
@@ -18,14 +20,20 @@ export class UpdateInternalGroupsService {
   ): Promise<InternalGroup[]> {
     const internalGroups: InternalGroup[] = [];
 
-    const existentInternalGroups: InternalGroup[] =
-      await this.repository.getAllByStudent(student.id);
+    if (oldAcademicRecord) {
+      const existentInternalGroups: InternalGroup[] =
+        await this.repository.getAllByStudentAndKeys(
+          student.id,
+          oldAcademicRecord.academicPeriod,
+          oldAcademicRecord.academicProgram,
+        );
 
-    for (const group of existentInternalGroups) {
-      group.removeStudent(student);
-      group.updatedAt = new Date();
-      group.updatedBy = adminUser;
-      internalGroups.push(group);
+      for (const group of existentInternalGroups) {
+        group.removeStudent(student);
+        group.updatedAt = new Date();
+        group.updatedBy = adminUser;
+        internalGroups.push(group);
+      }
     }
 
     for (const enrollment of enrollments) {

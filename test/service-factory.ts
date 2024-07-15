@@ -39,6 +39,7 @@ import { InternalGroupGetter } from '#student/domain/service/internal-group.gett
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
 import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-password-generator.service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -249,6 +250,14 @@ export function getAUpdateInternalGroupsServiceMock(): UpdateInternalGroupsServi
   return (
     UpdateInternalGroupsService as jest.Mocked<
       typeof UpdateInternalGroupsService
+    >
+  ).prototype;
+}
+
+export function getAUpdateAdministrativeGroupsServiceMock(): UpdateAdministrativeGroupsService {
+  return (
+    UpdateAdministrativeGroupsService as jest.Mocked<
+      typeof UpdateAdministrativeGroupsService
     >
   ).prototype;
 }

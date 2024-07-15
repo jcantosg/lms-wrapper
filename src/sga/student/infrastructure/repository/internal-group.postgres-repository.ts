@@ -218,12 +218,18 @@ export class InternalGroupPostgresRepository
     });
   }
 
-  async getAllByStudent(studentId: string): Promise<InternalGroup[]> {
+  async getAllByStudentAndKeys(
+    studentId: string,
+    academicPeriod: AcademicPeriod,
+    academicProgram: AcademicProgram,
+  ): Promise<InternalGroup[]> {
     return await this.repository.find({
       where: {
         students: {
           id: studentId,
         },
+        academicPeriod: { id: academicPeriod.id },
+        academicProgram: { id: academicProgram.id },
       },
       relations: {
         defaultTeacher: true,

@@ -41,7 +41,6 @@ import { AdministrativeGroupStatusStudentGetter } from '#student/domain/service/
 import { SearchStudentsByAdministrativeGroupHandler } from '#student/application/search-students-by-administrative-group/search-students-by-administrative-group.handler';
 import { AddTeacherToInternalGroupHandler } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.handler';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
-import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { GetInternalGroupDetailHandler } from '#student/application/get-internal-group-detail/get-internal-group-detail.handler';
 import { EditInternalGroupHandler } from '#student/application/edit-internal-group/edit-internal-group.handler';
 import { GetCoursingSubjectStudentsHandler } from '#student/application/get-coursing-subject-students/get-coursing-subject-students.handler';
@@ -50,6 +49,7 @@ import { GetInternalGroupStudentsHandler } from '#student/application/get-intern
 import { RemoveTeacherFromInternalGroupHandler } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.handler';
 import { RemoveStudentFromInternalGroupHandler } from '#student/application/remove-student-from-internal-group/remove-student-from-internal-group.handler';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const getAccessQualificationsHandler = {
@@ -196,9 +196,8 @@ const createStudentFromCRMHandler = {
     enrollmentCreator: EnrollmentCreator,
     createStudentFromCRMTransactionalService: CreateStudentFromCRMTransactionalService,
     enrollmentGetter: EnrollmentGetter,
-    administrativeGroupRepository: AdministrativeGroupRepository,
-    internalGroupRepository: InternalGroupRepository,
     updateInternalGroupsService: UpdateInternalGroupsService,
+    updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     eventDispatcher: EventDispatcher,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
@@ -221,9 +220,8 @@ const createStudentFromCRMHandler = {
       enrollmentCreator,
       createStudentFromCRMTransactionalService,
       enrollmentGetter,
-      administrativeGroupRepository,
-      internalGroupRepository,
       updateInternalGroupsService,
+      updateAdministrativeGroupsService,
       eventDispatcher,
     );
   },
@@ -242,9 +240,9 @@ const createStudentFromCRMHandler = {
     EnrollmentCreator,
     CreateStudentFromCRMTransactionalService,
     EnrollmentGetter,
-    AdministrativeGroupRepository,
-    InternalGroupRepository,
     UpdateInternalGroupsService,
+    UpdateAdministrativeGroupsService,
+    EventDispatcher,
   ],
 };
 

@@ -20,6 +20,7 @@ import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.se
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -97,6 +98,7 @@ const transferAcademicRecordHandler = {
     enrollmentGetter: EnrollmentGetter,
     uuidService: UUIDGeneratorService,
     updateInternalGroupsService: UpdateInternalGroupsService,
+    updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     eventDispatcher: EventDispatcher,
   ): TransferAcademicRecordHandler =>
     new TransferAcademicRecordHandler(
@@ -111,6 +113,7 @@ const transferAcademicRecordHandler = {
       enrollmentGetter,
       uuidService,
       updateInternalGroupsService,
+      updateAdministrativeGroupsService,
       eventDispatcher,
     ),
   inject: [
@@ -125,6 +128,8 @@ const transferAcademicRecordHandler = {
     EnrollmentGetter,
     UUIDGeneratorService,
     UpdateInternalGroupsService,
+    UpdateAdministrativeGroupsService,
+    EventDispatcher,
   ],
 };
 

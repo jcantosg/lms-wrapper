@@ -27,13 +27,11 @@ import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-s
 import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.service';
 import { CreateStudentFromCRMTransactionalService } from '#student/domain/service/create-student-from-crm.transactional-service';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
-import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
-import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 
@@ -53,9 +51,8 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly enrollmentCreator: EnrollmentCreator,
     private readonly createStudentFromCRMTransactionalService: CreateStudentFromCRMTransactionalService,
     private readonly enrollmentGetter: EnrollmentGetter,
-    private readonly administrativeGroupRepository: AdministrativeGroupRepository,
-    private readonly internalGroupRepository: InternalGroupRepository,
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
+    private readonly updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     private readonly eventDispatcher: EventDispatcher,
   ) {}
 
@@ -224,18 +221,17 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           }
         });
 
-        const administrativeGroup =
-          await this.administrativeGroupRepository.getByAcademicPeriodAndProgramAndFirstBlock(
-            academicPeriod.id,
-            academicProgram.id,
+        const administrativeGroups =
+          await this.updateAdministrativeGroupsService.update(
+            student,
+            null,
+            newAcademicRecord,
+            adminUser,
           );
-        if (administrativeGroup) {
-          administrativeGroup.updated();
-          administrativeGroup.updatedBy = adminUser;
-        }
 
         const internalGroups = await this.updateInternalGroupsService.update(
           student,
+          null,
           enrollments,
           academicPeriod,
           academicProgram,
@@ -246,7 +242,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           student,
           academicRecord: newAcademicRecord,
           enrollments,
-          administrativeGroup,
+          administrativeGroups,
           internalGroups,
         });
 
@@ -327,26 +323,28 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
 
       student.academicRecords.push(newAcademicRecord);
 
-      const internalGroups: InternalGroup[] = [];
-      for (const enrollment of enrollments) {
-        const groups = await this.internalGroupRepository.getByKeys(
-          academicPeriod,
-          academicProgram,
-          enrollment.subject,
+      const administrativeGroups =
+        await this.updateAdministrativeGroupsService.update(
+          student,
+          null,
+          newAcademicRecord,
+          adminUser,
         );
-        const defaultGroup = groups.find((group) => group.isDefault);
-        if (defaultGroup) {
-          defaultGroup.addStudents([student]);
-          defaultGroup.updatedBy = adminUser;
-          internalGroups.push(defaultGroup);
-        }
-      }
+
+      const internalGroups = await this.updateInternalGroupsService.update(
+        student,
+        null,
+        enrollments,
+        academicPeriod,
+        academicProgram,
+        adminUser,
+      );
 
       await this.createStudentFromCRMTransactionalService.execute({
         student,
         academicRecord: newAcademicRecord,
         enrollments,
-        administrativeGroup: null,
+        administrativeGroups,
         internalGroups,
       });
 

@@ -30,6 +30,11 @@ import { programBlockSchema } from '#academic-offering/infrastructure/config/sch
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { academicRecordTransferSchema } from '#student/infrastructure/config/schema/academic-record-transfer.schema';
 import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-transfer.entity';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
+import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
+import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
+import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
+import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 
 export class TransferAcademicRecordE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@test.com';
@@ -89,6 +94,7 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
   private oldAcademicRecord: AcademicRecord;
   private title: Title;
   private programBlock: ProgramBlock;
+  private periodBlock: PeriodBlock;
 
   private countryRepository: Repository<Country>;
   private academicPeriodRepository: Repository<AcademicPeriod>;
@@ -99,7 +105,10 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
   private studentRepository: Repository<Student>;
   private academicRecordRepository: Repository<AcademicRecord>;
   private programBlockRepository: Repository<ProgramBlock>;
+  private periodBlockRepository: Repository<PeriodBlock>;
   private transferRepository: Repository<AcademicRecordTransfer>;
+  private administrativeGroupRepository: Repository<AdministrativeGroup>;
+  private blockRelationRepository: Repository<BlockRelation>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -119,6 +128,12 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
     this.transferRepository = datasource.getRepository(
       academicRecordTransferSchema,
     );
+    this.administrativeGroupRepository = datasource.getRepository(
+      administrativeGroupSchema,
+    );
+    this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
+    this.blockRelationRepository =
+      datasource.getRepository(blockRelationSchema);
   }
 
   async arrange(): Promise<void> {
@@ -193,6 +208,7 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
       this.superAdminUser,
       ProgramBlockStructureType.CUSTOM,
     );
+    await this.academicProgramRepository.save(this.academicProgram);
 
     this.programBlock = ProgramBlock.create(
       TransferAcademicRecordE2eSeed.programBlockId,
@@ -201,8 +217,8 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
 
+    await this.programBlockRepository.save(this.programBlock);
     this.academicProgram.addProgramBlock(this.programBlock);
-    await this.academicProgramRepository.save(this.academicProgram);
 
     this.academicPeriod = AcademicPeriod.create(
       TransferAcademicRecordE2eSeed.academicPeriodId,
@@ -215,17 +231,28 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     this.academicPeriod.addAcademicProgram(this.academicProgram);
-    this.academicPeriod.addPeriodBlocks([
-      PeriodBlock.create(
+    await this.academicPeriodRepository.save(this.academicPeriod);
+
+    this.periodBlock = PeriodBlock.create(
+      uuid(),
+      this.academicPeriod,
+      'Bloque 1',
+      new Date(),
+      new Date(),
+      this.superAdminUser,
+    );
+
+    await this.periodBlockRepository.save(this.periodBlock);
+    this.academicPeriod.addPeriodBlocks([this.periodBlock]);
+
+    await this.blockRelationRepository.save(
+      BlockRelation.create(
         uuid(),
-        this.academicPeriod,
-        'Bloque 1',
-        new Date(),
-        new Date(),
+        this.periodBlock,
+        this.programBlock,
         this.superAdminUser,
       ),
-    ]);
-    await this.academicPeriodRepository.save(this.academicPeriod);
+    );
 
     this.student = Student.createFromSGA(
       TransferAcademicRecordE2eSeed.studentId,
@@ -252,31 +279,36 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.academicRecordRepository.save(this.oldAcademicRecord);
+
+    await this.administrativeGroupRepository.save(
+      AdministrativeGroup.create(
+        uuid(),
+        'adminGroupCode',
+        this.businessUnit,
+        this.academicPeriod,
+        this.academicProgram,
+        this.programBlock,
+        this.academicPeriod.periodBlocks[0],
+        this.superAdminUser,
+      ),
+    );
   }
 
   async clear(): Promise<void> {
-    const allAcademicRecordsTransfers = await this.transferRepository.find();
-    await this.transferRepository.delete(
-      allAcademicRecordsTransfers.map(
-        (academicRecordTransfer) => academicRecordTransfer.id,
-      ),
-    );
-    await this.academicRecordRepository.delete(
-      TransferAcademicRecordE2eSeed.oldAcademicRecordId,
-    );
-    await this.academicRecordRepository.delete(
-      TransferAcademicRecordE2eSeed.newAcademicRecordId,
-    );
-    await this.programBlockRepository.delete(this.programBlock.id);
-    await this.academicProgramRepository.delete(
-      this.notIncludedAcademicProgram.id,
-    );
-    await this.academicProgramRepository.delete(this.academicProgram.id);
-    await this.titleRepository.delete(this.title.id);
-    await this.virtualCampusRepository.delete(this.virtualCampus.id);
-    await this.academicPeriodRepository.delete(this.academicPeriod.id);
-    await this.studentRepository.delete(this.student.id);
-    await this.businessUnitRepository.delete(this.businessUnit.id);
+    await this.administrativeGroupRepository.delete({});
+    await this.transferRepository.delete({});
+    await this.academicRecordRepository.delete({});
+    await this.academicRecordRepository.delete({});
+    await this.blockRelationRepository.delete({});
+    await this.periodBlockRepository.delete({});
+    await this.programBlockRepository.delete({});
+    await this.academicProgramRepository.delete({});
+    await this.academicProgramRepository.delete({});
+    await this.titleRepository.delete({});
+    await this.virtualCampusRepository.delete({});
+    await this.academicPeriodRepository.delete({});
+    await this.studentRepository.delete({});
+    await this.businessUnitRepository.delete({});
     await removeAdminUser(this.datasource, this.adminUser);
     await removeAdminUser(this.datasource, this.superAdminUser);
   }
