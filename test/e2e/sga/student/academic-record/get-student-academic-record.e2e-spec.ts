@@ -45,8 +45,16 @@ describe('/academic-record/:id (GET)', () => {
       {
         id: GetStudentAcademicRecordE2eSeed.academicRecordId,
         title: GetStudentAcademicRecordE2eSeed.titleName,
-        academicProgram: GetStudentAcademicRecordE2eSeed.academicProgramName,
-        academicPeriod: GetStudentAcademicRecordE2eSeed.academicPeriodName,
+        academicProgram: {
+          id: GetStudentAcademicRecordE2eSeed.academicProgramId,
+          name: GetStudentAcademicRecordE2eSeed.academicProgramName,
+          code: GetStudentAcademicRecordE2eSeed.academicProgramCode,
+        },
+        academicPeriod: {
+          id: GetStudentAcademicRecordE2eSeed.academicPeriodId,
+          name: GetStudentAcademicRecordE2eSeed.academicPeriodName,
+          code: GetStudentAcademicRecordE2eSeed.academicPeriodCode,
+        },
         status: AcademicRecordStatusEnum.VALID,
       },
     ]);

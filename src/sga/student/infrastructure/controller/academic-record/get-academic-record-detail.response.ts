@@ -13,8 +13,16 @@ interface AcademicRecordDetailResponse {
     avatar: string | null;
     isActive: boolean;
   };
-  academicPeriod: string;
-  academicProgram: string;
+  academicPeriod: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  academicProgram: {
+    id: string;
+    name: string;
+    code: string;
+  };
   modality: AcademicRecordModalityEnum;
   isModular: boolean;
   status: AcademicRecordStatusEnum;
@@ -35,8 +43,16 @@ export class GetAcademicRecordDetailResponse {
         avatar: record.student.avatar,
         isActive: record.student.isActive,
       },
-      academicPeriod: record.academicPeriod.name,
-      academicProgram: record.academicProgram.name,
+      academicPeriod: {
+        id: record.academicPeriod.id,
+        name: record.academicPeriod.name,
+        code: record.academicPeriod.code,
+      },
+      academicProgram: {
+        id: record.academicProgram.id,
+        name: record.academicProgram.name,
+        code: record.academicProgram.code,
+      },
       modality: record.modality,
       isModular: record.isModular,
       status: record.status,

@@ -5,6 +5,7 @@ import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subje
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { getDateFormattedMMYY } from '#shared/domain/lib/date';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 interface GetEnrollmentByAcademicRecordResponse {
   id: string;
@@ -19,6 +20,12 @@ interface GetEnrollmentByAcademicRecordResponse {
     finalGrade: SubjectCallFinalGradeEnum;
     status: SubjectCallStatusEnum;
   }[];
+  subject: {
+    id: string;
+    name: string;
+    code: string;
+    type: SubjectType;
+  };
   maxCalls: number;
 }
 
@@ -43,6 +50,12 @@ export class GetEnrollmentsByAcademicRecordResponse {
             number: call.callNumber,
           };
         }),
+        subject: {
+          id: enrollment.subject.id,
+          name: enrollment.subject.name,
+          code: enrollment.subject.code,
+          type: enrollment.subject.type,
+        },
         maxCalls: enrollment.maxCalls,
       };
     });

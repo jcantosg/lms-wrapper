@@ -46,8 +46,16 @@ describe('/academic-record/:id (GET)', () => {
           avatar: null,
           isActive: true || false,
         }),
-        academicPeriod: EditAcademicRecordE2eSeed.academicPeriodName,
-        academicProgram: EditAcademicRecordE2eSeed.academicProgramName,
+        academicPeriod: {
+          id: EditAcademicRecordE2eSeed.academicPeriodId,
+          name: EditAcademicRecordE2eSeed.academicPeriodName,
+          code: EditAcademicRecordE2eSeed.academicPeriodCode,
+        },
+        academicProgram: {
+          id: EditAcademicRecordE2eSeed.academicProgramId,
+          name: EditAcademicRecordE2eSeed.academicProgramName,
+          code: EditAcademicRecordE2eSeed.academicProgramCode,
+        },
         modality: AcademicRecordModalityEnum.ELEARNING,
         isModular: EditAcademicRecordE2eSeed.academicRecordIsModular,
         status: AcademicRecordStatusEnum.VALID,

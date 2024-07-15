@@ -4,8 +4,16 @@ import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-s
 interface StudentAcademicRecordResponse {
   id: string;
   title: string;
-  academicProgram: string;
-  academicPeriod: string;
+  academicProgram: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  academicPeriod: {
+    id: string;
+    name: string;
+    code: string;
+  };
   status: AcademicRecordStatusEnum;
 }
 
@@ -14,8 +22,16 @@ export class GetStudentAcademicRecordResponse {
     return records.map((record) => ({
       id: record.id,
       title: record.academicProgram.title.name,
-      academicProgram: record.academicProgram.name,
-      academicPeriod: record.academicPeriod.name,
+      academicProgram: {
+        id: record.academicProgram.id,
+        name: record.academicProgram.name,
+        code: record.academicProgram.code,
+      },
+      academicPeriod: {
+        id: record.academicPeriod.id,
+        name: record.academicPeriod.name,
+        code: record.academicPeriod.code,
+      },
       status: record.status,
     }));
   }
