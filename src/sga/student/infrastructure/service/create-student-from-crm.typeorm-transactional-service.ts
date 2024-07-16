@@ -17,6 +17,8 @@ import { CreateLmsEnrollmentCommand } from '#lms-wrapper/application/create-lms-
 import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
 import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
 import { GetLmsStudentCommand } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.command';
+import { Student } from '#shared/domain/entity/student.entity';
+import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 
 export class CreateStudentFromCRMTypeormTransactionalService extends CreateStudentFromCRMTransactionalService {
   private logger: Logger;
@@ -68,18 +70,65 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         this.rawPassword,
       );
       entities.student.lmsStudent = lmsStudent;
-      await queryRunner.manager.save(entities.student);
-      await queryRunner.manager.save(entities.academicRecord);
+      await queryRunner.manager.save(Student, {
+        id: entities.student.id,
+        name: entities.student.name,
+        surname: entities.student.surname,
+        surname2: entities.student.surname2,
+        email: entities.student.email,
+        universaeEmail: entities.student.universaeEmail,
+        avatar: entities.student.avatar,
+        birthDate: entities.student.birthDate,
+        gender: entities.student.gender,
+        country: entities.student.country,
+        citizenship: entities.student.citizenship,
+        identityDocument: entities.student.identityDocument,
+        socialSecurityNumber: entities.student.socialSecurityNumber,
+        status: entities.student.status,
+        isActive: entities.student.isActive,
+        origin: entities.student.origin,
+        crmId: entities.student.crmId,
+        accessQualification: entities.student.accessQualification,
+        niaIdalu: entities.student.niaIdalu,
+        phone: entities.student.phone,
+        contactCountry: entities.student.contactCountry,
+        state: entities.student.state,
+        city: entities.student.city,
+        address: entities.student.address,
+        guardianName: entities.student.guardianName,
+        guardianSurname: entities.student.guardianSurname,
+        guardianEmail: entities.student.guardianEmail,
+        guardianPhone: entities.student.guardianPhone,
+        createdBy: entities.student.createdBy,
+        updatedBy: entities.student.updatedBy,
+        academicRecords: entities.student.academicRecords,
+        password: entities.student.password,
+      });
 
+      if (entities.academicRecord) {
+        await queryRunner.manager.save(entities.academicRecord);
+      }
       for (const enrollment of entities.enrollments) {
+        const lmsEnrollment = new LmsEnrollment({
+          courseId: enrollment.subject.lmsCourse!.value.id,
+          studentId: lmsStudent.value.id,
+          startDate: Math.floor(
+            enrollment.academicRecord.academicPeriod.startDate.getTime() /
+              1000.0,
+          ),
+          endDate: Math.floor(
+            enrollment.academicRecord.academicPeriod.endDate.getTime() / 1000.0,
+          ),
+        });
+        enrollment.lmsEnrollment = lmsEnrollment;
         await queryRunner.manager.save(enrollment);
         for (const subjectCall of enrollment.calls) {
           await queryRunner.manager.save(subjectCall);
         }
         await this.createLmsEnrollmentHandler.handle(
           new CreateLmsEnrollmentCommand(
-            enrollment.subject.lmsCourse!.value.id,
-            enrollment.academicRecord.student.lmsStudent!.value.id,
+            lmsEnrollment.value.courseId,
+            lmsEnrollment.value.studentId,
             enrollment.academicRecord.academicPeriod.startDate,
             enrollment.academicRecord.academicPeriod.endDate,
           ),

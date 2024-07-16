@@ -174,13 +174,13 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
         );
       if (
-        !academicRecords.find(
+        !academicRecords.some(
           (ar) =>
             ar.businessUnit.id === businessUnit.id &&
             ar.virtualCampus.id === virtualCampus.id &&
             ar.academicPeriod.id === academicPeriod.id &&
             ar.academicProgram.id === academicProgram.id &&
-            ![
+            [
               AcademicRecordStatusEnum.VALID,
               AcademicRecordStatusEnum.FINISHED,
             ].includes(ar.status),
@@ -247,6 +247,14 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           await this.eventDispatcher.dispatch(
             new InternalGroupMemberAddedEvent(group),
           );
+        });
+      } else {
+        await this.createStudentFromCRMTransactionalService.execute({
+          student,
+          academicRecord: null,
+          enrollments: [],
+          administrativeGroups: [],
+          internalGroups: [],
         });
       }
     } else {

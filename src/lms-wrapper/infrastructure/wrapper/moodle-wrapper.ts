@@ -122,7 +122,7 @@ export class MoodleWrapper implements LmsWrapper {
     personalEmail: string,
   ): Promise<any> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_user_get_users_by_field&moodlewsrestformat=json&field=email&values[0]=${universaeEmail}&values[1]=${personalEmail}`;
-    const response: MoodleGetUserResponse[] = await this.wrapper.post(
+    const response: MoodleGetUserResponse[] = await this.wrapper.get(
       this.url,
       queryParams,
     );

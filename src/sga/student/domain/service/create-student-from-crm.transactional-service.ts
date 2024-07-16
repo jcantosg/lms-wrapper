@@ -11,7 +11,7 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 export interface CreateStudentFromCRMTransactionParams
   extends TransactionParams {
   student: Student;
-  academicRecord: AcademicRecord;
+  academicRecord: AcademicRecord | null;
   enrollments: Enrollment[];
   administrativeGroups: AdministrativeGroup[];
   internalGroups: InternalGroup[];

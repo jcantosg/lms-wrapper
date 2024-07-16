@@ -140,6 +140,9 @@ export class AcademicRecordPostgresRepository
             title: true,
           },
           academicPeriod: true,
+          businessUnit: true,
+          virtualCampus: true,
+          student: true,
         },
       });
     }
