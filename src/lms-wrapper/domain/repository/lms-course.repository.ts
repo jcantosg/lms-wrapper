@@ -14,7 +14,7 @@ export abstract class LmsCourseRepository {
     studentId: number,
   ): Promise<LmsModuleContent>;
 
-  abstract getByName(name: string): Promise<LmsCourse>;
+  abstract getByName(name: string): Promise<LmsCourse | null>;
 
   abstract getCourseProgress(
     courseId: number,

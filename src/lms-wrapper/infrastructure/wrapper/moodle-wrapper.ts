@@ -195,20 +195,40 @@ export class MoodleWrapper implements LmsWrapper {
     });
   }
 
-  public async getByName(name: string): Promise<LmsCourse> {
+  public async getByName(name: string): Promise<LmsCourse | null> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses_by_field&moodlewsrestformat=json&field=shortname&value=${name}`;
     const courseResponse: MoodleCourseByFieldResponse = await this.wrapper.get(
       this.url,
       queryParams,
     );
+    if (!courseResponse.courses[0]) {
+      return null;
+    }
     const course = courseResponse.courses[0];
+    const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${course.id}`;
+    const courseContentResponse: MoodleCourseContentResponse[] =
+      await this.wrapper.get(
+        '/webservice/rest/server.php',
+        courseContentQueryParam,
+      );
 
     return new LmsCourse({
       id: course.id,
       categoryId: course.categoryid,
       shortname: course.shortname,
       name: course.displayname,
-      modules: [],
+      modules: courseContentResponse
+        .map((courseContentResponse) => {
+          return {
+            id: courseContentResponse.id,
+            name: stringToCamelCase(courseContentResponse.name),
+            image:
+              moodleCourseContentIcon[
+                stringToCamelCase(courseContentResponse.name)
+              ] ?? '/courseContent.svg',
+          };
+        })
+        .filter((value) => value.name !== '' && value.name !== 'partners'),
     });
   }
 
