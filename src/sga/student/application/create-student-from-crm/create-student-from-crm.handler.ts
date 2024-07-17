@@ -141,11 +141,11 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         student.universaeEmail ?? data.universaeEmail,
         true,
         adminUser,
-        null,
+        student.avatar,
         student.birthDate ?? data.birthDate,
         student.gender ?? data.gender,
         student.country ?? (await this.countryGetter.getByName(data.country)),
-        null,
+        student.citizenship,
         student.identityDocument?.value ?? data.documentNumber
           ? {
               identityDocumentType: IdentityDocumentType.DNI,
@@ -153,18 +153,18 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             }
           : null,
         student.socialSecurityNumber ?? data.nuss,
-        null,
-        null,
+        student.accessQualification,
+        student.niaIdalu,
         student.phone ?? data.phone,
-        null,
+        student.contactCountry,
         student.state ?? data.province,
         student.city ?? data.city,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+        student.address,
+        student.guardianName,
+        student.guardianSurname,
+        student.guardianEmail,
+        student.guardianPhone,
+        student.lmsStudent,
       );
 
       const academicRecords =

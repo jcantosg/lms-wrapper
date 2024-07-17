@@ -13,6 +13,7 @@ import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-
 import { CreateLmsEnrollmentCommand } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.command';
 import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
+import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 
 export class TransferAcademicRecordTypeormTransactionalService extends TransferAcademicRecordTransactionalService {
   private logger: Logger;
@@ -48,14 +49,26 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
       this.logger.log('creating enrollments');
 
       for (const enrollment of entities.enrollments) {
+        const lmsEnrollment = new LmsEnrollment({
+          courseId: enrollment.subject.lmsCourse!.value.id,
+          studentId: entities.newAcademicRecord.student.lmsStudent!.value.id,
+          startDate: Math.floor(
+            enrollment.academicRecord.academicPeriod.startDate.getTime() /
+              1000.0,
+          ),
+          endDate: Math.floor(
+            enrollment.academicRecord.academicPeriod.endDate.getTime() / 1000.0,
+          ),
+        });
+        enrollment.lmsEnrollment = lmsEnrollment;
         await queryRunner.manager.save<Enrollment>(enrollment);
         for (const call of enrollment.calls) {
           await queryRunner.manager.save<SubjectCall>(call);
         }
         await this.createLmsEnrollmentHandler.handle(
           new CreateLmsEnrollmentCommand(
-            enrollment.subject.lmsCourse!.value.id,
-            enrollment.academicRecord.student.lmsStudent!.value.id,
+            lmsEnrollment.value.courseId,
+            lmsEnrollment.value.studentId,
             enrollment.academicRecord.academicPeriod.startDate,
             enrollment.academicRecord.academicPeriod.endDate,
           ),
@@ -79,6 +92,7 @@ export class TransferAcademicRecordTypeormTransactionalService extends TransferA
           students: group.students,
           updatedAt: group.updatedAt,
           updatedBy: group.updatedBy,
+          studentsNumber: group.studentsNumber,
         });
       }
 

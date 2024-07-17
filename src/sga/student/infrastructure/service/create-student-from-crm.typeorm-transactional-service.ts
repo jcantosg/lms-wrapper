@@ -103,6 +103,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         updatedBy: entities.student.updatedBy,
         academicRecords: entities.student.academicRecords,
         password: entities.student.password,
+        lmsStudent: entities.student.lmsStudent,
       });
 
       if (entities.academicRecord) {
@@ -142,6 +143,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
           students: group.students,
           updatedAt: group.updatedAt,
           updatedBy: group.updatedBy,
+          studentsNumber: group.studentsNumber,
         });
       }
 
