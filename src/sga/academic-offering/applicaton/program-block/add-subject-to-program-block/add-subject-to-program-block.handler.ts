@@ -7,6 +7,8 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockMisMatchBusinessUnitException } from '#shared/domain/exception/academic-offering/program-block.mismatch-business-unit.exception';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { InvalidSubjectTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-type.exception';
 
 export class AddSubjectToProgramBlockHandler implements CommandHandler {
   constructor(
@@ -28,6 +30,10 @@ export class AddSubjectToProgramBlockHandler implements CommandHandler {
       ),
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
+
+    if (subject.type === SubjectType.SPECIALTY) {
+      throw new InvalidSubjectTypeException();
+    }
 
     if (
       subject.businessUnit.id !== programBlock.academicProgram.businessUnit.id

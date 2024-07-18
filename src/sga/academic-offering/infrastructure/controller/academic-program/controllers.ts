@@ -15,6 +15,7 @@ import { GetAcademicProgramsPlainByPeriodController } from '#academic-offering/i
 import { GetSubjectsByAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/get-subjects-by-academic-program/get-subjects-by-academic-program.controller';
 import { GetAllInternalGroupsController } from '#academic-offering/infrastructure/controller/academic-program/get-all-internal-groups/get-all-internal-groups.controller';
 import { GetSpecialtiesByAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/get-specialties-by-academic-program/get-specialties-by-academic-program.controller';
+import { AddSpecialtyToAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/add-specialty-to-academic-program.controller';
 
 export const academicProgramControllers = [
   GetAcademicProgramsByTitleController,
@@ -34,4 +35,5 @@ export const academicProgramControllers = [
   GetSubjectsByAcademicProgramController,
   GetAllInternalGroupsController,
   GetSpecialtiesByAcademicProgramController,
+  AddSpecialtyToAcademicProgramController,
 ];
