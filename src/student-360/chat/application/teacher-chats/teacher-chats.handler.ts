@@ -10,12 +10,14 @@ import { InternalGroup } from '#student/domain/entity/internal-group-entity';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 
 export class TeacherChatsHandler implements QueryHandler {
   constructor(
     private readonly academicRecordRepository: AcademicRecordRepository,
     private readonly academicRecordGetter: AcademicRecordGetter,
     private readonly chatroomRepository: ChatroomRepository,
+    private readonly internalGroupRepository: InternalGroupRepository,
   ) {}
 
   async handle(query: TeacherChatsQuery): Promise<Chatroom[]> {
@@ -25,6 +27,8 @@ export class TeacherChatsHandler implements QueryHandler {
 
     const subjectsToChat: Subject[] = [];
     const studentInternalGroupsFilter: InternalGroup[] = [];
+    const studentInternalGroups =
+      await this.internalGroupRepository.getAllByStudent(query.student.id);
 
     for (const academicRecord of academicRecords) {
       const academicRecordDetail =
@@ -36,7 +40,7 @@ export class TeacherChatsHandler implements QueryHandler {
       subjectsToChat.push(...this.getSubjectsToChat(academicRecordDetail));
 
       subjectsToChat.map((subject) => {
-        query.student.internalGroups.filter((internalGroup) => {
+        studentInternalGroups.filter((internalGroup) => {
           if (
             internalGroup.subject.id === subject.id &&
             academicRecordDetail.academicProgram.id ===

@@ -3,6 +3,7 @@ import { AcademicRecordRepository } from '#student/domain/repository/academic-re
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { EditChatroomHandler } from '#student-360/chat/application/edit-chatroom/edit-chatroom.handler';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 
 const teacherChatsHandler = {
   provide: TeacherChatsHandler,
@@ -10,13 +11,20 @@ const teacherChatsHandler = {
     academicRecordRepository: AcademicRecordRepository,
     academicRecordGetter: AcademicRecordGetter,
     chatroomRepository: ChatroomRepository,
+    internalGroupRepository: InternalGroupRepository,
   ): TeacherChatsHandler =>
     new TeacherChatsHandler(
       academicRecordRepository,
       academicRecordGetter,
       chatroomRepository,
+      internalGroupRepository,
     ),
-  inject: [AcademicRecordRepository, AcademicRecordGetter, ChatroomRepository],
+  inject: [
+    AcademicRecordRepository,
+    AcademicRecordGetter,
+    ChatroomRepository,
+    InternalGroupRepository,
+  ],
 };
 
 const editChatroomHandler = {

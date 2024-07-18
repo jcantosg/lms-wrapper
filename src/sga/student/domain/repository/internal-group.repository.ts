@@ -46,4 +46,6 @@ export abstract class InternalGroupRepository {
     academicPeriod: AcademicPeriod,
     academicProgram: AcademicProgram,
   ): Promise<InternalGroup[]>;
+
+  abstract getAllByStudent(studentId: string): Promise<InternalGroup[]>;
 }

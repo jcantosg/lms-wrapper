@@ -99,11 +99,6 @@ export class StudentPostgresRepository
           periodBlock: true,
           programBlock: true,
         },
-        internalGroups: {
-          academicPeriod: true,
-          academicProgram: true,
-          subject: true,
-        },
       },
     });
   }

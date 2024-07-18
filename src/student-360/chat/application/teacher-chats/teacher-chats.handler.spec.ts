@@ -18,14 +18,18 @@ import { AcademicRecordRepository } from '#student/domain/repository/academic-re
 import { AcademicRecordMockRepository } from '#test/mocks/sga/student/academic-record.mock-repository';
 import { ChatroomMockRepository } from '#test/mocks/shared/chatroom.mock-repository';
 import { TeacherChatsQuery } from '#student-360/chat/application/teacher-chats/teacher-chats.query';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 
 let handler: TeacherChatsHandler;
 let academicRecordGetter: AcademicRecordGetter;
 let academicRecordRepository: AcademicRecordRepository;
 let chatroomRepository: ChatroomRepository;
+let internalGroupRepository: InternalGroupRepository;
 let academicRecordMatchingSpy: jest.SpyInstance;
 let chatroomGetByStudentSpy: jest.SpyInstance;
 let getStudentAcademicRecordsSpy: jest.SpyInstance;
+let internalGroupGetAllByStudentSpy: jest.SpyInstance;
 
 const academicRecord = getAnAcademicRecord();
 const student = getASGAStudent();
@@ -62,6 +66,7 @@ describe('Teacher Chats Handler Test', () => {
   beforeAll(() => {
     academicRecordRepository = new AcademicRecordMockRepository();
     chatroomRepository = new ChatroomMockRepository();
+    internalGroupRepository = new InternalGroupMockRepository();
 
     academicRecordGetter = getAnAcademicRecordGetterMock();
     academicRecordMatchingSpy = jest.spyOn(
@@ -73,10 +78,15 @@ describe('Teacher Chats Handler Test', () => {
       academicRecordGetter,
       'getStudentAcademicRecord',
     );
+    internalGroupGetAllByStudentSpy = jest.spyOn(
+      internalGroupRepository,
+      'getAllByStudent',
+    );
     handler = new TeacherChatsHandler(
       academicRecordRepository,
       academicRecordGetter,
       chatroomRepository,
+      internalGroupRepository,
     );
   });
 
@@ -97,6 +107,10 @@ describe('Teacher Chats Handler Test', () => {
 
     chatroomGetByStudentSpy.mockImplementation(() =>
       Promise.resolve([chatroom]),
+    );
+
+    internalGroupGetAllByStudentSpy.mockImplementation(() =>
+      Promise.resolve([internalGroup]),
     );
 
     const response = await handler.handle(query);
