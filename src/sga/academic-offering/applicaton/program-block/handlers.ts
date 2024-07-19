@@ -11,6 +11,7 @@ import { RemoveSubjectFromProgramBlockHandler } from '#academic-offering/applica
 import { AcademicProgramRepository } from '#academic-offering/domain/repository/academic-program.repository';
 import { SubjectRepository } from '#academic-offering/domain/repository/subject.repository';
 import { MoveSubjectFromProgramBlockHandler } from '#academic-offering/applicaton/program-block/move-subject-from-program-block/move-subject-from-program-block.handler';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 
 const createProgramBlockHandler = {
   provide: CreateProgramBlockHandler,
@@ -78,13 +79,20 @@ const removeSubjectFromProgramBlockHandler = {
     repository: ProgramBlockRepository,
     subjectGetter: SubjectGetter,
     programBlockGetter: ProgramBlockGetter,
+    enrollmentRepository: EnrollmentRepository,
   ): RemoveSubjectFromProgramBlockHandler =>
     new RemoveSubjectFromProgramBlockHandler(
       repository,
       subjectGetter,
       programBlockGetter,
+      enrollmentRepository,
     ),
-  inject: [ProgramBlockRepository, SubjectGetter, ProgramBlockGetter],
+  inject: [
+    ProgramBlockRepository,
+    SubjectGetter,
+    ProgramBlockGetter,
+    EnrollmentRepository,
+  ],
 };
 
 const addSubjectToProgramBlockHandler = {

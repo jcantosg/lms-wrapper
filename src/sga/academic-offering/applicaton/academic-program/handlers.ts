@@ -27,6 +27,9 @@ import { InternalGroupRepository } from '#student/domain/repository/internal-gro
 import { GetSpecialtiesByAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/get-specialties-by-academic-program/get-specialties-by-academic-program.handler';
 import { AddSpecialtyToAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/add-specialty-to-academic-program/add-specialty-to-academic-program.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
+import { RemoveSpecialtyFromAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/remove-specialty-from-academic-program/remove-specialty-from-academic-program.handler';
+import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -232,6 +235,31 @@ const addSpecialtyToAcademicProgramHandler = {
   inject: [ProgramBlockRepository, AcademicProgramGetter, SubjectGetter],
 };
 
+const removeSpecialtyFromAcademicProgramHandler = {
+  provide: RemoveSpecialtyFromAcademicProgramHandler,
+  useFactory: (
+    academicProgramGetter: AcademicProgramGetter,
+    subjectGetter: SubjectGetter,
+    programBlockGetter: ProgramBlockGetter,
+    enrollmentRepository: EnrollmentRepository,
+    repository: ProgramBlockRepository,
+  ) =>
+    new RemoveSpecialtyFromAcademicProgramHandler(
+      academicProgramGetter,
+      subjectGetter,
+      programBlockGetter,
+      enrollmentRepository,
+      repository,
+    ),
+  inject: [
+    AcademicProgramGetter,
+    SubjectGetter,
+    ProgramBlockGetter,
+    EnrollmentRepository,
+    ProgramBlockRepository,
+  ],
+};
+
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -250,4 +278,5 @@ export const academicProgramHandlers = [
   getAllInternalGroupsHandler,
   getSpecialtiesByAcademicProgramHandler,
   addSpecialtyToAcademicProgramHandler,
+  removeSpecialtyFromAcademicProgramHandler,
 ];
