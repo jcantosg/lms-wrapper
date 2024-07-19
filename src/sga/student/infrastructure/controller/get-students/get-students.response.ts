@@ -19,6 +19,7 @@ export interface GetStudentResponse {
     name: string;
     code: string;
   }[];
+  isDefense: boolean;
 }
 
 export class GetStudentsResponse {
@@ -52,6 +53,7 @@ export class GetStudentsResponse {
               };
             },
           ),
+          isDefense: student.isDefense,
         };
       }),
     };
