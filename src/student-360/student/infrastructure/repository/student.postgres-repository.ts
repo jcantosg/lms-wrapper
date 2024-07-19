@@ -110,12 +110,14 @@ export class StudentPostgresRepository
   ): Promise<number> {
     const aliasQuery = 'student';
     const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
     const baseRepository = isSuperAdmin
       ? this
       : await this.filterBusinessUnits(
           queryBuilder,
           'oneToMany',
           adminUserBusinessUnits,
+          'academic_record_business_unit',
         );
 
     return await (
@@ -143,6 +145,7 @@ export class StudentPostgresRepository
           queryBuilder,
           'oneToMany',
           adminUserBusinessUnits,
+          'academic_record_business_unit',
         );
 
     const rawStudents = await (
@@ -187,7 +190,7 @@ export class StudentPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(
       'academicRecords.businessUnit',
-      'business_unit',
+      'academic_record_business_unit',
     );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.administrativeGroups`,

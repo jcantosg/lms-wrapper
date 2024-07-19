@@ -46,18 +46,16 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     queryBuilder: SelectQueryBuilder<T>,
     relationType: string,
     adminUserBusinessUnits?: BusinessUnit[],
+    businessUnitAlias?: string,
   ): Promise<TypeOrmRepository<T>> {
+    const alias =
+      businessUnitAlias ??
+      (relationType === 'oneToMany' ? 'business_unit' : 'business_units');
+
     if (adminUserBusinessUnits && adminUserBusinessUnits.length > 0) {
-      queryBuilder.andWhere(
-        `"${
-          relationType === 'oneToMany' ? 'business_unit' : 'business_units'
-        }"."id" IN(:...businessUnits)`,
-        {
-          businessUnits: adminUserBusinessUnits.map(
-            (bu: BusinessUnit) => bu.id,
-          ),
-        },
-      );
+      queryBuilder.andWhere(`"${alias}"."id" IN(:...businessUnits)`, {
+        businessUnits: adminUserBusinessUnits.map((bu: BusinessUnit) => bu.id),
+      });
     }
 
     return this;
