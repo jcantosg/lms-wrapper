@@ -53,6 +53,7 @@ const command = new EditStudentCommand(
   null,
   null,
   null,
+  false,
 );
 
 describe('Edit Student Handler', () => {

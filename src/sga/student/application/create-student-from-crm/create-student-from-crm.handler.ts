@@ -165,6 +165,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         student.guardianEmail,
         student.guardianPhone,
         student.lmsStudent,
+        data.defense,
       );
 
       const academicRecords =
@@ -280,6 +281,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.city,
         adminUser,
         null,
+        data.defense,
       );
 
       const newAcademicRecord = AcademicRecord.createFromCRM(

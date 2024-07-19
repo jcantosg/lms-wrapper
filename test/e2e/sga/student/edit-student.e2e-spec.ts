@@ -56,6 +56,7 @@ describe('/student/:id (PUT)', () => {
         email: 'juan@test.org',
         universaeEmail: 'juanros@universae.com',
         isActive: true,
+        isDefense: false,
       })
       .expect(200);
     const repository = datasource.getRepository(studentSchema);
@@ -75,6 +76,7 @@ describe('/student/:id (PUT)', () => {
         email: 'samuel@test.org',
         universaeEmail: 'juanros@universae.com',
         isActive: true,
+        isDefense: false,
       })
       .expect(409);
     expect(response.body.message).toEqual('sga.student.duplicated-email');

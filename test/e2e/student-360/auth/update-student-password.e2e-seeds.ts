@@ -59,6 +59,7 @@ export class UpdateStudentPasswordE2eSeed implements E2eSeed {
       null,
       this.adminUser,
       null,
+      false,
     );
 
     await this.studentRepository.save(this.student);

@@ -48,6 +48,7 @@ interface EditStudentBody {
   guardianEmail: string | null;
   guardianPhone: string | null;
   status: boolean;
+  isDefense: boolean;
 }
 
 @Controller('student')
@@ -97,6 +98,7 @@ export class EditStudentController {
       body.guardianSurname,
       body.guardianEmail,
       body.guardianPhone,
+      body.isDefense,
     );
 
     await this.handler.handle(command);

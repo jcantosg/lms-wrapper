@@ -51,6 +51,7 @@ export class StudentPostgresRepository
       updatedBy: student.updatedBy,
       academicRecords: student.academicRecords,
       password: student.password,
+      isDefense: student.isDefense,
     });
   }
 

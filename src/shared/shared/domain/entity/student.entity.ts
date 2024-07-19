@@ -53,6 +53,7 @@ export class Student extends BaseEntity {
     private _lmsStudent: LmsStudent | null,
     private _administrativeGroups: AdministrativeGroup[],
     private _internalGroups: InternalGroup[],
+    private _isDefense: boolean,
   ) {
     super(id, new Date(), new Date());
   }
@@ -175,6 +176,14 @@ export class Student extends BaseEntity {
 
   public set isActive(value: boolean) {
     this._isActive = value;
+  }
+
+  public get isDefense(): boolean {
+    return this._isDefense;
+  }
+
+  public set isDefense(value: boolean) {
+    this._isDefense = value;
   }
 
   public get origin(): StudentOrigin {
@@ -388,6 +397,7 @@ export class Student extends BaseEntity {
       lmsStudent,
       [],
       [],
+      false,
     );
   }
 
@@ -410,6 +420,7 @@ export class Student extends BaseEntity {
     city: string | null,
     user: AdminUser,
     lmsStudent: LmsStudent | null,
+    isDefense: boolean,
   ) {
     return new Student(
       id,
@@ -447,6 +458,7 @@ export class Student extends BaseEntity {
       lmsStudent,
       [],
       [],
+      isDefense,
     );
   }
 
@@ -477,6 +489,7 @@ export class Student extends BaseEntity {
     guardianEmail: string | null,
     guardianPhone: string | null,
     lmsStudent: LmsStudent | null,
+    isDefense: boolean,
   ) {
     this.name = name;
     this.surname = surname;
@@ -508,6 +521,7 @@ export class Student extends BaseEntity {
     if (lmsStudent) {
       this._lmsStudent = lmsStudent;
     }
+    this.isDefense = isDefense;
   }
 
   public updateLMSStudent(lmsStudent: LmsStudent): void {
