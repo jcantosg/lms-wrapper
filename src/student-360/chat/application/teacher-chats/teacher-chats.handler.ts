@@ -6,7 +6,7 @@ import { GetStudentAcademicRecordsQuery } from '#student-360/academic-offering/a
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';

@@ -69,6 +69,9 @@ export class InternalGroup extends BaseEntity {
     for (const teacher of teachers) {
       if (!this._teachers.find((te) => te.id === teacher.id)) {
         this._teachers.push(teacher);
+        this.defaultTeacher = !this.defaultTeacher
+          ? teacher
+          : this.defaultTeacher;
       }
     }
   }

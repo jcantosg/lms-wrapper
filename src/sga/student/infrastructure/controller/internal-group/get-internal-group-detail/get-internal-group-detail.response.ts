@@ -1,4 +1,4 @@
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export interface TeacherResponse {
   id: string;

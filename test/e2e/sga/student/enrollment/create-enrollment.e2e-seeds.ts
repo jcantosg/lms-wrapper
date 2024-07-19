@@ -37,7 +37,7 @@ import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema
 import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 import { getALmsCourse, getALmsStudent } from '#test/value-object-factory';
 

@@ -4,7 +4,7 @@ import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AddInternalGroupToAcademicPeriodCommand } from '#student/application/add-internal-group-to-academic-period/add-internal-group-to-academic-period.command';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';

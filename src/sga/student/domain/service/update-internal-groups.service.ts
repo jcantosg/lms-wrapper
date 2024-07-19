@@ -1,7 +1,7 @@
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { Student } from '#shared/domain/entity/student.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';

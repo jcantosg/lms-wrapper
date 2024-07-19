@@ -4,7 +4,7 @@ import { DeleteLmsStudentCommand } from '#/lms-wrapper/application/lms-student/d
 import { DeleteLmsStudentHandler } from '#/lms-wrapper/application/lms-student/delete-lms-student/delete-lms-student.handler';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import {
   CreateStudentFromCRMTransactionalService,
   CreateStudentFromCRMTransactionParams,

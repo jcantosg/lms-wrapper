@@ -2,7 +2,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';

@@ -1,6 +1,6 @@
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import {
   TransferAcademicRecordTransactionalService,

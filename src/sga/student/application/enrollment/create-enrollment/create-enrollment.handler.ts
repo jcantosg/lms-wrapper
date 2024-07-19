@@ -14,7 +14,7 @@ import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subje
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';

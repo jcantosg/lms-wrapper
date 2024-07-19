@@ -9,7 +9,7 @@ import {
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 
 let service: InternalGroupGetter;

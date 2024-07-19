@@ -35,7 +35,7 @@ import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';

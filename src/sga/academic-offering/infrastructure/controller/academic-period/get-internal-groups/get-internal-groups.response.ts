@@ -1,5 +1,5 @@
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export interface GetInternalGroupResponse {
   id: string;

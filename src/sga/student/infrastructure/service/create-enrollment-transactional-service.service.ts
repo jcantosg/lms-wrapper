@@ -4,7 +4,7 @@ import {
   TransactionParams,
 } from '#shared/domain/service/transactional-service.service';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';

@@ -31,7 +31,7 @@ import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';

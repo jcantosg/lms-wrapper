@@ -2,7 +2,7 @@ import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.servi
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { EdaeUserNotFoundException } from '#shared/domain/exception/edae-user/edae-user-not-found.exception';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { RemoveTeacherFromInternalGroupCommand } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.command';

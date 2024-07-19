@@ -1,7 +1,7 @@
 import { QueryHandler } from '#shared/domain/bus/query.handler';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
 import { GetInternalGroupStudentsQuery } from '#student/application/get-internal-group-students/get-internal-group-students.query';
 import { GetInternalGroupStudentsCriteria } from '#student/application/get-internal-group-students/get-internal-group-students.criteria';

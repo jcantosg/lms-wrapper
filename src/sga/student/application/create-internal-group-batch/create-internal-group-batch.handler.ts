@@ -7,7 +7,7 @@ import { AcademicProgramGetter } from '#academic-offering/domain/service/academi
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';

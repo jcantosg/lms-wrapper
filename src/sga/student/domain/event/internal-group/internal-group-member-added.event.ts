@@ -1,4 +1,4 @@
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { ApplicationEvent } from '#shared/domain/event/application.event';
 
 export class InternalGroupMemberAddedEvent implements ApplicationEvent {
