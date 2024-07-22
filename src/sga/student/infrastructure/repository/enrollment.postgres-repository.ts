@@ -71,6 +71,33 @@ export class EnrollmentPostgresRepository
     });
   }
 
+  async getByStudentAndSubject(
+    studentId: string,
+    subjectId: string,
+  ): Promise<Enrollment | null> {
+    return await this.repository.findOne({
+      where: {
+        academicRecord: {
+          student: {
+            id: studentId,
+          },
+        },
+        subject: { id: subjectId },
+      },
+      relations: {
+        calls: true,
+        subject: true,
+        academicRecord: { student: true },
+      },
+      order: {
+        calls: {
+          callNumber: 'DESC',
+          callDate: 'DESC',
+        },
+      },
+    });
+  }
+
   async matching(criteria: Criteria): Promise<Enrollment[]> {
     const queryBuilder = this.initializeQueryBuilder('enrollment');
     let criteriaToQueryBuilder = await this.convertCriteriaToQueryBuilder(

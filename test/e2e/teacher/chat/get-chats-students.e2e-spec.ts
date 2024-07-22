@@ -1,12 +1,12 @@
 import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
-import { loginStudent } from '#test/e2e/sga/e2e-auth-helper';
+import { loginTeacher } from '#test/e2e/sga/e2e-auth-helper';
 import { ChatsE2eSeed } from '#test/e2e/student-360/chat/chats.e2e-seed';
 
-const path = `/student-360/teacher-chat`;
+const path = '/edae-360/student-chat';
 
-describe('/student-360/teacher-chat (GET)', () => {
+describe('eda-360/student-chat (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let studentToken: string;
@@ -15,15 +15,37 @@ describe('/student-360/teacher-chat (GET)', () => {
     httpServer = app.getHttpServer();
     seeder = new ChatsE2eSeed(datasource);
     await seeder.arrange();
-    studentToken = await loginStudent(
+    studentToken = await loginTeacher(
       httpServer,
-      ChatsE2eSeed.studentUniversaeEmail,
-      ChatsE2eSeed.studentPassword,
+      ChatsE2eSeed.edaeUserEmail,
+      ChatsE2eSeed.edaeUserPassword,
     );
   });
 
   it('should return unauthorized', async () => {
     await supertest(httpServer).get(path).expect(401);
+  });
+
+  it('should throw 400 error if query params required are not provided', async () => {
+    await supertest(httpServer)
+      .get(path)
+      .query({
+        academicPeriodId: 'ed2fba69-d710-4ca0-a977-efbbba18441e',
+      })
+      .auth(studentToken, { type: 'bearer' })
+      .expect(400);
+  });
+
+  it('should throw 400 error if all query params required are not provided', async () => {
+    await supertest(httpServer)
+      .get(path)
+      .query({
+        academicPeriodId: 'ed2fba69-d710-4ca0-a977-efbbba18441e',
+        titleId: 'ed2fba69-d710-4ca0-a977-efbbba18441e',
+        subjectId: 'ed2fba69-d710-4ca0-a977-efbbba18441e',
+      })
+      .auth(studentToken, { type: 'bearer' })
+      .expect(400);
   });
 
   it('should return all student teacher chats', async () => {

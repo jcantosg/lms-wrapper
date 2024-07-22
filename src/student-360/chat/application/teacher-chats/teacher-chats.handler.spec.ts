@@ -13,11 +13,15 @@ import {
   getASGAStudent,
   getASubject,
 } from '#test/entity-factory';
-import { getAnAcademicRecordGetterMock } from '#test/service-factory';
+import {
+  getAnAcademicRecordGetterMock,
+  getASubjectsToChatGetterMock,
+} from '#test/service-factory';
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { AcademicRecordMockRepository } from '#test/mocks/sga/student/academic-record.mock-repository';
 import { ChatroomMockRepository } from '#test/mocks/shared/chatroom.mock-repository';
 import { TeacherChatsQuery } from '#student-360/chat/application/teacher-chats/teacher-chats.query';
+import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 
@@ -26,10 +30,12 @@ let academicRecordGetter: AcademicRecordGetter;
 let academicRecordRepository: AcademicRecordRepository;
 let chatroomRepository: ChatroomRepository;
 let internalGroupRepository: InternalGroupRepository;
+let studentSubjectsToChatGetter: StudentSubjectsToChatGetter;
 let academicRecordMatchingSpy: jest.SpyInstance;
 let chatroomGetByStudentSpy: jest.SpyInstance;
 let getStudentAcademicRecordsSpy: jest.SpyInstance;
-let internalGroupGetAllByStudentSpy: jest.SpyInstance;
+let getSubjectsToChatSpy: jest.SpyInstance;
+let internalGroupRepositoryGetAllByStudentSpy: jest.SpyInstance;
 
 const academicRecord = getAnAcademicRecord();
 const student = getASGAStudent();
@@ -67,6 +73,7 @@ describe('Teacher Chats Handler Test', () => {
     academicRecordRepository = new AcademicRecordMockRepository();
     chatroomRepository = new ChatroomMockRepository();
     internalGroupRepository = new InternalGroupMockRepository();
+    studentSubjectsToChatGetter = getASubjectsToChatGetterMock();
 
     academicRecordGetter = getAnAcademicRecordGetterMock();
     academicRecordMatchingSpy = jest.spyOn(
@@ -78,21 +85,31 @@ describe('Teacher Chats Handler Test', () => {
       academicRecordGetter,
       'getStudentAcademicRecord',
     );
-    internalGroupGetAllByStudentSpy = jest.spyOn(
+    getSubjectsToChatSpy = jest.spyOn(
+      studentSubjectsToChatGetter,
+      'getSubjects',
+    );
+    internalGroupRepositoryGetAllByStudentSpy = jest.spyOn(
       internalGroupRepository,
       'getAllByStudent',
     );
+
     handler = new TeacherChatsHandler(
       academicRecordRepository,
       academicRecordGetter,
       chatroomRepository,
       internalGroupRepository,
+      studentSubjectsToChatGetter,
     );
   });
 
   it('should get teacher chats empty when student has not academic records', async () => {
     academicRecordMatchingSpy.mockImplementation(() => Promise.resolve([]));
     chatroomGetByStudentSpy.mockImplementation(() => Promise.resolve([]));
+    getSubjectsToChatSpy.mockImplementation(() => Promise.resolve([]));
+    internalGroupRepositoryGetAllByStudentSpy.mockImplementation(() =>
+      Promise.resolve([]),
+    );
     const response = await handler.handle(query);
     expect(response).toHaveLength(0);
   });
@@ -109,7 +126,8 @@ describe('Teacher Chats Handler Test', () => {
       Promise.resolve([chatroom]),
     );
 
-    internalGroupGetAllByStudentSpy.mockImplementation(() =>
+    getSubjectsToChatSpy.mockImplementation(() => Promise.resolve([subject]));
+    internalGroupRepositoryGetAllByStudentSpy.mockImplementation(() =>
       Promise.resolve([internalGroup]),
     );
 

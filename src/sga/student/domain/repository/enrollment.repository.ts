@@ -27,4 +27,9 @@ export abstract class EnrollmentRepository {
     adminUserBusinessUnits: string[],
     isSuperAdmin: boolean,
   ): Promise<Enrollment[]>;
+
+  abstract getByStudentAndSubject(
+    studentId: string,
+    subjectId: string,
+  ): Promise<Enrollment | null>;
 }

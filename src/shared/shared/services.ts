@@ -22,6 +22,7 @@ import { CRMImportRepository } from '#shared/domain/repository/crm-import.reposi
 import { ChatroomsByInternalGroupCreator } from '#shared/domain/service/chatrooms-by-internal-group-creator.service';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
+import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -113,4 +114,5 @@ export const services = [
   passwordChecker,
   excelFileParser,
   chatroomsByInternalGroupCreator,
+  StudentSubjectsToChatGetter,
 ];
