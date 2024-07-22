@@ -37,6 +37,7 @@ export class InternalGroupPostgresRepository
       updatedAt: internalGroup.updatedAt,
       createdBy: internalGroup.createdBy,
       updatedBy: internalGroup.updatedBy,
+      defaultTeacher: internalGroup.defaultTeacher,
     });
   }
 
