@@ -98,6 +98,7 @@ export class EditChatroomSeed {
   public static edaeUserName = 'teacher';
   public static edaeUserSurname = 'Surname';
   public static edaeUserEmail = 'edae-user@universae.com';
+  public static edaeUserPassword = 'password';
 
   public static internalGroupId = uuid();
   public static internalGroupCode = 'code';
@@ -301,7 +302,7 @@ export class EditChatroomSeed {
       true,
       country,
       null,
-      'password',
+      await passwordEncoder.encodePassword(EditChatroomSeed.edaeUserPassword),
     );
     await this.edaeUserRepository.save(this.edaeUser);
 

@@ -12,6 +12,7 @@ import { ChatroomRepository } from '#shared/domain/repository/chatroom.repositor
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
+import { EditChatroomHandler } from '#shared/application/edit-chatroom/edit-chatroom.handler';
 
 const createEdaeUserRefreshTokenHandler = {
   provide: CreateEdaeUserRefreshTokenHandler,
@@ -91,6 +92,13 @@ const getChatsStudentsHandler = {
   ],
 };
 
+const editChatroomHandler = {
+  provide: EditChatroomHandler,
+  useFactory: (chatroomRepository: ChatroomRepository): EditChatroomHandler =>
+    new EditChatroomHandler(chatroomRepository),
+  inject: [ChatroomRepository],
+};
+
 export const handlers = [
   createEdaeUserRefreshTokenHandler,
   expireEdaeUserRefreshTokenHandler,
@@ -99,4 +107,5 @@ export const handlers = [
   getTitlesTeacherChatHandler,
   getSubjectsTeacherChatHandler,
   getChatsStudentsHandler,
+  editChatroomHandler,
 ];

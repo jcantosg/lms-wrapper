@@ -1,6 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
-import { EditChatroomCommand } from '#student-360/chat/application/edit-chatroom/edit-chatroom.command';
+import { EditChatroomCommand } from '#shared/application/edit-chatroom/edit-chatroom.command';
 import { ChatroomNotFoundException } from '#shared/domain/exception/chat/chatroom.not-found.exception';
 
 export class EditChatroomHandler implements CommandHandler {

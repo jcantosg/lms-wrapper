@@ -10,20 +10,20 @@ import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-re
 import { editChatroomSchema } from '#shared/infrastructure/config/validation-schema/edit-chatroom.schema';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
-import { StudentJwtAuthGuard } from '#student-360/student/infrastructure/auth/student-jwt-auth.guard';
 import { EditChatroomCommand } from '#shared/application/edit-chatroom/edit-chatroom.command';
 import { EditChatroomHandler } from '#shared/application/edit-chatroom/edit-chatroom.handler';
+import { EdaeUserJwtAuthGuard } from '#/teacher/infrastructure/auth/edae-user-jwt-auth.guard';
 
 interface EditChatroomBody {
   chatroomId: string;
 }
 
-@Controller('student-360')
+@Controller('edae-360')
 export class EditChatroomController {
   constructor(private readonly handler: EditChatroomHandler) {}
 
   @Put('chatroom/:id')
-  @UseGuards(StudentJwtAuthGuard)
+  @UseGuards(EdaeUserJwtAuthGuard)
   @UsePipes(
     new JoiRequestParamIdValidationPipeService(uuidSchema),
     new JoiRequestBodyValidationPipe(editChatroomSchema),
