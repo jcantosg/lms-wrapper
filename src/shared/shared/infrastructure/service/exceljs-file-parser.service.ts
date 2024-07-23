@@ -19,12 +19,17 @@ import {
   AcademicRecordModalityEnum,
   getAllAcademicRecordModalities,
 } from '#student/domain/enum/academic-record-modality.enum';
+import {
+  IdentityDocumentType,
+  getIdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
 
 export interface ImportData {
   name: string;
   surname1: string;
   surname2: string;
   personalEmail: string;
+  documentType: IdentityDocumentType | null;
   documentNumber: string | null;
   universaeEmail: string;
   password: string;
@@ -71,7 +76,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
         null,
         null,
         null,
-        CRMImportErrorMessage.FORMAT_ERROR,
+        validationResult.error.details[0].message,
       );
       await this.crmImportRepository.save(importResult);
 
@@ -168,6 +173,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
       surname1: validationResult.value.apellido_1,
       surname2: validationResult.value.apellido_2,
       personalEmail: validationResult.value.email_personal,
+      documentType: getIdentityDocumentType(validationResult.value.NIF),
       documentNumber: validationResult.value.NIF,
       universaeEmail: validationResult.value.email_universae,
       password: validationResult.value.password_alumno,

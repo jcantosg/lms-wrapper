@@ -146,9 +146,10 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         student.gender ?? data.gender,
         student.country ?? (await this.countryGetter.getByName(data.country)),
         student.citizenship,
-        student.identityDocument?.value ?? data.documentNumber
+        student.identityDocument?.value ??
+          (data.documentNumber && data.documentType)
           ? {
-              identityDocumentType: IdentityDocumentType.DNI,
+              identityDocumentType: data.documentType!,
               identityDocumentNumber: data.documentNumber!,
             }
           : null,
@@ -272,7 +273,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.gender,
         await this.countryGetter.getByName(data.country),
         {
-          identityDocumentType: IdentityDocumentType.DNI,
+          identityDocumentType: data.documentType ?? IdentityDocumentType.DNI,
           identityDocumentNumber: data.documentNumber ?? '',
         },
         data.nuss,

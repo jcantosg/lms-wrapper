@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 export const zohoExcelImportSchema: Joi.ObjectSchema = Joi.object({
   nombre: Joi.string().required(),
   apellido_1: Joi.string().required(),
-  apellido_2: Joi.string().required(),
+  apellido_2: Joi.string().required().allow('', null),
   email_personal: Joi.string().required(),
   NIF: Joi.string().required().allow('', null),
   email_universae: Joi.string().required(),
