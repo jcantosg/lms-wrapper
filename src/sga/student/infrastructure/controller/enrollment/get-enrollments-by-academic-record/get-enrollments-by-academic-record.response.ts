@@ -33,31 +33,47 @@ export class GetEnrollmentsByAcademicRecordResponse {
   static create(
     enrollments: Enrollment[],
   ): GetEnrollmentByAcademicRecordResponse[] {
-    return enrollments.map((enrollment: Enrollment) => {
-      return {
-        id: enrollment.id,
-        name: enrollment.subject.name,
-        visible: enrollment.visibility,
-        type: enrollment.type,
-        block: enrollment.programBlock.name,
-        hours: enrollment.subject.hours,
-        subjectCalls: enrollment.calls.map((call: SubjectCall) => {
-          return {
-            id: call.id,
-            callDate: getDateFormattedMMYY(call.callDate),
-            finalGrade: call.finalGrade,
-            status: call.status,
-            number: call.callNumber,
-          };
-        }),
-        subject: {
-          id: enrollment.subject.id,
+    return enrollments
+      .sort((a, b) => a.programBlock.name.localeCompare(b.programBlock.name))
+      .map((enrollment: Enrollment) => {
+        return {
+          id: enrollment.id,
           name: enrollment.subject.name,
-          code: enrollment.subject.code,
-          type: enrollment.subject.type,
-        },
-        maxCalls: enrollment.maxCalls,
-      };
+          visible: enrollment.visibility,
+          type: enrollment.type,
+          block: enrollment.programBlock.name,
+          hours: enrollment.subject.hours,
+          subjectCalls:
+            GetEnrollmentsByAcademicRecordResponse.orderSubjectsCall(
+              enrollment.calls,
+            ).map((subjectCall: SubjectCall) => {
+              return {
+                id: subjectCall.id,
+                callDate: getDateFormattedMMYY(subjectCall.callDate),
+                finalGrade: subjectCall.finalGrade,
+                status: subjectCall.status,
+                number: subjectCall.callNumber,
+              };
+            }),
+          subject: {
+            id: enrollment.subject.id,
+            name: enrollment.subject.name,
+            code: enrollment.subject.code,
+            type: enrollment.subject.type,
+            isRegulated: enrollment.subject.isRegulated,
+          },
+          maxCalls: enrollment.maxCalls,
+        };
+      });
+  }
+
+  private static orderSubjectsCall(subjectCalls: SubjectCall[]): SubjectCall[] {
+    return subjectCalls.sort((a, b) => {
+      if (b.callNumber !== a.callNumber) {
+        return b.callNumber - a.callNumber;
+      }
+
+      return b.callDate.getTime() - a.callDate.getTime();
     });
   }
 }

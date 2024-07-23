@@ -16,5 +16,8 @@ export const searchAdministrativeGroupsSchema = createCollectionSchema(
   orderByFields,
   {
     text: Joi.string().required(),
+    orderBy: Joi.string()
+      .valid(...orderByFields)
+      .default('code'),
   },
 );
