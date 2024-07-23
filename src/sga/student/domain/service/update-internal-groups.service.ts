@@ -6,6 +6,7 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 export class UpdateInternalGroupsService {
   constructor(private readonly repository: InternalGroupRepository) {}
@@ -36,7 +37,10 @@ export class UpdateInternalGroupsService {
       }
     }
 
-    for (const enrollment of enrollments) {
+    const validEnrollments = enrollments.filter(
+      (enrollment) => enrollment.subject.type !== SubjectType.SPECIALTY,
+    );
+    for (const enrollment of validEnrollments) {
       const groups = await this.repository.getByKeys(
         academicPeriod,
         academicProgram,

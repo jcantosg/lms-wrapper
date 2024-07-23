@@ -12,6 +12,8 @@ import { BlockRelationNotFoundException } from '#shared/domain/exception/academi
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { InvalidSubjectTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-type.exception';
 
 export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
   constructor(
@@ -51,6 +53,10 @@ export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
       command.adminUser.businessUnits.map((bu) => bu.id),
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
+
+    if (subject.type === SubjectType.SPECIALTY) {
+      throw new InvalidSubjectTypeException();
+    }
 
     const programBlock = academicProgram.programBlocks.find((block) =>
       block.subjects.map((subject) => subject.id).includes(subject.id),

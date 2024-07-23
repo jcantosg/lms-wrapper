@@ -8,6 +8,7 @@ import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { InvalidSubjectTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-type.exception';
 import { AcademicProgramMisMatchBusinessUnitException } from '#shared/domain/exception/academic-offering/academic-program.missmatch-business-unit.exception';
+import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
 
 export class AddSpecialtyToAcademicProgramHandler implements CommandHandler {
   constructor(
@@ -39,7 +40,13 @@ export class AddSpecialtyToAcademicProgramHandler implements CommandHandler {
       throw new AcademicProgramMisMatchBusinessUnitException();
     }
 
-    const firstBlock = academicProgram.programBlocks[0];
+    const firstBlock =
+      await this.repository.getFirstBlockByProgram(academicProgram);
+
+    if (!firstBlock) {
+      throw new ProgramBlockNotFoundException();
+    }
+
     firstBlock.addSubject(subject, command.adminUser);
 
     await this.repository.save(firstBlock);

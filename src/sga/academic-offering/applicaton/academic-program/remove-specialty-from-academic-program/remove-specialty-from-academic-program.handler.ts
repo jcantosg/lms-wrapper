@@ -1,6 +1,5 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
-import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
@@ -10,6 +9,7 @@ import { RemoveSpecialtyFromAcademicProgramCommand } from '#academic-offering/ap
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { InvalidSubjectTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-type.exception';
 import { SubjectHasEnrollmentsException } from '#shared/domain/exception/academic-offering/subject.has-enrollments.exception';
+import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
 
 export class RemoveSpecialtyFromAcademicProgramHandler
   implements CommandHandler
@@ -17,7 +17,6 @@ export class RemoveSpecialtyFromAcademicProgramHandler
   constructor(
     private readonly academicProgramGetter: AcademicProgramGetter,
     private readonly subjectGetter: SubjectGetter,
-    private readonly programBlockGetter: ProgramBlockGetter,
     private readonly enrollmentRepository: EnrollmentRepository,
     private readonly programBlockRepository: ProgramBlockRepository,
   ) {}
@@ -33,10 +32,12 @@ export class RemoveSpecialtyFromAcademicProgramHandler
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
 
-    const programBlock = await this.programBlockGetter.getByAdminUser(
-      academicProgram.programBlocks[0].id,
-      command.adminUser,
-    );
+    const firstBlock =
+      await this.programBlockRepository.getFirstBlockByProgram(academicProgram);
+
+    if (!firstBlock) {
+      throw new ProgramBlockNotFoundException();
+    }
 
     const subject = await this.subjectGetter.getByAdminUser(
       command.subjectId,
@@ -60,8 +61,8 @@ export class RemoveSpecialtyFromAcademicProgramHandler
       throw new SubjectHasEnrollmentsException();
     }
 
-    programBlock.removeSubject(subject);
+    firstBlock.removeSubject(subject);
 
-    await this.programBlockRepository.save(programBlock);
+    await this.programBlockRepository.save(firstBlock);
   }
 }

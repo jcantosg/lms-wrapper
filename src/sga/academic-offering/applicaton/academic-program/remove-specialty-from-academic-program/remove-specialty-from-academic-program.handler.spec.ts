@@ -1,5 +1,4 @@
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
-import { ProgramBlockGetter } from '#academic-offering/domain/service/program-block/program-block-getter.service';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import {
   getAnAcademicProgram,
@@ -11,7 +10,6 @@ import {
 import { ProgramBlockMockRepository } from '#test/mocks/sga/academic-offering/program-block.mock-repository';
 import {
   getAnAcademicProgramGetterMock,
-  getAProgramBlockGetterMock,
   getASubjectGetterMock,
 } from '#test/service-factory';
 import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
@@ -29,7 +27,6 @@ import { SubjectHasEnrollmentsException } from '#shared/domain/exception/academi
 let handler: RemoveSpecialtyFromAcademicProgramHandler;
 let programBlockRepository: ProgramBlockRepository;
 let enrollmentRepository: EnrollmentRepository;
-let programBlockGetter: ProgramBlockGetter;
 let subjectGetter: SubjectGetter;
 let academicProgramGetter: AcademicProgramGetter;
 
@@ -61,19 +58,20 @@ describe('Remove Specialty from Academic Program handler', () => {
   beforeAll(() => {
     programBlockRepository = new ProgramBlockMockRepository();
     enrollmentRepository = new EnrollmentMockRepository();
-    programBlockGetter = getAProgramBlockGetterMock();
     subjectGetter = getASubjectGetterMock();
     academicProgramGetter = getAnAcademicProgramGetterMock();
     handler = new RemoveSpecialtyFromAcademicProgramHandler(
       academicProgramGetter,
       subjectGetter,
-      programBlockGetter,
       enrollmentRepository,
       programBlockRepository,
     );
     saveSpy = jest.spyOn(programBlockRepository, 'save');
     getSubjectSpy = jest.spyOn(subjectGetter, 'getByAdminUser');
-    getProgramBlockSpy = jest.spyOn(programBlockGetter, 'getByAdminUser');
+    getProgramBlockSpy = jest.spyOn(
+      programBlockRepository,
+      'getFirstBlockByProgram',
+    );
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'getByAdminUser');
     getEnrollmentsSpy = jest.spyOn(enrollmentRepository, 'getBySubject');
   });

@@ -11,6 +11,7 @@ import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
 import { AcademicPeriodNotFoundException } from '#shared/domain/exception/academic-offering/academic-period.not-found.exception';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 export class CreateInternalGroupsBatchHandler implements CommandHandler {
   constructor(
@@ -52,8 +53,11 @@ export class CreateInternalGroupsBatchHandler implements CommandHandler {
               command.academicPeriodId,
             );
 
+            const validSubjects = programBlock.subjects.filter(
+              (subject) => subject.type !== SubjectType.SPECIALTY,
+            );
             await Promise.all(
-              programBlock.subjects.map(async (subject) => {
+              validSubjects.map(async (subject) => {
                 const existentInternalGroups = await this.repository.getByKeys(
                   academicPeriod,
                   academicProgram,

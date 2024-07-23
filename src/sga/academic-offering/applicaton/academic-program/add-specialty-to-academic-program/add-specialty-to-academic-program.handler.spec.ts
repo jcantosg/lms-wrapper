@@ -29,6 +29,7 @@ let subjectGetter: SubjectGetter;
 let saveSpy: jest.SpyInstance;
 let getAcademicProgramSpy: jest.SpyInstance;
 let getSubjectSpy: jest.SpyInstance;
+let getProgramBlockSpy: jest.SpyInstance;
 
 const academicProgram = getAnAcademicProgram();
 const programBlock = getAProgramBlock();
@@ -62,6 +63,7 @@ describe('Add Specialty to Academic Program Handler', () => {
     saveSpy = jest.spyOn(repository, 'save');
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'getByAdminUser');
     getSubjectSpy = jest.spyOn(subjectGetter, 'getByAdminUser');
+    getProgramBlockSpy = jest.spyOn(repository, 'getFirstBlockByProgram');
   });
 
   it('should throw a AcademicProgramNotFoundException', () => {
@@ -109,6 +111,7 @@ describe('Add Specialty to Academic Program Handler', () => {
       Promise.resolve(academicProgram),
     );
     getSubjectSpy.mockImplementation(() => Promise.resolve(specialty));
+    getProgramBlockSpy.mockImplementation(() => Promise.resolve(programBlock));
 
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
