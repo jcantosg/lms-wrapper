@@ -58,6 +58,7 @@ export class MoodleWrapper implements LmsWrapper {
       categoryId: course.categoryid,
       shortname: course.shortname,
       name: course.displayname,
+      progress: 0,
       modules: courseContentResponse
         .map((courseContentResponse) => {
           return {
@@ -86,6 +87,7 @@ export class MoodleWrapper implements LmsWrapper {
         categoryId: course.categoryid,
         shortname: course.shortname,
         name: course.displayname,
+        progress: 0,
         modules: [],
       });
     });
@@ -217,6 +219,7 @@ export class MoodleWrapper implements LmsWrapper {
       categoryId: course.categoryid,
       shortname: course.shortname,
       name: course.displayname,
+      progress: 0,
       modules: courseContentResponse
         .map((courseContentResponse) => {
           return {

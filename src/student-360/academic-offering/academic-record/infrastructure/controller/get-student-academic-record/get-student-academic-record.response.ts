@@ -16,6 +16,7 @@ interface GetStudentAcademicRecordResponseBody {
       name: string;
       unitsNumber: number;
       image: string | null;
+      progress: number;
       teacher: {
         name: string | undefined;
         surname1: string | null | undefined;
@@ -47,6 +48,7 @@ export class GetStudentAcademicRecordResponse {
                 type: subject.type,
                 image: subject.image,
                 unitsNumber: subject.lmsCourse?.value?.modules?.length ?? 0,
+                progress: subject.lmsCourse?.value.progress ?? 0,
                 teacher: {
                   id: subject.defaultTeacher?.id,
                   name: subject.defaultTeacher?.name,

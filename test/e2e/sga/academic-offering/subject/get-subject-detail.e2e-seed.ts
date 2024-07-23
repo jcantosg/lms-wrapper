@@ -118,6 +118,7 @@ export class GetSubjectDetailE2eSeed implements E2eSeed {
       id: 1,
       categoryId: LmsCourseCategoryEnum.E_LEARNING,
       name: 'Test',
+      progress: 0,
       shortname: 'test',
       modules: [],
     });

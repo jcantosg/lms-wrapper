@@ -18,6 +18,7 @@ export const getALmsCourse = (id: number = Math.random(), name: string) =>
     id: id,
     categoryId: LmsCourseCategoryEnum.MIXTA,
     shortname: 'test',
+    progress: 0,
     name: name,
     modules: [
       {
