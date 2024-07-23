@@ -31,6 +31,9 @@ import { UpdateInternalGroupsService } from '#student/domain/service/update-inte
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -51,6 +54,8 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
     private readonly updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     private readonly eventDispatcher: EventDispatcher,
+    private uuidService: UUIDGeneratorService,
+    private readonly createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -329,6 +334,15 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         administrativeGroups,
         internalGroups,
       });
+
+      await this.createAdministrativeProcessHandler.handle(
+        new CreateAdministrativeProcessCommand(
+          this.uuidService.generate(),
+          newAcademicRecord.id,
+          student.id,
+          adminUser,
+        ),
+      );
 
       internalGroups.map(async (group) => {
         await this.eventDispatcher.dispatch(

@@ -35,6 +35,8 @@ import { administrativeGroupSchema } from '#student/infrastructure/config/schema
 import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
+import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
+import { administrativeProcessSchema } from '#student/infrastructure/config/schema/administrative-process.schema';
 
 export class TransferAcademicRecordE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@test.com';
@@ -109,6 +111,7 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
   private transferRepository: Repository<AcademicRecordTransfer>;
   private administrativeGroupRepository: Repository<AdministrativeGroup>;
   private blockRelationRepository: Repository<BlockRelation>;
+  private administrativeProcessRepository: Repository<AdministrativeProcess>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -134,6 +137,9 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
     this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
     this.blockRelationRepository =
       datasource.getRepository(blockRelationSchema);
+    this.administrativeProcessRepository = datasource.getRepository(
+      administrativeProcessSchema,
+    );
   }
 
   async arrange(): Promise<void> {
@@ -297,6 +303,7 @@ export class TransferAcademicRecordE2eSeed implements E2eSeed {
   async clear(): Promise<void> {
     await this.administrativeGroupRepository.delete({});
     await this.transferRepository.delete({});
+    await this.administrativeProcessRepository.delete({});
     await this.academicRecordRepository.delete({});
     await this.academicRecordRepository.delete({});
     await this.blockRelationRepository.delete({});

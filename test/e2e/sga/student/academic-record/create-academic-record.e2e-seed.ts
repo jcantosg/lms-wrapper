@@ -32,6 +32,8 @@ import { academicRecordSchema } from '#student/infrastructure/config/schema/acad
 import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 import { administrativeGroupSchema } from '#student/infrastructure/config/schema/administrative-group.schema';
+import { administrativeProcessSchema } from '#student/infrastructure/config/schema/administrative-process.schema';
+import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 
 export class CreateAcademicRecordE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -104,6 +106,7 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
   private studentRepository: Repository<Student>;
   private academicRecordRepository: Repository<AcademicRecord>;
   private administrativeGroupRepository: Repository<AdministrativeGroup>;
+  private administrativeProcessRepository: Repository<AdministrativeProcess>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -125,6 +128,9 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
       datasource.getRepository(blockRelationSchema);
     this.administrativeGroupRepository = datasource.getRepository(
       administrativeGroupSchema,
+    );
+    this.administrativeProcessRepository = datasource.getRepository(
+      administrativeProcessSchema,
     );
   }
 
@@ -262,6 +268,7 @@ export class CreateAcademicRecordE2eSeed implements E2eSeed {
     await this.administrativeGroupRepository.delete({});
     await this.blockRelationRepository.delete({});
     await this.periodBlockRepository.delete(this.periodBlock.id);
+    await this.administrativeProcessRepository.delete({});
     await this.academicRecordRepository.delete(
       CreateAcademicRecordE2eSeed.academicRecordId,
     );

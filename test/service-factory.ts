@@ -41,6 +41,7 @@ import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-p
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -267,6 +268,14 @@ export function getAUpdateAdministrativeGroupsServiceMock(): UpdateAdministrativ
   return (
     UpdateAdministrativeGroupsService as jest.Mocked<
       typeof UpdateAdministrativeGroupsService
+    >
+  ).prototype;
+}
+
+export function getACreateAdministrativeProcessHandlerMock(): CreateAdministrativeProcessHandler {
+  return (
+    CreateAdministrativeProcessHandler as jest.Mocked<
+      typeof CreateAdministrativeProcessHandler
     >
   ).prototype;
 }
