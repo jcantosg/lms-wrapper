@@ -14,7 +14,7 @@ import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.servi
 import { RemoveEdaeUserFromAdministrativeGroupHandler } from '#student/application/administrative-group/remove-edae-user-from-administrative-group/remove-edae-user-from-administrative-group.handler';
 import { GetAdministrativeGroupByAcademicProgramHandler } from '#student/application/administrative-group/get-administrative-group-by-academic-program/get-administrative-group-by-academic-program.handler';
 import { MoveStudentFromAdministrativeGroupHandler } from '#student/application/administrative-group/move-student-from-administrative-group/move-student-from-administrative-group.handler';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,

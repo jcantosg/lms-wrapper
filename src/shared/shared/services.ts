@@ -14,7 +14,7 @@ import { BCryptPasswordEncoder } from '#shared/infrastructure/service/bcrypt-pas
 import { StudentPasswordChecker } from '#/student-360/student/domain/service/student-password-checker.service';
 import { BcryptStudentPasswordChecker } from '#/student-360/student/infrastructure/service/bcrypt-student-password-checker.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { Logger } from '@nestjs/common';
 import { ExcelFileParser } from '#shared/domain/service/excel-file-parser.service';
 import { ExcelJSFileParser } from '#shared/infrastructure/service/exceljs-file-parser.service';

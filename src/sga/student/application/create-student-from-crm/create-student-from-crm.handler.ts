@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { Student } from '#shared/domain/entity/student.entity';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { CreateStudentFromCRMCommand } from '#student/application/create-student-from-crm/create-student-from-crm.command';

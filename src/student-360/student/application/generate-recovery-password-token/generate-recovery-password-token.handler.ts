@@ -6,7 +6,7 @@ import { StudentRecoveryPasswordToken } from '#student-360/student/domain/entity
 import { v4 as uuid } from 'uuid';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { RecoveryPasswordTokenGeneratedEvent } from '#student-360/student/domain/event/recovery-password-token-generated.event';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 
 export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
   constructor(

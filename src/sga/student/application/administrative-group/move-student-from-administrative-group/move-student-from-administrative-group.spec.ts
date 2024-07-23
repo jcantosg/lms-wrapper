@@ -2,7 +2,7 @@ import { MoveStudentFromAdministrativeGroupHandler } from './move-student-from-a
 import { MoveStudentFromAdministrativeGroupCommand } from './move-student-from-administrative-group.command';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { AdministrativeGroupMockRepository } from '#test/mocks/sga/student/administrative-group.mock-repository';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import {
   getAnAdminUser,
   getAnAdministrativeGroup,

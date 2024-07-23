@@ -1,6 +1,6 @@
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { Student } from '#shared/domain/entity/student.entity';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 import { Repository } from 'typeorm';

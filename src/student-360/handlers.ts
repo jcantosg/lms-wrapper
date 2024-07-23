@@ -5,7 +5,7 @@ import { GenerateRecoveryPasswordTokenHandler } from '#student-360/student/appli
 import { StudentRecoveryPasswordTokenRepository } from '#student-360/student/domain/repository/student-recovery-password-token.repository';
 import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { UpdateStudentPasswordHandler } from '#student-360/student/application/update-password/update-password.handler';
 import { StudentRecoveryPasswordTokenGetter } from '#student-360/student/domain/service/student-recovery-password-token-getter.service';
 import { JwtService } from '@nestjs/jwt';
