@@ -12,7 +12,7 @@
   },
 
   "spot_capacity_percent": 100,
-  "enable_cloudflare_auth_header": false,
+  "enable_cloudflare_auth_header": true,
 
   "api": {
     "alb_host": "dev-back-ucp360.universae.com",
