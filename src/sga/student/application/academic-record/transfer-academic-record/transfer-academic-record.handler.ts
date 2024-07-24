@@ -85,7 +85,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     }
 
     oldAcademicRecord.updateStatus(
-      AcademicRecordStatusEnum.CANCELLED,
+      AcademicRecordStatusEnum.CANCELLED_TRANSFER,
       command.adminUser,
     );
 

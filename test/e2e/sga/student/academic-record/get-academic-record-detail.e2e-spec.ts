@@ -6,11 +6,12 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
+const path = `/academic-record/${EditAcademicRecordE2eSeed.academicRecordId}`;
+
 describe('/academic-record/:id (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
-  let path: string;
 
   beforeAll(async () => {
     httpServer = app.getHttpServer();
@@ -21,7 +22,6 @@ describe('/academic-record/:id (GET)', () => {
       EditAcademicRecordE2eSeed.superAdminUserEmail,
       EditAcademicRecordE2eSeed.superAdminUserPassword,
     );
-    path = `/academic-record/${EditAcademicRecordE2eSeed.academicRecordId}`;
   });
 
   it('should return unauthorized', async () => {

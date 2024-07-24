@@ -42,6 +42,7 @@ import { UpdateInternalGroupsService } from '#student/domain/service/update-inte
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -276,6 +277,14 @@ export function getACreateAdministrativeProcessHandlerMock(): CreateAdministrati
   return (
     CreateAdministrativeProcessHandler as jest.Mocked<
       typeof CreateAdministrativeProcessHandler
+    >
+  ).prototype;
+}
+
+export function getAStudentAdministrativeGroupByAcademicRecordGetterMock(): StudentAdministrativeGroupByAcademicRecordGetter {
+  return (
+    StudentAdministrativeGroupByAcademicRecordGetter as jest.Mocked<
+      typeof StudentAdministrativeGroupByAcademicRecordGetter
     >
   ).prototype;
 }

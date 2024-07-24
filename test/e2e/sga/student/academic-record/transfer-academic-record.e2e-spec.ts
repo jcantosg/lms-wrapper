@@ -209,7 +209,7 @@ describe('/academic-record/:id/transfer (PUT)', () => {
       where: { id: TransferAcademicRecordE2eSeed.oldAcademicRecordId },
     });
     expect(oldAcademicRecord!.status).toEqual(
-      AcademicRecordStatusEnum.CANCELLED,
+      AcademicRecordStatusEnum.CANCELLED_TRANSFER,
     );
 
     const newAcademicRecord = await repository.findOne({

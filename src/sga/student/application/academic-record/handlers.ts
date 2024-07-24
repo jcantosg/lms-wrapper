@@ -22,6 +22,7 @@ import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -77,9 +78,16 @@ const getAcademicRecordDetailHandler = {
   provide: GetAcademicRecordDetailHandler,
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
+    studentAdministrativeGroupByAcademicRecordGetter: StudentAdministrativeGroupByAcademicRecordGetter,
   ): GetAcademicRecordDetailHandler =>
-    new GetAcademicRecordDetailHandler(academicRecordGetter),
-  inject: [AcademicRecordGetter],
+    new GetAcademicRecordDetailHandler(
+      academicRecordGetter,
+      studentAdministrativeGroupByAcademicRecordGetter,
+    ),
+  inject: [
+    AcademicRecordGetter,
+    StudentAdministrativeGroupByAcademicRecordGetter,
+  ],
 };
 
 const getStudentAcademicRecordHandler = {
