@@ -187,7 +187,7 @@ export class MoodleWrapper implements LmsWrapper {
             ? module.contents.map((content) => {
                 return {
                   name: content.filename,
-                  url: content.fileurl,
+                  url: `${content.fileurl}&token=${this.token}`,
                   mimeType: content.mimetype,
                 };
               })
