@@ -23,6 +23,8 @@ import { ChatroomsByInternalGroupCreator } from '#shared/domain/service/chatroom
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
+import { ExcelJSFileParserBatch } from '#shared/infrastructure/service/exceljs-file-parser-batch.service';
+import { ExcelFileParserBatch } from '#shared/domain/service/excel-file-parser-batch.service';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -88,6 +90,17 @@ const excelFileParser = {
   inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
 };
 
+const excelFileParserBatch = {
+  provide: ExcelFileParserBatch,
+  useFactory: (
+    repository: CRMImportRepository,
+    provincesGetter: ProvinceGetter,
+    countryGetter: CountryGetter,
+  ): ExcelJSFileParserBatch =>
+    new ExcelJSFileParserBatch(repository, provincesGetter, countryGetter),
+  inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
+};
+
 const chatroomsByInternalGroupCreator = {
   provide: ChatroomsByInternalGroupCreator,
   useFactory: (
@@ -113,6 +126,7 @@ export const services = [
   passwordEncoder,
   passwordChecker,
   excelFileParser,
+  excelFileParserBatch,
   chatroomsByInternalGroupCreator,
   StudentSubjectsToChatGetter,
 ];

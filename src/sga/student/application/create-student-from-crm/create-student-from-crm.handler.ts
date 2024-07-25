@@ -110,14 +110,18 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
       );
     }
 
-    return await this.createStudent(
-      newStudentId,
-      command.crmImport,
-      businessUnit,
-      virtualCampus,
-      academicPeriod,
-      academicProgram,
-    );
+    try {
+      return await this.createStudent(
+        newStudentId,
+        command.crmImport,
+        businessUnit,
+        virtualCampus,
+        academicPeriod,
+        academicProgram,
+      );
+    } catch (e) {
+      return await this.errorResponse(command.crmImport, e);
+    }
   }
 
   private async createStudent(
@@ -359,7 +363,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
       null,
     );
 
-    this.crmImportRepository.save(crmImport);
+    await this.crmImportRepository.save(crmImport);
 
     return crmImport;
   }
