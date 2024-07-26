@@ -48,8 +48,15 @@ export const getALmsContentModule = (id: number = Math.random()) =>
         id: id,
         name: 'test',
         url: 'url',
-        contents: [],
-        isCompleted: false,
+        contents: [
+          {
+            id: id,
+            name: 'test',
+            url: 'url',
+            mimeType: 'pdf',
+            isCompleted: false,
+          },
+        ],
       },
     ],
   });

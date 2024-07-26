@@ -8,10 +8,12 @@ import {
   MoodleCourseActivitiesCompletionResponse,
   MoodleCourseByFieldResponse,
   MoodleCourseContentResponse,
+  MoodleCourseModuleContentResponse,
   MoodleCourseResponse,
   MoodleCreateUserResponse,
   MoodleGetUserResponse,
   MoodleLoginResponse,
+  MoodleVideotimeResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
@@ -24,12 +26,39 @@ const moodleCourseContentIcon: { [id: string]: string } = {
   simuladores3DAR: '/simuladores.svg',
 };
 
+const moodleResourceType: { [id: string]: string } = {
+  resource: 'pdf',
+  videotime: 'video',
+};
+
 export enum MoodleCourseModuleStatus {
   NON_COMPLETED,
   COMPLETED,
 }
 
 const STUDENT_ROLE_ID = 5;
+
+type MoodleModuleContent = {
+  id: number;
+  type: string;
+  name: string;
+  url: string;
+  isCompleted: boolean;
+  contents:
+    | {
+        filename: string;
+        fileurl: string;
+        mimetype: string;
+      }[]
+    | undefined;
+};
+type Modules = {
+  id: number;
+  name: string;
+  url: string;
+  indexPosition: number;
+  content: MoodleModuleContent[];
+}[];
 
 export class MoodleWrapper implements LmsWrapper {
   constructor(
@@ -163,14 +192,52 @@ export class MoodleWrapper implements LmsWrapper {
     if (!courseContentModule) {
       throw new BadRequestException();
     }
+
     const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${studentId}`;
     const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
       await this.wrapper.get(this.url, courseActivityStatusQueryParam);
+    let modules: Modules = [];
+    let actualGroup = 0;
+    for (const [
+      index,
+      courseContent,
+    ] of courseContentModule.modules.entries()) {
+      if (courseContent.modname === 'label') {
+        actualGroup = index;
+        modules.push({
+          id: courseContent.id,
+          url: courseContent.url,
+          name: courseContent.name,
+          indexPosition: actualGroup,
+          content: [],
+        });
+      } else {
+        const actualModule = modules.find(
+          (module) => module.indexPosition === actualGroup,
+        );
+        actualModule!.content.push({
+          id: courseContent.id,
+          name: courseContent.name,
+          url: await this.getResourceUrl(courseContent),
+          type: moodleResourceType[courseContent.modname],
+          isCompleted: courseActivitiesCompletionResponse.statuses.some(
+            (status) => {
+              return (
+                status.cmid === courseContent.id &&
+                status.state === MoodleCourseModuleStatus.COMPLETED
+              );
+            },
+          ),
+          contents: courseContent.contents ?? undefined,
+        });
+      }
+    }
+    modules = modules.filter((module) => module.name !== 'Etiqueta');
 
     return new LmsModuleContent({
       id: courseContentModule.id,
       name: courseContentModule.name,
-      modules: courseContentModule.modules.map((module) => {
+      modules: modules.map((module) => {
         return {
           id: module.id,
           name: module.name,
@@ -183,12 +250,14 @@ export class MoodleWrapper implements LmsWrapper {
               );
             },
           ),
-          contents: module.contents
-            ? module.contents.map((content) => {
+          contents: module.content
+            ? module.content.map((content) => {
                 return {
-                  name: content.filename,
-                  url: `${content.fileurl}&token=${this.token}`,
-                  mimeType: content.mimetype,
+                  id: content.id,
+                  url: content.url,
+                  mimeType: content.type,
+                  name: content.name,
+                  isCompleted: content.isCompleted,
                 };
               })
             : null,
@@ -285,5 +354,25 @@ export class MoodleWrapper implements LmsWrapper {
   async deleteEnrollment(courseId: number, studentId: number): Promise<void> {
     const queryParams = `wstoken=${this.token}&wsfunction=enrol_manual_unenrol_users&moodlewsrestformat=json&enrolments[0][userid]=${studentId}&enrolments[0][courseid]=${courseId}`;
     await this.wrapper.post(this.url, queryParams);
+  }
+
+  private async getVideoTimeUrl(courseModuleId: number): Promise<string> {
+    const queryParams = `wstoken=${this.token}&wsfunction=mod_videotime_get_videotime&moodlewsrestformat=json&cmid=${courseModuleId}`;
+    const { vimeo_url }: MoodleVideotimeResponse = await this.wrapper.get(
+      this.url,
+      queryParams,
+    );
+
+    return vimeo_url;
+  }
+
+  private async getResourceUrl(module: MoodleCourseModuleContentResponse) {
+    if (module.modname === 'videotime') {
+      return await this.getVideoTimeUrl(module.id);
+    } else if (module.contents) {
+      return `${module.contents[0].fileurl}&token=${this.token}`;
+    }
+
+    return module.url;
   }
 }

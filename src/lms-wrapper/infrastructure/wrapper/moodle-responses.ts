@@ -5,28 +5,31 @@ export interface MoodleCourseResponse {
   displayname: string;
 }
 
+export interface MoodleCourseModuleContentResponse {
+  id: number;
+  name: string;
+  url: string;
+  image: string;
+  uservisible: boolean;
+  modname: string;
+  contents:
+    | {
+        filename: string;
+        fileurl: string;
+        mimetype: string;
+      }[]
+    | undefined;
+  contentinfo:
+    | {
+        mimetypes: string[];
+      }[]
+    | undefined;
+}
+
 export interface MoodleCourseContentResponse {
   id: number;
   name: string;
-  modules: {
-    id: number;
-    name: string;
-    url: string;
-    image: string;
-    uservisible: boolean;
-    contents:
-      | {
-          filename: string;
-          fileurl: string;
-          mimetype: string;
-        }[]
-      | undefined;
-    contentinfo:
-      | {
-          mimetypes: string[];
-        }[]
-      | undefined;
-  }[];
+  modules: MoodleCourseModuleContentResponse[];
 }
 
 export interface MoodleLoginResponse {
@@ -81,4 +84,8 @@ export interface MoodleCourseActivitiesCompletionResponse {
 
 export interface MoodleCourseByFieldResponse {
   courses: MoodleCourseResponse[];
+}
+
+export interface MoodleVideotimeResponse {
+  vimeo_url: string;
 }
