@@ -79,124 +79,126 @@ export class ExcelJSFileParserBatch implements ExcelFileParserBatch {
 
     importResults.total = this.getTotalRowCount(wb);
     importResults.offset = importResults.offset + importResults.limit + 1;
-
-    await Promise.all(
-      parsedArray.map(async (parsedObject: any) => {
-        let importResult: CRMImport | null;
-        importResult = await this.crmImportRepository.get(
+    for (const parsedObject of parsedArray) {
+      let importResult: CRMImport | null;
+      importResult = await this.crmImportRepository.get(
+        `${file.fileName}-${parsedObject.row_number}`,
+      );
+      if (!importResult) {
+        importResult = CRMImport.create(
+          `${file.fileName}-${parsedObject.row_number}`,
+          null,
+          null,
+          null,
           `${file.fileName}-${parsedObject.row_number}`,
         );
-        if (!importResult) {
-          importResult = CRMImport.create(
-            `${file.fileName}-${parsedObject.row_number}`,
-            null,
-            null,
-            null,
-            `${file.fileName}-${parsedObject.row_number}`,
-          );
-        }
+      }
 
-        const validationResult = validationSchema.validate(parsedObject);
+      delete parsedObject.row_number;
 
-        if (validationResult.error) {
-          importResult.update(
-            CRMImportStatus.PARSE_ERROR,
-            null,
-            null,
-            null,
-            validationResult.error.details[0].message,
-          );
-          await this.crmImportRepository.save(importResult);
+      const validationResult = validationSchema.validate(parsedObject);
 
-          importResults.imports.push(importResult);
-        }
-
-        const importResultData: ImportData =
-          this.parseValidationResult(validationResult);
-
-        let country: Country;
-        try {
-          country = await this.countryGetter.getByName(
-            importResultData.country,
-          );
-        } catch (e) {
-          importResult.update(
-            CRMImportStatus.PARSE_ERROR,
-            null,
-            null,
-            importResultData,
-            CRMImportErrorMessage.COUNTRY_NOT_FOUND,
-          );
-          await this.crmImportRepository.save(importResult);
-
-          importResults.imports.push(importResult);
-        }
-
-        try {
-          const provinces = await this.provincesGetter.getProvinces(country!);
-          if (
-            !provinces.find(
-              (province) => province.value === importResultData.province,
-            )
-          ) {
-            throw new ProvinceNotFoundException();
-          }
-        } catch (e) {
-          importResult.update(
-            CRMImportStatus.PARSE_ERROR,
-            null,
-            null,
-            importResultData,
-            CRMImportErrorMessage.PROVINCE_NOT_FOUND,
-          );
-          await this.crmImportRepository.save(importResult);
-
-          importResults.imports.push(importResult);
-        }
-
-        if (
-          importResultData.gender !== null &&
-          !getAllStudentGenders().includes(importResultData.gender)
-        ) {
-          importResult.update(
-            CRMImportStatus.PARSE_ERROR,
-            null,
-            null,
-            importResultData,
-            CRMImportErrorMessage.GENDER_NOT_FOUND,
-          );
-          await this.crmImportRepository.save(importResult);
-
-          importResults.imports.push(importResult);
-        }
-
-        if (
-          !getAllAcademicRecordModalities().includes(importResultData.modality)
-        ) {
-          importResult.update(
-            CRMImportStatus.PARSE_ERROR,
-            null,
-            null,
-            importResultData,
-            CRMImportErrorMessage.MODALITY_NOT_FOUND,
-          );
-          await this.crmImportRepository.save(importResult);
-
-          importResults.imports.push(importResult);
-        }
-
+      if (validationResult.error) {
         importResult.update(
-          CRMImportStatus.PARSED,
-          importResultData.contactId,
-          importResultData.leadId,
-          importResultData,
+          CRMImportStatus.PARSE_ERROR,
           null,
+          null,
+          null,
+          validationResult.error.details[0].message,
         );
         await this.crmImportRepository.save(importResult);
 
         importResults.imports.push(importResult);
-      }),
-    );
+        continue;
+      }
+
+      const importResultData: ImportData =
+        this.parseValidationResult(validationResult);
+
+      let country: Country;
+      try {
+        country = await this.countryGetter.getByName(importResultData.country);
+      } catch (e) {
+        importResult.update(
+          CRMImportStatus.PARSE_ERROR,
+          null,
+          null,
+          importResultData,
+          CRMImportErrorMessage.COUNTRY_NOT_FOUND,
+        );
+        await this.crmImportRepository.save(importResult);
+
+        importResults.imports.push(importResult);
+        continue;
+      }
+
+      try {
+        const provinces = await this.provincesGetter.getProvinces(country!);
+        if (
+          !provinces.find(
+            (province) => province.value === importResultData.province,
+          )
+        ) {
+          throw new ProvinceNotFoundException();
+        }
+      } catch (e) {
+        importResult.update(
+          CRMImportStatus.PARSE_ERROR,
+          null,
+          null,
+          importResultData,
+          CRMImportErrorMessage.PROVINCE_NOT_FOUND,
+        );
+        await this.crmImportRepository.save(importResult);
+
+        importResults.imports.push(importResult);
+        continue;
+      }
+
+      if (
+        importResultData.gender !== null &&
+        !getAllStudentGenders().includes(importResultData.gender)
+      ) {
+        importResult.update(
+          CRMImportStatus.PARSE_ERROR,
+          null,
+          null,
+          importResultData,
+          CRMImportErrorMessage.GENDER_NOT_FOUND,
+        );
+        await this.crmImportRepository.save(importResult);
+
+        importResults.imports.push(importResult);
+        continue;
+      }
+
+      if (
+        !getAllAcademicRecordModalities().includes(importResultData.modality)
+      ) {
+        importResult.update(
+          CRMImportStatus.PARSE_ERROR,
+          null,
+          null,
+          importResultData,
+          CRMImportErrorMessage.MODALITY_NOT_FOUND,
+        );
+        await this.crmImportRepository.save(importResult);
+
+        importResults.imports.push(importResult);
+        continue;
+      }
+
+      importResult.update(
+        CRMImportStatus.PARSED,
+        importResultData.contactId,
+        importResultData.leadId,
+        importResultData,
+        null,
+      );
+      await this.crmImportRepository.save(importResult);
+
+      importResults.imports.push(importResult);
+    }
 
     return importResults;
   }

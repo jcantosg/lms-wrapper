@@ -81,18 +81,22 @@ async function bootstrap() {
       const failedRows = parseResponses.filter(
         (row) => row.status === CRMImportStatus.PARSE_ERROR,
       );
+      const parsedRows = parseResponses.filter(
+        (row) => row.status === CRMImportStatus.PARSED,
+      );
 
       if (failedRows.length > 0) {
         logger.log(`${failedRows.length} rows failed:`);
         failedRows.forEach((row) => {
           logger.log(`Row ${row.id} failed. Reason: ${row.errorMessage}`);
         });
-      } else {
-        for (const row of parseResponses) {
-          importResponses.push(
-            await handler.handle(new CreateStudentFromCRMCommand(row)),
-          );
-        }
+        hasErrors = true;
+      }
+
+      for (const row of parsedRows) {
+        importResponses.push(
+          await handler.handle(new CreateStudentFromCRMCommand(row)),
+        );
       }
 
       importResponses.forEach((response) => {
