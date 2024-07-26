@@ -18,7 +18,7 @@ import { ConflictException } from '#shared/domain/exception/conflict.exception';
 export interface CreateEnrollmentTransactionParams extends TransactionParams {
   enrollment: Enrollment;
   subjectCall: SubjectCall;
-  internalGroup: InternalGroup;
+  internalGroup: InternalGroup | null;
   student: Student;
 }
 
@@ -70,13 +70,15 @@ export class CreateEnrollmentTransactionalService extends TransactionalService {
       await queryRunner.manager.save(entities.enrollment);
       await queryRunner.manager.save(entities.subjectCall);
 
-      entities.internalGroup.addStudents([entities.student]);
-      await queryRunner.manager.save(InternalGroup, {
-        id: entities.internalGroup.id,
-        students: entities.internalGroup.students,
-        updatedAt: entities.internalGroup.updatedAt,
-        updatedBy: entities.internalGroup.updatedBy,
-      });
+      if (entities.internalGroup) {
+        entities.internalGroup.addStudents([entities.student]);
+        await queryRunner.manager.save(InternalGroup, {
+          id: entities.internalGroup.id,
+          students: entities.internalGroup.students,
+          updatedAt: entities.internalGroup.updatedAt,
+          updatedBy: entities.internalGroup.updatedBy,
+        });
+      }
 
       await queryRunner.commitTransaction();
     } catch (error) {
