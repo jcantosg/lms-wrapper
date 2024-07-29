@@ -3,7 +3,7 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export abstract class InternalGroupRepository {
   abstract save(internalGroup: InternalGroup): Promise<void>;
@@ -46,4 +46,8 @@ export abstract class InternalGroupRepository {
     academicPeriod: AcademicPeriod,
     academicProgram: AcademicProgram,
   ): Promise<InternalGroup[]>;
+
+  abstract getAllByStudent(studentId: string): Promise<InternalGroup[]>;
+
+  abstract getAllByTeacher(teacherId: string): Promise<InternalGroup[]>;
 }

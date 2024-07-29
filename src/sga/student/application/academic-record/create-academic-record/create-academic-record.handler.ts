@@ -15,6 +15,9 @@ import { AdministrativeGroupRepository } from '#student/domain/repository/admini
 import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { AcademicRecordCreatedEvent } from '#student/domain/event/academic-record/academic-record-created.event';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 
 export class CreateAcademicRecordHandler implements CommandHandler {
   constructor(
@@ -26,6 +29,8 @@ export class CreateAcademicRecordHandler implements CommandHandler {
     private readonly academicProgramGetter: AcademicProgramGetter,
     private readonly studentGetter: StudentGetter,
     private readonly eventDispatcher: EventDispatcher,
+    private uuidService: UUIDGeneratorService,
+    private readonly createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
   ) {}
 
   async handle(command: CreateAcademicRecordCommand) {
@@ -97,6 +102,15 @@ export class CreateAcademicRecordHandler implements CommandHandler {
     );
 
     await this.academicRecordRepository.save(academicRecord);
+
+    await this.createAdministrativeProcessHandler.handle(
+      new CreateAdministrativeProcessCommand(
+        this.uuidService.generate(),
+        academicRecord.id,
+        student.id,
+        command.adminUser,
+      ),
+    );
 
     await this.eventDispatcher.dispatch(
       new AcademicRecordCreatedEvent(administrativeGroup, student),

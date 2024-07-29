@@ -3,7 +3,7 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { EdaeUserNotFoundException } from '#shared/domain/exception/edae-user/edae-user-not-found.exception';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { AddTeacherToInternalGroupCommand } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.command';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';

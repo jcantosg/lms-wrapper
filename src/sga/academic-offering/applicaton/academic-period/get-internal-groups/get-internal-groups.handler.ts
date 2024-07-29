@@ -3,7 +3,7 @@ import { CollectionHandlerResponse } from '#/sga/shared/application/collection.h
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { GetInternalGroupsQuery } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.query';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { GetInternalGroupsCriteria } from '#academic-offering/applicaton/academic-period/get-internal-groups/get-internal-groups.criteria';
 
 export class GetInternalGroupsHandler implements QueryHandler {

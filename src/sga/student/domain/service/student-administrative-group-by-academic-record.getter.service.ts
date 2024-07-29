@@ -1,7 +1,6 @@
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
-import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
 
 export class StudentAdministrativeGroupByAcademicRecordGetter {
   constructor(
@@ -9,7 +8,7 @@ export class StudentAdministrativeGroupByAcademicRecordGetter {
     private readonly studentGetter: StudentGetter,
   ) {}
 
-  async get(academicRecordId: string): Promise<AdministrativeGroup> {
+  async get(academicRecordId: string): Promise<AdministrativeGroup | null> {
     const academicRecord =
       await this.academicRecordGetter.get(academicRecordId);
 
@@ -21,10 +20,6 @@ export class StudentAdministrativeGroupByAcademicRecordGetter {
         academicRecord.academicProgram.title.id,
     );
 
-    if (!administrativeGroup) {
-      throw new AdministrativeGroupNotFoundException();
-    }
-
-    return administrativeGroup;
+    return administrativeGroup ?? null;
   }
 }

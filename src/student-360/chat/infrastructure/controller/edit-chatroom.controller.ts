@@ -7,12 +7,12 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
-import { editChatroomSchema } from '#student-360/chat/infrastructure/config/validation-schema/edit-chatroom.schema';
+import { editChatroomSchema } from '#shared/infrastructure/config/validation-schema/edit-chatroom.schema';
 import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
 import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 import { StudentJwtAuthGuard } from '#student-360/student/infrastructure/auth/student-jwt-auth.guard';
-import { EditChatroomCommand } from '#student-360/chat/application/edit-chatroom/edit-chatroom.command';
-import { EditChatroomHandler } from '#student-360/chat/application/edit-chatroom/edit-chatroom.handler';
+import { EditChatroomCommand } from '#shared/application/edit-chatroom/edit-chatroom.command';
+import { EditChatroomHandler } from '#shared/application/edit-chatroom/edit-chatroom.handler';
 
 interface EditChatroomBody {
   chatroomId: string;

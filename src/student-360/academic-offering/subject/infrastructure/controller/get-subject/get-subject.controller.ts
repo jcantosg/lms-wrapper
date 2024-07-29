@@ -9,13 +9,14 @@ import { GetSubjectResponse } from '#student-360/academic-offering/subject/infra
 export class GetSubjectController {
   constructor(private readonly handler: GetSubjectHandler) {}
 
-  @Get('subject/:id')
+  @Get('academic-record/:academicRecordId/subject/:id')
   @UseGuards(StudentJwtAuthGuard)
   async getSubject(
-    @Param('id') id: string,
+    @Param('id') subjectId: string,
+    @Param('academicRecordId') academicRecordId: string,
     @Request() req: StudentAuthRequest,
   ): Promise<GetSubjectResponse> {
-    const query = new GetSubjectQuery(id, req.user);
+    const query = new GetSubjectQuery(subjectId, req.user, academicRecordId);
     const { subject, defaultTeacher, breadCrumb } =
       await this.handler.handle(query);
 

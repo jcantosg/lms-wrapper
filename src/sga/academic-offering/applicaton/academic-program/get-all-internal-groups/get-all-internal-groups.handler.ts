@@ -2,7 +2,7 @@ import { QueryHandler } from '#shared/domain/bus/query.handler';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { GetAllInternalGroupsQuery } from '#academic-offering/applicaton/academic-program/get-all-internal-groups/get-all-internal-groups.query';
 import { GetAllInternalGroupsCriteria } from '#academic-offering/applicaton/academic-program/get-all-internal-groups/get-all-internal-groups.criteria';
 

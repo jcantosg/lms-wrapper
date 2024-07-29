@@ -7,11 +7,12 @@ interface LmsCourseModuleBodyResponse {
     id: number;
     url: string;
     name: string;
-    isCompleted: boolean;
     contents: {
+      id: number;
       name: string;
       url: string;
       mimeType: string;
+      isCompleted: boolean;
     }[];
   }[];
 }
@@ -26,13 +27,14 @@ export class GetCourseContentResponse {
           id: module.id,
           name: module.name,
           url: module.url,
-          isCompleted: module.isCompleted,
           contents: module.contents
             ? module.contents.map((content) => {
                 return {
+                  id: content.id,
                   name: content.name,
                   url: content.url,
                   mimeType: content.mimeType,
+                  isCompleted: content.isCompleted,
                 };
               })
             : [],

@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { getNow } from '#shared/domain/lib/date';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentRecoveryPasswordTokenRepository } from '#student-360/student/domain/repository/student-recovery-password-token.repository';
 import { Student } from '#shared/domain/entity/student.entity';
 import { StudentRecoveryPasswordTokenGetter } from '#student-360/student/domain/service/student-recovery-password-token-getter.service';

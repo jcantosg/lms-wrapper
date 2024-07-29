@@ -4,7 +4,7 @@ import { TokenMalformedException } from '#shared/domain/exception/token-malforme
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentRefreshTokenRepository } from '#/student-360/student/domain/repository/student-refresh-token.repository';
 import { Student } from '#shared/domain/entity/student.entity';
 import { StudentRefreshToken } from '#/student-360/student/domain/entity/refresh-token.entity';

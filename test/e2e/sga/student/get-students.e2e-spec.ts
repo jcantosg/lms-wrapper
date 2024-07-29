@@ -58,7 +58,7 @@ describe('/student (GET)', () => {
   });
   it('should return empty items ', async () => {
     const response = await supertest(httpServer)
-      .get(`${path}?academicProgram=Programa&name=juan`)
+      .get(`${path}?academicProgram=Programa&name=juan&businessUnit=Murcia`)
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(200);
     expect(response.body).toEqual(

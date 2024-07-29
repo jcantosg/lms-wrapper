@@ -3,7 +3,7 @@ import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { Repository } from 'typeorm';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AddInternalGroupToAcademicPeriodE2eSeed } from '#test/e2e/sga/student/internal-group/add-internal-group-to-academic-period.e2e-seed';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 

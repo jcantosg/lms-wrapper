@@ -40,7 +40,9 @@
     "sga:db:seed:data": "ts-node -r tsconfig-paths/register src/commands/seed-database/seed-database.command.ts",
     "sga:db:seed:evaluation-types": "ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts",
     "sga:test:db:seed:evaluation-types": "NODE_ENV=test ts-node -r tsconfig-paths/register src/commands/evaluation-type/create-evaluation-types.command.ts",
-    "sga:student:import-excel-file": "ts-node -r tsconfig-paths/register src/commands/student/import-crm-files.command.ts"
+    "sga:student:import-excel-file": "ts-node -r tsconfig-paths/register src/commands/student/import-crm-files.command.ts",
+    "sga:student:import-excel-file-batch": "ts-node -r tsconfig-paths/register src/commands/student/import-crm-files-batch.command.ts",
+    "lms:subject:get-lms-courses": "ts-node -r tsconfig-paths/register src/commands/subject/update-subjects-lms-course.command.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.504.0",

@@ -27,6 +27,7 @@ interface GetStudentQueryParams {
   businessUnit: string | null;
   academicProgram: string | null;
   universaeEmail: string | null;
+  isDefense: boolean;
 }
 
 @Controller('student')
@@ -48,6 +49,7 @@ export class GetStudentsController {
       params.academicProgram,
       params.universaeEmail,
       request.user,
+      params.isDefense,
       params.page,
       params.limit,
       params.orderBy,

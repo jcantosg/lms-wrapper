@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { Student } from '#shared/domain/entity/student.entity';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { CreateStudentFromCRMCommand } from '#student/application/create-student-from-crm/create-student-from-crm.command';
@@ -31,6 +31,9 @@ import { UpdateInternalGroupsService } from '#student/domain/service/update-inte
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -51,6 +54,8 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
     private readonly updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     private readonly eventDispatcher: EventDispatcher,
+    private uuidService: UUIDGeneratorService,
+    private readonly createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -105,14 +110,18 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
       );
     }
 
-    return await this.createStudent(
-      newStudentId,
-      command.crmImport,
-      businessUnit,
-      virtualCampus,
-      academicPeriod,
-      academicProgram,
-    );
+    try {
+      return await this.createStudent(
+        newStudentId,
+        command.crmImport,
+        businessUnit,
+        virtualCampus,
+        academicPeriod,
+        academicProgram,
+      );
+    } catch (e) {
+      return await this.errorResponse(command.crmImport, e);
+    }
   }
 
   private async createStudent(
@@ -141,30 +150,32 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         student.universaeEmail ?? data.universaeEmail,
         true,
         adminUser,
-        null,
+        student.avatar,
         student.birthDate ?? data.birthDate,
         student.gender ?? data.gender,
         student.country ?? (await this.countryGetter.getByName(data.country)),
-        null,
-        student.identityDocument?.value ?? data.documentNumber
+        student.citizenship,
+        student.identityDocument?.value ??
+          (data.documentNumber && data.documentType)
           ? {
-              identityDocumentType: IdentityDocumentType.DNI,
+              identityDocumentType: data.documentType!,
               identityDocumentNumber: data.documentNumber!,
             }
           : null,
         student.socialSecurityNumber ?? data.nuss,
-        null,
-        null,
+        student.accessQualification,
+        student.niaIdalu,
         student.phone ?? data.phone,
-        null,
+        student.contactCountry,
         student.state ?? data.province,
         student.city ?? data.city,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+        student.address,
+        student.guardianName,
+        student.guardianSurname,
+        student.guardianEmail,
+        student.guardianPhone,
+        student.lmsStudent,
+        data.defense,
       );
 
       const academicRecords =
@@ -174,13 +185,13 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
           adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
         );
       if (
-        !academicRecords.find(
+        !academicRecords.some(
           (ar) =>
             ar.businessUnit.id === businessUnit.id &&
             ar.virtualCampus.id === virtualCampus.id &&
             ar.academicPeriod.id === academicPeriod.id &&
             ar.academicProgram.id === academicProgram.id &&
-            ![
+            [
               AcademicRecordStatusEnum.VALID,
               AcademicRecordStatusEnum.FINISHED,
             ].includes(ar.status),
@@ -248,6 +259,14 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             new InternalGroupMemberAddedEvent(group),
           );
         });
+      } else {
+        await this.createStudentFromCRMTransactionalService.execute({
+          student,
+          academicRecord: null,
+          enrollments: [],
+          administrativeGroups: [],
+          internalGroups: [],
+        });
       }
     } else {
       student = Student.createFromCRM(
@@ -263,7 +282,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.gender,
         await this.countryGetter.getByName(data.country),
         {
-          identityDocumentType: IdentityDocumentType.DNI,
+          identityDocumentType: data.documentType ?? IdentityDocumentType.DNI,
           identityDocumentNumber: data.documentNumber ?? '',
         },
         data.nuss,
@@ -272,6 +291,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         data.city,
         adminUser,
         null,
+        data.defense,
       );
 
       const newAcademicRecord = AcademicRecord.createFromCRM(
@@ -319,6 +339,15 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         internalGroups,
       });
 
+      await this.createAdministrativeProcessHandler.handle(
+        new CreateAdministrativeProcessCommand(
+          this.uuidService.generate(),
+          newAcademicRecord.id,
+          student.id,
+          adminUser,
+        ),
+      );
+
       internalGroups.map(async (group) => {
         await this.eventDispatcher.dispatch(
           new InternalGroupMemberAddedEvent(group),
@@ -334,7 +363,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
       null,
     );
 
-    this.crmImportRepository.save(crmImport);
+    await this.crmImportRepository.save(crmImport);
 
     return crmImport;
   }

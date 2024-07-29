@@ -2,8 +2,14 @@ import { GetAcademicRecordDetailHandler } from '#student/application/academic-re
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { GetAcademicRecordDetailQuery } from '#student/application/academic-record/get-academic-record-detail/get-academic-record-detail.query';
 import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
-import { getAnAcademicRecord } from '#test/entity-factory';
-import { getAnAcademicRecordGetterMock } from '#test/service-factory';
+import {
+  getAnAcademicRecord,
+  getAnAdministrativeGroup,
+} from '#test/entity-factory';
+import {
+  getAnAcademicRecordGetterMock,
+  getAStudentAdministrativeGroupByAcademicRecordGetterMock,
+} from '#test/service-factory';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
@@ -12,10 +18,13 @@ import {
   IdentityDocument,
   IdentityDocumentType,
 } from '#/sga/shared/domain/value-object/identity-document';
+import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 
 let handler: GetAcademicRecordDetailHandler;
 let academicRecordGetter: AcademicRecordGetter;
+let studentAdministrativeGroupByAcademicRecordGetter: StudentAdministrativeGroupByAcademicRecordGetter;
 let getAcademicRecordSpy: jest.SpyInstance;
+let getAdministrativeGroupSpy: jest.SpyInstance;
 
 const mockCountry = Country.create(
   'countryId',
@@ -50,18 +59,30 @@ const mockBusinessUnit = BusinessUnit.create(
   mockAdminUser,
 );
 
+const administrativeGroup = getAnAdministrativeGroup();
+
 mockAdminUser.businessUnits.push(mockBusinessUnit);
 
 describe('GetAcademicRecordDetailHandler', () => {
   beforeAll(() => {
     academicRecordGetter = getAnAcademicRecordGetterMock();
-    handler = new GetAcademicRecordDetailHandler(academicRecordGetter);
+    studentAdministrativeGroupByAcademicRecordGetter =
+      getAStudentAdministrativeGroupByAcademicRecordGetterMock();
+    handler = new GetAcademicRecordDetailHandler(
+      academicRecordGetter,
+      studentAdministrativeGroupByAcademicRecordGetter,
+    );
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
+    getAdministrativeGroupSpy = jest.spyOn(
+      studentAdministrativeGroupByAcademicRecordGetter,
+      'get',
+    );
   });
 
   it('should return an academic record', async () => {
     const academicRecord = getAnAcademicRecord();
     getAcademicRecordSpy.mockResolvedValue(academicRecord);
+    getAdministrativeGroupSpy.mockResolvedValue(administrativeGroup);
     const query = new GetAcademicRecordDetailQuery(
       'academicRecordId',
       mockAdminUser,
@@ -73,7 +94,10 @@ describe('GetAcademicRecordDetailHandler', () => {
       'academicRecordId',
       mockAdminUser,
     );
-    expect(result).toEqual(academicRecord);
+    expect(result).toEqual({
+      academicRecord,
+      administrativeGroup,
+    });
   });
 
   it('should throw an AcademicRecordNotFoundException', async () => {

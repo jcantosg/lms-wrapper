@@ -1,5 +1,6 @@
 import { BadRequestException } from '#shared/domain/exception/bad-request.exception';
 import { Logger } from '@nestjs/common';
+import { LmsWrapperPostException } from '#lms-wrapper/domain/exception/lms-wrapper-post.exception';
 
 export class FetchWrapper {
   constructor(
@@ -23,26 +24,27 @@ export class FetchWrapper {
     queryParams: string | null = null,
     body: string | null = null,
   ) {
-    try {
-      const response = await fetch(`${this.baseUrl}${url}?${queryParams}`, {
-        method: 'POST',
-        body: body,
-      });
+    const response = await fetch(`${this.baseUrl}${url}?${queryParams}`, {
+      method: 'POST',
+      body: body,
+    });
 
-      const responseJson = await response.json();
-      this.handleErrors(responseJson);
+    const responseJson = await response.json();
+    this.handleErrors(responseJson);
 
-      return responseJson;
-    } catch (error) {
-      throw new BadRequestException();
-    }
+    return responseJson;
   }
 
-  handleErrors(response: { message: string; exception: string } | null) {
+  handleErrors(
+    response: {
+      message: string;
+      exception: string;
+      debuginfo: string | undefined;
+    } | null,
+  ) {
     if (response && response.exception) {
-      this.logger.error(response.exception, response.message);
-
-      throw new BadRequestException();
+      this.logger.error(response.exception, response.debuginfo);
+      throw new LmsWrapperPostException(response.exception);
     }
   }
 }

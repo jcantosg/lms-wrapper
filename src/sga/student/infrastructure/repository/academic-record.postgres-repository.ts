@@ -136,10 +136,16 @@ export class AcademicRecordPostgresRepository
       return await this.repository.find({
         where: { student: { id } },
         relations: {
+          businessUnit: true,
+          student: true,
+          academicPeriod: true,
           academicProgram: {
             title: true,
+            programBlocks: {
+              subjects: true,
+            },
           },
-          academicPeriod: true,
+          virtualCampus: true,
         },
       });
     }
@@ -204,6 +210,7 @@ export class AcademicRecordPostgresRepository
       },
       relations: {
         academicProgram: {
+          title: true,
           programBlocks: {
             blockRelation: {
               programBlock: true,

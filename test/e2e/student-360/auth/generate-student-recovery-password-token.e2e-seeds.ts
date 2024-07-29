@@ -59,6 +59,7 @@ export class GenerateStudentRecoveryPasswordTokenSeed implements E2eSeed {
       null,
       this.adminUser,
       null,
+      false,
     );
     await this.studentRepository.save(this.student);
   }

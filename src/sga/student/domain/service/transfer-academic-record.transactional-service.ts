@@ -6,7 +6,7 @@ import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-t
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export interface TransferAcademicRecordTransactionParams
   extends TransactionParams {

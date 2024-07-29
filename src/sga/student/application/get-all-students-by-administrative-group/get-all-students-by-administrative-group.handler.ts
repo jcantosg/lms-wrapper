@@ -1,5 +1,5 @@
 import { QueryHandler } from '#shared/domain/bus/query.handler';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { Student } from '#shared/domain/entity/student.entity';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
 import { GetAllStudentsByAdministrativeGroupCriteria } from '#student/application/get-all-students-by-administrative-group/get-all-students-by-administrative-group.criteria';

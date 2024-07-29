@@ -3,7 +3,9 @@ import { administrativeGroupSchema } from '#student/infrastructure/config/schema
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
-import { AcademicRecordTransfer } from '#student/domain/entity/academic-record-transfer.entity';
+import { academicRecordTransferSchema } from '#student/infrastructure/config/schema/academic-record-transfer.schema';
+import { administrativeProcessSchema } from '#student/infrastructure/config/schema/administrative-process.schema';
+import { administrativeProcessDocumentSchema } from '#student/infrastructure/config/schema/administrative-process-document.schema';
 
 export const studentSchemas = [
   academicRecordSchema,
@@ -11,5 +13,7 @@ export const studentSchemas = [
   enrollmentSchema,
   administrativeGroupSchema,
   subjectCallSchema,
-  AcademicRecordTransfer,
+  academicRecordTransferSchema,
+  administrativeProcessSchema,
+  administrativeProcessDocumentSchema,
 ];

@@ -1,7 +1,7 @@
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
 import { Student } from '#shared/domain/entity/student.entity';

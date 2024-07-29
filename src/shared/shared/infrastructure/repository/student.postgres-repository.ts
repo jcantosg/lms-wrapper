@@ -1,6 +1,6 @@
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { Student } from '#shared/domain/entity/student.entity';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 import { Repository } from 'typeorm';
@@ -51,6 +51,7 @@ export class StudentPostgresRepository
       updatedBy: student.updatedBy,
       academicRecords: student.academicRecords,
       password: student.password,
+      isDefense: student.isDefense,
     });
   }
 
@@ -99,11 +100,6 @@ export class StudentPostgresRepository
           periodBlock: true,
           programBlock: true,
         },
-        internalGroups: {
-          academicPeriod: true,
-          academicProgram: true,
-          subject: true,
-        },
       },
     });
   }
@@ -115,12 +111,14 @@ export class StudentPostgresRepository
   ): Promise<number> {
     const aliasQuery = 'student';
     const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
     const baseRepository = isSuperAdmin
       ? this
       : await this.filterBusinessUnits(
           queryBuilder,
           'oneToMany',
           adminUserBusinessUnits,
+          'academic_record_business_unit',
         );
 
     return await (
@@ -148,6 +146,7 @@ export class StudentPostgresRepository
           queryBuilder,
           'oneToMany',
           adminUserBusinessUnits,
+          'academic_record_business_unit',
         );
 
     const rawStudents = await (
@@ -192,7 +191,7 @@ export class StudentPostgresRepository
     );
     queryBuilder.leftJoinAndSelect(
       'academicRecords.businessUnit',
-      'business_unit',
+      'academic_record_business_unit',
     );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.administrativeGroups`,

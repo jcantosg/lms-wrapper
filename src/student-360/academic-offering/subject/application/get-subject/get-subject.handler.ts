@@ -5,13 +5,12 @@ import { SubjectGetter } from '#academic-offering/domain/service/subject/subject
 import { Student } from '#shared/domain/entity/student.entity';
 import { StudentSubjectNotFoundException } from '#shared/domain/exception/student-360/student-subject-not-found.exception';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
-import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
-import { GetSubjectAcademicRecordCriteria } from '#student-360/academic-offering/subject/application/get-subject/get-subject-academic-record.criteria';
 import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
+import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 
 interface GetSubjectHandlerResponse {
   subject: Subject;
@@ -26,7 +25,7 @@ export class GetSubjectHandler implements QueryHandler {
   constructor(
     private readonly subjectGetter: SubjectGetter,
     private internalGroupTeacherGetter: InternalGroupDefaultTeacherGetter,
-    private academicRecordRepository: AcademicRecordRepository,
+    private academicRecordGetter: AcademicRecordGetter,
   ) {}
 
   async handle(query: GetSubjectQuery): Promise<GetSubjectHandlerResponse> {
@@ -39,13 +38,13 @@ export class GetSubjectHandler implements QueryHandler {
       subject.id,
     );
 
-    const criteria = new GetSubjectAcademicRecordCriteria(query);
-    const academicRecord =
-      await this.academicRecordRepository.matching(criteria);
+    const academicRecord = await this.academicRecordGetter.get(
+      query.academicRecordId,
+    );
     if (!academicRecord) {
       throw new AcademicRecordNotFoundException();
     }
-    const programBlock = academicRecord[0].academicProgram.programBlocks.find(
+    const programBlock = academicRecord.academicProgram.programBlocks.find(
       (programBlock) =>
         programBlock.subjects.some(
           (subjectProgramBlock) => subject.id === subjectProgramBlock.id,
@@ -59,7 +58,7 @@ export class GetSubjectHandler implements QueryHandler {
       subject: subject,
       defaultTeacher: defaultTeacher,
       breadCrumb: {
-        academicRecord: academicRecord[0],
+        academicRecord: academicRecord,
         programBlock: programBlock,
       },
     };

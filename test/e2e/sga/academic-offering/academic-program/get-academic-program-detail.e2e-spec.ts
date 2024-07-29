@@ -53,7 +53,12 @@ describe('Get Academic Program Detail (GET)', () => {
           id: GetAcademicProgramDetailE2eSeed.businessUnitId,
           name: GetAcademicProgramDetailE2eSeed.businessUnitName,
         },
-        programBlocks: [],
+        programBlocks: [
+          {
+            id: '3c8caff8-a1dd-482f-91db-79357507bbf6',
+            name: 'Bloque 1',
+          },
+        ],
       }),
     );
   });

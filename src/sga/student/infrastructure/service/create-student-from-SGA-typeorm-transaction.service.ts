@@ -47,7 +47,7 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
           new CreateLmsStudentCommand(
             `${stringWithoutWhitespaces(entities.student.name)}-${
               entities.student.surname
-            }-${entities.student.surname2}`.toLowerCase(),
+            }-${entities.student.id}`.toLowerCase(),
             entities.student.name,
             `${entities.student.surname} ${entities.student.surname2}`,
             entities.student.email,

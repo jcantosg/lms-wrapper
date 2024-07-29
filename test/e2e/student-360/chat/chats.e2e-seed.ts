@@ -35,7 +35,7 @@ import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
@@ -52,7 +52,7 @@ import { TimeZoneEnum } from '#/sga/shared/domain/enum/time-zone.enum';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { chatroomSchema } from '#shared/infrastructure/config/schema/chatroom.schema';
 
-export class TeacherChatsE2eSeed implements E2eSeed {
+export class ChatsE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
   public static superAdminUserPassword = 'pass123';
   public static superAdminUserId = uuid();
@@ -117,6 +117,7 @@ export class TeacherChatsE2eSeed implements E2eSeed {
   public static edaeUserName = 'teacher';
   public static edaeUserSurname = 'Surname';
   public static edaeUserEmail = 'edae-user@universae.com';
+  public static edaeUserPassword = 'password';
 
   public static internalGroupId = uuid();
   public static internalGroupCode = 'code';
@@ -191,18 +192,18 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     });
 
     this.businessUnit = BusinessUnit.create(
-      TeacherChatsE2eSeed.businessUnitId,
-      TeacherChatsE2eSeed.businessUnitName,
-      TeacherChatsE2eSeed.businessUnitCode,
+      ChatsE2eSeed.businessUnitId,
+      ChatsE2eSeed.businessUnitName,
+      ChatsE2eSeed.businessUnitCode,
       country,
       this.superAdminUser,
     );
     await this.businessUnitRepository.save(this.businessUnit);
 
     this.virtualCampus = VirtualCampus.create(
-      TeacherChatsE2eSeed.virtualCampusId,
-      TeacherChatsE2eSeed.virtualCampusName,
-      TeacherChatsE2eSeed.virtualCampusCode,
+      ChatsE2eSeed.virtualCampusId,
+      ChatsE2eSeed.virtualCampusName,
+      ChatsE2eSeed.virtualCampusCode,
       this.businessUnit,
       this.superAdminUser,
     );
@@ -210,50 +211,50 @@ export class TeacherChatsE2eSeed implements E2eSeed {
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
-      TeacherChatsE2eSeed.superAdminUserId,
-      TeacherChatsE2eSeed.superAdminUserEmail,
-      TeacherChatsE2eSeed.superAdminUserPassword,
+      ChatsE2eSeed.superAdminUserId,
+      ChatsE2eSeed.superAdminUserEmail,
+      ChatsE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
       [this.businessUnit],
     );
 
     this.title = Title.create(
-      TeacherChatsE2eSeed.titleId,
-      TeacherChatsE2eSeed.titleName,
-      TeacherChatsE2eSeed.titleOfficialCode,
-      TeacherChatsE2eSeed.titleOfficialTitle,
-      TeacherChatsE2eSeed.titleOfficialProgram,
+      ChatsE2eSeed.titleId,
+      ChatsE2eSeed.titleName,
+      ChatsE2eSeed.titleOfficialCode,
+      ChatsE2eSeed.titleOfficialTitle,
+      ChatsE2eSeed.titleOfficialProgram,
       this.businessUnit,
       this.superAdminUser,
     );
     await this.titleRepository.save(this.title);
 
     const evaluationType = await this.evaluationTypeRepository.findOneByOrFail({
-      id: TeacherChatsE2eSeed.subjectEvaluationType,
+      id: ChatsE2eSeed.subjectEvaluationType,
     });
 
     this.subject = Subject.create(
-      TeacherChatsE2eSeed.subjectId,
+      ChatsE2eSeed.subjectId,
       null,
-      TeacherChatsE2eSeed.subjectName,
-      TeacherChatsE2eSeed.subjectCode,
+      ChatsE2eSeed.subjectName,
+      ChatsE2eSeed.subjectCode,
       null,
-      TeacherChatsE2eSeed.subjectHours,
-      TeacherChatsE2eSeed.subjectModality,
+      ChatsE2eSeed.subjectHours,
+      ChatsE2eSeed.subjectModality,
       evaluationType,
-      TeacherChatsE2eSeed.subjectType,
+      ChatsE2eSeed.subjectType,
       this.businessUnit,
-      TeacherChatsE2eSeed.subjectIsRegulated,
-      TeacherChatsE2eSeed.subjectIsCore,
+      ChatsE2eSeed.subjectIsRegulated,
+      ChatsE2eSeed.subjectIsCore,
       this.superAdminUser,
       null,
     );
     await this.subjectRepository.save(this.subject);
 
     this.academicProgram = AcademicProgram.create(
-      TeacherChatsE2eSeed.academicProgramId,
-      TeacherChatsE2eSeed.academicProgramName,
-      TeacherChatsE2eSeed.academicProgramCode,
+      ChatsE2eSeed.academicProgramId,
+      ChatsE2eSeed.academicProgramName,
+      ChatsE2eSeed.academicProgramCode,
       this.title,
       this.businessUnit,
       this.superAdminUser,
@@ -261,8 +262,8 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     );
 
     this.programBlock = ProgramBlock.create(
-      TeacherChatsE2eSeed.programBlockId,
-      TeacherChatsE2eSeed.programBlockName,
+      ChatsE2eSeed.programBlockId,
+      ChatsE2eSeed.programBlockName,
       this.academicProgram,
       this.superAdminUser,
     );
@@ -273,21 +274,21 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     await this.programBlockRepository.save(this.programBlock);
 
     this.academicPeriod = AcademicPeriod.create(
-      TeacherChatsE2eSeed.academicPeriodId,
-      TeacherChatsE2eSeed.academicPeriodName,
-      TeacherChatsE2eSeed.academicPeriodCode,
-      new Date(TeacherChatsE2eSeed.academicPeriodStartDate),
-      new Date(TeacherChatsE2eSeed.academicPeriodEndDate),
+      ChatsE2eSeed.academicPeriodId,
+      ChatsE2eSeed.academicPeriodName,
+      ChatsE2eSeed.academicPeriodCode,
+      new Date(ChatsE2eSeed.academicPeriodStartDate),
+      new Date(ChatsE2eSeed.academicPeriodEndDate),
       this.businessUnit,
-      TeacherChatsE2eSeed.academicPeriodBlocksNumber,
+      ChatsE2eSeed.academicPeriodBlocksNumber,
       this.superAdminUser,
     );
     this.academicPeriod.academicPrograms.push(this.academicProgram);
 
     this.periodBlock = PeriodBlock.create(
-      TeacherChatsE2eSeed.periodBlockId,
+      ChatsE2eSeed.periodBlockId,
       this.academicPeriod,
-      TeacherChatsE2eSeed.name,
+      ChatsE2eSeed.name,
       this.academicPeriod.startDate,
       this.academicPeriod.endDate,
       this.superAdminUser,
@@ -298,7 +299,7 @@ export class TeacherChatsE2eSeed implements E2eSeed {
 
     await this.blockRelationRepository.save(
       BlockRelation.create(
-        TeacherChatsE2eSeed.blockRelationId,
+        ChatsE2eSeed.blockRelationId,
         this.periodBlock,
         this.programBlock,
         this.superAdminUser,
@@ -313,33 +314,33 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     const passwordEncoder = new BCryptPasswordEncoder();
 
     this.student = Student.createFromSGA(
-      TeacherChatsE2eSeed.studentId,
-      TeacherChatsE2eSeed.studentName,
-      TeacherChatsE2eSeed.studentSurname,
-      TeacherChatsE2eSeed.studentSurname2,
-      TeacherChatsE2eSeed.studentEmail,
-      TeacherChatsE2eSeed.studentUniversaeEmail,
+      ChatsE2eSeed.studentId,
+      ChatsE2eSeed.studentName,
+      ChatsE2eSeed.studentSurname,
+      ChatsE2eSeed.studentSurname2,
+      ChatsE2eSeed.studentEmail,
+      ChatsE2eSeed.studentUniversaeEmail,
       this.superAdminUser,
-      await passwordEncoder.encodePassword(TeacherChatsE2eSeed.studentPassword),
+      await passwordEncoder.encodePassword(ChatsE2eSeed.studentPassword),
       null,
     );
     await this.studentRepository.save(this.student);
 
     this.academicRecord = AcademicRecord.create(
-      TeacherChatsE2eSeed.academicRecordId,
+      ChatsE2eSeed.academicRecordId,
       this.businessUnit,
       this.virtualCampus,
       this.student,
       this.academicPeriod,
       this.academicProgram,
       AcademicRecordModalityEnum.ELEARNING,
-      TeacherChatsE2eSeed.academicRecordIsModular,
+      ChatsE2eSeed.academicRecordIsModular,
       this.superAdminUser,
     );
     await this.academicRecordRepository.save(this.academicRecord);
 
     this.enrollment = Enrollment.create(
-      TeacherChatsE2eSeed.enrollmentId,
+      ChatsE2eSeed.enrollmentId,
       this.subject,
       this.academicRecord,
       EnrollmentVisibilityEnum.YES,
@@ -350,11 +351,11 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     await this.enrollmentRepository.save(this.enrollment);
 
     this.edaeUser = EdaeUser.create(
-      TeacherChatsE2eSeed.edaeUserId,
-      TeacherChatsE2eSeed.edaeUserName,
-      TeacherChatsE2eSeed.edaeUserSurname,
+      ChatsE2eSeed.edaeUserId,
+      ChatsE2eSeed.edaeUserName,
+      ChatsE2eSeed.edaeUserSurname,
       null,
-      TeacherChatsE2eSeed.edaeUserEmail,
+      ChatsE2eSeed.edaeUserEmail,
       getAnIdentityDocument(),
       [EdaeRoles.DOCENTE],
       [this.businessUnit],
@@ -362,14 +363,14 @@ export class TeacherChatsE2eSeed implements E2eSeed {
       true,
       country,
       null,
-      'password',
+      await passwordEncoder.encodePassword(ChatsE2eSeed.edaeUserPassword),
     );
 
     await this.edaeUserRepository.save(this.edaeUser);
 
     this.internalGroup = InternalGroup.create(
-      TeacherChatsE2eSeed.internalGroupId,
-      TeacherChatsE2eSeed.internalGroupCode,
+      ChatsE2eSeed.internalGroupId,
+      ChatsE2eSeed.internalGroupCode,
       [this.student],
       [this.edaeUser],
       this.academicPeriod,
@@ -385,7 +386,7 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     await this.internalGroupRepository.save(this.internalGroup);
 
     this.chatroom = Chatroom.create(
-      TeacherChatsE2eSeed.chatroomId,
+      ChatsE2eSeed.chatroomId,
       this.internalGroup,
       this.student,
       this.edaeUser,
@@ -397,9 +398,7 @@ export class TeacherChatsE2eSeed implements E2eSeed {
     await this.chatroomRepository.delete({});
     await this.internalGroupRepository.delete({});
     await this.enrollmentRepository.delete({});
-    await this.academicRecordRepository.delete(
-      TeacherChatsE2eSeed.academicRecordId,
-    );
+    await this.academicRecordRepository.delete(ChatsE2eSeed.academicRecordId);
     await this.studentRepository.delete(this.student.id);
     await this.blockRelationRepository.delete({});
     await this.periodBlockRepository.delete({});

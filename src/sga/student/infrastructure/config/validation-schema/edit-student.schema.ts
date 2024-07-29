@@ -35,4 +35,5 @@ export const editStudentSchema = Joi.object({
   guardianSurname: Joi.string().optional().allow(''),
   guardianEmail: Joi.string().optional().allow(''),
   guardianPhone: Joi.string().optional().allow(''),
+  isDefense: Joi.boolean().required(),
 });

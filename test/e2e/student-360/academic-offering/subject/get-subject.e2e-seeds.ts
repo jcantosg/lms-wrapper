@@ -38,7 +38,7 @@ import {
   getALmsCourse,
   getAnIdentityDocument,
 } from '#test/value-object-factory';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { edaeUserSchema } from '#edae-user/infrastructure/config/schema/edae-user.schema';

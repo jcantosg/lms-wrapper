@@ -4,6 +4,7 @@ import { VirtualCampusGetter } from '#business-unit/domain/service/virtual-campu
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import {
+  getACreateAdministrativeProcessHandlerMock,
   getAUpdateAdministrativeGroupsServiceMock,
   getAUpdateInternalGroupsServiceMock,
   getAnAcademicPeriodGetterMock,
@@ -50,6 +51,7 @@ import { UpdateInternalGroupsService } from '#student/domain/service/update-inte
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 
 let handler: TransferAcademicRecordHandler;
 let businessUnitGetter: BusinessUnitGetter;
@@ -65,6 +67,7 @@ let uuidGenerator: UUIDGeneratorService;
 let updateInternalGroupsService: UpdateInternalGroupsService;
 let updateAdministrativeGroupsService: UpdateAdministrativeGroupsService;
 let eventDispatcher: EventDispatcher;
+let createAdministrativeProcessHandler: CreateAdministrativeProcessHandler;
 
 let getAcademicRecordSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -77,6 +80,7 @@ let getEnrollmentsSpy: jest.SpyInstance;
 let executeTransactionSpy: jest.SpyInstance;
 let updateInternalGroupsSpy: jest.SpyInstance;
 let updateAdministrativeGroupsSpy: jest.SpyInstance;
+let createAdministrativeProcessSpy: jest.SpyInstance;
 
 const oldAcademicRecord = getAnAcademicRecord();
 const newAcademicRecord = getAnAcademicRecord();
@@ -131,6 +135,8 @@ describe('Transfer Academic Record Handler', () => {
     updateAdministrativeGroupsService =
       getAUpdateAdministrativeGroupsServiceMock();
     eventDispatcher = new EventDispatcherMock();
+    createAdministrativeProcessHandler =
+      getACreateAdministrativeProcessHandlerMock();
 
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
@@ -149,6 +155,10 @@ describe('Transfer Academic Record Handler', () => {
       updateAdministrativeGroupsService,
       'update',
     );
+    createAdministrativeProcessSpy = jest.spyOn(
+      createAdministrativeProcessHandler,
+      'handle',
+    );
 
     handler = new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -164,6 +174,7 @@ describe('Transfer Academic Record Handler', () => {
       updateInternalGroupsService,
       updateAdministrativeGroupsService,
       eventDispatcher,
+      createAdministrativeProcessHandler,
     );
   });
 
@@ -268,6 +279,7 @@ describe('Transfer Academic Record Handler', () => {
     );
     updateInternalGroupsSpy.mockImplementation(() => Promise.resolve([]));
     updateAdministrativeGroupsSpy.mockImplementation(() => Promise.resolve([]));
+    createAdministrativeProcessSpy.mockImplementation(() => Promise.resolve());
 
     const academicRecordTransfer = AcademicRecordTransfer.create(
       uuid(),

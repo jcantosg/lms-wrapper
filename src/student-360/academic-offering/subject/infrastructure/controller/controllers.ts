@@ -3,7 +3,7 @@ import { GetSubjectProgressController } from '#student-360/academic-offering/sub
 import { UpdateSubjectProgressController } from '#student-360/academic-offering/subject/infrastructure/controller/update-subject-progress.controller';
 
 export const studentSubjectControllers = [
-  GetSubjectController,
   GetSubjectProgressController,
+  GetSubjectController,
   UpdateSubjectProgressController,
 ];

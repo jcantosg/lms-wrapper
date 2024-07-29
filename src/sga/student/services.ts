@@ -145,7 +145,6 @@ const createStudentFromCRMTransactionalService = {
     DeleteLmsStudentHandler,
     PasswordEncoder,
     ConfigService,
-    AdministrativeGroupRepository,
     CreateLmsEnrollmentHandler,
     DeleteLmsEnrollmentHandler,
     GetLmsStudentHandler,

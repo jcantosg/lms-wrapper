@@ -26,8 +26,8 @@ export class AcademicRecordDetailController {
     @Req() req: AuthRequest,
   ): Promise<GetAcademicRecordDetailResponse> {
     const query = new GetAcademicRecordDetailQuery(id, req.user);
-    const academicRecord = await this.handler.handle(query);
+    const academicRecordDetail = await this.handler.handle(query);
 
-    return GetAcademicRecordDetailResponse.create(academicRecord);
+    return GetAcademicRecordDetailResponse.create(academicRecordDetail);
   }
 }

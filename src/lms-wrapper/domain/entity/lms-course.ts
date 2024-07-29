@@ -12,6 +12,7 @@ export interface LmsCourseValues {
   categoryId: LmsCourseCategoryEnum;
   name: string;
   shortname: string;
+  progress: number;
   modules: LmsModule[];
 }
 

@@ -11,7 +11,7 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { Student } from '#shared/domain/entity/student.entity';
 import { Title } from '#academic-offering/domain/entity/title.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { Country } from '#shared/domain/entity/country.entity';
@@ -98,6 +98,7 @@ export class EditChatroomSeed {
   public static edaeUserName = 'teacher';
   public static edaeUserSurname = 'Surname';
   public static edaeUserEmail = 'edae-user@universae.com';
+  public static edaeUserPassword = 'password';
 
   public static internalGroupId = uuid();
   public static internalGroupCode = 'code';
@@ -301,7 +302,7 @@ export class EditChatroomSeed {
       true,
       country,
       null,
-      'password',
+      await passwordEncoder.encodePassword(EditChatroomSeed.edaeUserPassword),
     );
     await this.edaeUserRepository.save(this.edaeUser);
 

@@ -265,6 +265,24 @@ export class AdministrativeGroupPostgresRepository
           .add(student);
       }
 
+      await queryRunner.manager
+        .createQueryBuilder()
+        .update(AdministrativeGroup)
+        .set({
+          studentsNumber: () => `studentsNumber - ${students.length}`,
+        })
+        .where('id = :id', { id: originGroup.id })
+        .execute();
+
+      await queryRunner.manager
+        .createQueryBuilder()
+        .update(AdministrativeGroup)
+        .set({
+          studentsNumber: () => `studentsNumber + ${students.length}`,
+        })
+        .where('id = :id', { id: destinationGroup.id })
+        .execute();
+
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();

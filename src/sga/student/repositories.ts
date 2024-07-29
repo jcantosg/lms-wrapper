@@ -10,6 +10,10 @@ import { SubjectCallRepository } from '#student/domain/repository/subject-call.r
 import { SubjectCallPostgresRepository } from '#student/infrastructure/repository/subject-call.postgres-repository';
 import { AcademicRecordTransferRepository } from '#student/domain/repository/academic-record-transfer.repository';
 import { AcademicRecordTransferPostgresRepository } from '#student/infrastructure/repository/academic-record-transfer.postgres-repository';
+import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
+import { AdministrativeProcessPostgresRepository } from '#student/infrastructure/repository/administrative-process.postgres-repository';
+import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
+import { AdministrativeProcessDocumentPostgresRepository } from '#student/infrastructure/repository/administrative-process-document.postgres-repository';
 
 export const repositories = [
   {
@@ -35,5 +39,13 @@ export const repositories = [
   {
     provide: AcademicRecordTransferRepository,
     useClass: AcademicRecordTransferPostgresRepository,
+  },
+  {
+    provide: AdministrativeProcessRepository,
+    useClass: AdministrativeProcessPostgresRepository,
+  },
+  {
+    provide: AdministrativeProcessDocumentRepository,
+    useClass: AdministrativeProcessDocumentPostgresRepository,
   },
 ];

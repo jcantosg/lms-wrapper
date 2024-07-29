@@ -1,4 +1,4 @@
-import { EditChatroomHandler } from '#student-360/chat/application/edit-chatroom/edit-chatroom.handler';
+import { EditChatroomHandler } from '#shared/application/edit-chatroom/edit-chatroom.handler';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import {
   getAChatroom,
@@ -8,7 +8,7 @@ import {
   getAPeriodBlock,
   getASubject,
 } from '#test/entity-factory';
-import { EditChatroomCommand } from '#student-360/chat/application/edit-chatroom/edit-chatroom.command';
+import { EditChatroomCommand } from '#shared/application/edit-chatroom/edit-chatroom.command';
 import { ChatroomMockRepository } from '#test/mocks/shared/chatroom.mock-repository';
 import { ChatroomNotFoundException } from '#shared/domain/exception/chat/chatroom.not-found.exception';
 

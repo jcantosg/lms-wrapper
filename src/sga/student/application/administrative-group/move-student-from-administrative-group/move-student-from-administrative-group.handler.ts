@@ -4,7 +4,7 @@ import { Student } from '#shared/domain/entity/student.entity';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 
 export class MoveStudentFromAdministrativeGroupHandler
   implements CommandHandler

@@ -4,13 +4,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { chatroomSchema } from '#shared/infrastructure/config/schema/chatroom.schema';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 
 @Injectable()
-export class ChatroomPostgresRepository implements ChatroomRepository {
+export class ChatroomPostgresRepository
+  extends TypeOrmRepository<Chatroom>
+  implements ChatroomRepository
+{
   constructor(
     @InjectRepository(chatroomSchema)
     private readonly repository: Repository<Chatroom>,
-  ) {}
+  ) {
+    super();
+  }
 
   async save(chatroom: Chatroom): Promise<void> {
     await this.repository.save({
@@ -87,5 +94,56 @@ export class ChatroomPostgresRepository implements ChatroomRepository {
         student: true,
       },
     });
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.internalGroup`,
+      'internalGroup',
+    );
+    queryBuilder.leftJoinAndSelect('chatroom.teacher', 'teacher');
+    queryBuilder.leftJoinAndSelect('chatroom.student', 'student');
+    queryBuilder.leftJoinAndSelect('internalGroup.subject', 'chatroom_subject');
+    queryBuilder.leftJoinAndSelect(
+      'internalGroup.academicProgram',
+      'academicProgram',
+    );
+    queryBuilder.leftJoinAndSelect('academicProgram.title', 'chatroom_title');
+    queryBuilder.leftJoinAndSelect(
+      'academicProgram.businessUnit',
+      'chatroom_businessUnit',
+    );
+    queryBuilder.leftJoinAndSelect(
+      'internalGroup.academicPeriod',
+      'chatroom_academicPeriod',
+    );
+
+    return queryBuilder;
+  }
+
+  async matching(criteria: Criteria): Promise<Chatroom[]> {
+    const aliasQuery = 'chatroom';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    let criteriaToQueryBuilder = await this.convertCriteriaToQueryBuilder(
+      criteria,
+      queryBuilder,
+      'enrollment',
+    );
+
+    if (criteria.page !== null && criteria.limit !== null) {
+      criteriaToQueryBuilder = criteriaToQueryBuilder.applyPagination(
+        criteria,
+        queryBuilder,
+      );
+    }
+
+    if (criteria.order !== null) {
+      criteriaToQueryBuilder.applyOrder(criteria, queryBuilder, aliasQuery);
+    }
+
+    return await this.getMany(queryBuilder);
   }
 }

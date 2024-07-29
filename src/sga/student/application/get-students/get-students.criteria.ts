@@ -60,6 +60,12 @@ export class GetStudentsCriteria extends Criteria {
         GroupOperator.AND,
         'academic_record_academic_program',
       ),
+      new Filter(
+        'isDefense',
+        query.isDefense,
+        FilterOperators.EQUALS,
+        GroupOperator.AND,
+      ),
     ].filter((filter: Filter) => filter.value !== undefined);
   }
 }

@@ -1,4 +1,4 @@
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 
 export class StudentGetter {

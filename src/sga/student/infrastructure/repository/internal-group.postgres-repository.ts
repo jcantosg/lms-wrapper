@@ -2,7 +2,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
@@ -37,6 +37,7 @@ export class InternalGroupPostgresRepository
       updatedAt: internalGroup.updatedAt,
       createdBy: internalGroup.createdBy,
       updatedBy: internalGroup.updatedBy,
+      defaultTeacher: internalGroup.defaultTeacher,
     });
   }
 
@@ -235,6 +236,43 @@ export class InternalGroupPostgresRepository
         defaultTeacher: true,
         subject: true,
         students: true,
+      },
+    });
+  }
+
+  async getAllByStudent(studentId: string): Promise<InternalGroup[]> {
+    return await this.repository.find({
+      where: {
+        students: {
+          id: studentId,
+        },
+      },
+      relations: {
+        defaultTeacher: true,
+        subject: true,
+        academicProgram: true,
+        academicPeriod: true,
+        students: true,
+      },
+    });
+  }
+
+  async getAllByTeacher(teacherId: string): Promise<InternalGroup[]> {
+    return await this.repository.find({
+      where: {
+        teachers: {
+          id: teacherId,
+        },
+      },
+      relations: {
+        defaultTeacher: true,
+        academicPeriod: true,
+        academicProgram: {
+          title: true,
+        },
+        subject: true,
+        students: true,
+        businessUnit: true,
       },
     });
   }

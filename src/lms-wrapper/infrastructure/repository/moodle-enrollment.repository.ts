@@ -14,7 +14,6 @@ export class MoodleEnrollmentRepository implements LmsEnrollmentRepository {
       enrollment.value.courseId,
       enrollment.value.studentId,
       enrollment.value.startDate,
-      enrollment.value.endDate,
     );
   }
 }

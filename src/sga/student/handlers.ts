@@ -1,6 +1,6 @@
 import { GetAccessQualificationsHandler } from '#student/application/get-access-qualifications/get-access-qualifications.handler';
 import { CreateStudentHandler } from '#student/application/create-student/create-student.handler';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
@@ -51,6 +51,10 @@ import { RemoveStudentFromInternalGroupHandler } from '#student/application/remo
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
+import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
+import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -199,6 +203,8 @@ const createStudentFromCRMHandler = {
     updateInternalGroupsService: UpdateInternalGroupsService,
     updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     eventDispatcher: EventDispatcher,
+    uuidService: UUIDGeneratorService,
+    createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
       'ADMIN_USER_EMAIL',
@@ -223,6 +229,8 @@ const createStudentFromCRMHandler = {
       updateInternalGroupsService,
       updateAdministrativeGroupsService,
       eventDispatcher,
+      uuidService,
+      createAdministrativeProcessHandler,
     );
   },
   inject: [
@@ -243,6 +251,8 @@ const createStudentFromCRMHandler = {
     UpdateInternalGroupsService,
     UpdateAdministrativeGroupsService,
     EventDispatcher,
+    UUIDGeneratorService,
+    CreateAdministrativeProcessHandler,
   ],
 };
 
@@ -408,6 +418,25 @@ const removeStudentFromInternalGroupHandler = {
   inject: [InternalGroupRepository, InternalGroupGetter, StudentGetter],
 };
 
+const createAdministrativeProcessHandler = {
+  provide: CreateAdministrativeProcessHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+    administrativeProcessDocumentRepository: AdministrativeProcessDocumentRepository,
+    academicRecordGetter: AcademicRecordGetter,
+  ): CreateAdministrativeProcessHandler =>
+    new CreateAdministrativeProcessHandler(
+      administrativeProcessRepository,
+      administrativeProcessDocumentRepository,
+      academicRecordGetter,
+    ),
+  inject: [
+    AdministrativeProcessRepository,
+    AdministrativeProcessDocumentRepository,
+    AcademicRecordGetter,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -435,4 +464,5 @@ export const handlers = [
   addStudentToInternalGroupHandler,
   getInternalGroupStudentsHandler,
   removeStudentFromInternalGroupHandler,
+  createAdministrativeProcessHandler,
 ];

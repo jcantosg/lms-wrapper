@@ -14,11 +14,12 @@ import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subje
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { TransactionalService } from '#shared/domain/service/transactional-service.service';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 export class CreateEnrollmentHandler implements CommandHandler {
   constructor(
@@ -71,12 +72,19 @@ export class CreateEnrollmentHandler implements CommandHandler {
       );
       enrollment.addSubjectCall(subjectCall);
 
-      const internalGroup = await this.getInternalGroup(
-        enrollment.subject,
-        academicRecord,
-      );
-      internalGroup.updatedBy = command.user;
-      internalGroup.updatedAt = new Date();
+      const internalGroup =
+        subject.type !== SubjectType.SPECIALTY
+          ? await this.getInternalGroup(enrollment.subject, academicRecord)
+          : null;
+
+      if (internalGroup) {
+        internalGroup.updatedBy = command.user;
+        internalGroup.updatedAt = new Date();
+
+        await this.eventDispatcher.dispatch(
+          new InternalGroupMemberAddedEvent(internalGroup),
+        );
+      }
 
       await this.transactionalService.execute({
         subjectCall: subjectCall,
@@ -84,17 +92,13 @@ export class CreateEnrollmentHandler implements CommandHandler {
         internalGroup,
         student: academicRecord.student,
       });
-
-      await this.eventDispatcher.dispatch(
-        new InternalGroupMemberAddedEvent(internalGroup),
-      );
     }
   }
 
   private async getInternalGroup(
     subject: Subject,
     academicRecord: AcademicRecord,
-  ): Promise<InternalGroup> {
+  ): Promise<InternalGroup | null> {
     const internalGroups = await this.internalGroupRepository.getByKeys(
       academicRecord.academicPeriod,
       academicRecord.academicProgram,

@@ -21,6 +21,8 @@ import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.serv
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -33,6 +35,8 @@ const createAcademicRecordHandler = {
     academicProgramGetter: AcademicProgramGetter,
     studentGetter: StudentGetter,
     eventDispatcher: EventDispatcher,
+    uuidService: UUIDGeneratorService,
+    createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
   ): CreateAcademicRecordHandler =>
     new CreateAcademicRecordHandler(
       repository,
@@ -43,6 +47,8 @@ const createAcademicRecordHandler = {
       academicProgramGetter,
       studentGetter,
       eventDispatcher,
+      uuidService,
+      createAdministrativeProcessHandler,
     ),
   inject: [
     AcademicRecordRepository,
@@ -53,6 +59,8 @@ const createAcademicRecordHandler = {
     AcademicProgramGetter,
     StudentGetter,
     EventDispatcher,
+    UUIDGeneratorService,
+    CreateAdministrativeProcessHandler,
   ],
 };
 
@@ -70,9 +78,16 @@ const getAcademicRecordDetailHandler = {
   provide: GetAcademicRecordDetailHandler,
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
+    studentAdministrativeGroupByAcademicRecordGetter: StudentAdministrativeGroupByAcademicRecordGetter,
   ): GetAcademicRecordDetailHandler =>
-    new GetAcademicRecordDetailHandler(academicRecordGetter),
-  inject: [AcademicRecordGetter],
+    new GetAcademicRecordDetailHandler(
+      academicRecordGetter,
+      studentAdministrativeGroupByAcademicRecordGetter,
+    ),
+  inject: [
+    AcademicRecordGetter,
+    StudentAdministrativeGroupByAcademicRecordGetter,
+  ],
 };
 
 const getStudentAcademicRecordHandler = {
@@ -100,6 +115,7 @@ const transferAcademicRecordHandler = {
     updateInternalGroupsService: UpdateInternalGroupsService,
     updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     eventDispatcher: EventDispatcher,
+    createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
   ): TransferAcademicRecordHandler =>
     new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -115,6 +131,7 @@ const transferAcademicRecordHandler = {
       updateInternalGroupsService,
       updateAdministrativeGroupsService,
       eventDispatcher,
+      createAdministrativeProcessHandler,
     ),
   inject: [
     BusinessUnitGetter,
@@ -130,6 +147,7 @@ const transferAcademicRecordHandler = {
     UpdateInternalGroupsService,
     UpdateAdministrativeGroupsService,
     EventDispatcher,
+    CreateAdministrativeProcessHandler,
   ],
 };
 
