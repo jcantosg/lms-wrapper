@@ -56,7 +56,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         lmsStudent = await this.createLmsStudentHandler.handle(
           new CreateLmsStudentCommand(
             this.normalizeUsername(
-              `${entities.student.name}-${entities.student.surname}-${entities.student.surname2}`,
+              `${entities.student.name}-${entities.student.surname}-${entities.student.id}`.toLowerCase(),
             ),
             entities.student.name,
             `${entities.student.surname} ${entities.student.surname2}`,
