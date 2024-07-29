@@ -29,9 +29,6 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
       }
     }
 
-    return await this.academicRecordGetter.getStudentAcademicRecord(
-      query.academicRecordId,
-      query.student,
-    );
+    return academicRecord;
   }
 }
