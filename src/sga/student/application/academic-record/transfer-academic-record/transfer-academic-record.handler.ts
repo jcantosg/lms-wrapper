@@ -25,6 +25,7 @@ import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 export class TransferAcademicRecordHandler implements CommandHandler {
   constructor(
@@ -49,6 +50,10 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       command.oldAcademicRecordId,
       command.adminUser,
     );
+
+    if (oldAcademicRecord.status === AcademicRecordStatusEnum.CANCELLED) {
+      throw new AcademicRecordCancelledException();
+    }
 
     const businessUnit = await this.businessUnitGetter.getByAdminUser(
       command.businessUnitId,

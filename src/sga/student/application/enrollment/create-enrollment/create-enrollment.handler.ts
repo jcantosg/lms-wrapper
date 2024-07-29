@@ -20,6 +20,8 @@ import { InternalGroupNotFoundException } from '#shared/domain/exception/interna
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 export class CreateEnrollmentHandler implements CommandHandler {
   constructor(
@@ -35,6 +37,10 @@ export class CreateEnrollmentHandler implements CommandHandler {
       command.academicRecordId,
       command.user,
     );
+
+    if (academicRecord.status === AcademicRecordStatusEnum.CANCELLED) {
+      throw new AcademicRecordCancelledException();
+    }
 
     for (const enrollmentSubject of command.enrollmentSubjects) {
       const subject = await this.subjectGetter.getByAdminUser(

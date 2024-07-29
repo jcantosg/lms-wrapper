@@ -23,6 +23,8 @@ import { UpdateInternalGroupsService } from '#student/domain/service/update-inte
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
+import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { CancelAcademicRecordTransactionalService } from '#student/domain/service/cancel-academic-record.transactional-service';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -69,9 +71,27 @@ const editAcademicRecordHandler = {
   useFactory: (
     repository: AcademicRecordRepository,
     academicRecordGetter: AcademicRecordGetter,
+    administrativeGroupGetter: StudentAdministrativeGroupByAcademicRecordGetter,
+    enrollmentGetter: EnrollmentGetter,
+    internalGroupRepository: InternalGroupRepository,
+    transactionalService: CancelAcademicRecordTransactionalService,
   ): EditAcademicRecordHandler =>
-    new EditAcademicRecordHandler(repository, academicRecordGetter),
-  inject: [AcademicRecordRepository, AcademicRecordGetter],
+    new EditAcademicRecordHandler(
+      repository,
+      academicRecordGetter,
+      administrativeGroupGetter,
+      enrollmentGetter,
+      internalGroupRepository,
+      transactionalService,
+    ),
+  inject: [
+    AcademicRecordRepository,
+    AcademicRecordGetter,
+    StudentAdministrativeGroupByAcademicRecordGetter,
+    EnrollmentGetter,
+    InternalGroupRepository,
+    CancelAcademicRecordTransactionalService,
+  ],
 };
 
 const getAcademicRecordDetailHandler = {

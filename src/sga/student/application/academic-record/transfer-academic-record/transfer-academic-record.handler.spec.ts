@@ -52,6 +52,8 @@ import { UpdateAdministrativeGroupsService } from '#student/domain/service/updat
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 let handler: TransferAcademicRecordHandler;
 let businessUnitGetter: BusinessUnitGetter;
@@ -188,10 +190,22 @@ describe('Transfer Academic Record Handler', () => {
     );
   });
 
+  it('should throw an error if the old academic record is cancelled', async () => {
+    getAcademicRecordSpy.mockImplementation(
+      (): Promise<AcademicRecord> => Promise.resolve(oldAcademicRecord),
+    );
+    oldAcademicRecord.status = AcademicRecordStatusEnum.CANCELLED;
+
+    await expect(handler.handle(command)).rejects.toThrow(
+      AcademicRecordCancelledException,
+    );
+  });
+
   it('should return 404 business unit not found', async () => {
     getAcademicRecordSpy.mockImplementation(
       (): Promise<AcademicRecord> => Promise.resolve(oldAcademicRecord),
     );
+    oldAcademicRecord.status = AcademicRecordStatusEnum.VALID;
     getBusinessUnitSpy.mockImplementation((): Promise<BusinessUnit> => {
       throw new BusinessUnitNotFoundException();
     });

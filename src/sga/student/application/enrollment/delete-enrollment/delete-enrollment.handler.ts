@@ -9,6 +9,8 @@ import { LmsEnrollmentNotInEnrollmentException } from '#lms-wrapper/domain/excep
 import { LmsStudentNotInStudentException } from '#lms-wrapper/domain/exception/lms-student-not-in-student.exception';
 import { LmsCourseNotInSubjectException } from '#lms-wrapper/domain/exception/lms-course-not-in-subject.exception';
 import { DeleteLmsEnrollmentCommand } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.command';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
 export class DeleteEnrollmentHandler implements CommandHandler {
   constructor(
@@ -20,6 +22,12 @@ export class DeleteEnrollmentHandler implements CommandHandler {
 
   async handle(command: DeleteEnrollmentCommand): Promise<void> {
     const enrollment = await this.enrollmentGetter.get(command.enrollmentId);
+
+    if (
+      enrollment.academicRecord.status === AcademicRecordStatusEnum.CANCELLED
+    ) {
+      throw new AcademicRecordCancelledException();
+    }
 
     if (enrollment.isEnrollmentTaken()) {
       throw new EnrollmentSubjectCallsTakenException();
