@@ -15,6 +15,7 @@ import {
   MoodleLoginResponse,
   MoodleVideotimeResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
+import { formatMoodleNames } from '#shared/domain/lib/format-moodle-names';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
@@ -207,7 +208,7 @@ export class MoodleWrapper implements LmsWrapper {
         modules.push({
           id: courseContent.id,
           url: courseContent.url,
-          name: courseContent.name,
+          name: formatMoodleNames(courseContent.name),
           indexPosition: actualGroup,
           content: [],
         });
@@ -217,7 +218,7 @@ export class MoodleWrapper implements LmsWrapper {
         );
         actualModule!.content.push({
           id: courseContent.id,
-          name: courseContent.name,
+          name: formatMoodleNames(courseContent.name),
           url: await this.getResourceUrl(courseContent),
           type: moodleResourceType[courseContent.modname],
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
