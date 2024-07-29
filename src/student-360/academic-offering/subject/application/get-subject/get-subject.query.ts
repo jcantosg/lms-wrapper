@@ -5,5 +5,6 @@ export class GetSubjectQuery implements Query {
   constructor(
     public readonly subjectId: string,
     public readonly student: Student,
+    public readonly academicRecordId: string,
   ) {}
 }
