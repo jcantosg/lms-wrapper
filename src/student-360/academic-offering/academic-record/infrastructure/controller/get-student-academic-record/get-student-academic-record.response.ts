@@ -23,7 +23,7 @@ interface GetStudentAcademicRecordResponseBody {
         surname2: string | null | undefined;
         id: string | undefined;
         avatar: string | null | undefined;
-      };
+      } | null;
     }[];
   }[];
 }
@@ -49,13 +49,15 @@ export class GetStudentAcademicRecordResponse {
                 image: subject.image,
                 unitsNumber: subject.lmsCourse?.value?.modules?.length ?? 0,
                 progress: subject.lmsCourse?.value.progress ?? 0,
-                teacher: {
-                  id: subject.defaultTeacher?.id,
-                  name: subject.defaultTeacher?.name,
-                  surname1: subject.defaultTeacher?.surname1,
-                  surname2: subject.defaultTeacher?.surname2,
-                  avatar: subject.defaultTeacher?.avatar,
-                },
+                teacher: subject.defaultTeacher
+                  ? {
+                      id: subject.defaultTeacher?.id,
+                      name: subject.defaultTeacher?.name,
+                      surname1: subject.defaultTeacher?.surname1,
+                      surname2: subject.defaultTeacher?.surname2,
+                      avatar: subject.defaultTeacher?.avatar,
+                    }
+                  : null,
               };
             }),
           };
