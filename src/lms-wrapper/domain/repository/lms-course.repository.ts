@@ -1,5 +1,6 @@
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 import { LmsModuleContent } from '#/lms-wrapper/domain/entity/lms-module-content';
+import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
 
 export abstract class LmsCourseRepository {
   abstract getOne(id: number): Promise<LmsCourse>;
@@ -11,7 +12,7 @@ export abstract class LmsCourseRepository {
   abstract getContent(
     id: number,
     contentId: number,
-    studentId: number,
+    student: LmsStudent,
   ): Promise<LmsModuleContent>;
 
   abstract getByName(name: string): Promise<LmsCourse | null>;

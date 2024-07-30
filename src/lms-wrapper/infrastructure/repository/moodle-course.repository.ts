@@ -2,6 +2,7 @@ import { LmsCourseRepository } from '#/lms-wrapper/domain/repository/lms-course.
 import { MoodleWrapper } from '#/lms-wrapper/infrastructure/wrapper/moodle-wrapper';
 import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 import { LmsModuleContent } from '#/lms-wrapper/domain/entity/lms-module-content';
+import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
 
 export class MoodleCourseRepository implements LmsCourseRepository {
   constructor(private readonly moodleWrapper: MoodleWrapper) {}
@@ -21,9 +22,9 @@ export class MoodleCourseRepository implements LmsCourseRepository {
   async getContent(
     id: number,
     contentId: number,
-    studentId: number,
+    student: LmsStudent,
   ): Promise<LmsModuleContent> {
-    return this.moodleWrapper.getCourseContent(id, contentId, studentId);
+    return this.moodleWrapper.getCourseContent(id, contentId, student);
   }
 
   async getByName(name: string): Promise<LmsCourse | null> {

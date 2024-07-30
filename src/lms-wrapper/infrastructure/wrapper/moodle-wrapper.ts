@@ -16,6 +16,7 @@ import {
   MoodleVideotimeResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
 import { formatMoodleNames } from '#shared/domain/lib/format-moodle-names';
+import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
@@ -30,6 +31,8 @@ const moodleCourseContentIcon: { [id: string]: string } = {
 const moodleResourceType: { [id: string]: string } = {
   resource: 'pdf',
   videotime: 'video',
+  scorm: 'scorm',
+  webgl: 'webgl',
 };
 
 export enum MoodleCourseModuleStatus {
@@ -83,25 +86,7 @@ export class MoodleWrapper implements LmsWrapper {
         courseContentQueryParam,
       );
 
-    return new LmsCourse({
-      id: course.id,
-      categoryId: course.categoryid,
-      shortname: course.shortname,
-      name: course.displayname,
-      progress: 0,
-      modules: courseContentResponse
-        .map((courseContentResponse) => {
-          return {
-            id: courseContentResponse.id,
-            name: stringToCamelCase(courseContentResponse.name),
-            image:
-              moodleCourseContentIcon[
-                stringToCamelCase(courseContentResponse.name)
-              ] ?? '/courseContent.svg',
-          };
-        })
-        .filter((value) => value.name !== '' && value.name !== 'partners'),
-    });
+    return this.createCourse(course, courseContentResponse);
   }
 
   async getAllCourses(): Promise<LmsCourse[]> {
@@ -179,7 +164,7 @@ export class MoodleWrapper implements LmsWrapper {
   async getCourseContent(
     id: number,
     moduleId: number,
-    studentId: number,
+    student: LmsStudent,
   ): Promise<LmsModuleContent> {
     const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
     const courseContentResponse: MoodleCourseContentResponse[] =
@@ -194,9 +179,12 @@ export class MoodleWrapper implements LmsWrapper {
       throw new BadRequestException();
     }
 
-    const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${studentId}`;
+    const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${student.value.id}`;
     const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
       await this.wrapper.get(this.url, courseActivityStatusQueryParam);
+    const userSessionKeyUrl = await this.getUrlWithSessionKey(
+      student.value.email,
+    );
     let modules: Modules = [];
     let actualGroup = 0;
     for (const [
@@ -219,7 +207,7 @@ export class MoodleWrapper implements LmsWrapper {
         actualModule!.content.push({
           id: courseContent.id,
           name: formatMoodleNames(courseContent.name),
-          url: await this.getResourceUrl(courseContent),
+          url: await this.getResourceUrl(courseContent, userSessionKeyUrl),
           type: moodleResourceType[courseContent.modname],
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
             (status) => {
@@ -284,25 +272,7 @@ export class MoodleWrapper implements LmsWrapper {
         courseContentQueryParam,
       );
 
-    return new LmsCourse({
-      id: course.id,
-      categoryId: course.categoryid,
-      shortname: course.shortname,
-      name: course.displayname,
-      progress: 0,
-      modules: courseContentResponse
-        .map((courseContentResponse) => {
-          return {
-            id: courseContentResponse.id,
-            name: stringToCamelCase(courseContentResponse.name),
-            image:
-              moodleCourseContentIcon[
-                stringToCamelCase(courseContentResponse.name)
-              ] ?? '/courseContent.svg',
-          };
-        })
-        .filter((value) => value.name !== '' && value.name !== 'partners'),
-    });
+    return this.createCourse(course, courseContentResponse);
   }
 
   private async getUrlWithSessionKey(email: string): Promise<string> {
@@ -367,13 +337,43 @@ export class MoodleWrapper implements LmsWrapper {
     return vimeo_url;
   }
 
-  private async getResourceUrl(module: MoodleCourseModuleContentResponse) {
+  private async getResourceUrl(
+    module: MoodleCourseModuleContentResponse,
+    userSessionKeyUrl: string,
+  ) {
     if (module.modname === 'videotime') {
       return await this.getVideoTimeUrl(module.id);
+    } else if (module.modname === 'scorm' || module.modname === 'webgl') {
+      return `${userSessionKeyUrl}&wantsurl=${module.url}`;
     } else if (module.contents) {
       return `${module.contents[0].fileurl}&token=${this.token}`;
     }
 
     return module.url;
+  }
+
+  private createCourse(
+    course: MoodleCourseResponse,
+    courseContentResponse: MoodleCourseContentResponse[],
+  ): LmsCourse {
+    return new LmsCourse({
+      id: course.id,
+      categoryId: course.categoryid,
+      shortname: course.shortname,
+      name: course.displayname,
+      progress: 0,
+      modules: courseContentResponse
+        .map((courseContentResponse) => {
+          return {
+            id: courseContentResponse.id,
+            name: courseContentResponse.name,
+            image:
+              moodleCourseContentIcon[
+                stringToCamelCase(courseContentResponse.name)
+              ] ?? '/courseContent.svg',
+          };
+        })
+        .filter((value) => value.name !== '' && value.name !== 'Partners'),
+    });
   }
 }
