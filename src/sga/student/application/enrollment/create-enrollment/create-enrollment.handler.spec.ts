@@ -23,6 +23,8 @@ import { InternalGroupRepository } from '#student/domain/repository/internal-gro
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 let handler: CreateEnrollmentHandler;
 let academicRecordGetter: AcademicRecordGetter;
@@ -79,10 +81,22 @@ describe('Create Enrollment Unit Test', () => {
     executeSpy = jest.spyOn(transactionalService, 'execute');
     getInternalGroupsSpy = jest.spyOn(internalGroupRepository, 'getByKeys');
   });
+
+  it('should throw an error if the academic record is cancelled', async () => {
+    getAcademicRecordSpy.mockImplementation(() =>
+      Promise.resolve(academicRecord),
+    );
+    academicRecord.status = AcademicRecordStatusEnum.CANCELLED;
+
+    await expect(handler.handle(command)).rejects.toThrow(
+      AcademicRecordCancelledException,
+    );
+  });
   it('should create an enrollment', async () => {
     getAcademicRecordSpy.mockImplementation(() =>
       Promise.resolve(academicRecord),
     );
+    academicRecord.status = AcademicRecordStatusEnum.VALID;
     getSubjectSpy.mockImplementation(() => Promise.resolve(subject));
     getInternalGroupsSpy.mockImplementation(() =>
       Promise.resolve([internalGroup]),

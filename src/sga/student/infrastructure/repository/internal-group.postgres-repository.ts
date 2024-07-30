@@ -224,11 +224,8 @@ export class InternalGroupPostgresRepository
     academicPeriod: AcademicPeriod,
     academicProgram: AcademicProgram,
   ): Promise<InternalGroup[]> {
-    return await this.repository.find({
+    const groups = await this.repository.find({
       where: {
-        students: {
-          id: studentId,
-        },
         academicPeriod: { id: academicPeriod.id },
         academicProgram: { id: academicProgram.id },
       },
@@ -237,6 +234,10 @@ export class InternalGroupPostgresRepository
         subject: true,
         students: true,
       },
+    });
+
+    return groups.filter((group) => {
+      return group.students.find((student) => student.id === studentId);
     });
   }
 

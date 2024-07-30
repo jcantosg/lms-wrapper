@@ -32,6 +32,8 @@ import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
+import { CancelAcademicRecordTransactionalService } from '#student/domain/service/cancel-academic-record.transactional-service';
+import { CancelAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/cancel-academic-record.typeorm-transactional-service';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -195,12 +197,14 @@ const studentAdministrativeGroupByAcademicRecordGetter = {
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
     studentGetter: StudentGetter,
+    administrativeGroupRepository: AdministrativeGroupRepository,
   ): StudentAdministrativeGroupByAcademicRecordGetter =>
     new StudentAdministrativeGroupByAcademicRecordGetter(
       academicRecordGetter,
       studentGetter,
+      administrativeGroupRepository,
     ),
-  inject: [AcademicRecordGetter, StudentGetter],
+  inject: [AcademicRecordGetter, StudentGetter, AdministrativeGroupRepository],
 };
 
 const updateInternalGroupsService = {
@@ -220,6 +224,20 @@ const updateAdministrativeGroupsService = {
   inject: [AdministrativeGroupRepository],
 };
 
+const cancelAcademicRecordTransactionalService = {
+  provide: CancelAcademicRecordTransactionalService,
+  useFactory: (
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+  ): CancelAcademicRecordTypeormTransactionalService =>
+    new CancelAcademicRecordTypeormTransactionalService(
+      datasource,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
+    ),
+  inject: [CreateLmsEnrollmentHandler, DeleteLmsEnrollmentHandler],
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
@@ -236,4 +254,5 @@ export const services = [
   internalGroupDefaulTeacherGetter,
   updateInternalGroupsService,
   updateAdministrativeGroupsService,
+  cancelAcademicRecordTransactionalService,
 ];

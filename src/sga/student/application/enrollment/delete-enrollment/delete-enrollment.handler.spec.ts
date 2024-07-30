@@ -21,6 +21,8 @@ import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-
 import { LmsEnrollmentMockRepository } from '#test/mocks/lms-wrapper/lms-enrollment.mock-repository';
 import { getALmsCourse, getALmsStudent } from '#test/value-object-factory';
 import clearAllMocks = jest.clearAllMocks;
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 let handler: DeleteEnrollmentHandler;
 let enrollmentGetter: EnrollmentGetter;
@@ -68,6 +70,7 @@ describe('Delete enrollment handler', () => {
     deleteSubjectCallSpy = jest.spyOn(subjectCallRepository, 'delete');
     deleteLmsEnrollmentSpy = jest.spyOn(deleteLmsEnrollmentHandler, 'handle');
   });
+
   it('should throw a EnrollmentNotFoundException', () => {
     getEnrollmentSpy.mockImplementation(() => {
       throw new EnrollmentNotFoundException();
@@ -76,6 +79,19 @@ describe('Delete enrollment handler', () => {
       EnrollmentNotFoundException,
     );
   });
+
+  it('should throw an AcademicRecordCancelledException', () => {
+    getEnrollmentSpy.mockImplementation(() => {
+      enrollment.academicRecord.status = AcademicRecordStatusEnum.CANCELLED;
+
+      return Promise.resolve(enrollment);
+    });
+
+    expect(handler.handle(command)).rejects.toThrow(
+      AcademicRecordCancelledException,
+    );
+  });
+
   it('should throw an EnrollmentSubjectCallsTaken exception', () => {
     getEnrollmentSpy.mockImplementation(() => Promise.resolve(enrollmentTaken));
     expect(handler.handle(command)).rejects.toThrow(
@@ -84,6 +100,7 @@ describe('Delete enrollment handler', () => {
   });
   it('should delete an enrollment and the subject call', async () => {
     getEnrollmentSpy.mockImplementation(() => Promise.resolve(enrollment));
+    enrollment.academicRecord.status = AcademicRecordStatusEnum.VALID;
     await handler.handle(command);
     expect(deleteLmsEnrollmentSpy).toHaveBeenCalledTimes(1);
     expect(deleteEnrollmentSpy).toHaveBeenCalledTimes(1);
