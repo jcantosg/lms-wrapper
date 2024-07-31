@@ -179,16 +179,25 @@ export class AcademicProgramPostgresRepository
           adminUserBusinessUnits,
         );
 
-    return await (
+    let criteriaToQueryBuilder =
       await baseRepository.convertCriteriaToQueryBuilder(
         criteria,
         queryBuilder,
         aliasQuery,
-      )
-    )
-      .applyOrder(criteria, queryBuilder, aliasQuery)
-      .applyPagination(criteria, queryBuilder)
-      .getMany(queryBuilder);
+      );
+
+    if (criteria.page !== null && criteria.limit !== null) {
+      criteriaToQueryBuilder = criteriaToQueryBuilder.applyPagination(
+        criteria,
+        queryBuilder,
+      );
+    }
+
+    if (criteria.order !== null) {
+      criteriaToQueryBuilder.applyOrder(criteria, queryBuilder, aliasQuery);
+    }
+
+    return await this.getMany(queryBuilder);
   }
 
   async getByAcademicPeriod(

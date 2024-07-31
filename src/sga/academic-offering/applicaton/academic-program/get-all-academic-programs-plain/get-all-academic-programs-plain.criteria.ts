@@ -12,8 +12,6 @@ export class GetAllAcademicProgramsPlainCriteria extends Criteria {
     super(
       GetAllAcademicProgramsPlainCriteria.createFilters(query),
       new Order('id', OrderTypes.NONE),
-      1,
-      200,
     );
   }
 
