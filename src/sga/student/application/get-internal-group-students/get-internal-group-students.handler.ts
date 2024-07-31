@@ -89,7 +89,9 @@ export class GetInternalGroupStudentsHandler implements QueryHandler {
     internalGroup: InternalGroup,
   ): Promise<Enrollment | undefined> {
     const academicRecord = student.academicRecords.find(
-      (ar) => ar.status === AcademicRecordStatusEnum.VALID,
+      (ar) =>
+        ar.status === AcademicRecordStatusEnum.VALID &&
+        ar.academicProgram.id === internalGroup.academicProgram.id,
     );
 
     if (academicRecord) {
