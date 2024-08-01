@@ -46,7 +46,8 @@
     "enable_performance_insights": false,
     "multi_az": false,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
-    "preferred_maintenance_window": "sun:03:30-sun:04:30"
+    "preferred_maintenance_window": "sun:03:30-sun:04:30",
+    "preferred_backup_window": "02:30-03:30"
   },
 
   "monitoring": {
