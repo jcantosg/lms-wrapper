@@ -15,4 +15,6 @@ export abstract class LmsStudentRepository {
   ): Promise<LmsStudent | null>;
 
   abstract delete(id: number): Promise<void>;
+
+  abstract getUserSessionKeyUrl(lmsStudent: LmsStudent): Promise<string>;
 }

@@ -14,6 +14,7 @@ import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-
 import { LmsEnrollmentRepository } from '#lms-wrapper/domain/repository/lms-enrollment.repository';
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
+import { GetUrlSessionKeyHandler } from '#lms-wrapper/application/get-url-session-key/get-url-session-key.handler';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -105,6 +106,13 @@ const getLmsStudentHandler = {
   inject: [LmsStudentRepository],
 };
 
+const getUrlSessionKeyHandler = {
+  provide: GetUrlSessionKeyHandler,
+  useFactory: (repository: LmsStudentRepository): GetUrlSessionKeyHandler =>
+    new GetUrlSessionKeyHandler(repository),
+  inject: [LmsStudentRepository],
+};
+
 export const handlers = [
   getLmsCoursesHandler,
   createLmsCourseHandler,
@@ -118,4 +126,5 @@ export const handlers = [
   createLmsEnrollmentHandler,
   deleteLmsEnrollmentHandler,
   getLmsStudentHandler,
+  getUrlSessionKeyHandler,
 ];

@@ -182,9 +182,6 @@ export class MoodleWrapper implements LmsWrapper {
     const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${student.value.id}`;
     const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
       await this.wrapper.get(this.url, courseActivityStatusQueryParam);
-    const userSessionKeyUrl = await this.getUrlWithSessionKey(
-      student.value.email,
-    );
     let modules: Modules = [];
     let actualGroup = 0;
     for (const [
@@ -207,7 +204,7 @@ export class MoodleWrapper implements LmsWrapper {
         actualModule!.content.push({
           id: courseContent.id,
           name: formatMoodleNames(courseContent.name),
-          url: await this.getResourceUrl(courseContent, userSessionKeyUrl),
+          url: await this.getResourceUrl(courseContent),
           type: moodleResourceType[courseContent.modname],
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
             (status) => {
@@ -275,14 +272,14 @@ export class MoodleWrapper implements LmsWrapper {
     return this.createCourse(course, courseContentResponse);
   }
 
-  private async getUrlWithSessionKey(email: string): Promise<string> {
+  async getUrlWithSessionKey(email: string): Promise<string> {
     const userKeyParams = `wstoken=${this.token}&wsfunction=auth_userkey_request_login_url&moodlewsrestformat=json&user[email]=${email}`;
     const loginResponse: MoodleLoginResponse = await this.wrapper.get(
       this.url,
       userKeyParams,
     );
 
-    return loginResponse.loginurl;
+    return `${loginResponse.loginurl}&wantsurl=`;
   }
 
   async getCourseProgress(courseId: number, studentId: number) {
@@ -337,14 +334,11 @@ export class MoodleWrapper implements LmsWrapper {
     return vimeo_url;
   }
 
-  private async getResourceUrl(
-    module: MoodleCourseModuleContentResponse,
-    userSessionKeyUrl: string,
-  ) {
+  private async getResourceUrl(module: MoodleCourseModuleContentResponse) {
     if (module.modname === 'videotime') {
       return await this.getVideoTimeUrl(module.id);
     } else if (module.modname === 'scorm' || module.modname === 'webgl') {
-      return `${userSessionKeyUrl}&wantsurl=${module.url}`;
+      return module.url;
     } else if (module.contents) {
       return `${module.contents[0].fileurl}&token=${this.token}`;
     }
