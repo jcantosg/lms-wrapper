@@ -75,7 +75,7 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
   public static academicProgramCode = 'ASIR';
 
   public static programBlockId = uuid();
-  public static programBlockName = 'Bloque 1';
+  public static programBlockName = 'Bloque 0';
 
   private static periodBlockId = uuid();
 

@@ -23,8 +23,14 @@ export class MoodleCourseRepository implements LmsCourseRepository {
     id: number,
     contentId: number,
     student: LmsStudent,
+    isSpeciality: boolean = false,
   ): Promise<LmsModuleContent> {
-    return this.moodleWrapper.getCourseContent(id, contentId, student);
+    return this.moodleWrapper.getCourseContent(
+      id,
+      contentId,
+      student,
+      isSpeciality,
+    );
   }
 
   async getByName(name: string): Promise<LmsCourse | null> {

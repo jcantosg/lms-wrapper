@@ -15,8 +15,9 @@ import {
   MoodleLoginResponse,
   MoodleVideotimeResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
-import { formatMoodleNames } from '#shared/domain/lib/format-moodle-names';
 import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
+import { formatMoodleDescriptions } from '#shared/domain/lib/format-moodle-descriptions';
+import { formatMoodleNames } from '#shared/domain/lib/format-moodle-names';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
@@ -61,6 +62,7 @@ type Modules = {
   name: string;
   url: string;
   indexPosition: number;
+  description: string;
   content: MoodleModuleContent[];
 }[];
 
@@ -165,6 +167,7 @@ export class MoodleWrapper implements LmsWrapper {
     id: number,
     moduleId: number,
     student: LmsStudent,
+    isSpeciality: boolean = false,
   ): Promise<LmsModuleContent> {
     const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
     const courseContentResponse: MoodleCourseContentResponse[] =
@@ -182,43 +185,102 @@ export class MoodleWrapper implements LmsWrapper {
     const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${student.value.id}`;
     const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
       await this.wrapper.get(this.url, courseActivityStatusQueryParam);
-    let modules: Modules = [];
-    let actualGroup = 0;
-    for (const [
-      index,
-      courseContent,
-    ] of courseContentModule.modules.entries()) {
-      if (courseContent.modname === 'label') {
-        actualGroup = index;
-        modules.push({
-          id: courseContent.id,
-          url: courseContent.url,
-          name: formatMoodleNames(courseContent.name),
-          indexPosition: actualGroup,
-          content: [],
-        });
-      } else {
-        const actualModule = modules.find(
-          (module) => module.indexPosition === actualGroup,
-        );
-        actualModule!.content.push({
-          id: courseContent.id,
-          name: formatMoodleNames(courseContent.name),
-          url: await this.getResourceUrl(courseContent),
-          type: moodleResourceType[courseContent.modname],
-          isCompleted: courseActivitiesCompletionResponse.statuses.some(
-            (status) => {
-              return (
-                status.cmid === courseContent.id &&
-                status.state === MoodleCourseModuleStatus.COMPLETED
-              );
-            },
-          ),
-          contents: courseContent.contents ?? undefined,
-        });
+    if (!isSpeciality) {
+      let modules: Modules = [];
+      let actualGroup = 0;
+      for (const [
+        index,
+        courseContent,
+      ] of courseContentModule.modules.entries()) {
+        if (courseContent.modname === 'label') {
+          actualGroup = index;
+          modules.push({
+            id: courseContent.id,
+            url: courseContent.url,
+            description: courseContent.description,
+            name: formatMoodleDescriptions(courseContent.description),
+            indexPosition: actualGroup,
+            content: [],
+          });
+        } else {
+          const actualModule = modules.find(
+            (module) => module.indexPosition === actualGroup,
+          );
+          actualModule!.content.push({
+            id: courseContent.id,
+            name: formatMoodleNames(courseContent.name),
+            url: await this.getResourceUrl(courseContent),
+            type: moodleResourceType[courseContent.modname],
+            isCompleted: courseActivitiesCompletionResponse.statuses.some(
+              (status) => {
+                return (
+                  status.cmid === courseContent.id &&
+                  status.state === MoodleCourseModuleStatus.COMPLETED
+                );
+              },
+            ),
+            contents: courseContent.contents ?? undefined,
+          });
+        }
       }
+      modules = modules.filter((module) => module.name !== 'Etiqueta');
+
+      return new LmsModuleContent({
+        id: courseContentModule.id,
+        name: courseContentModule.name,
+        modules: modules.map((module) => {
+          return {
+            id: module.id,
+            name: module.name,
+            description: module.description,
+            url: module.url,
+            isCompleted: courseActivitiesCompletionResponse.statuses.some(
+              (response) => {
+                return (
+                  response.cmid === module.id &&
+                  response.state === MoodleCourseModuleStatus.COMPLETED
+                );
+              },
+            ),
+            contents: module.content
+              ? module.content.map((content) => {
+                  return {
+                    id: content.id,
+                    url: content.url,
+                    mimeType: content.type,
+                    name: content.name,
+                    isCompleted: content.isCompleted,
+                  };
+                })
+              : null,
+          };
+        }),
+      });
     }
-    modules = modules.filter((module) => module.name !== 'Etiqueta');
+    const modules: Modules = [];
+    for (const courseModule of courseContentModule.modules) {
+      modules.push({
+        id: courseModule.id,
+        name: courseModule.name,
+        url: courseModule.url,
+        description: courseModule.description
+          ? courseModule.description
+          : formatMoodleNames(courseModule.name),
+        indexPosition: 0,
+        content: courseModule.contents
+          ? courseModule.contents.map((content) => {
+              return {
+                id: courseModule.id,
+                name: content.filename,
+                url: content.fileurl,
+                type: content.mimetype,
+                isCompleted: true,
+                contents: [content],
+              };
+            })
+          : [],
+      });
+    }
 
     return new LmsModuleContent({
       id: courseContentModule.id,
@@ -227,6 +289,7 @@ export class MoodleWrapper implements LmsWrapper {
         return {
           id: module.id,
           name: module.name,
+          description: module.description,
           url: module.url,
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
             (response) => {
@@ -360,7 +423,7 @@ export class MoodleWrapper implements LmsWrapper {
         .map((courseContentResponse) => {
           return {
             id: courseContentResponse.id,
-            name: courseContentResponse.name,
+            name: formatMoodleDescriptions(courseContentResponse.description),
             image:
               moodleCourseContentIcon[
                 stringToCamelCase(courseContentResponse.name)

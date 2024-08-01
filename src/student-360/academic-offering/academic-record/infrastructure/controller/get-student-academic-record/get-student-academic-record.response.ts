@@ -32,37 +32,37 @@ export class GetStudentAcademicRecordResponse {
   static create(
     academicRecord: AcademicRecord,
   ): GetStudentAcademicRecordResponseBody {
+    const blocks = academicRecord.academicProgram.programBlocks.map(
+      (programBlock: ProgramBlock) => {
+        return {
+          id: programBlock.id,
+          name: programBlock.name,
+          isBlock: programBlock.subjects.length === 0,
+          subjects: programBlock.subjects.map((subject: Subject) => {
+            return {
+              id: subject.id,
+              lmsId: subject.lmsCourse?.value?.id ?? 0,
+              name: subject.name,
+              type: subject.type,
+              image: subject.image,
+              unitsNumber: subject.lmsCourse?.value?.modules?.length ?? 0,
+              progress: subject.lmsCourse?.value.progress ?? 0,
+              teacher: {
+                id: subject.defaultTeacher?.id,
+                name: subject.defaultTeacher?.name,
+                surname1: subject.defaultTeacher?.surname1,
+                surname2: subject.defaultTeacher?.surname2,
+                avatar: subject.defaultTeacher?.avatar,
+              },
+            };
+          }),
+        };
+      },
+    );
+
     return {
       id: academicRecord.id,
-      blocks: academicRecord.academicProgram.programBlocks.map(
-        (programBlock: ProgramBlock) => {
-          return {
-            id: programBlock.id,
-            name: programBlock.name,
-            isBlock: programBlock.subjects.length === 0,
-            subjects: programBlock.subjects.map((subject: Subject) => {
-              return {
-                id: subject.id,
-                lmsId: subject.lmsCourse?.value?.id ?? 0,
-                name: subject.name,
-                type: subject.type,
-                image: subject.image,
-                unitsNumber: subject.lmsCourse?.value?.modules?.length ?? 0,
-                progress: subject.lmsCourse?.value.progress ?? 0,
-                teacher: subject.defaultTeacher
-                  ? {
-                      id: subject.defaultTeacher?.id,
-                      name: subject.defaultTeacher?.name,
-                      surname1: subject.defaultTeacher?.surname1,
-                      surname2: subject.defaultTeacher?.surname2,
-                      avatar: subject.defaultTeacher?.avatar,
-                    }
-                  : null,
-              };
-            }),
-          };
-        },
-      ),
+      blocks,
     };
   }
 }

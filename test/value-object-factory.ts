@@ -48,6 +48,7 @@ export const getALmsContentModule = (id: number = Math.random()) =>
         id: id,
         name: 'test',
         url: 'url',
+        description: 'description',
         contents: [
           {
             id: id,

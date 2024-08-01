@@ -9,6 +9,7 @@ export interface MoodleCourseModuleContentResponse {
   id: number;
   name: string;
   url: string;
+  description: string;
   image: string;
   uservisible: boolean;
   modname: string;
@@ -29,6 +30,7 @@ export interface MoodleCourseModuleContentResponse {
 export interface MoodleCourseContentResponse {
   id: number;
   name: string;
+  description: string;
   modules: MoodleCourseModuleContentResponse[];
 }
 
