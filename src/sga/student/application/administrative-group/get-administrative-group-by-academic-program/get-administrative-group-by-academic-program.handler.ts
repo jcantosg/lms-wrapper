@@ -29,12 +29,11 @@ export class GetAdministrativeGroupByAcademicProgramHandler
       );
 
     if (currentAdministrativeGroup) {
-      const filteredResponse = response.filter(
+      return response.filter(
         (ag) =>
-          ag.programBlock.id !== currentAdministrativeGroup.programBlock.id,
+          ag.programBlock.id !== currentAdministrativeGroup.programBlock.id ||
+          ag.academicPeriod.id !== currentAdministrativeGroup.academicPeriod.id,
       );
-
-      return filteredResponse;
     }
 
     return response;

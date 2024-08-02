@@ -28,6 +28,11 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
+import { VirtualCampus } from '#business-unit/domain/entity/virtual-campus.entity';
+import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema/virtual-campus.schema';
+import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 
 export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@example.com';
@@ -41,6 +46,10 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
   public static businessUnitId = uuid();
   public static businessUnitName = 'Main Unit';
   public static businessUnitCode = 'MU-01';
+
+  public static virtualCampusId = uuid();
+  public static virtualCampusName = 'Campus virtual de Madrid';
+  public static virtualCampusCode = 'CVM';
 
   public static originGroupId = uuid();
   public static originGroupCode = 'OG-01';
@@ -77,9 +86,13 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
   public static studentEmail = 'juan@test.org';
   public static universaeEmail = 'juan.ros@universae.com';
 
+  public static academicRecordId = uuid();
+  public static academicRecordIsModular = false;
+
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
   private businessUnit: BusinessUnit;
+  private virtualCampus: VirtualCampus;
   private originGroup: AdministrativeGroup;
   private destinationGroup: AdministrativeGroup;
   private title: Title;
@@ -88,8 +101,10 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
   private periodBlock: PeriodBlock;
   private programBlock: ProgramBlock;
   private student: Student;
+  private academicRecord: AcademicRecord;
 
   private businessUnitRepository: Repository<BusinessUnit>;
+  private virtualCampusRepository: Repository<VirtualCampus>;
   private administrativeGroupRepository: Repository<AdministrativeGroup>;
   private studentRepository: Repository<Student>;
   private countryRepository: Repository<Country>;
@@ -99,9 +114,12 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
   private periodBlockRepository: Repository<PeriodBlock>;
   private programBlockRepository: Repository<ProgramBlock>;
   private blockRelationRepository: Repository<BlockRelation>;
+  private academicRecordRepository: Repository<AcademicRecord>;
 
   constructor(private readonly datasource: DataSource) {
     this.businessUnitRepository = datasource.getRepository(businessUnitSchema);
+    this.virtualCampusRepository =
+      datasource.getRepository(virtualCampusSchema);
     this.administrativeGroupRepository = datasource.getRepository(
       administrativeGroupSchema,
     );
@@ -118,6 +136,8 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
     this.blockRelationRepository =
       datasource.getRepository(blockRelationSchema);
     this.studentRepository = datasource.getRepository(studentSchema);
+    this.academicRecordRepository =
+      datasource.getRepository(academicRecordSchema);
   }
 
   async arrange(): Promise<void> {
@@ -133,6 +153,16 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.businessUnitRepository.save(this.businessUnit);
+
+    this.virtualCampus = VirtualCampus.create(
+      MoveStudentFromAdministrativeGroupE2eSeed.virtualCampusId,
+      MoveStudentFromAdministrativeGroupE2eSeed.virtualCampusName,
+      MoveStudentFromAdministrativeGroupE2eSeed.virtualCampusCode,
+      this.businessUnit,
+      this.superAdminUser,
+    );
+
+    await this.virtualCampusRepository.save(this.virtualCampus);
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
@@ -255,9 +285,23 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.administrativeGroupRepository.save(this.destinationGroup);
+
+    this.academicRecord = AcademicRecord.create(
+      MoveStudentFromAdministrativeGroupE2eSeed.academicRecordId,
+      this.businessUnit,
+      this.virtualCampus,
+      this.student,
+      this.academicPeriod,
+      this.academicProgram,
+      AcademicRecordModalityEnum.ELEARNING,
+      MoveStudentFromAdministrativeGroupE2eSeed.academicRecordIsModular,
+      this.superAdminUser,
+    );
+    await this.academicRecordRepository.save(this.academicRecord);
   }
 
   async clear(): Promise<void> {
+    await this.academicRecordRepository.delete(this.academicRecord.id);
     await this.studentRepository.delete(this.student.id);
     await this.administrativeGroupRepository.delete({});
     await this.blockRelationRepository.delete({});
@@ -266,6 +310,7 @@ export class MoveStudentFromAdministrativeGroupE2eSeed implements E2eSeed {
     await this.academicPeriodRepository.delete(this.academicPeriod.id);
     await this.academicProgramRepository.delete(this.academicProgram.id);
     await this.titleRepository.delete(this.title.id);
+    await this.virtualCampusRepository.delete(this.virtualCampus.id);
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await removeAdminUser(this.datasource, this.adminUser);
     await removeAdminUser(this.datasource, this.superAdminUser);
