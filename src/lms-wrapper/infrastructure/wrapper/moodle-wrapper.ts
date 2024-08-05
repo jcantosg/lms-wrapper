@@ -43,6 +43,8 @@ export enum MoodleCourseModuleStatus {
 
 const STUDENT_ROLE_ID = 5;
 
+const warningRegex = new RegExp('class="(aviso)[a-z]+"');
+
 type MoodleModuleContent = {
   id: number;
   type: string;
@@ -60,6 +62,7 @@ type MoodleModuleContent = {
 type Modules = {
   id: number;
   name: string;
+  type: string;
   url: string;
   indexPosition: number;
   description: string;
@@ -197,6 +200,7 @@ export class MoodleWrapper implements LmsWrapper {
           modules.push({
             id: courseContent.id,
             url: courseContent.url,
+            type: this.getModuleType(courseContent.description),
             description: courseContent.description,
             name: formatMoodleDescriptions(courseContent.description),
             indexPosition: actualGroup,
@@ -233,6 +237,7 @@ export class MoodleWrapper implements LmsWrapper {
             id: module.id,
             name: module.name,
             description: module.description,
+            type: module.type,
             url: module.url,
             isCompleted: courseActivitiesCompletionResponse.statuses.some(
               (response) => {
@@ -262,6 +267,7 @@ export class MoodleWrapper implements LmsWrapper {
       modules.push({
         id: courseModule.id,
         name: courseModule.name,
+        type: this.getModuleType(courseModule.description),
         url: courseModule.url,
         description: courseModule.description
           ? courseModule.description
@@ -289,6 +295,7 @@ export class MoodleWrapper implements LmsWrapper {
         return {
           id: module.id,
           name: module.name,
+          type: module.type,
           description: module.description,
           url: module.url,
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
@@ -432,5 +439,9 @@ export class MoodleWrapper implements LmsWrapper {
         })
         .filter((value) => value.name !== '' && value.name !== 'Partners'),
     });
+  }
+
+  private getModuleType(description: string): string {
+    return warningRegex.test(description) ? 'warning' : 'content';
   }
 }
