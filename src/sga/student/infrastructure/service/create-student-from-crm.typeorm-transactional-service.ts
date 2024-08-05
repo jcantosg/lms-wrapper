@@ -55,9 +55,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       if (!lmsStudent) {
         lmsStudent = await this.createLmsStudentHandler.handle(
           new CreateLmsStudentCommand(
-            this.normalizeUsername(
-              `${entities.student.name}-${entities.student.surname}-${entities.student.id}`.toLowerCase(),
-            ),
+            entities.student.id,
             entities.student.name,
             `${entities.student.surname} ${entities.student.surname2}`,
             entities.student.email,
@@ -104,6 +102,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         academicRecords: entities.student.academicRecords,
         password: entities.student.password,
         lmsStudent: entities.student.lmsStudent,
+        isDefense: entities.student.isDefense,
       });
 
       if (entities.academicRecord) {
