@@ -202,7 +202,9 @@ export class MoodleWrapper implements LmsWrapper {
             url: courseContent.url,
             type: this.getModuleType(courseContent.description),
             description: courseContent.description,
-            name: formatMoodleDescriptions(courseContent.description),
+            name: formatMoodleNames(
+              formatMoodleDescriptions(courseContent.description),
+            ),
             indexPosition: actualGroup,
             content: [],
           });
@@ -430,7 +432,9 @@ export class MoodleWrapper implements LmsWrapper {
         .map((courseContentResponse) => {
           return {
             id: courseContentResponse.id,
-            name: formatMoodleDescriptions(courseContentResponse.description),
+            name: formatMoodleNames(
+              formatMoodleDescriptions(courseContentResponse.description),
+            ),
             image:
               moodleCourseContentIcon[
                 stringToCamelCase(courseContentResponse.name)
