@@ -46,7 +46,11 @@ describe('/student-360/academic-record/:id (GET)', () => {
         blocks: expect.arrayContaining([
           expect.objectContaining({
             id: GetStudentAcademicRecordDetailE2eSeed.programBlockId,
-            name: GetStudentAcademicRecordDetailE2eSeed.programBlockName,
+            name:
+              GetStudentAcademicRecordDetailE2eSeed.programBlockName ===
+              'Bloque 0'
+                ? 'Especialidades'
+                : GetStudentAcademicRecordDetailE2eSeed.programBlockName,
             subjects: expect.arrayContaining([]),
           }),
         ]),

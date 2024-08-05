@@ -21,7 +21,7 @@ export class GetLmsCourseContentHandler implements QueryHandler {
       subject.lmsCourse!.value.id,
       query.resourcesId,
       query.student.lmsStudent,
-      subject.isSpeciality(),
+      subject.isZeroBlockSubject(),
     );
   }
 }

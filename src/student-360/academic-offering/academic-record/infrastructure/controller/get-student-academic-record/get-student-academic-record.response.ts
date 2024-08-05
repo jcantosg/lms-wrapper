@@ -36,7 +36,10 @@ export class GetStudentAcademicRecordResponse {
       (programBlock: ProgramBlock) => {
         return {
           id: programBlock.id,
-          name: programBlock.name,
+          name:
+            programBlock.name === 'Bloque 0'
+              ? 'Información'
+              : programBlock.name,
           isBlock: programBlock.subjects.length === 0,
           subjects: programBlock.subjects.map((subject: Subject) => {
             return {

@@ -13,7 +13,7 @@ export abstract class LmsCourseRepository {
     id: number,
     contentId: number,
     student: LmsStudent,
-    isSpeciality: boolean,
+    isZeroBlockSubject: boolean,
   ): Promise<LmsModuleContent>;
 
   abstract getByName(name: string): Promise<LmsCourse | null>;
