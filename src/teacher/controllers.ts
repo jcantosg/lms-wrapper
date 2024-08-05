@@ -7,6 +7,7 @@ import { GetTitlesTeacherChatController } from '#/teacher/infrastructure/control
 import { GetSubjectsTeacherChatController } from '#/teacher/infrastructure/controller/get-subjects-teacher-chat/get-subjects-teacher-chat.controller';
 import { GetChatsStudentsController } from '#/teacher/infrastructure/controller/get-chats-students/get-chats-students.controller';
 import { EditChatroomController } from '#/teacher/infrastructure/controller/edit-chatroom.controller';
+import { TeacherMeController } from '#/teacher/infrastructure/controller/me/teacher-me.controller';
 
 export const edaeUserControllers = [
   EditChatroomController,
@@ -18,4 +19,5 @@ export const edaeUserControllers = [
   GetTitlesTeacherChatController,
   GetSubjectsTeacherChatController,
   GetChatsStudentsController,
+  TeacherMeController,
 ];
