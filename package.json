@@ -60,6 +60,7 @@
     "aws-sdk": "^2.1549.0",
     "bcrypt": "^5.1.1",
     "exceljs": "^4.4.0",
+    "firebase-admin": "^12.1.1",
     "handlebars": "^4.7.8",
     "joi": "^17.11.0",
     "nestjs-i18n": "^10.4.5",

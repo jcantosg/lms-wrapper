@@ -5,6 +5,7 @@ import { PasswordEncoder } from '#shared/domain/service/password-encoder.service
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { EdaeUserCreatedEvent } from '#edae-user/domain/event/edae-user-created.event';
 import { EdaeUserRepository } from '#edae-user/domain/repository/edae-user.repository';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
 
 @Injectable()
 export class EdaeUserCreatedListener {
@@ -13,6 +14,7 @@ export class EdaeUserCreatedListener {
     private passwordEncoder: PasswordEncoder,
     private repository: EdaeUserRepository,
     private edaeUserGetter: EdaeUserGetter,
+    private readonly chatRepository: ChatRepository,
   ) {}
 
   @OnEvent('edae-user.created')
@@ -22,6 +24,16 @@ export class EdaeUserCreatedListener {
       payload.password,
     );
     await this.repository.save(edaeUser);
+
+    if (!(await this.chatRepository.existUserByEmail(edaeUser.email))) {
+      await this.chatRepository.createUser(
+        edaeUser.id,
+        edaeUser.email,
+        edaeUser.password,
+        `${edaeUser.name} ${edaeUser.surname1}`,
+      );
+    }
+
     this.mailer.sendMail({
       to: payload.userEmail,
       subject: 'Testing',

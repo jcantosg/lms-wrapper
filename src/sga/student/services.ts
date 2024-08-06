@@ -36,6 +36,9 @@ import { CancelAcademicRecordTransactionalService } from '#student/domain/servic
 import { CancelAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/cancel-academic-record.typeorm-transactional-service';
 import { MoveStudentFromAdministrativeGroupTransactionalService } from '#student/domain/service/move-student-from-administrative-group.transactional.service';
 import { MoveStudentFromAdministrativeGroupTypeormTransactionalService } from '#student/infrastructure/service/move-student-from-administrative-group.typeorm-transactional-service';
+import { CreateChatUserHandler } from '#shared/application/create-chat-user/create-chat-user.handler';
+import { DeleteChatUserHandler } from '#shared/application/delete-chat-user/delete-chat-user.handler';
+import { ExistChatUserHandler } from '#shared/application/exist-chat-user/exist-chat-user.handler';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -93,6 +96,9 @@ const createStudentFromSGATransactionService = {
     passwordEncoder: PasswordEncoder,
     configService: ConfigService,
     getLmsStudentHandler: GetLmsStudentHandler,
+    createChatUserHandler: CreateChatUserHandler,
+    deleteChatUserHandler: DeleteChatUserHandler,
+    existChatUserHandler: ExistChatUserHandler,
   ): CreateStudentFromSGATyperomTransactionService => {
     const defaultPassword = configService.get<string>(
       'DEFAULT_LMS_PASSWORD',
@@ -106,6 +112,9 @@ const createStudentFromSGATransactionService = {
       passwordEncoder,
       defaultPassword,
       getLmsStudentHandler,
+      createChatUserHandler,
+      deleteChatUserHandler,
+      existChatUserHandler,
     );
   },
   inject: [
@@ -114,6 +123,9 @@ const createStudentFromSGATransactionService = {
     PasswordEncoder,
     ConfigService,
     GetLmsStudentHandler,
+    CreateChatUserHandler,
+    DeleteChatUserHandler,
+    ExistChatUserHandler,
   ],
 };
 
@@ -127,6 +139,9 @@ const createStudentFromCRMTransactionalService = {
     createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
     deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
     getLmsStudentHandler: GetLmsStudentHandler,
+    createChatUserHandler: CreateChatUserHandler,
+    deleteChatUserHandler: DeleteChatUserHandler,
+    existChatUserHandler: ExistChatUserHandler,
   ): CreateStudentFromCRMTypeormTransactionalService => {
     const defaultPassword = configService.get<string>(
       'DEFAULT_LMS_PASSWORD',
@@ -142,6 +157,9 @@ const createStudentFromCRMTransactionalService = {
       passwordEncoder,
       defaultPassword,
       getLmsStudentHandler,
+      createChatUserHandler,
+      deleteChatUserHandler,
+      existChatUserHandler,
     );
   },
   inject: [
@@ -152,6 +170,9 @@ const createStudentFromCRMTransactionalService = {
     CreateLmsEnrollmentHandler,
     DeleteLmsEnrollmentHandler,
     GetLmsStudentHandler,
+    CreateChatUserHandler,
+    DeleteChatUserHandler,
+    ExistChatUserHandler,
   ],
 };
 

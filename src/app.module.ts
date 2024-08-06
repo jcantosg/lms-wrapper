@@ -63,6 +63,17 @@ const configModule = ConfigModule.forRoot({
     STUDENT_RECOVERY_PASSWORD_TOKEN_URL: Joi.string().required(),
     STUDENT_RECOVERY_PASSWORD_TTL: Joi.number().required(),
     CRM_IMPORTS_PATH: Joi.string().required(),
+    FB_TYPE: Joi.string().required(),
+    FB_PROJECT_ID: Joi.string().required(),
+    FB_PRIVATE_KEY_ID: Joi.string().required(),
+    FB_PRIVATE_KEY: Joi.string().required(),
+    FB_CLIENT_EMAIL: Joi.string().required(),
+    FB_CLIENT_ID: Joi.string().required(),
+    FB_AUTH_URI: Joi.string().required(),
+    FB_TOKEN_URI: Joi.string().required(),
+    FB_AUTH_PROVIDER_X509_CERT_URL: Joi.string().required(),
+    FB_CLIENT_X509_CERT_URL: Joi.string().required(),
+    FB_UNIVERSE_DOMAIN: Joi.string().required(),
   }),
 });
 

@@ -12,6 +12,12 @@ import { DataSource } from 'typeorm';
 import { stringWithoutWhitespaces } from '#shared/domain/lib/string-without-whitespaces';
 import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
 import { GetLmsStudentCommand } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.command';
+import { CreateChatUserHandler } from '#shared/application/create-chat-user/create-chat-user.handler';
+import { CreateChatUserCommand } from '#shared/application/create-chat-user/create-chat-user.command';
+import { DeleteChatUserHandler } from '#shared/application/delete-chat-user/delete-chat-user.handler';
+import { DeleteChatUserCommand } from '#shared/application/delete-chat-user/delete-chat-user.command';
+import { ExistChatUserHandler } from '#shared/application/exist-chat-user/exist-chat-user.handler';
+import { ExistChatUserQuery } from '#shared/application/exist-chat-user/exist-chat-user.query';
 
 export class CreateStudentFromSGATyperomTransactionService extends CreateStudentFromSGATransactionService {
   private logger: Logger;
@@ -23,6 +29,9 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
     private readonly getLmsStudentHandler: GetLmsStudentHandler,
+    private readonly createChatUserHandler: CreateChatUserHandler,
+    private readonly deleteChatUserHandler: DeleteChatUserHandler,
+    private readonly existChatUserHandler: ExistChatUserHandler,
   ) {
     super();
     this.logger = new Logger(CreateStudentFromSGATransactionService.name);
@@ -35,6 +44,21 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
     await queryRunner.startTransaction();
     let lmsId;
     try {
+      if (
+        !(await this.existChatUserHandler.handle(
+          new ExistChatUserQuery(entities.student.email),
+        ))
+      ) {
+        await this.createChatUserHandler.handle(
+          new CreateChatUserCommand(
+            entities.student.id,
+            entities.student.universaeEmail,
+            this.rawPassword,
+            `${entities.student.name} ${entities.student.surname}`,
+          ),
+        );
+      }
+
       let lmsStudent;
       lmsStudent = await this.getLmsStudentHandler.handle(
         new GetLmsStudentCommand(
@@ -60,11 +84,22 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
         this.rawPassword,
       );
       entities.student.lmsStudent = lmsStudent;
+
       await queryRunner.manager.save(entities.student);
 
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
+      if (
+        await this.existChatUserHandler.handle(
+          new ExistChatUserQuery(entities.student.email),
+        )
+      ) {
+        await this.deleteChatUserHandler.handle(
+          new DeleteChatUserCommand(entities.student.id),
+        );
+      }
+
       if (!!lmsId) {
         await this.deleteLmsStudentHandler.handle(
           new DeleteLmsStudentCommand(lmsId),

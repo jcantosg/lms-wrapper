@@ -14,6 +14,8 @@ import { AdministrativeProcessRepository } from '#student/domain/repository/admi
 import { AdministrativeProcessPostgresRepository } from '#student/infrastructure/repository/administrative-process.postgres-repository';
 import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
 import { AdministrativeProcessDocumentPostgresRepository } from '#student/infrastructure/repository/administrative-process-document.postgres-repository';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
+import { ChatFirebaseRepository } from '#shared/infrastructure/repository/chat.firebase-repository';
 
 export const repositories = [
   {
@@ -47,5 +49,9 @@ export const repositories = [
   {
     provide: AdministrativeProcessDocumentRepository,
     useClass: AdministrativeProcessDocumentPostgresRepository,
+  },
+  {
+    provide: ChatRepository,
+    useClass: ChatFirebaseRepository,
   },
 ];
