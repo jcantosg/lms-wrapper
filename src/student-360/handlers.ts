@@ -15,6 +15,7 @@ import { ExpireStudentRefreshTokenHandler } from '#student-360/student/applicati
 import { studentAcademicRecordHandlers } from '#student-360/academic-offering/academic-record/handlers';
 import { studentSubjectHandlers } from '#student-360/academic-offering/subject/handlers';
 import { chatHandlers } from '#student-360/chat/handlers';
+import { qualificationHandlers } from '#student-360/academic-offering/qualification/handlers';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -98,4 +99,5 @@ export const handlers = [
   ...studentAcademicRecordHandlers,
   ...studentSubjectHandlers,
   ...chatHandlers,
+  ...qualificationHandlers,
 ];

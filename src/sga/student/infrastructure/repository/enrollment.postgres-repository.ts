@@ -58,7 +58,11 @@ export class EnrollmentPostgresRepository
     return await this.repository.find({
       where: { academicRecord: { id: academicRecord.id } },
       relations: {
-        calls: true,
+        calls: {
+          enrollment: {
+            subject: true,
+          },
+        },
         subject: true,
         academicRecord: { student: true },
       },
