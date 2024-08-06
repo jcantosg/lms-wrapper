@@ -28,6 +28,7 @@ export class AcademicRecordPostgresRepository
       virtualCampus: academicRecord.virtualCampus,
       student: academicRecord.student,
       academicPeriod: academicRecord.academicPeriod,
+      initialAcademicPeriod: academicRecord.initialAcademicPeriod,
       academicProgram: academicRecord.academicProgram,
       modality: academicRecord.modality,
       isModular: academicRecord.isModular,

@@ -432,16 +432,23 @@ export class MoodleWrapper implements LmsWrapper {
         .map((courseContentResponse) => {
           return {
             id: courseContentResponse.id,
-            name: formatMoodleNames(
-              formatMoodleDescriptions(courseContentResponse.description),
-            ),
+            name: courseContentResponse?.description
+              ? formatMoodleNames(
+                  formatMoodleDescriptions(courseContentResponse?.description),
+                )
+              : courseContentResponse.name,
             image:
               moodleCourseContentIcon[
                 stringToCamelCase(courseContentResponse.name)
               ] ?? '/courseContent.svg',
           };
         })
-        .filter((value) => value.name !== '' && value.name !== 'Partners'),
+        .filter(
+          (value) =>
+            value.name !== '' &&
+            value.name !== 'Partners' &&
+            value.name !== 'General',
+        ),
     });
   }
 
