@@ -7,4 +7,5 @@ export abstract class ChatRepository {
   ): Promise<void>;
   abstract deleteUser(id: string): Promise<void>;
   abstract existUserByEmail(email: string): Promise<boolean>;
+  abstract createToken(email: string, userId: string): Promise<string | null>;
 }

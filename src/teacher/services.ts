@@ -6,6 +6,7 @@ import { Authenticator } from '#/teacher/infrastructure/service/edae-user-authen
 import { EdaeUserCredentialsChecker } from '#/teacher/infrastructure/service/edae-user-credentials-checker.service';
 import { EdaeUserRefreshTokenGenerator } from '#/teacher/infrastructure/service/edae-user-refresh-token-generator.service';
 import { EdaeUserAccessTokenRefresher } from '#/teacher/infrastructure/service/edae-user-access-token-refresher.service';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
 
 const passwordChecker = {
   provide: EdaeUserPasswordChecker,
@@ -18,6 +19,7 @@ const authenticator = {
     jwtTokenGenerator: JwtTokenGenerator,
     refreshTokenGenerator: EdaeUserRefreshTokenGenerator,
     configService: ConfigService,
+    chatRepository: ChatRepository,
   ) => {
     const refreshTokenTTL = configService.get<number>('REFRESH_TOKEN_TTL')!;
 
@@ -25,9 +27,15 @@ const authenticator = {
       jwtTokenGenerator,
       refreshTokenGenerator,
       refreshTokenTTL,
+      chatRepository,
     );
   },
-  inject: [JwtTokenGenerator, EdaeUserRefreshTokenGenerator, ConfigService],
+  inject: [
+    JwtTokenGenerator,
+    EdaeUserRefreshTokenGenerator,
+    ConfigService,
+    ChatRepository,
+  ],
 };
 
 export const services = [

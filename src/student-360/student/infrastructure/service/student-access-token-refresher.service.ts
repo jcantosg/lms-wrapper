@@ -11,6 +11,7 @@ import { StudentRefreshToken } from '#/student-360/student/domain/entity/refresh
 import { StudentTokenExpiredException } from '#/student-360/student/domain/exception/student-token-expired.exception';
 import { StudentRefreshTokenNotFoundException } from '#/student-360/student/domain/exception/student-refresh-token-not-found.exception';
 import { StudentRefreshTokenRevokedException } from '#/student-360/student/domain/exception/student-refresh-token-revoked.exception';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
 
 export interface RefreshTokenPayload {
   jti: string;
@@ -26,22 +27,31 @@ export class StudentAccessTokenRefresher {
     private readonly tokenRepository: StudentRefreshTokenRepository,
     private readonly jwtService: JwtService,
     private readonly jwtTokenGenerator: JwtTokenGenerator,
+    private readonly chatRepository: ChatRepository,
   ) {
     this.logger = new Logger(StudentAccessTokenRefresher.name);
   }
 
-  public async refresh(
-    refreshToken: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  public async refresh(refreshToken: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    fbToken: string | null;
+  }> {
     const { student } = await this.resolveRefreshToken(refreshToken);
     const token = this.jwtTokenGenerator.generateToken(
       student.id,
       student.email,
     );
 
+    const fbToken = await this.chatRepository.createToken(
+      student.universaeEmail,
+      student.id,
+    );
+
     return {
       accessToken: token,
       refreshToken: refreshToken,
+      fbToken,
     };
   }
 

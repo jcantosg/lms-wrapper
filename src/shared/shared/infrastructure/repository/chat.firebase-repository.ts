@@ -35,9 +35,23 @@ export class ChatFirebaseRepository implements ChatRepository {
 
       return !!userRecord;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(`Error user: ${email} doest not exists ${error}`);
 
       return false;
+    }
+  }
+
+  async createToken(email: string, userId: string): Promise<string | null> {
+    try {
+      if (await this.existUserByEmail(email)) {
+        return await this.firebaseApp.auth().createCustomToken(userId);
+      }
+
+      return null;
+    } catch (error) {
+      this.logger.error(`Error getToken fb with user ${email}:  ${error}`);
+
+      return null;
     }
   }
 }

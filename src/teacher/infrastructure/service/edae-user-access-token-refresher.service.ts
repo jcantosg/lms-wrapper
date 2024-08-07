@@ -11,6 +11,7 @@ import { EdaeUserRefreshToken } from '#/teacher/domain/entity/edae-user-refresh-
 import { EdaeUserRefreshTokenNotFoundException } from '#/teacher/domain/exception/edae-user-refresh-token-not-found.exception';
 import { EdaeUserRefreshTokenRevokedException } from '#/teacher/domain/exception/edae-user-refresh-token-revoked.exception';
 import { EdaeUserTokenExpiredException } from '#/teacher/domain/exception/edae-user-token-expired.exception';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
 
 export interface RefreshTokenPayload {
   jti: string;
@@ -26,22 +27,31 @@ export class EdaeUserAccessTokenRefresher {
     private readonly tokenRepository: EdaeUserRefreshTokenRepository,
     private readonly jwtService: JwtService,
     private readonly jwtTokenGenerator: JwtTokenGenerator,
+    private readonly chatRepository: ChatRepository,
   ) {
     this.logger = new Logger(EdaeUserAccessTokenRefresher.name);
   }
 
-  public async refresh(
-    refreshToken: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  public async refresh(refreshToken: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    fbToken: string | null;
+  }> {
     const { edaeUser } = await this.resolveRefreshToken(refreshToken);
     const token = this.jwtTokenGenerator.generateToken(
       edaeUser.id,
       edaeUser.email,
     );
 
+    const fbToken = await this.chatRepository.createToken(
+      edaeUser.email,
+      edaeUser.id,
+    );
+
     return {
       accessToken: token,
       refreshToken: refreshToken,
+      fbToken,
     };
   }
 
