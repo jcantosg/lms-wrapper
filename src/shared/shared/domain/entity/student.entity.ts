@@ -527,4 +527,46 @@ export class Student extends BaseEntity {
   public updateLMSStudent(lmsStudent: LmsStudent): void {
     this._lmsStudent = lmsStudent;
   }
+
+  public updateProfile(
+    name: string,
+    surname: string,
+    surname2: string,
+    email: string,
+    avatar: string | null,
+    birthDate: Date | null,
+    gender: StudentGender,
+    country: Country | null,
+    citizenship: Country | null,
+    socialSecurityNumber: string | null,
+    phone: string | null,
+    contactCountry: Country | null,
+    state: string | null,
+    city: string | null,
+    address: string | null,
+    guardianName: string | null,
+    guardianSurname: string | null,
+    guardianEmail: string | null,
+    guardianPhone: string | null,
+  ) {
+    this.name = name;
+    this.surname = surname;
+    this.surname2 = surname2;
+    this.email = email;
+    this.avatar = avatar;
+    this.birthDate = birthDate;
+    this.gender = gender;
+    this.country = country;
+    this.citizenship = citizenship;
+    this.socialSecurityNumber = socialSecurityNumber;
+    this.phone = phone;
+    this.contactCountry = contactCountry;
+    this.state = state;
+    this.city = city;
+    this.address = address;
+    this.guardianName = guardianName;
+    this.guardianSurname = guardianSurname;
+    this.guardianEmail = guardianEmail;
+    this.guardianPhone = guardianPhone;
+  }
 }

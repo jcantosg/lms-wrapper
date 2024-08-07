@@ -1,0 +1,63 @@
+import { CommandHandler } from '#shared/domain/bus/command.handler';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
+import { CountryGetter } from '#shared/domain/service/country-getter.service';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { StudentDuplicatedEmailException } from '#student/shared/exception/student-duplicated-email.exception';
+import { UpdateProfileCommand } from '#student-360/student/application/update-profile/update-profile.command';
+
+export class UpdateProfileHandler implements CommandHandler {
+  constructor(
+    private readonly repository: StudentRepository,
+    private readonly studentGetter: StudentGetter,
+    private readonly countryGetter: CountryGetter,
+    private readonly imageUploader: ImageUploader,
+  ) {}
+
+  async handle(command: UpdateProfileCommand): Promise<void> {
+    if (await this.repository.existsByEmail(command.id, command.email)) {
+      throw new StudentDuplicatedEmailException();
+    }
+    const student = await this.studentGetter.get(command.id);
+    const newAvatar = command.avatar
+      ? await this.imageUploader.uploadImage(
+          command.avatar,
+          command.name,
+          'student-avatar',
+        )
+      : student.avatar;
+    const newCountry = command.country
+      ? await this.countryGetter.get(command.country)
+      : student.country;
+    const newCitizenship = command.citizenship
+      ? await this.countryGetter.get(command.citizenship)
+      : student.citizenship;
+    const newContactCountry = command.contactCountry
+      ? await this.countryGetter.get(command.contactCountry)
+      : null;
+    student.updateProfile(
+      command.name,
+      command.surname,
+      command.surname2,
+      command.email,
+      newAvatar,
+      command.birthDate,
+      command.gender,
+      newCountry,
+      newCitizenship,
+      student.socialSecurityNumber,
+      command.phone,
+      newContactCountry,
+      command.state,
+      command.city,
+      command.address,
+      command.guardianName,
+      command.guardianSurname,
+      command.guardianEmail,
+      command.guardianPhone,
+    );
+    student.updated();
+
+    await this.repository.save(student);
+  }
+}

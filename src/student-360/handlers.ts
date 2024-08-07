@@ -15,6 +15,10 @@ import { ExpireStudentRefreshTokenHandler } from '#student-360/student/applicati
 import { studentAcademicRecordHandlers } from '#student-360/academic-offering/academic-record/handlers';
 import { studentSubjectHandlers } from '#student-360/academic-offering/subject/handlers';
 import { chatHandlers } from '#student-360/chat/handlers';
+import { UpdateProfileHandler } from '#student-360/student/application/update-profile/update-profile.handler';
+import { CountryGetter } from '#shared/domain/service/country-getter.service';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
 import { qualificationHandlers } from '#student-360/academic-offering/qualification/handlers';
 
 const createRefreshTokenHandler = {
@@ -91,6 +95,23 @@ const expireStudentRefreshTokenHandler = {
   inject: [StudentGetter, StudentRefreshTokenRepository],
 };
 
+const updateProfileHandler = {
+  provide: UpdateProfileHandler,
+  useFactory: (
+    repository: StudentRepository,
+    studentGetter: StudentGetter,
+    countryGetter: CountryGetter,
+    imageUploader: ImageUploader,
+  ): EditStudentHandler =>
+    new EditStudentHandler(
+      repository,
+      studentGetter,
+      countryGetter,
+      imageUploader,
+    ),
+  inject: [StudentRepository, StudentGetter, CountryGetter, ImageUploader],
+};
+
 export const handlers = [
   createRefreshTokenHandler,
   generateRecoveryPasswordTokenHandler,
@@ -100,4 +121,5 @@ export const handlers = [
   ...studentSubjectHandlers,
   ...chatHandlers,
   ...qualificationHandlers,
+  updateProfileHandler,
 ];

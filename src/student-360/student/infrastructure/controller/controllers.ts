@@ -6,6 +6,7 @@ import { GetStudentAcademicRecordsController } from '#student-360/academic-offer
 import { GetStudentAcademicRecordController } from '#student-360/academic-offering/academic-record/infrastructure/controller/get-student-academic-record/get-student-academic-record.controller';
 import { LogoutStudentController } from '#student-360/student/infrastructure/controller/logout-student.controller';
 import { StudentMeController } from '#student-360/student/infrastructure/controller/me/student-me.controller';
+import { UpdateProfileController } from '#student-360/student/infrastructure/controller/update-profile.controller';
 
 export const studentAuthControllers = [
   LoginStudentController,
@@ -16,4 +17,5 @@ export const studentAuthControllers = [
   GetStudentAcademicRecordController,
   LogoutStudentController,
   StudentMeController,
+  UpdateProfileController,
 ];
