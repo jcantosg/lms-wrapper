@@ -234,6 +234,7 @@ export class AcademicRecordPostgresRepository
                 academicRecord: true,
                 calls: true,
               },
+              evaluationType: true,
             },
           },
         },

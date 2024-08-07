@@ -37,6 +37,9 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
     specialityBlock.subjects = blockZero?.subjects.filter(
       (subject) => subject.type === SubjectType.SPECIALTY,
     );
+    blockZero.subjects = blockZero?.subjects.filter(
+      (subject) => subject.type !== SubjectType.SPECIALTY,
+    );
     academicRecord.academicProgram.programBlocks.push(specialityBlock);
     for (const programBlock of academicRecord.academicProgram.programBlocks) {
       for (const subject of programBlock.subjects) {

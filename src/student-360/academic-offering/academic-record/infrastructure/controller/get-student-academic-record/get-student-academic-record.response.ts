@@ -13,6 +13,7 @@ interface GetStudentAcademicRecordResponseBody {
       id: string;
       lmsId: number;
       type: SubjectType;
+      evaluationType: string;
       name: string;
       unitsNumber: number;
       image: string | null;
@@ -47,6 +48,7 @@ export class GetStudentAcademicRecordResponse {
               lmsId: subject.lmsCourse?.value?.id ?? 0,
               name: subject.name,
               type: subject.type,
+              evaluationType: subject.evaluationType!.name,
               image: subject.image,
               unitsNumber: subject.lmsCourse?.value?.modules?.length ?? 0,
               progress: subject.lmsCourse?.value.progress ?? 0,
