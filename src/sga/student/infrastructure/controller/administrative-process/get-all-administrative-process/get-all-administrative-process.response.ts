@@ -59,12 +59,12 @@ export class GetAllAdministrativeProcessesResponse {
                 : administrativeProcess.academicRecord!.student.avatar,
             },
             businessUnit: {
-              id: administrativeProcess.academicRecord
-                ? administrativeProcess.academicRecord.businessUnit.id
-                : null,
-              name: administrativeProcess.academicRecord
-                ? administrativeProcess.academicRecord.businessUnit.name
-                : null,
+              id: administrativeProcess.businessUnit
+                ? administrativeProcess.businessUnit.id
+                : '',
+              name: administrativeProcess.businessUnit
+                ? administrativeProcess.businessUnit.name
+                : '',
             },
             createdAt: administrativeProcess.createdAt,
             updatedAt: administrativeProcess.updatedAt,
