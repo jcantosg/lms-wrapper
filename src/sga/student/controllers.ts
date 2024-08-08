@@ -22,6 +22,10 @@ import { AddStudentToInternalGroupController } from '#student/infrastructure/con
 import { GetInternalGroupStudentsController } from '#student/infrastructure/controller/internal-group/get-internal-group-students/get-internal-group-students.controller';
 import { RemoveTeacherFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-teacher-from-internal-group.controller';
 import { RemoveStudentFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-student-from-internal-group.controller';
+import { GetAllAdministrativeProcessStatusController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-types.controller';
+import { GetAllAdministrativeProcessTypesController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-status.controller';
+import { GetAllAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/get-all-administrative-process/get-all-administrative-process.controller';
+import { SearchAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/search-administrative-processes.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -48,4 +52,8 @@ export const controllers = [
   RemoveTeacherFromInternalGroupController,
   GetInternalGroupStudentsController,
   RemoveStudentFromInternalGroupController,
+  GetAllAdministrativeProcessStatusController,
+  GetAllAdministrativeProcessTypesController,
+  GetAllAdministrativeProcessesController,
+  SearchAdministrativeProcessesController,
 ];

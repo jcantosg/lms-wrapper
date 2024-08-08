@@ -5,4 +5,6 @@ export class AdministrativeProcessMockRepository
 {
   save = jest.fn();
   get = jest.fn();
+  count = jest.fn();
+  matching = jest.fn();
 }

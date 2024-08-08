@@ -1,11 +1,10 @@
 import { EntitySchema } from 'typeorm';
-import {
-  BaseSchemaColumns,
-  BaseSchemaRelations,
-} from '#shared/infrastructure/config/schema/base.schema';
+import { BaseSchemaColumns } from '#shared/infrastructure/config/schema/base.schema';
 import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
 import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
+import { AdministrativeProcessFile } from '#student/domain/entity/administrative-process-file';
+import { ValueObjectTransformer } from '#shared/infrastructure/value-object/value-object-transformer';
 
 export const administrativeProcessSchema =
   new EntitySchema<AdministrativeProcess>({
@@ -24,35 +23,33 @@ export const administrativeProcessSchema =
         enum: AdministrativeProcessStatusEnum,
         nullable: false,
       },
+      files: {
+        name: 'files',
+        type: 'simple-array',
+        nullable: true,
+        transformer: ValueObjectTransformer(AdministrativeProcessFile),
+      },
     },
     relations: {
-      ...BaseSchemaRelations,
+      student: {
+        type: 'many-to-one',
+        target: 'Student',
+        joinColumn: {
+          name: 'student_id',
+        },
+      },
       academicRecord: {
-        type: 'one-to-one',
+        type: 'many-to-one',
         target: 'AcademicRecord',
         joinColumn: {
           name: 'academic_record_id',
         },
       },
-      photo: {
-        type: 'one-to-one',
-        target: 'AdministrativeProcessDocument',
+      businessUnit: {
+        type: 'many-to-one',
+        target: 'BusinessUnit',
         joinColumn: {
-          name: 'photo_id',
-        },
-      },
-      identityDocuments: {
-        type: 'one-to-one',
-        target: 'AdministrativeProcessDocument',
-        joinColumn: {
-          name: 'identity_documents_id',
-        },
-      },
-      accessDocuments: {
-        type: 'one-to-one',
-        target: 'AdministrativeProcessDocument',
-        joinColumn: {
-          name: 'access_documents_id',
+          name: 'business_unit_id',
         },
       },
     },

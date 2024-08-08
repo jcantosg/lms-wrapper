@@ -53,8 +53,9 @@ import { UpdateAdministrativeGroupsService } from '#student/domain/service/updat
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
-import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
+import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -422,19 +423,37 @@ const createAdministrativeProcessHandler = {
   provide: CreateAdministrativeProcessHandler,
   useFactory: (
     administrativeProcessRepository: AdministrativeProcessRepository,
-    administrativeProcessDocumentRepository: AdministrativeProcessDocumentRepository,
     academicRecordGetter: AcademicRecordGetter,
+    studentGetter: StudentGetter,
   ): CreateAdministrativeProcessHandler =>
     new CreateAdministrativeProcessHandler(
       administrativeProcessRepository,
-      administrativeProcessDocumentRepository,
       academicRecordGetter,
+      studentGetter,
     ),
   inject: [
     AdministrativeProcessRepository,
-    AdministrativeProcessDocumentRepository,
     AcademicRecordGetter,
+    StudentGetter,
   ],
+};
+
+const getAllAdministrativeProcessHandler = {
+  provide: GetAllAdministrativeProcessesHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+  ): GetAllAdministrativeProcessesHandler =>
+    new GetAllAdministrativeProcessesHandler(administrativeProcessRepository),
+  inject: [AdministrativeProcessRepository],
+};
+
+const searchAdministrativeProcessHandler = {
+  provide: SearchAdministrativeProcessesHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+  ): SearchAdministrativeProcessesHandler =>
+    new SearchAdministrativeProcessesHandler(administrativeProcessRepository),
+  inject: [AdministrativeProcessRepository],
 };
 
 export const handlers = [
@@ -465,4 +484,6 @@ export const handlers = [
   getInternalGroupStudentsHandler,
   removeStudentFromInternalGroupHandler,
   createAdministrativeProcessHandler,
+  getAllAdministrativeProcessHandler,
+  searchAdministrativeProcessHandler,
 ];
