@@ -7,8 +7,8 @@ import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
 export class MoodleCourseRepository implements LmsCourseRepository {
   constructor(private readonly moodleWrapper: MoodleWrapper) {}
 
-  async getOne(id: number): Promise<LmsCourse> {
-    return await this.moodleWrapper.getCourse(id);
+  async getOne(id: number, isSpeciality: boolean): Promise<LmsCourse> {
+    return await this.moodleWrapper.getCourse(id, isSpeciality);
   }
 
   async getAll(): Promise<LmsCourse[]> {
@@ -33,8 +33,11 @@ export class MoodleCourseRepository implements LmsCourseRepository {
     );
   }
 
-  async getByName(name: string): Promise<LmsCourse | null> {
-    return this.moodleWrapper.getByName(name);
+  async getByName(
+    name: string,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse | null> {
+    return this.moodleWrapper.getByName(name, isSpeciality);
   }
 
   async getCourseProgress(

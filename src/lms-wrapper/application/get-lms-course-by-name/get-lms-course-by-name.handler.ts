@@ -7,6 +7,9 @@ export class GetLmsCourseByNameHandler implements QueryHandler {
   constructor(private readonly lmsCourseRepository: LmsCourseRepository) {}
 
   async handle(query: GetLMSCourseByNameQuery): Promise<LmsCourse | null> {
-    return await this.lmsCourseRepository.getByName(query.name);
+    return await this.lmsCourseRepository.getByName(
+      query.name,
+      query.isSpeciality,
+    );
   }
 }

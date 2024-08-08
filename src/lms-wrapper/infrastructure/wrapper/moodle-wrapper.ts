@@ -77,7 +77,7 @@ export class MoodleWrapper implements LmsWrapper {
     private readonly loginUrl = '/login/token.php',
   ) {}
 
-  async getCourse(id: number): Promise<LmsCourse> {
+  async getCourse(id: number, isSpeciality: boolean): Promise<LmsCourse> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses&moodlewsrestformat=json&options[ids][0]=${id}`;
     const courseResponse: MoodleCourseResponse[] = await this.wrapper.get(
       this.url,
@@ -91,7 +91,7 @@ export class MoodleWrapper implements LmsWrapper {
         courseContentQueryParam,
       );
 
-    return this.createCourse(course, courseContentResponse);
+    return this.createCourse(course, courseContentResponse, isSpeciality);
   }
 
   async getAllCourses(): Promise<LmsCourse[]> {
@@ -272,7 +272,7 @@ export class MoodleWrapper implements LmsWrapper {
           ? formatMoodleDescriptions(courseModule.description)
           : formatMoodleNames(courseModule.name),
         type: this.getModuleType(courseModule.description),
-        url: courseModule.url,
+        url: await this.getResourceUrl(courseModule),
         description: courseModule.description
           ? courseModule.description
           : formatMoodleNames(courseModule.name),
@@ -326,7 +326,10 @@ export class MoodleWrapper implements LmsWrapper {
     });
   }
 
-  public async getByName(name: string): Promise<LmsCourse | null> {
+  public async getByName(
+    name: string,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse | null> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses_by_field&moodlewsrestformat=json&field=shortname&value=${name}`;
     const courseResponse: MoodleCourseByFieldResponse = await this.wrapper.get(
       this.url,
@@ -343,7 +346,7 @@ export class MoodleWrapper implements LmsWrapper {
         courseContentQueryParam,
       );
 
-    return this.createCourse(course, courseContentResponse);
+    return this.createCourse(course, courseContentResponse, isSpeciality);
   }
 
   async getUrlWithSessionKey(email: string): Promise<string> {
@@ -423,34 +426,35 @@ export class MoodleWrapper implements LmsWrapper {
   private createCourse(
     course: MoodleCourseResponse,
     courseContentResponse: MoodleCourseContentResponse[],
+    isSpeciality: boolean,
   ): LmsCourse {
+    let modules = courseContentResponse
+      .map((courseContentResponse) => {
+        return {
+          id: courseContentResponse.id,
+          name: courseContentResponse?.description
+            ? formatMoodleNames(
+                formatMoodleDescriptions(courseContentResponse?.description),
+              )
+            : courseContentResponse.name,
+          image:
+            moodleCourseContentIcon[
+              stringToCamelCase(courseContentResponse.name)
+            ] ?? '/courseContent.svg',
+        };
+      })
+      .filter((value) => value.name !== '' && value.name !== 'Partners');
+    if (!isSpeciality) {
+      modules = modules.filter((value) => value.name !== 'General');
+    }
+
     return new LmsCourse({
       id: course.id,
       categoryId: course.categoryid,
       shortname: course.shortname,
       name: course.displayname,
       progress: 0,
-      modules: courseContentResponse
-        .map((courseContentResponse) => {
-          return {
-            id: courseContentResponse.id,
-            name: courseContentResponse?.description
-              ? formatMoodleNames(
-                  formatMoodleDescriptions(courseContentResponse?.description),
-                )
-              : courseContentResponse.name,
-            image:
-              moodleCourseContentIcon[
-                stringToCamelCase(courseContentResponse.name)
-              ] ?? '/courseContent.svg',
-          };
-        })
-        .filter(
-          (value) =>
-            value.name !== '' &&
-            value.name !== 'Partners' &&
-            value.name !== 'General',
-        ),
+      modules: modules,
     });
   }
 

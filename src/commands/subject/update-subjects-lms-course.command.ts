@@ -22,7 +22,10 @@ async function bootstrap() {
   );
   const subjects = await subjectRepository.find();
   for (const subject of subjects) {
-    subject.lmsCourse = await lmsCourseRepository.getByName(subject.code);
+    subject.lmsCourse = await lmsCourseRepository.getByName(
+      subject.code,
+      subject.isZeroBlockSubject(),
+    );
     await subjectRepository.save({
       id: subject.id,
       lmsCourse: subject.lmsCourse,
