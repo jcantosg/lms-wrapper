@@ -1,6 +1,6 @@
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
@@ -143,11 +143,11 @@ export class TitlePostgresRepository
       .getOne();
   }
 
-  async getByBusinessUnit(businessUnit: BusinessUnit): Promise<Title[]> {
+  async getByBusinessUnits(businessUnitIds: string[]): Promise<Title[]> {
     return await this.repository.find({
       where: {
         businessUnit: {
-          id: businessUnit.id,
+          id: In(businessUnitIds),
         },
       },
     });

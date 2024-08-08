@@ -54,6 +54,8 @@ import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { GetInternalGroupsByBuPeriodsAndProgramsHandler } from '#student/application/get-internal-groups-by-bu-periods-and-programs/get-internal-groups-by-bu-periods-and-programs.handler';
+import { GetStudentsByBuPeriodsAndProgramsHandler } from '#student/application/get-students-by-bu-periods-and-programs/get-students-by-bu-periods-and-programs.handler';
 import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
 import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
 
@@ -438,6 +440,24 @@ const createAdministrativeProcessHandler = {
   ],
 };
 
+const getInternalGroupsByBuPeriodsAndProgramsHandler = {
+  provide: GetInternalGroupsByBuPeriodsAndProgramsHandler,
+  useFactory: (
+    internalGroupRepository: InternalGroupRepository,
+  ): GetInternalGroupsByBuPeriodsAndProgramsHandler =>
+    new GetInternalGroupsByBuPeriodsAndProgramsHandler(internalGroupRepository),
+  inject: [InternalGroupRepository],
+};
+
+const getStudentsByBuPeriodsAndProgramsHandler = {
+  provide: GetStudentsByBuPeriodsAndProgramsHandler,
+  useFactory: (
+    studentRepository: StudentRepository,
+  ): GetStudentsByBuPeriodsAndProgramsHandler =>
+    new GetStudentsByBuPeriodsAndProgramsHandler(studentRepository),
+  inject: [StudentRepository],
+};
+
 const getAllAdministrativeProcessHandler = {
   provide: GetAllAdministrativeProcessesHandler,
   useFactory: (
@@ -484,6 +504,8 @@ export const handlers = [
   getInternalGroupStudentsHandler,
   removeStudentFromInternalGroupHandler,
   createAdministrativeProcessHandler,
+  getInternalGroupsByBuPeriodsAndProgramsHandler,
+  getStudentsByBuPeriodsAndProgramsHandler,
   getAllAdministrativeProcessHandler,
   searchAdministrativeProcessHandler,
 ];

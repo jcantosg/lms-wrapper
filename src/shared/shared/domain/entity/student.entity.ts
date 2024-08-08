@@ -13,6 +13,7 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
+import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 
 export const DEFAULT_PASSWORD = 'Universa3€';
 
@@ -54,6 +55,7 @@ export class Student extends BaseEntity {
     private _administrativeGroups: AdministrativeGroup[],
     private _internalGroups: InternalGroup[],
     private _isDefense: boolean,
+    private _communications: CommunicationStudent[],
   ) {
     super(id, new Date(), new Date());
   }
@@ -338,6 +340,14 @@ export class Student extends BaseEntity {
     this._internalGroups = value;
   }
 
+  public get communications(): CommunicationStudent[] {
+    return this._communications;
+  }
+
+  public set communications(value: CommunicationStudent[]) {
+    this._communications = value;
+  }
+
   public addInternalGroup(group: InternalGroup) {
     if (!this._internalGroups.find((ig) => ig.id === group.id)) {
       this._internalGroups.push(group);
@@ -398,6 +408,7 @@ export class Student extends BaseEntity {
       [],
       [],
       false,
+      [],
     );
   }
 
@@ -459,6 +470,7 @@ export class Student extends BaseEntity {
       [],
       [],
       isDefense,
+      [],
     );
   }
 

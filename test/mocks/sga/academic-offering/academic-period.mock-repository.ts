@@ -20,4 +20,6 @@ export class AcademicPeriodMockRepository implements AcademicPeriodRepository {
   getByBusinessUnit = jest.fn();
 
   getByCode = jest.fn();
+
+  getByMultipleBusinessUnits = jest.fn();
 }

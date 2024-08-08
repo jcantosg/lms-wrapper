@@ -206,4 +206,21 @@ export class AcademicPeriodPostgresRepository
       academicPeriod.hasAcademicPrograms(),
     );
   }
+
+  async getByMultipleBusinessUnits(
+    businessUnitIds: string[],
+  ): Promise<AcademicPeriod[]> {
+    const academicPeriods = await this.repository
+      .createQueryBuilder('academicPeriod')
+      .leftJoinAndSelect('academicPeriod.businessUnit', 'businessUnit')
+      .leftJoinAndSelect('academicPeriod.academicPrograms', 'academicPrograms')
+      .where('businessUnit.id IN (:...businessUnitIds)', { businessUnitIds })
+      .getMany();
+
+    const filteredAcademicPeriods = academicPeriods.filter((academicPeriod) =>
+      academicPeriod.hasAcademicPrograms(),
+    );
+
+    return filteredAcademicPeriods;
+  }
 }

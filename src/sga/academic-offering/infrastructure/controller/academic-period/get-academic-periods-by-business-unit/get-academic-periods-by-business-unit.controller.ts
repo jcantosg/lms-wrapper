@@ -18,15 +18,16 @@ import { getAcademicPeriodsByBusinessUnitSchema } from '#academic-offering/infra
 import { GetAcademicPeriodsByBusinessUnitResponse } from '#academic-offering/infrastructure/controller/academic-period/get-academic-periods-by-business-unit/get-academic-periods-by-business-unit.response';
 
 type GetAllAcademicPeriodsQueryParams = {
-  businessUnit: string;
+  businessUnitIds: string[];
 };
 
-@Controller('/academic-period/all')
+@Controller('/academic-period')
 export class GetAcademicPeriodsByBusinessUnitController {
   constructor(
     private readonly handler: GetAcademicPeriodsByBusinessUnitHandler,
   ) {}
 
+  @Get('/by-business-units')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @UsePipes(
     new JoiRequestQueryParamValidationPipeService(
@@ -34,13 +35,12 @@ export class GetAcademicPeriodsByBusinessUnitController {
     ),
   )
   @Roles(AdminUserRoles.SUPERADMIN, AdminUserRoles.SUPERVISOR_360)
-  @Get()
-  async GetAcademicPeriodsByBusinessUnit(
+  async getAcademicPeriodsByBusinessUnit(
     @Req() req: AuthRequest,
     @Query() queryParams: GetAllAcademicPeriodsQueryParams,
   ) {
     const query = new GetAcademicPeriodsByBusinessUnitQuery(
-      queryParams.businessUnit,
+      queryParams.businessUnitIds,
       req.user,
     );
 

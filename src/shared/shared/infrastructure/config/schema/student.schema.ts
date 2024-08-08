@@ -201,5 +201,10 @@ export const studentSchema = new EntitySchema<Student>({
         },
       },
     },
+    communications: {
+      type: 'one-to-many',
+      target: 'CommunicationStudent',
+      inverseSide: 'student',
+    },
   },
 });

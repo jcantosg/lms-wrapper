@@ -22,6 +22,8 @@ import { AddStudentToInternalGroupController } from '#student/infrastructure/con
 import { GetInternalGroupStudentsController } from '#student/infrastructure/controller/internal-group/get-internal-group-students/get-internal-group-students.controller';
 import { RemoveTeacherFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-teacher-from-internal-group.controller';
 import { RemoveStudentFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-student-from-internal-group.controller';
+import { GetInternalGroupsByBuPeriodsAndProgramsController } from '#student/infrastructure/controller/internal-group/get-internal-groups-by-bu-periods-and-programs/get-internal-groups-by-bu-periods-and-programs.controller';
+import { GetStudentsByBuPeriodsAndProgramsController } from '#student/infrastructure/controller/get-students-by-bu-periods-and-programs/get-students-by-bu-periods-and-programs.controller';
 import { GetAllAdministrativeProcessStatusController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-types.controller';
 import { GetAllAdministrativeProcessTypesController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-status.controller';
 import { GetAllAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/get-all-administrative-process/get-all-administrative-process.controller';
@@ -34,6 +36,8 @@ export const controllers = [
   GetStudentsController,
   SearchStudentsController,
   GetCoursingSubjectStudentsController,
+  GetStudentsByBuPeriodsAndProgramsController,
+  GetInternalGroupsByBuPeriodsAndProgramsController,
   GetStudentController,
   ...academicRecordControllers,
   CreateInternalGroupsBatchController,

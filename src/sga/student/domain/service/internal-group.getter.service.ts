@@ -26,6 +26,15 @@ export class InternalGroupGetter {
     return internalGroup;
   }
 
+  async getWithStudents(id: string): Promise<InternalGroup> {
+    const internalGroup = await this.repository.get(id);
+    if (!internalGroup) {
+      throw new InternalGroupNotFoundException();
+    }
+
+    return internalGroup;
+  }
+
   async getByStudentAndSubject(
     student: Student,
     subject: Subject,

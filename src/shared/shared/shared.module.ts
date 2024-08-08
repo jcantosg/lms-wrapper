@@ -21,6 +21,8 @@ import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-s
 import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
 import { controllers } from '#shared/controllers';
 import { SGAStudentModule } from '#student/student.module';
+import { BusinessUnitModule } from '#business-unit/business-unit.module';
+import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
 import * as admin from 'firebase-admin';
 
 const fileManager: FactoryProvider = {
@@ -96,6 +98,8 @@ const providers: Provider[] = [
     HttpModule,
     SGAStudentModule,
     TypeOrmModule.forFeature(sharedSchemas),
+    BusinessUnitModule,
+    AcademicOfferingModule,
   ],
   providers,
   controllers: [...controllers],
@@ -104,6 +108,7 @@ const providers: Provider[] = [
     ...services,
     ...handlers,
     fileManager,
+    BusinessUnitModule,
     firebaseProvider,
   ],
 })

@@ -7,7 +7,7 @@ export class TitleMockRepository implements TitleRepository {
   count = jest.fn();
   get = jest.fn();
   getByAdminUser = jest.fn();
-  getByBusinessUnit = jest.fn();
+  getByBusinessUnits = jest.fn();
   delete = jest.fn();
   existsByAdminUser = jest.fn();
 }

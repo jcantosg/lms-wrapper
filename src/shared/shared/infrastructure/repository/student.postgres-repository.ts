@@ -6,6 +6,7 @@ import { studentSchema } from '#shared/infrastructure/config/schema/student.sche
 import { Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
 export class StudentPostgresRepository
   extends TypeOrmRepository<Student>
@@ -215,5 +216,32 @@ export class StudentPostgresRepository
         contactCountry: true,
       },
     });
+  }
+
+  async findByBuPeriodsAndPrograms(
+    businessUnitIds: string[],
+    academicPeriodIds: string[],
+    academicProgramIds: string[],
+  ): Promise<Student[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('student')
+      .leftJoin('student.academicRecords', 'academicRecord')
+      .leftJoin('academicRecord.businessUnit', 'businessUnit')
+      .leftJoin('academicRecord.academicPeriod', 'academicPeriod')
+      .leftJoin('academicRecord.academicProgram', 'academicProgram')
+      .where('businessUnit.id IN (:...businessUnitIds)', { businessUnitIds })
+      .andWhere('academicPeriod.id IN (:...academicPeriodIds)', {
+        academicPeriodIds,
+      })
+      .andWhere('academicProgram.id IN (:...academicProgramIds)', {
+        academicProgramIds,
+      })
+      .andWhere('academicRecord.status = :status', {
+        status: AcademicRecordStatusEnum.VALID,
+      });
+
+    const students = await queryBuilder.getMany();
+
+    return Array.from(new Set(students));
   }
 }
