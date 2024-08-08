@@ -9,6 +9,12 @@ interface GetStudentAcademicRecordResponseBody {
     id: string;
     name: string;
     isBlock: boolean;
+    teacher: {
+      id: string;
+      name: string;
+      surname: string;
+      avatar: string | null;
+    } | null;
     subjects: {
       id: string;
       lmsId: number;
@@ -33,6 +39,15 @@ export class GetStudentAcademicRecordResponse {
   static create(
     academicRecord: AcademicRecord,
   ): GetStudentAcademicRecordResponseBody {
+    const zeroBlock = academicRecord.academicProgram.programBlocks.find(
+      (programBlock: ProgramBlock) => programBlock.name === 'Bloque 0',
+    );
+    const subject = zeroBlock
+      ? zeroBlock.subjects.find(
+          (subject: Subject) => subject.name === 'Información académica',
+        )
+      : null;
+    const tutorTeacher = subject ? subject.defaultTeacher : null;
     const blocks = academicRecord.academicProgram.programBlocks.map(
       (programBlock: ProgramBlock) => {
         return {
@@ -42,6 +57,14 @@ export class GetStudentAcademicRecordResponse {
               ? 'Información'
               : programBlock.name,
           isBlock: programBlock.subjects.length === 0,
+          teacher: tutorTeacher
+            ? {
+                id: tutorTeacher.id,
+                name: tutorTeacher.name,
+                surname: tutorTeacher.surname1,
+                avatar: tutorTeacher.avatar,
+              }
+            : null,
           subjects: programBlock.subjects.map((subject: Subject) => {
             return {
               id: subject.id,

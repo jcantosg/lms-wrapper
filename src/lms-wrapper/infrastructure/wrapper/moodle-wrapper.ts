@@ -268,7 +268,9 @@ export class MoodleWrapper implements LmsWrapper {
     for (const courseModule of courseContentModule.modules) {
       modules.push({
         id: courseModule.id,
-        name: courseModule.name,
+        name: courseModule.description
+          ? formatMoodleDescriptions(courseModule.description)
+          : formatMoodleNames(courseModule.name),
         type: this.getModuleType(courseModule.description),
         url: courseModule.url,
         description: courseModule.description
