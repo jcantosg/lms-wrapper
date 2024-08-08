@@ -6,6 +6,7 @@ interface LmsCourseModuleBodyResponse {
   modules: {
     id: number;
     type: string;
+    moduleType: string;
     url: string;
     description: string;
     name: string;
@@ -29,6 +30,7 @@ export class GetCourseContentResponse {
           id: module.id,
           name: module.name,
           type: module.type,
+          moduleType: module.moduleType,
           description: module.description,
           url: module.url,
           contents: module.contents

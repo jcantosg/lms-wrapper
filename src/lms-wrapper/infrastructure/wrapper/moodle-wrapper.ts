@@ -63,6 +63,7 @@ type Modules = {
   id: number;
   name: string;
   type: string;
+  moduleType: string;
   url: string;
   indexPosition: number;
   description: string;
@@ -200,6 +201,7 @@ export class MoodleWrapper implements LmsWrapper {
           modules.push({
             id: courseContent.id,
             url: courseContent.url,
+            moduleType: courseContent.modname,
             type: this.getModuleType(courseContent.description),
             description: courseContent.description,
             name: formatMoodleNames(
@@ -239,6 +241,7 @@ export class MoodleWrapper implements LmsWrapper {
             id: module.id,
             name: module.name,
             description: module.description,
+            moduleType: module.moduleType,
             type: module.type,
             url: module.url,
             isCompleted: courseActivitiesCompletionResponse.statuses.some(
@@ -272,6 +275,7 @@ export class MoodleWrapper implements LmsWrapper {
           ? formatMoodleDescriptions(courseModule.description)
           : formatMoodleNames(courseModule.name),
         type: this.getModuleType(courseModule.description),
+        moduleType: courseModule.modname,
         url: await this.getResourceUrl(courseModule),
         description: courseModule.description
           ? courseModule.description
@@ -300,6 +304,7 @@ export class MoodleWrapper implements LmsWrapper {
           id: module.id,
           name: module.name,
           type: module.type,
+          moduleType: module.moduleType,
           description: module.description,
           url: module.url,
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
