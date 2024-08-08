@@ -13,6 +13,7 @@ interface GetStudentAcademicRecordResponseBody {
       id: string;
       name: string;
       surname: string;
+      surname2: string | null;
       avatar: string | null;
     } | null;
     subjects: {
@@ -62,6 +63,7 @@ export class GetStudentAcademicRecordResponse {
                 id: tutorTeacher.id,
                 name: tutorTeacher.name,
                 surname: tutorTeacher.surname1,
+                surname2: tutorTeacher.surname2,
                 avatar: tutorTeacher.avatar,
               }
             : null,
