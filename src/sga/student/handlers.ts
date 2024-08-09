@@ -59,6 +59,7 @@ import { GetStudentsByBuPeriodsAndProgramsHandler } from '#student/application/g
 import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
 import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
 import { GetStudentAdministrativeProcessDocumentsHandler } from '#student/application/administrative-process/get-student-administrative-process-documents/get-student-administrative-process-documents.handler';
+import { EditAdministrativeProcessHandler } from '#student/application/administrative-process/edit-administrative-process/edit-administrative-process.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -496,6 +497,15 @@ const getStudentAdministrativeProcessDocumentsHandler = {
   ],
 };
 
+const editAdministrativeProcessHandler = {
+  provide: EditAdministrativeProcessHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+  ): EditAdministrativeProcessHandler =>
+    new EditAdministrativeProcessHandler(administrativeProcessRepository),
+  inject: [AdministrativeProcessRepository],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -529,4 +539,5 @@ export const handlers = [
   getAllAdministrativeProcessHandler,
   searchAdministrativeProcessHandler,
   getStudentAdministrativeProcessDocumentsHandler,
+  editAdministrativeProcessHandler,
 ];

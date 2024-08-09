@@ -91,6 +91,11 @@ export class AdministrativeProcess extends BaseEntity {
     this.addFile(file);
   }
 
+  public update(status: AdministrativeProcessStatusEnum) {
+    this._status = status;
+    this.updatedAt = new Date();
+  }
+
   static create(
     id: string,
     type: AdministrativeProcessTypeEnum,
