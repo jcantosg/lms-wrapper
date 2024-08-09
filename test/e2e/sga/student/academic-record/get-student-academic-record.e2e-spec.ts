@@ -4,6 +4,7 @@ import { GetStudentAcademicRecordE2eSeed } from '#test/e2e/sga/student/academic-
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
 
 describe('/academic-record/:id (GET)', () => {
   let httpServer: HttpServer;
@@ -56,6 +57,8 @@ describe('/academic-record/:id (GET)', () => {
           code: GetStudentAcademicRecordE2eSeed.academicPeriodCode,
         },
         status: AcademicRecordStatusEnum.VALID,
+        administrativeProcessStatus:
+          AdministrativeProcessStatusEnum.PENDING_DOCUMENTS,
       },
     ]);
   });

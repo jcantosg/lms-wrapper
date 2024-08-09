@@ -25,6 +25,7 @@ import { CreateAdministrativeProcessHandler } from '#student/application/adminis
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { CancelAcademicRecordTransactionalService } from '#student/domain/service/cancel-academic-record.transactional-service';
+import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
 
 const createAcademicRecordHandler = {
   provide: CreateAcademicRecordHandler,
@@ -115,9 +116,18 @@ const getStudentAcademicRecordHandler = {
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
     studentGetter: StudentGetter,
+    administrativeProcessRepository: AdministrativeProcessRepository,
   ): GetStudentAcademicRecordHandler =>
-    new GetStudentAcademicRecordHandler(academicRecordGetter, studentGetter),
-  inject: [AcademicRecordGetter, StudentGetter],
+    new GetStudentAcademicRecordHandler(
+      academicRecordGetter,
+      studentGetter,
+      administrativeProcessRepository,
+    ),
+  inject: [
+    AcademicRecordGetter,
+    StudentGetter,
+    AdministrativeProcessRepository,
+  ],
 };
 const transferAcademicRecordHandler = {
   provide: TransferAcademicRecordHandler,

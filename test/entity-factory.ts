@@ -42,6 +42,8 @@ import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subje
 import { StudentRecoveryPasswordToken } from '#/student-360/student/domain/entity/student-recovery-password-token.entity';
 import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
+import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
+import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -379,4 +381,14 @@ export const getALmsEnrollment = () =>
 
 export const getAChatroom = (internalGroup: InternalGroup, id = uuid()) => {
   return Chatroom.create(id, internalGroup, getASGAStudent(), getAnEdaeUser());
+};
+
+export const getAnAdministrativeProcess = () => {
+  return AdministrativeProcess.create(
+    uuid(),
+    AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
+    getASGAStudent(),
+    getAnAcademicRecord(),
+    getABusinessUnit(),
+  );
 };

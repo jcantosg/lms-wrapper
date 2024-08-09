@@ -1,5 +1,12 @@
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
+
+export interface AcademicRecordProcess {
+  record: AcademicRecord;
+  administrativeProcess: AdministrativeProcess | null;
+}
 
 interface StudentAcademicRecordResponse {
   id: string;
@@ -14,25 +21,31 @@ interface StudentAcademicRecordResponse {
     name: string;
     code: string;
   };
+  administrativeProcessStatus: AdministrativeProcessStatusEnum;
   status: AcademicRecordStatusEnum;
 }
 
 export class GetStudentAcademicRecordResponse {
-  static create(records: AcademicRecord[]): StudentAcademicRecordResponse[] {
-    return records.map((record) => ({
-      id: record.id,
-      title: record.academicProgram.title.name,
+  static create(
+    academicRecords: AcademicRecordProcess[],
+  ): StudentAcademicRecordResponse[] {
+    return academicRecords.map((ar) => ({
+      id: ar.record.id,
+      title: ar.record.academicProgram.title.name,
       academicProgram: {
-        id: record.academicProgram.id,
-        name: record.academicProgram.name,
-        code: record.academicProgram.code,
+        id: ar.record.academicProgram.id,
+        name: ar.record.academicProgram.name,
+        code: ar.record.academicProgram.code,
       },
       academicPeriod: {
-        id: record.academicPeriod.id,
-        name: record.academicPeriod.name,
-        code: record.academicPeriod.code,
+        id: ar.record.academicPeriod.id,
+        name: ar.record.academicPeriod.name,
+        code: ar.record.academicPeriod.code,
       },
-      status: record.status,
+      status: ar.record.status,
+      administrativeProcessStatus: ar.administrativeProcess
+        ? ar.administrativeProcess.status
+        : AdministrativeProcessStatusEnum.PENDING_DOCUMENTS,
     }));
   }
 }
