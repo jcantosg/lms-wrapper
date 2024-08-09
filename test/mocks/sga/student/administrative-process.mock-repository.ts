@@ -7,4 +7,6 @@ export class AdministrativeProcessMockRepository
   get = jest.fn();
   count = jest.fn();
   matching = jest.fn();
+  getByStudent = jest.fn();
+  getByAcademicRecord = jest.fn();
 }

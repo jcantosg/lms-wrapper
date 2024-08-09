@@ -40,6 +40,31 @@ export class AdministrativeProcessPostgresRepository
       relations: {
         academicRecord: true,
         student: true,
+        businessUnit: true,
+      },
+    });
+  }
+
+  async getByStudent(studentId: string): Promise<AdministrativeProcess[]> {
+    return await this.repository.find({
+      where: { student: { id: studentId } },
+      relations: {
+        academicRecord: true,
+        student: true,
+        businessUnit: true,
+      },
+    });
+  }
+
+  async getByAcademicRecord(
+    academicRecordId: string,
+  ): Promise<AdministrativeProcess[]> {
+    return await this.repository.find({
+      where: { academicRecord: { id: academicRecordId } },
+      relations: {
+        academicRecord: true,
+        student: true,
+        businessUnit: true,
       },
     });
   }

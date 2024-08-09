@@ -28,6 +28,7 @@ import { GetAllAdministrativeProcessStatusController } from '#student/infrastruc
 import { GetAllAdministrativeProcessTypesController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-status.controller';
 import { GetAllAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/get-all-administrative-process/get-all-administrative-process.controller';
 import { SearchAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/search-administrative-processes.controller';
+import { GetStudentAdministrativeProcessDocumentsController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-documents-by-student/get-administrative-process-documents-by-student.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -60,4 +61,5 @@ export const controllers = [
   GetAllAdministrativeProcessTypesController,
   GetAllAdministrativeProcessesController,
   SearchAdministrativeProcessesController,
+  GetStudentAdministrativeProcessDocumentsController,
 ];

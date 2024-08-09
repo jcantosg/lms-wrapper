@@ -5,6 +5,10 @@ import { AdministrativeProcess } from '#student/domain/entity/administrative-pro
 export abstract class AdministrativeProcessRepository {
   abstract save(administrativeProcess: AdministrativeProcess): Promise<void>;
   abstract get(id: string): Promise<AdministrativeProcess | null>;
+  abstract getByStudent(studentId: string): Promise<AdministrativeProcess[]>;
+  abstract getByAcademicRecord(
+    academicRecordId: string,
+  ): Promise<AdministrativeProcess[]>;
   abstract count(
     criteria: Criteria,
     adminUserBusinessUnits: BusinessUnit[],

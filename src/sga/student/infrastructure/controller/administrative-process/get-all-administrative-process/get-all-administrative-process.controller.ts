@@ -11,7 +11,6 @@ import { JoiRequestQueryParamValidationPipeService } from '#shared/infrastructur
 import { AuthRequest } from '#shared/infrastructure/http/request';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
 import { OrderTypes } from '#/sga/shared/domain/criteria/order';
-import { MonthEnum } from '#/sga/shared/domain/enum/month.enum';
 import {
   GetAdministrativeProcessResponse,
   GetAllAdministrativeProcessesResponse,
@@ -19,6 +18,8 @@ import {
 import { getAllAdministrativeProcessesSchema } from '#student/infrastructure/config/validation-schema/get-all-administrative-processes.schema';
 import { GetAllAdministrativeProcessesQuery } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.query';
 import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
+import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
+import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
 
 type GetAllAdministrativeProcessesQueryParams = {
   page: number;
@@ -29,8 +30,8 @@ type GetAllAdministrativeProcessesQueryParams = {
   businessUnit?: string;
   createdAt?: string;
   updatedAt?: string;
-  type?: MonthEnum;
-  status?: string;
+  type?: AdministrativeProcessTypeEnum;
+  status?: AdministrativeProcessStatusEnum;
 };
 
 @Controller('administrative-process')

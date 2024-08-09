@@ -58,6 +58,7 @@ import { GetInternalGroupsByBuPeriodsAndProgramsHandler } from '#student/applica
 import { GetStudentsByBuPeriodsAndProgramsHandler } from '#student/application/get-students-by-bu-periods-and-programs/get-students-by-bu-periods-and-programs.handler';
 import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
 import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
+import { GetStudentAdministrativeProcessDocumentsHandler } from '#student/application/administrative-process/get-student-administrative-process-documents/get-student-administrative-process-documents.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -476,6 +477,25 @@ const searchAdministrativeProcessHandler = {
   inject: [AdministrativeProcessRepository],
 };
 
+const getStudentAdministrativeProcessDocumentsHandler = {
+  provide: GetStudentAdministrativeProcessDocumentsHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+    studentGetter: StudentGetter,
+    academicRecordGetter: AcademicRecordGetter,
+  ): GetStudentAdministrativeProcessDocumentsHandler =>
+    new GetStudentAdministrativeProcessDocumentsHandler(
+      administrativeProcessRepository,
+      studentGetter,
+      academicRecordGetter,
+    ),
+  inject: [
+    AdministrativeProcessRepository,
+    StudentGetter,
+    AcademicRecordGetter,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -508,4 +528,5 @@ export const handlers = [
   getStudentsByBuPeriodsAndProgramsHandler,
   getAllAdministrativeProcessHandler,
   searchAdministrativeProcessHandler,
+  getStudentAdministrativeProcessDocumentsHandler,
 ];
