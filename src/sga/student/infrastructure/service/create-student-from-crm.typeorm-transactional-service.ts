@@ -19,12 +19,6 @@ import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-l
 import { GetLmsStudentCommand } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.command';
 import { Student } from '#shared/domain/entity/student.entity';
 import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
-import { CreateChatUserHandler } from '#shared/application/create-chat-user/create-chat-user.handler';
-import { DeleteChatUserHandler } from '#shared/application/delete-chat-user/delete-chat-user.handler';
-import { CreateChatUserCommand } from '#shared/application/create-chat-user/create-chat-user.command';
-import { DeleteChatUserCommand } from '#shared/application/delete-chat-user/delete-chat-user.command';
-import { ExistChatUserQuery } from '#shared/application/exist-chat-user/exist-chat-user.query';
-import { ExistChatUserHandler } from '#shared/application/exist-chat-user/exist-chat-user.handler';
 
 export class CreateStudentFromCRMTypeormTransactionalService extends CreateStudentFromCRMTransactionalService {
   private logger: Logger;
@@ -38,9 +32,6 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
     private readonly getLmsStudentHandler: GetLmsStudentHandler,
-    private readonly createChatUserHandler: CreateChatUserHandler,
-    private readonly deleteChatUserHandler: DeleteChatUserHandler,
-    private readonly existChatUserHandler: ExistChatUserHandler,
   ) {
     super();
     this.logger = new Logger(CreateStudentFromCRMTransactionalService.name);
@@ -54,21 +45,6 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
     let lmsId;
     const lmsEnrollmentsId: number[] = [];
     try {
-      if (
-        !(await this.existChatUserHandler.handle(
-          new ExistChatUserQuery(entities.student.email),
-        ))
-      ) {
-        await this.createChatUserHandler.handle(
-          new CreateChatUserCommand(
-            entities.student.id,
-            entities.student.email,
-            this.rawPassword,
-            `${entities.student.name} ${entities.student.surname}`,
-          ),
-        );
-      }
-
       let lmsStudent;
       lmsStudent = await this.getLmsStudentHandler.handle(
         new GetLmsStudentCommand(
@@ -184,16 +160,6 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
-
-      if (
-        !(await this.existChatUserHandler.handle(
-          new ExistChatUserQuery(entities.student.email),
-        ))
-      ) {
-        await this.deleteChatUserHandler.handle(
-          new DeleteChatUserCommand(entities.student.id),
-        );
-      }
 
       if (!!lmsId) {
         await this.deleteLmsStudentHandler.handle(
