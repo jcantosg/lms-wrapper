@@ -34,6 +34,7 @@ const moodleResourceType: { [id: string]: string } = {
   videotime: 'video',
   scorm: 'scorm',
   webgl: 'webgl',
+  quiz: 'quiz',
 };
 
 export enum MoodleCourseModuleStatus {
@@ -240,7 +241,7 @@ export class MoodleWrapper implements LmsWrapper {
           return {
             id: module.id,
             name: module.name,
-            description: module.description,
+            description: formatMoodleNames(module.description),
             moduleType: module.moduleType,
             type: module.type,
             url: module.url,

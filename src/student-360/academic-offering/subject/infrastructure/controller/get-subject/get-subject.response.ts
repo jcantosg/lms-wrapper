@@ -71,8 +71,8 @@ export class GetSubjectResponse {
           resources: subject
             .lmsCourse!.value.modules.filter(
               (module) =>
-                module.name !== 'pruebaSemestral' &&
-                module.name !== 'testDeEvaluacion',
+                !module.name.toLowerCase().includes('prueba') ||
+                !module.name.includes('Test de evaluación'),
             )
             .map((module) => {
               return {
@@ -84,8 +84,8 @@ export class GetSubjectResponse {
           quizzes: subject
             .lmsCourse!.value.modules.filter(
               (module) =>
-                module.name === 'pruebaSemestral' ||
-                module.name === 'testDeEvaluacion',
+                module.name.toLowerCase().includes('prueba') ||
+                module.name.includes('Test de evaluación'),
             )
             .map((module) => {
               return {
