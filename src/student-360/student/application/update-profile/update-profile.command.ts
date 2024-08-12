@@ -8,6 +8,7 @@ export class UpdateProfileCommand implements Command {
     public readonly surname: string,
     public readonly surname2: string,
     public readonly email: string,
+    public readonly newPassword: string | null,
     public readonly avatar: string | null,
     public readonly birthDate: Date | null,
     public readonly gender: StudentGender,

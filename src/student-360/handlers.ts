@@ -18,7 +18,6 @@ import { chatHandlers } from '#student-360/chat/handlers';
 import { UpdateProfileHandler } from '#student-360/student/application/update-profile/update-profile.handler';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
-import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
 import { qualificationHandlers } from '#student-360/academic-offering/qualification/handlers';
 
 const createRefreshTokenHandler = {
@@ -102,14 +101,22 @@ const updateProfileHandler = {
     studentGetter: StudentGetter,
     countryGetter: CountryGetter,
     imageUploader: ImageUploader,
-  ): EditStudentHandler =>
-    new EditStudentHandler(
+    passwordEncoder: PasswordEncoder,
+  ): UpdateProfileHandler =>
+    new UpdateProfileHandler(
       repository,
       studentGetter,
       countryGetter,
       imageUploader,
+      passwordEncoder,
     ),
-  inject: [StudentRepository, StudentGetter, CountryGetter, ImageUploader],
+  inject: [
+    StudentRepository,
+    StudentGetter,
+    CountryGetter,
+    ImageUploader,
+    PasswordEncoder,
+  ],
 };
 
 export const handlers = [

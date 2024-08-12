@@ -545,6 +545,7 @@ export class Student extends BaseEntity {
     surname: string,
     surname2: string,
     email: string,
+    password: string | null,
     avatar: string | null,
     birthDate: Date | null,
     gender: StudentGender,

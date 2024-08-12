@@ -5,6 +5,7 @@ import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { StudentDuplicatedEmailException } from '#student/shared/exception/student-duplicated-email.exception';
 import { UpdateProfileCommand } from '#student-360/student/application/update-profile/update-profile.command';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 
 export class UpdateProfileHandler implements CommandHandler {
   constructor(
@@ -12,6 +13,7 @@ export class UpdateProfileHandler implements CommandHandler {
     private readonly studentGetter: StudentGetter,
     private readonly countryGetter: CountryGetter,
     private readonly imageUploader: ImageUploader,
+    private readonly passwordEncoder: PasswordEncoder,
   ) {}
 
   async handle(command: UpdateProfileCommand): Promise<void> {
@@ -35,11 +37,15 @@ export class UpdateProfileHandler implements CommandHandler {
     const newContactCountry = command.contactCountry
       ? await this.countryGetter.get(command.contactCountry)
       : null;
+    const password = command.newPassword
+      ? await this.passwordEncoder.encodePassword(command.newPassword)
+      : student.password;
     student.updateProfile(
       command.name,
       command.surname,
       command.surname2,
       command.email,
+      password,
       newAvatar,
       command.birthDate,
       command.gender,

@@ -13,6 +13,8 @@ import { StudentDuplicatedEmailException } from '#student/shared/exception/stude
 import { UpdateProfileCommand } from '#student-360/student/application/update-profile/update-profile.command';
 import { StudentGender } from '#shared/domain/enum/student-gender.enum';
 import { UpdateProfileHandler } from '#student-360/student/application/update-profile/update-profile.handler';
+import { BCryptPasswordEncoder } from '#shared/infrastructure/service/bcrypt-password-encoder.service';
+import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: UpdateProfileHandler;
@@ -20,6 +22,7 @@ let repository: StudentRepository;
 let studentGetter: StudentGetter;
 let countryGetter: CountryGetter;
 let imageUploader: ImageUploader;
+let passwordEncoder: PasswordEncoder;
 
 let saveSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
@@ -33,6 +36,7 @@ const command = new UpdateProfileCommand(
   'test',
   'test',
   'test@test.org',
+  null,
   null,
   new Date(),
   StudentGender.OTHER,
@@ -56,11 +60,13 @@ describe('Update Student Profile Handler', () => {
     studentGetter = getAStudentGetterMock();
     countryGetter = getCountryGetterMock();
     imageUploader = getImageUploaderMock();
+    passwordEncoder = new BCryptPasswordEncoder();
     handler = new UpdateProfileHandler(
       repository,
       studentGetter,
       countryGetter,
       imageUploader,
+      passwordEncoder,
     );
     saveSpy = jest.spyOn(repository, 'save');
     existsByEmailSpy = jest.spyOn(repository, 'existsByEmail');
