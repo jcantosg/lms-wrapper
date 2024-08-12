@@ -60,7 +60,9 @@ export class EnrollmentPostgresRepository
       relations: {
         calls: {
           enrollment: {
-            subject: true,
+            subject: {
+              evaluationType: true,
+            },
           },
         },
         subject: true,

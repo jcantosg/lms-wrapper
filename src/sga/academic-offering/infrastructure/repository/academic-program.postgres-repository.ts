@@ -247,8 +247,6 @@ export class AcademicProgramPostgresRepository
       );
     }
 
-    return queryBuilder
-      .select(['academicProgram.id', 'academicProgram.name'])
-      .getMany();
+    return queryBuilder.getMany();
   }
 }

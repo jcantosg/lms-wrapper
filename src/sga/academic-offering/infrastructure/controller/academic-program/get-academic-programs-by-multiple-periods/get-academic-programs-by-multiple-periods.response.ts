@@ -5,6 +5,7 @@ export class AcademicProgramsByPeriodsResponse {
     return programs.map((program) => ({
       id: program.id,
       name: program.name,
+      code: program.code,
     }));
   }
 }

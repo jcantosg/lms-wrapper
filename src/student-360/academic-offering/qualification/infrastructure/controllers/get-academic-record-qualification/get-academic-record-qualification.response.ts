@@ -1,5 +1,4 @@
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
-import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectType } from 'aws-sdk/clients/sts';
 import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
@@ -7,7 +6,7 @@ import { SubjectModality } from '#academic-offering/domain/enum/subject-modality
 export interface GetAcademicRecordQualificationResponseBody {
   isPassed: boolean | null;
   subject: {
-    evaluationType: EvaluationType | null;
+    evaluationType: string | null;
     modality: SubjectModality;
     name: string;
     id: string;
@@ -28,7 +27,9 @@ export class GetAcademicRecordQualificationResponse {
         subject: {
           id: subjectCall.enrollment.subject.id,
           name: subjectCall.enrollment.subject.name,
-          evaluationType: subjectCall.enrollment.subject.evaluationType,
+          evaluationType: subjectCall.enrollment.subject.evaluationType
+            ? subjectCall.enrollment.subject.evaluationType.name
+            : null,
           type: subjectCall.enrollment.subject.type,
           modality: subjectCall.enrollment.subject.modality,
         },
@@ -36,7 +37,9 @@ export class GetAcademicRecordQualificationResponse {
         assistanceGrade: null,
         examGrade: null,
         finalGrade: subjectCall.finalGrade,
-        isPassed: null,
+        isPassed: subjectCall.enrollment.subject.evaluationType?.isPassed
+          ? subjectCall.enrollment.subject.evaluationType?.isPassed
+          : null,
       };
     });
   }
