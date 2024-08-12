@@ -150,6 +150,7 @@ export class TitlePostgresRepository
           id: In(businessUnitIds),
         },
       },
+      relations: ['businessUnit'],
     });
   }
 
