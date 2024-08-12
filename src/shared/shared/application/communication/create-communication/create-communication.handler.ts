@@ -78,6 +78,7 @@ export class CreateCommunicationHandler implements CommandHandler {
       null,
       null,
       null,
+      null,
     );
     await this.repository.save(communication);
 

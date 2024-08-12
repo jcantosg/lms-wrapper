@@ -38,6 +38,7 @@ export const controllers = [
   GetStudentsController,
   SearchStudentsController,
   GetCoursingSubjectStudentsController,
+  GetInternalGroupsByBuPeriodsAndProgramsController,
   GetStudentsByBuPeriodsAndProgramsController,
   GetInternalGroupsByBuPeriodsAndProgramsController,
   GetStudentController,

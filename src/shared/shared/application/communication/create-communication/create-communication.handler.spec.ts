@@ -12,21 +12,20 @@ import { getBusinessUnitGetterMock } from '#test/service-factory';
 import {
   getABusinessUnit,
   getAnAcademicPeriod,
-  getATitle,
   getAnAcademicProgram,
   getAnAdminUser,
   getAnInternalGroup,
-  getASGAStudent,
   getAPeriodBlock,
+  getASGAStudent,
   getASubject,
+  getATitle,
 } from '#test/entity-factory';
-
-import clearAllMocks = jest.clearAllMocks;
 import { AcademicPeriodMockRepository } from '#test/mocks/sga/academic-offering/academic-period.mock-repository';
 import { TitleMockRepository } from '#test/mocks/sga/academic-offering/title.mock-repository';
 import { AcademicProgramMockRepository } from '#test/mocks/sga/academic-offering/academic-program.mock-repository';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';
+import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateCommunicationHandler;
 let repository: CommunicationMockRepository;

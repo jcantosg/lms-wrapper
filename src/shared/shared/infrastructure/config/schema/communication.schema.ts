@@ -39,6 +39,10 @@ export const CommunicationSchema = new EntitySchema<Communication>({
       nullable: true,
       transformer: ValueObjectTransformer(Message),
     },
+    subject: {
+      type: String,
+      nullable: true,
+    },
   },
   relations: {
     ...BaseSchemaRelations,

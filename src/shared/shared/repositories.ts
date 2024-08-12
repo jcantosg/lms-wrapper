@@ -54,4 +54,12 @@ export const repositories = [
     provide: ChatRepository,
     useClass: ChatFirebaseRepository,
   },
+  {
+    provide: CommunicationRepository,
+    useClass: CommunicationPostgresRepository,
+  },
+  {
+    provide: CommunicationStudentRepository,
+    useClass: CommunicationStudentPostgresRepository,
+  },
 ];

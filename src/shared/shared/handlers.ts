@@ -15,6 +15,7 @@ import { CreateChatUserHandler } from '#shared/application/create-chat-user/crea
 import { ChatRepository } from '#shared/domain/repository/chat-repository';
 import { DeleteChatUserHandler } from '#shared/application/delete-chat-user/delete-chat-user.handler';
 import { ExistChatUserHandler } from '#shared/application/exist-chat-user/exist-chat-user.handler';
+import { communicationHandlers } from '#shared/application/communication/handlers';
 
 const getCountriesHandler = {
   provide: GetCountriesHandler,
@@ -92,4 +93,5 @@ export const handlers = [
   createChatUserHandler,
   deleteChatUserHandler,
   existChatUserHandler,
+  ...communicationHandlers,
 ];

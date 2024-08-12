@@ -1,11 +1,11 @@
 import { HealthController } from '#shared/infrastructure/controller/health.controller';
 import { GetCountryController } from '#shared/infrastructure/controller/country/get-countries.controller';
 import { GetProvincesController } from '#shared/infrastructure/controller/province/get-provinces.controller';
-import { CreateCommunicationController } from '#shared/infrastructure/controller/communication/create-communication/create-communication.controller';
+import { communicationControllers } from '#shared/infrastructure/controller/communication/controllers';
 
 export const controllers = [
   HealthController,
   GetCountryController,
   GetProvincesController,
-  CreateCommunicationController,
+  ...communicationControllers,
 ];

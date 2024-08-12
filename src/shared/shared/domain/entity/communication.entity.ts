@@ -24,6 +24,7 @@ export class Communication extends BaseEntity {
     private _academicPrograms: AcademicProgram[],
     private _internalGroups: InternalGroup[],
     private _students: Student[],
+    private _subject: string | null,
     private _message: Message | null,
     private _sendByEmail: boolean | null,
     private _publishOnBoard: boolean | null,
@@ -41,6 +42,7 @@ export class Communication extends BaseEntity {
     academicPrograms: AcademicProgram[],
     internalGroups: InternalGroup[],
     students: Student[],
+    subject: string | null,
     sendByEmail: boolean | null,
     publishOnBoard: boolean | null,
     status: CommunicationStatus | null,
@@ -60,6 +62,7 @@ export class Communication extends BaseEntity {
       academicPrograms,
       internalGroups,
       students,
+      subject,
       message,
       sendByEmail,
       publishOnBoard,
@@ -177,6 +180,14 @@ export class Communication extends BaseEntity {
 
   set students(value: Student[]) {
     this._students = value;
+  }
+
+  get subject(): string | null {
+    return this._subject;
+  }
+
+  set subject(value: string | null) {
+    this._subject = value;
   }
 
   public update(

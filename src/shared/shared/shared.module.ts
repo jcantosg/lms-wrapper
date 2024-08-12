@@ -110,6 +110,7 @@ const providers: Provider[] = [
     fileManager,
     BusinessUnitModule,
     firebaseProvider,
+    BusinessUnitModule,
   ],
 })
 export class SharedModule {}
