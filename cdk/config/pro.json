@@ -40,11 +40,11 @@
   },
 
   "db": {
-    "instance_type": "m6g.large",
-    "engine_full_version": "16.2",
+    "instance_type": "t4g.xlarge",
+    "engine_full_version": "16.4",
     "allocated_storage": 50,
     "enable_performance_insights": true,
-    "multi_az": true,
+    "multi_az": false,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
     "preferred_maintenance_window": "sun:03:30-sun:04:30",
     "preferred_backup_window": "02:30-03:30"
@@ -52,6 +52,6 @@
 
   "monitoring": {
     "enable": true,
-    "sns_topic_arn": null
+    "sns_topic_arn": "arn:aws:sns:eu-west-3:603941717969:SystemAdministrationNotifications"
   }
 }
