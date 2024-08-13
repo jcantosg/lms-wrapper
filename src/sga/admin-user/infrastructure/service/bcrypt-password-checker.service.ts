@@ -7,8 +7,6 @@ export class BcryptPasswordChecker implements PasswordChecker {
     plainTextPassword: string,
     user: AdminUser,
   ): Promise<boolean> {
-    const comparation = await compare(plainTextPassword, user.password);
-
-    return comparation;
+    return await compare(plainTextPassword, user.password);
   }
 }

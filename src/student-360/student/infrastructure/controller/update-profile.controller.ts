@@ -19,6 +19,7 @@ interface UpdateProfileBody {
   surname: string;
   surname2: string;
   email: string;
+  oldPassword: string | null;
   newPassword: string | null;
   avatar: string | null;
   birthDate: Date | null;
@@ -54,6 +55,7 @@ export class UpdateProfileController {
       body.surname,
       body.surname2,
       body.email,
+      body.oldPassword,
       body.newPassword,
       body.avatar,
       body.birthDate,

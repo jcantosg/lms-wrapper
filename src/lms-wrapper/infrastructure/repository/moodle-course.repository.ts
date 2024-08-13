@@ -62,4 +62,12 @@ export class MoodleCourseRepository implements LmsCourseRepository {
       newStatus,
     );
   }
+
+  async getCourse(
+    id: number,
+    studentId: number,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse> {
+    return this.moodleWrapper.getCourseWithQuizzes(id, studentId, isSpeciality);
+  }
 }

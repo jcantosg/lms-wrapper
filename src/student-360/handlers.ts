@@ -19,6 +19,7 @@ import { UpdateProfileHandler } from '#student-360/student/application/update-pr
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { qualificationHandlers } from '#student-360/academic-offering/qualification/handlers';
+import { StudentPasswordChecker } from '#student-360/student/domain/service/student-password-checker.service';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -102,6 +103,7 @@ const updateProfileHandler = {
     countryGetter: CountryGetter,
     imageUploader: ImageUploader,
     passwordEncoder: PasswordEncoder,
+    studentPasswordChecker: StudentPasswordChecker,
   ): UpdateProfileHandler =>
     new UpdateProfileHandler(
       repository,
@@ -109,6 +111,7 @@ const updateProfileHandler = {
       countryGetter,
       imageUploader,
       passwordEncoder,
+      studentPasswordChecker,
     ),
   inject: [
     StudentRepository,
@@ -116,6 +119,7 @@ const updateProfileHandler = {
     CountryGetter,
     ImageUploader,
     PasswordEncoder,
+    StudentPasswordChecker,
   ],
 };
 

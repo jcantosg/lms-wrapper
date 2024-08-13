@@ -69,11 +69,7 @@ export class GetSubjectResponse {
         name: subject.lmsCourse!.value.name,
         modules: {
           resources: subject
-            .lmsCourse!.value.modules.filter(
-              (module) =>
-                !module.name.toLowerCase().includes('prueba') ||
-                !module.name.includes('Test de evaluación'),
-            )
+            .lmsCourse!.value.modules.filter((module) => !module.quizModules)
             .map((module) => {
               return {
                 id: module.id,
@@ -82,15 +78,24 @@ export class GetSubjectResponse {
               };
             }),
           quizzes: subject
-            .lmsCourse!.value.modules.filter(
-              (module) =>
-                module.name.toLowerCase().includes('prueba') ||
-                module.name.includes('Test de evaluación'),
-            )
+            .lmsCourse!.value.modules.filter((module) => module.quizModules)
             .map((module) => {
               return {
                 id: module.id,
                 name: module.name,
+                modules: module.quizModules!.map((module) => {
+                  return {
+                    content: module.content.map((quiz) => {
+                      return {
+                        id: quiz.id,
+                        name: quiz.name,
+                        url: quiz.url,
+                        isCompleted: quiz.isCompleted,
+                        attempts: quiz.attempts,
+                      };
+                    }),
+                  };
+                }),
               };
             }),
         },

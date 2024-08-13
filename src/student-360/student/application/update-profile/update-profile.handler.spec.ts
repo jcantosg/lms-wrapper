@@ -15,6 +15,7 @@ import { StudentGender } from '#shared/domain/enum/student-gender.enum';
 import { UpdateProfileHandler } from '#student-360/student/application/update-profile/update-profile.handler';
 import { BCryptPasswordEncoder } from '#shared/infrastructure/service/bcrypt-password-encoder.service';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { BcryptStudentPasswordChecker } from '#student-360/student/infrastructure/service/bcrypt-student-password-checker.service';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: UpdateProfileHandler;
@@ -36,6 +37,7 @@ const command = new UpdateProfileCommand(
   'test',
   'test',
   'test@test.org',
+  null,
   null,
   null,
   new Date(),
@@ -61,12 +63,14 @@ describe('Update Student Profile Handler', () => {
     countryGetter = getCountryGetterMock();
     imageUploader = getImageUploaderMock();
     passwordEncoder = new BCryptPasswordEncoder();
+    const studentPasswordChecker = new BcryptStudentPasswordChecker();
     handler = new UpdateProfileHandler(
       repository,
       studentGetter,
       countryGetter,
       imageUploader,
       passwordEncoder,
+      studentPasswordChecker,
     );
     saveSpy = jest.spyOn(repository, 'save');
     existsByEmailSpy = jest.spyOn(repository, 'existsByEmail');

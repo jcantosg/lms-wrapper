@@ -36,6 +36,7 @@ import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type
 import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
 import {
   getALmsCourse,
+  getALmsStudent,
   getAnIdentityDocument,
 } from '#test/value-object-factory';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
@@ -241,7 +242,7 @@ export class GetSubjectE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
-    this.subject.addLmsCourse(getALmsCourse(2, 'Test'));
+    this.subject.addLmsCourse(getALmsCourse(1126, 'Test'));
     await this.subjectRepository.save(this.subject);
     this.nonEnrolledSubject = Subject.create(
       GetSubjectE2eSeed.nonEnrolledSubjectId,
@@ -296,6 +297,7 @@ export class GetSubjectE2eSeed implements E2eSeed {
       await passwordEncoder.encodePassword(GetSubjectE2eSeed.studentPassword),
       null,
     );
+    this.student.lmsStudent = getALmsStudent(8389);
     await this.studentRepository.save(this.student);
 
     this.academicRecord = AcademicRecord.create(

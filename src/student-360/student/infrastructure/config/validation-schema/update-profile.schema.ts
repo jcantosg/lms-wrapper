@@ -6,6 +6,7 @@ export const updateProfileSchema = Joi.object({
   surname: Joi.string().required(),
   surname2: Joi.string().required(),
   email: Joi.string().email().required(),
+  oldPassword: Joi.string().allow(null).optional(),
   newPassword: Joi.string().allow(null).optional(),
   avatar: Joi.string().allow(null).optional(),
   birthDate: Joi.date().allow(null).optional(),

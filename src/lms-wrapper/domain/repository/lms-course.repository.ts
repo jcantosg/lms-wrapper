@@ -33,4 +33,10 @@ export abstract class LmsCourseRepository {
     studentId: number,
     newStatus: number,
   ): Promise<void>;
+
+  abstract getCourse(
+    id: number,
+    lmsStudent: number,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse>;
 }

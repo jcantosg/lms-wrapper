@@ -6,6 +6,8 @@ import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { StudentDuplicatedEmailException } from '#student/shared/exception/student-duplicated-email.exception';
 import { UpdateProfileCommand } from '#student-360/student/application/update-profile/update-profile.command';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
+import { StudentPasswordChecker } from '#student-360/student/domain/service/student-password-checker.service';
+import { UnauthorizedException } from '@nestjs/common';
 
 export class UpdateProfileHandler implements CommandHandler {
   constructor(
@@ -14,6 +16,7 @@ export class UpdateProfileHandler implements CommandHandler {
     private readonly countryGetter: CountryGetter,
     private readonly imageUploader: ImageUploader,
     private readonly passwordEncoder: PasswordEncoder,
+    private readonly passwordChecker: StudentPasswordChecker,
   ) {}
 
   async handle(command: UpdateProfileCommand): Promise<void> {
@@ -21,6 +24,12 @@ export class UpdateProfileHandler implements CommandHandler {
       throw new StudentDuplicatedEmailException();
     }
     const student = await this.studentGetter.get(command.id);
+    if (
+      command.oldPassword &&
+      !(await this.passwordChecker.checkPassword(command.oldPassword, student))
+    ) {
+      throw new UnauthorizedException();
+    }
     const newAvatar = command.avatar
       ? await this.imageUploader.uploadImage(
           command.avatar,
@@ -37,6 +46,7 @@ export class UpdateProfileHandler implements CommandHandler {
     const newContactCountry = command.contactCountry
       ? await this.countryGetter.get(command.contactCountry)
       : null;
+
     const password = command.newPassword
       ? await this.passwordEncoder.encodePassword(command.newPassword)
       : student.password;

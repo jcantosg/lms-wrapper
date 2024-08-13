@@ -91,3 +91,17 @@ export interface MoodleCourseByFieldResponse {
 export interface MoodleVideotimeResponse {
   vimeo_url: string;
 }
+
+export interface MoodleQuizAttemptsResponse {
+  attempts: {
+    attempt: number;
+  }[];
+  exception: string | undefined;
+}
+
+export interface MoodleQuizzesResponse {
+  quizzes: {
+    id: number;
+    coursemodule: number;
+  }[];
+}

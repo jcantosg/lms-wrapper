@@ -2,6 +2,19 @@ import { ValueObject } from '#/sga/shared/domain/value-object/value-object';
 import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
 
 export interface LmsModule {
+  quizModules:
+    | undefined
+    | {
+        id: number;
+        name: string;
+        content: {
+          id: number;
+          name: string;
+          url: string;
+          isCompleted: boolean;
+          attempts: number | undefined;
+        }[];
+      }[];
   id: number;
   name: string;
   image: string;

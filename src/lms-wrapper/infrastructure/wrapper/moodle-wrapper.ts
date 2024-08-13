@@ -13,6 +13,8 @@ import {
   MoodleCreateUserResponse,
   MoodleGetUserResponse,
   MoodleLoginResponse,
+  MoodleQuizAttemptsResponse,
+  MoodleQuizzesResponse,
   MoodleVideotimeResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
 import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
@@ -52,6 +54,7 @@ type MoodleModuleContent = {
   name: string;
   url: string;
   isCompleted: boolean;
+  attempts: number | undefined;
   contents:
     | {
         filename: string;
@@ -60,7 +63,7 @@ type MoodleModuleContent = {
       }[]
     | undefined;
 };
-type Modules = {
+export type Modules = {
   id: number;
   name: string;
   type: string;
@@ -229,6 +232,7 @@ export class MoodleWrapper implements LmsWrapper {
               },
             ),
             contents: courseContent.contents ?? undefined,
+            attempts: undefined,
           });
         }
       }
@@ -290,6 +294,7 @@ export class MoodleWrapper implements LmsWrapper {
                 url: content.fileurl,
                 type: content.mimetype,
                 isCompleted: true,
+                attempts: undefined,
                 contents: [content],
               };
             })
@@ -447,6 +452,7 @@ export class MoodleWrapper implements LmsWrapper {
             moodleCourseContentIcon[
               stringToCamelCase(courseContentResponse.name)
             ] ?? '/courseContent.svg',
+          quizModules: undefined,
         };
       })
       .filter((value) => value.name !== '' && value.name !== 'Partners');
@@ -466,5 +472,153 @@ export class MoodleWrapper implements LmsWrapper {
 
   private getModuleType(description: string): string {
     return warningRegex.test(description) ? 'warning' : 'content';
+  }
+
+  private isQuizModule(name: string): boolean {
+    return (
+      name.toLowerCase().includes('prueba') ||
+      name.includes('Test de evaluación')
+    );
+  }
+
+  async getCourseWithQuizzes(
+    id: number,
+    studentId: number,
+    isSpeciality: boolean,
+  ) {
+    const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses&moodlewsrestformat=json&options[ids][0]=${id}`;
+    const courseResponse: MoodleCourseResponse[] = await this.wrapper.get(
+      this.url,
+      queryParams,
+    );
+    const course = courseResponse[0];
+    const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
+    const courseContentResponse: MoodleCourseContentResponse[] =
+      await this.wrapper.get(
+        '/webservice/rest/server.php',
+        courseContentQueryParam,
+      );
+    const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${studentId}`;
+    const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
+      await this.wrapper.get(this.url, courseActivityStatusQueryParam);
+    let responseModules = [];
+    for (const contentResponse of courseContentResponse) {
+      if (this.isQuizModule(contentResponse.name)) {
+        const modules: Modules = [];
+        let actualGroup = 0;
+        for (const [
+          index,
+          courseContent,
+        ] of contentResponse.modules.entries()) {
+          if (courseContent.modname === 'label') {
+            actualGroup = index;
+            modules.push({
+              id: courseContent.id,
+              url: courseContent.url,
+              moduleType: courseContent.modname,
+              type: this.getModuleType(courseContent.description),
+              description: courseContent.description,
+              name: formatMoodleNames(
+                formatMoodleDescriptions(courseContent.description),
+              ),
+              indexPosition: actualGroup,
+              content: [],
+            });
+          } else {
+            const actualModule = modules.find(
+              (module) => module.indexPosition === actualGroup,
+            );
+            actualModule!.content.push({
+              id: courseContent.id,
+              name: formatMoodleNames(courseContent.name),
+              url: courseContent.url,
+              type: moodleResourceType[courseContent.modname],
+              isCompleted: courseActivitiesCompletionResponse.statuses.some(
+                (status) => {
+                  return (
+                    status.cmid === courseContent.id &&
+                    status.state === MoodleCourseModuleStatus.COMPLETED
+                  );
+                },
+              ),
+              contents: courseContent.contents ?? undefined,
+              attempts: await this.getQuizAttempts(
+                await this.getQuizFromCourseModule(id, courseContent.id),
+                studentId,
+              ),
+            });
+          }
+        }
+
+        responseModules.push({
+          id: contentResponse.id,
+          name: contentResponse.name,
+          image: 'quiz.svg',
+          quizModules: modules,
+        });
+      } else {
+        responseModules.push({
+          id: contentResponse.id,
+          name: contentResponse?.description
+            ? formatMoodleNames(
+                formatMoodleDescriptions(contentResponse?.description),
+              )
+            : contentResponse.name,
+          image:
+            moodleCourseContentIcon[stringToCamelCase(contentResponse.name)] ??
+            '/courseContent.svg',
+          quizModules: undefined,
+        });
+      }
+    }
+    responseModules.filter(
+      (value) => value.name !== '' && value.name !== 'Partners',
+    );
+
+    if (!isSpeciality) {
+      responseModules = responseModules.filter(
+        (value) => value.name !== 'General',
+      );
+    }
+
+    return new LmsCourse({
+      id: course.id,
+      categoryId: course.categoryid,
+      shortname: course.shortname,
+      name: course.displayname,
+      progress: 0,
+      modules: responseModules,
+    });
+  }
+
+  private async getQuizFromCourseModule(
+    courseId: number,
+    courseModule: number,
+  ): Promise<number> {
+    const queryParam = `wstoken=${this.token}&wsfunction=mod_quiz_get_quizzes_by_courses&moodlewsrestformat=json&courseids[0]=${courseId}`;
+    const { quizzes }: MoodleQuizzesResponse = await this.wrapper.get(
+      this.url,
+      queryParam,
+    );
+
+    const quiz = quizzes.find((quiz) => quiz.coursemodule === courseModule);
+    if (!quiz) {
+      throw new BadRequestException();
+    }
+
+    return quiz.id;
+  }
+
+  private async getQuizAttempts(
+    quizId: number,
+    studentId: number,
+  ): Promise<number> {
+    const queryParams = `wstoken=${this.token}&wstoken=${this.token}&wsfunction=mod_quiz_get_user_attempts&moodlewsrestformat=json&quizid=${quizId}&userid=${studentId}`;
+    const quizAttemptsResponse: MoodleQuizAttemptsResponse =
+      await this.wrapper.get(this.url, queryParams);
+
+    return quizAttemptsResponse.attempts.length === 0
+      ? 0
+      : quizAttemptsResponse.attempts[0].attempt;
   }
 }

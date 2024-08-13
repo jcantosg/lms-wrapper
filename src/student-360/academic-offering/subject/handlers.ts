@@ -6,6 +6,7 @@ import { GetLmsCourseProgressHandler } from '#/lms-wrapper/application/lms-cours
 import { UpdateSubjectProgressHandler } from '#student-360/academic-offering/subject/application/update-subject-progress/update-subject-progress.handler';
 import { UpdateCourseModuleProgressHandler } from '#lms-wrapper/application/lms-course/update-course-module-progress/update-course-module-progress.handler';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { GetLmsCourseWithQuizzesHandler } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.handler';
 
 export const getSubjectHandler = {
   provide: GetSubjectHandler,
@@ -13,16 +14,19 @@ export const getSubjectHandler = {
     subjectGetter: SubjectGetter,
     internalGroupDefaultTeacherGetter: InternalGroupDefaultTeacherGetter,
     academicRecordGetter: AcademicRecordGetter,
+    getLmsCourseWithQuizzesHandler: GetLmsCourseWithQuizzesHandler,
   ): GetSubjectHandler =>
     new GetSubjectHandler(
       subjectGetter,
       internalGroupDefaultTeacherGetter,
       academicRecordGetter,
+      getLmsCourseWithQuizzesHandler,
     ),
   inject: [
     SubjectGetter,
     InternalGroupDefaultTeacherGetter,
     AcademicRecordGetter,
+    GetLmsCourseWithQuizzesHandler,
   ],
 };
 

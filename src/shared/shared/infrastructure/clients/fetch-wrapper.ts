@@ -12,7 +12,10 @@ export class FetchWrapper {
     try {
       const response = await fetch(`${this.baseUrl}${url}?${queryParams}`);
 
-      return await response.json();
+      const responseJson = await response.json();
+      this.handleErrors(responseJson);
+
+      return responseJson;
     } catch (error) {
       this.logger.error(error);
       throw new BadRequestException();
