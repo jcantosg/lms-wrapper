@@ -860,12 +860,10 @@ class APIStack(Stack):
                 on_insufficient_data_topic=_sns_topic,
             )
 
-            alarm_factory_defaults = (
-                AlarmFactoryDefaults(
-                    actions_enabled=True,
-                    alarm_name_prefix=self.stack_name,
-                    action=action_strategy_default,
-                ),
+            alarm_factory_defaults = AlarmFactoryDefaults(
+                actions_enabled=True,
+                alarm_name_prefix=self.stack_name,
+                action=action_strategy_default,
             )
         else:
             alarm_factory_defaults = None
