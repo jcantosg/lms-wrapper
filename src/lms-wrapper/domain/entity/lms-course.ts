@@ -15,6 +15,19 @@ export interface LmsModule {
           attempts: number | undefined;
         }[];
       }[];
+  testModules:
+    | undefined
+    | {
+        id: number;
+        name: string;
+        content: {
+          id: number;
+          name: string;
+          url: string;
+          isCompleted: boolean;
+          attempts: number | undefined;
+        }[];
+      }[];
   id: number;
   name: string;
   image: string;

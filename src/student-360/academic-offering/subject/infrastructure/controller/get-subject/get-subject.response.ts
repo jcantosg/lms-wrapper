@@ -34,6 +34,10 @@ interface GetSubjectResponseBody {
         id: number;
         name: string;
       }[];
+      tests: {
+        id: number;
+        name: string;
+      }[];
     };
   };
 }
@@ -69,12 +73,33 @@ export class GetSubjectResponse {
         name: subject.lmsCourse!.value.name,
         modules: {
           resources: subject
-            .lmsCourse!.value.modules.filter((module) => !module.quizModules)
+            .lmsCourse!.value.modules.filter(
+              (module) => !module.quizModules && !module.testModules,
+            )
             .map((module) => {
               return {
                 id: module.id,
                 name: module.name,
                 image: module.image,
+              };
+            }),
+          tests: subject
+            .lmsCourse!.value.modules.filter((module) => module.testModules)
+            .map((module) => {
+              return {
+                id: module.id,
+                name: module.name,
+                modules: module.testModules!.map((module) => {
+                  return module.content.map((quiz) => {
+                    return {
+                      id: quiz.id,
+                      name: quiz.name,
+                      url: quiz.url,
+                      isCompleted: quiz.isCompleted,
+                      attempts: quiz.attempts,
+                    };
+                  });
+                }),
               };
             }),
           quizzes: subject
@@ -85,15 +110,11 @@ export class GetSubjectResponse {
                 name: module.name,
                 modules: module.quizModules!.map((module) => {
                   return {
-                    content: module.content.map((quiz) => {
-                      return {
-                        id: quiz.id,
-                        name: quiz.name,
-                        url: quiz.url,
-                        isCompleted: quiz.isCompleted,
-                        attempts: quiz.attempts,
-                      };
-                    }),
+                    id: module.content[0].id,
+                    name: module.content[0].name,
+                    url: module.content[0].url,
+                    isCompleted: module.content[0].isCompleted,
+                    attempts: module.content[0].attempts,
                   };
                 }),
               };

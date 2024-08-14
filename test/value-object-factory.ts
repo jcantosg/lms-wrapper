@@ -26,6 +26,7 @@ export const getALmsCourse = (id: number = Math.random(), name: string) =>
         name: 'Test',
         image: 'image.jpeg',
         quizModules: undefined,
+        testModules: undefined,
       },
     ],
   });

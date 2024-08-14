@@ -453,6 +453,7 @@ export class MoodleWrapper implements LmsWrapper {
               stringToCamelCase(courseContentResponse.name)
             ] ?? '/courseContent.svg',
           quizModules: undefined,
+          testModules: undefined,
         };
       })
       .filter((value) => value.name !== '' && value.name !== 'Partners');
@@ -475,9 +476,13 @@ export class MoodleWrapper implements LmsWrapper {
   }
 
   private isQuizModule(name: string): boolean {
+    return name.includes('Test de evaluación');
+  }
+
+  private isSemesterQuizModule(name: string): boolean {
     return (
-      name.toLowerCase().includes('prueba') ||
-      name.includes('Test de evaluación')
+      name.toLowerCase() === 'prueba semestral' ||
+      name.toLowerCase() === 'prueba repaso'
     );
   }
 
@@ -555,6 +560,61 @@ export class MoodleWrapper implements LmsWrapper {
           name: contentResponse.name,
           image: 'quiz.svg',
           quizModules: modules,
+          testModules: undefined,
+        });
+      } else if (this.isSemesterQuizModule(contentResponse.name)) {
+        const modules: Modules = [];
+        let actualGroup = 0;
+        for (const [
+          index,
+          courseContent,
+        ] of contentResponse.modules.entries()) {
+          if (courseContent.modname === 'label') {
+            actualGroup = index;
+            modules.push({
+              id: courseContent.id,
+              url: courseContent.url,
+              moduleType: courseContent.modname,
+              type: this.getModuleType(courseContent.description),
+              description: courseContent.description,
+              name: formatMoodleNames(
+                formatMoodleDescriptions(courseContent.description),
+              ),
+              indexPosition: actualGroup,
+              content: [],
+            });
+          } else {
+            const actualModule = modules.find(
+              (module) => module.indexPosition === actualGroup,
+            );
+            actualModule!.content.push({
+              id: courseContent.id,
+              name: formatMoodleNames(courseContent.name),
+              url: courseContent.url,
+              type: moodleResourceType[courseContent.modname],
+              isCompleted: courseActivitiesCompletionResponse.statuses.some(
+                (status) => {
+                  return (
+                    status.cmid === courseContent.id &&
+                    status.state === MoodleCourseModuleStatus.COMPLETED
+                  );
+                },
+              ),
+              contents: courseContent.contents ?? undefined,
+              attempts: await this.getQuizAttempts(
+                await this.getQuizFromCourseModule(id, courseContent.id),
+                studentId,
+              ),
+            });
+          }
+        }
+
+        responseModules.push({
+          id: contentResponse.id,
+          name: contentResponse.name,
+          image: 'quiz.svg',
+          testModules: modules,
+          quizModules: undefined,
         });
       } else {
         responseModules.push({
@@ -568,6 +628,7 @@ export class MoodleWrapper implements LmsWrapper {
             moodleCourseContentIcon[stringToCamelCase(contentResponse.name)] ??
             '/courseContent.svg',
           quizModules: undefined,
+          testModules: undefined,
         });
       }
     }
