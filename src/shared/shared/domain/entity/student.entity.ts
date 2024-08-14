@@ -14,6 +14,7 @@ import { AdministrativeGroup } from '#student/domain/entity/administrative-group
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
+import { checkUnderage } from '#shared/domain/lib/check-underage';
 
 export const DEFAULT_PASSWORD = 'Universa3€';
 
@@ -581,5 +582,39 @@ export class Student extends BaseEntity {
     this.guardianSurname = guardianSurname;
     this.guardianEmail = guardianEmail;
     this.guardianPhone = guardianPhone;
+    this.password = password;
+    this.checkStatusCompleted();
+  }
+
+  private checkStatusCompleted() {
+    if (
+      this.avatar &&
+      this.city &&
+      this.birthDate &&
+      this.gender &&
+      this.citizenship &&
+      this.address &&
+      this.phone &&
+      this.state &&
+      this.country &&
+      this.socialSecurityNumber &&
+      this.state &&
+      this.address
+    ) {
+      if (checkUnderage(this.birthDate)) {
+        if (
+          this.guardianName &&
+          this.guardianEmail &&
+          this.guardianPhone &&
+          this.guardianSurname
+        ) {
+          this.status = StudentStatus.COMPLETED;
+        } else {
+          this.status = StudentStatus.UNDERAGE_MISSING_DATA;
+        }
+      } else {
+        this.status = StudentStatus.COMPLETED;
+      }
+    }
   }
 }
