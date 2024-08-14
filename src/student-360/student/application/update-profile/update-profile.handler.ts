@@ -61,7 +61,7 @@ export class UpdateProfileHandler implements CommandHandler {
       command.gender,
       newCountry,
       newCitizenship,
-      student.socialSecurityNumber,
+      command.socialSecurityNumber,
       command.phone,
       newContactCountry,
       command.state,

@@ -4,6 +4,7 @@ import { GetProvincesController } from '#shared/infrastructure/controller/provin
 import { communicationControllers } from '#shared/infrastructure/controller/communication/controllers';
 import { GetCountryStudentController } from '#shared/infrastructure/controller/country/get-student-countries.controller';
 import { GetStudentProvincesController } from '#shared/infrastructure/controller/province/get-student-provinces.controller';
+import { GetStudentCitiesController } from '#shared/infrastructure/controller/city/get-cities.controller';
 
 export const controllers = [
   HealthController,
@@ -12,4 +13,5 @@ export const controllers = [
   ...communicationControllers,
   GetCountryStudentController,
   GetStudentProvincesController,
+  GetStudentCitiesController,
 ];

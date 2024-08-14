@@ -16,6 +16,8 @@ import { ChatRepository } from '#shared/domain/repository/chat-repository';
 import { DeleteChatUserHandler } from '#shared/application/delete-chat-user/delete-chat-user.handler';
 import { ExistChatUserHandler } from '#shared/application/exist-chat-user/exist-chat-user.handler';
 import { communicationHandlers } from '#shared/application/communication/handlers';
+import { GetCitiesHandler } from '#shared/application/get-cities/get-cities.handler';
+import { CityGetter } from '#shared/domain/service/city-getter.service';
 
 const getCountriesHandler = {
   provide: GetCountriesHandler,
@@ -32,6 +34,14 @@ const getProvincesHandler = {
   ): GetProvincesHandler =>
     new GetProvincesHandler(countryGetter, provinceGetter),
   inject: [CountryGetter, ProvinceGetter],
+};
+const getCitiesHandler = {
+  provide: GetCitiesHandler,
+  useFactory: (
+    countryGetter: CountryGetter,
+    cityGetter: CityGetter,
+  ): GetCitiesHandler => new GetCitiesHandler(countryGetter, cityGetter),
+  inject: [CountryGetter, CityGetter],
 };
 
 const createCommunicationHandler = {
@@ -89,6 +99,7 @@ const existChatUserHandler = {
 export const handlers = [
   getCountriesHandler,
   getProvincesHandler,
+  getCitiesHandler,
   createCommunicationHandler,
   createChatUserHandler,
   deleteChatUserHandler,

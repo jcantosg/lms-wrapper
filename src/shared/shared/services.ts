@@ -26,6 +26,8 @@ import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subj
 import { StudentCount } from '#shared/infrastructure/service/student-count.service';
 import { ExcelJSFileParserBatch } from '#shared/infrastructure/service/exceljs-file-parser-batch.service';
 import { ExcelFileParserBatch } from '#shared/domain/service/excel-file-parser-batch.service';
+import { CityGetter } from '#shared/domain/service/city-getter.service';
+import { GeonamesCityGetter } from '#shared/infrastructure/service/geonames-city-getter.service';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -52,6 +54,21 @@ const provinceGetter = {
     new GeonamesProvinceGetter(
       new GeonamesWrapper(
         new FetchWrapper(configService.getOrThrow('GEONAMES_URL'), logger),
+        configService.getOrThrow('GEONAMES_NAME'),
+      ),
+    ),
+  inject: [ConfigService],
+};
+
+const cityGetter = {
+  provide: CityGetter,
+  useFactory: (configService: ConfigService): GeonamesCityGetter =>
+    new GeonamesCityGetter(
+      new GeonamesWrapper(
+        new FetchWrapper(
+          configService.getOrThrow('GEONAMES_URL'),
+          new Logger(),
+        ),
         configService.getOrThrow('GEONAMES_NAME'),
       ),
     ),
@@ -122,6 +139,7 @@ export const services = [
   countryGetter,
   imageUploader,
   provinceGetter,
+  cityGetter,
   uuidService,
   studentGetter,
   passwordEncoder,
