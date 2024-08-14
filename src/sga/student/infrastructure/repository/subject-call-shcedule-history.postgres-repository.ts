@@ -78,4 +78,36 @@ export class SubjectCallScheduleHistoryPostgresRepository
       .applyOrder(criteria, queryBuilder, aliasQuery)
       .getMany(queryBuilder);
   }
+
+  async getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<SubjectCallScheduleHistory | null> {
+    if (isSuperAdmin) {
+      return await this.repository.findOne({
+        where: { id },
+        relations: {
+          createdBy: true,
+          businessUnit: true,
+          academicPeriod: true,
+          academicPrograms: true,
+        },
+      });
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+    const queryBuilder = this.initializeQueryBuilder(
+      'subjectCallScheduleHistory',
+    );
+
+    return await queryBuilder
+      .where('subjectCallScheduleHistory.id = :id', { id })
+      .andWhere('business_unit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getOne();
+  }
 }

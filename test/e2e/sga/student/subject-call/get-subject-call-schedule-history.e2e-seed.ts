@@ -45,6 +45,8 @@ export class SubjectCallScheduleHistoryE2eSeed implements E2eSeed {
     'Administración de sistemas informaticos en red';
   public static academicProgramCode = 'MAD-INAS';
 
+  public static scshId = uuid();
+
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
   private businessUnit: BusinessUnit;
@@ -142,7 +144,7 @@ export class SubjectCallScheduleHistoryE2eSeed implements E2eSeed {
     await this.academicPeriodRepository.save(this.academicPeriod);
 
     this.subjectCallScheduleHistory = SubjectCallScheduleHistory.create(
-      uuid(),
+      SubjectCallScheduleHistoryE2eSeed.scshId,
       this.superAdminUser,
       this.businessUnit,
       this.academicPeriod,

@@ -64,6 +64,7 @@ import { CreateSubjectCallsBatchHandler } from '#student/application/subject-cal
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 import { GetSubjectCallScheduleHistoryHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry/get-subject-call-schedule-hisotry.handler';
 import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository/subject-call-schedule-history.repository';
+import { GetSubjectCallScheduleHistoryDetailHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry-detail/get-subject-call-schedule-hisotry-detail.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -550,6 +551,15 @@ const getSubjectCallScheduleHistoryHandler = {
   inject: [SubjectCallScheduleHistoryRepository],
 };
 
+const getSubjectCallScheduleHistoryDetailHandler = {
+  provide: GetSubjectCallScheduleHistoryDetailHandler,
+  useFactory: (
+    repository: SubjectCallScheduleHistoryRepository,
+  ): GetSubjectCallScheduleHistoryDetailHandler =>
+    new GetSubjectCallScheduleHistoryDetailHandler(repository),
+  inject: [SubjectCallScheduleHistoryRepository],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -586,4 +596,5 @@ export const handlers = [
   editAdministrativeProcessHandler,
   createSubjectCallsBatchHandler,
   getSubjectCallScheduleHistoryHandler,
+  getSubjectCallScheduleHistoryDetailHandler,
 ];

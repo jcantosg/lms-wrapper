@@ -12,4 +12,10 @@ export abstract class SubjectCallScheduleHistoryRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<SubjectCallScheduleHistory[]>;
+
+  abstract getByAdminUser(
+    id: string,
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<SubjectCallScheduleHistory | null>;
 }
