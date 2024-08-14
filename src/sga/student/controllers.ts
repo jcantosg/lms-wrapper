@@ -30,6 +30,7 @@ import { GetAllAdministrativeProcessesController } from '#student/infrastructure
 import { SearchAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/search-administrative-processes.controller';
 import { GetStudentAdministrativeProcessDocumentsController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-documents-by-student/get-administrative-process-documents-by-student.controller';
 import { EditAdministrativeProcessController } from '#student/infrastructure/controller/administrative-process/edit-administrative-process.controller';
+import { GetSubjectCallScheduleHistoryController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -65,4 +66,5 @@ export const controllers = [
   SearchAdministrativeProcessesController,
   GetStudentAdministrativeProcessDocumentsController,
   EditAdministrativeProcessController,
+  GetSubjectCallScheduleHistoryController,
 ];
