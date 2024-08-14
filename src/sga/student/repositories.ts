@@ -14,6 +14,8 @@ import { AdministrativeProcessRepository } from '#student/domain/repository/admi
 import { AdministrativeProcessPostgresRepository } from '#student/infrastructure/repository/administrative-process.postgres-repository';
 import { ChatRepository } from '#shared/domain/repository/chat-repository';
 import { ChatFirebaseRepository } from '#shared/infrastructure/repository/chat.firebase-repository';
+import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository/subject-call-schedule-history.repository';
+import { SubjectCallScheduleHistoryPostgresRepository } from '#student/infrastructure/repository/subject-call-shcedule-history.postgres-repository';
 
 export const repositories = [
   {
@@ -47,5 +49,9 @@ export const repositories = [
   {
     provide: ChatRepository,
     useClass: ChatFirebaseRepository,
+  },
+  {
+    provide: SubjectCallScheduleHistoryRepository,
+    useClass: SubjectCallScheduleHistoryPostgresRepository,
   },
 ];

@@ -39,6 +39,8 @@ import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
 import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
+import { SubjectCallScheduleHistory } from '#student/domain/entity/subject-call-schedule-history.entity';
+import { subjectCallScheduleHistorySchema } from '#student/infrastructure/config/schema/subject-call-schedule-history.schema';
 
 export class AddSubjectCallE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -55,9 +57,20 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
   public static academicPeriodEndDate = '2025-09-01';
   public static academicPeriodBlocksNumber = 1;
 
+  public static invalidAcademicPeriodId = uuid();
+  public static invalidAcademicPeriodName = 'Madrid 2025 2026';
+  public static invalidAcademicPeriodCode = 'M-25-26';
+  public static invalidAcademicPeriodStartDate = '2025-09-01';
+  public static invalidAcademicPeriodEndDate = '2026-09-01';
+  public static invalidAcademicPeriodBlocksNumber = 1;
+
   public static businessUnitId = uuid();
   public static businessUnitName = 'Madrid';
   public static businessUnitCode = 'MAD';
+
+  public static otherBusinessUnitId = uuid();
+  public static otherBusinessUnitName = 'Madrid 2';
+  public static otherBusinessUnitCode = 'MAD2';
 
   private static virtualCampusId = uuid();
   private static virtualCampusName = 'Campus virtual de Madrid';
@@ -67,6 +80,11 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
   public static academicProgramName =
     'Administración de sistemas informaticos en red';
   public static academicProgramCode = 'MAD-INAS';
+
+  public static invalidAcademicProgramId = uuid();
+  public static invalidAcademicProgramName =
+    'Administración de sistemas informaticos en red 2';
+  public static invalidAcademicProgramCode = 'MAD-INAS2';
 
   public static programBlockId = uuid();
   public static programBlockName = 'Bloque 1';
@@ -96,9 +114,12 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
   private businessUnit: BusinessUnit;
+  private otherBusinessUnit: BusinessUnit;
   private virtualCampus: VirtualCampus;
   private academicPeriod: AcademicPeriod;
+  private invalidAcademicPeriod: AcademicPeriod;
   private academicProgram: AcademicProgram;
+  private invalidAcademicProgram: AcademicProgram;
   private programBlock: ProgramBlock;
   private title: Title;
   private enrollment: Enrollment;
@@ -119,6 +140,7 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
   private academicRecordRepository: Repository<AcademicRecord>;
   private enrollmentRepository: Repository<Enrollment>;
   private subjectCallRepository: Repository<SubjectCall>;
+  private subjectCallScheduleHisotryRepository: Repository<SubjectCallScheduleHistory>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -140,6 +162,9 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
       datasource.getRepository(academicRecordSchema);
     this.enrollmentRepository = datasource.getRepository(enrollmentSchema);
     this.subjectCallRepository = datasource.getRepository(subjectCallSchema);
+    this.subjectCallScheduleHisotryRepository = datasource.getRepository(
+      subjectCallScheduleHistorySchema,
+    );
   }
 
   async arrange(): Promise<void> {
@@ -155,6 +180,15 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
       this.superAdminUser,
     );
     await this.businessUnitRepository.save(this.businessUnit);
+
+    this.otherBusinessUnit = BusinessUnit.create(
+      AddSubjectCallE2eSeed.otherBusinessUnitId,
+      AddSubjectCallE2eSeed.otherBusinessUnitName,
+      AddSubjectCallE2eSeed.otherBusinessUnitCode,
+      country,
+      this.superAdminUser,
+    );
+    await this.businessUnitRepository.save(this.otherBusinessUnit);
 
     this.virtualCampus = VirtualCampus.create(
       AddSubjectCallE2eSeed.virtualCampusId,
@@ -205,6 +239,17 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
     );
     await this.academicProgramRepository.save(this.academicProgram);
 
+    this.invalidAcademicProgram = AcademicProgram.create(
+      AddSubjectCallE2eSeed.invalidAcademicProgramId,
+      AddSubjectCallE2eSeed.invalidAcademicProgramName,
+      AddSubjectCallE2eSeed.invalidAcademicProgramCode,
+      this.title,
+      this.businessUnit,
+      this.superAdminUser,
+      ProgramBlockStructureType.CUSTOM,
+    );
+    await this.academicProgramRepository.save(this.invalidAcademicProgram);
+
     this.academicPeriod = AcademicPeriod.create(
       AddSubjectCallE2eSeed.academicPeriodId,
       AddSubjectCallE2eSeed.academicPeriodName,
@@ -217,6 +262,18 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
     );
     this.academicPeriod.academicPrograms.push(this.academicProgram);
     await this.academicPeriodRepository.save(this.academicPeriod);
+
+    this.invalidAcademicPeriod = AcademicPeriod.create(
+      AddSubjectCallE2eSeed.invalidAcademicPeriodId,
+      AddSubjectCallE2eSeed.invalidAcademicPeriodName,
+      AddSubjectCallE2eSeed.invalidAcademicPeriodCode,
+      new Date(AddSubjectCallE2eSeed.invalidAcademicPeriodStartDate),
+      new Date(AddSubjectCallE2eSeed.invalidAcademicPeriodEndDate),
+      this.otherBusinessUnit,
+      AddSubjectCallE2eSeed.invalidAcademicPeriodBlocksNumber,
+      this.adminUser,
+    );
+    await this.academicPeriodRepository.save(this.invalidAcademicPeriod);
 
     this.programBlock = ProgramBlock.create(
       AddSubjectCallE2eSeed.programBlockId,
@@ -292,10 +349,8 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
   }
 
   async clear(): Promise<void> {
-    const subjectCalls = await this.subjectCallRepository.find();
-    await this.subjectCallRepository.delete(
-      subjectCalls.map((subject) => subject.id),
-    );
+    await this.subjectCallScheduleHisotryRepository.delete({});
+    await this.subjectCallRepository.delete({});
     await this.enrollmentRepository.delete(AddSubjectCallE2eSeed.enrollmentId);
     await this.academicRecordRepository.delete(
       AddSubjectCallE2eSeed.academicRecordId,
@@ -308,8 +363,11 @@ export class AddSubjectCallE2eSeed implements E2eSeed {
     );
     await this.academicPeriodRepository.delete(this.academicPeriod.id);
     await this.academicProgramRepository.delete(this.academicProgram.id);
+    await this.academicPeriodRepository.delete(this.invalidAcademicPeriod.id);
+    await this.academicProgramRepository.delete(this.invalidAcademicProgram.id);
     await this.titleRepository.delete(this.title.id);
     await this.virtualCampusRepository.delete(this.virtualCampus.id);
+    await this.businessUnitRepository.delete(this.otherBusinessUnit.id);
     await this.businessUnitRepository.delete(this.businessUnit.id);
     await removeAdminUser(this.datasource, this.superAdminUser);
     await removeAdminUser(this.datasource, this.adminUser);

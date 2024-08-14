@@ -60,6 +60,8 @@ import { GetAllAdministrativeProcessesHandler } from '#student/application/admin
 import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
 import { GetStudentAdministrativeProcessDocumentsHandler } from '#student/application/administrative-process/get-student-administrative-process-documents/get-student-administrative-process-documents.handler';
 import { EditAdministrativeProcessHandler } from '#student/application/administrative-process/edit-administrative-process/edit-administrative-process.handler';
+import { CreateSubjectCallsBatchHandler } from '#student/application/subject-call/create-subject-calls-batch/create-subject-calls-batch.handler';
+import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -506,6 +508,37 @@ const editAdministrativeProcessHandler = {
   inject: [AdministrativeProcessRepository],
 };
 
+const createSubjectCallsBatchHandler = {
+  provide: CreateSubjectCallsBatchHandler,
+  useFactory: (
+    subjectCallRepository: SubjectCallRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    enrollmentGetter: EnrollmentGetter,
+    uuidService: UUIDGeneratorService,
+    eventDispatcher: EventDispatcher,
+  ): CreateSubjectCallsBatchHandler =>
+    new CreateSubjectCallsBatchHandler(
+      subjectCallRepository,
+      businessUnitGetter,
+      academicPeriodGetter,
+      academicProgramGetter,
+      enrollmentGetter,
+      uuidService,
+      eventDispatcher,
+    ),
+  inject: [
+    SubjectCallRepository,
+    BusinessUnitGetter,
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    EnrollmentGetter,
+    UUIDGeneratorService,
+    EventDispatcher,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -540,4 +573,5 @@ export const handlers = [
   searchAdministrativeProcessHandler,
   getStudentAdministrativeProcessDocumentsHandler,
   editAdministrativeProcessHandler,
+  createSubjectCallsBatchHandler,
 ];
