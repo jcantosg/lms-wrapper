@@ -24,13 +24,13 @@ export class CommunicationPostgresRepository
     await this.repository.save({
       id: communication.id,
       createdBy: communication.createdBy,
+      updatedBy: communication.updatedBy,
       createdAt: communication.createdAt,
+      businessUnits: communication.businessUnits,
       academicPeriods: communication.academicPeriods,
       academicPrograms: communication.academicPrograms,
-      subject: communication.subject,
       titles: communication.titles,
       internalGroups: communication.internalGroups,
-      students: communication.students,
       sendByEmail: communication.sendByEmail,
       publishOnBoard: communication.publishOnBoard,
       status: communication.status,
@@ -42,6 +42,19 @@ export class CommunicationPostgresRepository
     const result = await this.repository.findOne({ where: { id } });
 
     return !!result;
+  }
+
+  async get(id: string): Promise<Communication | null> {
+    return await this.repository.findOne({
+      where: { id },
+      relations: {
+        businessUnits: true,
+        academicPeriods: true,
+        academicPrograms: true,
+        titles: true,
+        internalGroups: true,
+      },
+    });
   }
 
   async count(

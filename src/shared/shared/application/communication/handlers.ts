@@ -8,55 +8,119 @@ import { InternalGroupGetter } from '#student/domain/service/internal-group.gett
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { GetCommunicationsHandler } from '#shared/application/communication/get-communications/get-communications.handler';
 import { SearchCommunicationsHandler } from '#shared/application/communication/search-communications/search-communications.handler';
+import { GetCommunicationHandler } from '#shared/application/communication/get-communication/get-communication.handler';
+import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
+import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
+import { EditCommunicationHandler } from '#shared/application/communication/edit-communication/edit-communication.handler';
 
 const createCommunicationHandler = {
   provide: CreateCommunicationHandler,
   useFactory: (
     communicationRepository: CommunicationRepository,
+    communicationStudentRepository: CommunicationStudentRepository,
     businessUnitGetter: BusinessUnitGetter,
     academicPeriodGetter: AcademicPeriodGetter,
     titleGetter: TitleGetter,
     academicProgramGetter: AcademicProgramGetter,
     internalGroupGetter: InternalGroupGetter,
     studentGetter: StudentGetter,
+    uuidService: UUIDGeneratorService,
   ) =>
     new CreateCommunicationHandler(
       communicationRepository,
+      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
+      uuidService,
     ),
   inject: [
     CommunicationRepository,
+    CommunicationStudentRepository,
     BusinessUnitGetter,
     AcademicPeriodGetter,
     TitleGetter,
     AcademicProgramGetter,
     InternalGroupGetter,
     StudentGetter,
+    UUIDGeneratorService,
   ],
 };
 
 const getCommunicationsHandler = {
   provide: GetCommunicationsHandler,
-  useFactory: (repository: CommunicationRepository): GetCommunicationsHandler =>
-    new GetCommunicationsHandler(repository),
-  inject: [CommunicationRepository],
+  useFactory: (
+    repository: CommunicationRepository,
+    communicationStudentRepository: CommunicationStudentRepository,
+  ): GetCommunicationsHandler =>
+    new GetCommunicationsHandler(repository, communicationStudentRepository),
+  inject: [CommunicationRepository, CommunicationStudentRepository],
 };
 
 const searchCommunicationsHandler = {
   provide: SearchCommunicationsHandler,
   useFactory: (
     repository: CommunicationRepository,
-  ): SearchCommunicationsHandler => new SearchCommunicationsHandler(repository),
-  inject: [CommunicationRepository],
+    communicationStudentRepository: CommunicationStudentRepository,
+  ): SearchCommunicationsHandler =>
+    new SearchCommunicationsHandler(repository, communicationStudentRepository),
+  inject: [CommunicationRepository, CommunicationStudentRepository],
+};
+
+const getCommunicationHandler = {
+  provide: GetCommunicationHandler,
+  useFactory: (
+    repository: CommunicationRepository,
+    communicationStudentRepository: CommunicationStudentRepository,
+  ): GetCommunicationHandler =>
+    new GetCommunicationHandler(repository, communicationStudentRepository),
+  inject: [CommunicationRepository, CommunicationStudentRepository],
+};
+
+const editCommunicationHandler = {
+  provide: EditCommunicationHandler,
+  useFactory: (
+    communicationRepository: CommunicationRepository,
+    communicationStudentRepository: CommunicationStudentRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    academicPeriodGetter: AcademicPeriodGetter,
+    titleGetter: TitleGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    internalGroupGetter: InternalGroupGetter,
+    studentGetter: StudentGetter,
+    uuidService: UUIDGeneratorService,
+  ) =>
+    new EditCommunicationHandler(
+      communicationRepository,
+      communicationStudentRepository,
+      businessUnitGetter,
+      academicPeriodGetter,
+      titleGetter,
+      academicProgramGetter,
+      internalGroupGetter,
+      studentGetter,
+      uuidService,
+    ),
+  inject: [
+    CommunicationRepository,
+    CommunicationStudentRepository,
+    BusinessUnitGetter,
+    AcademicPeriodGetter,
+    TitleGetter,
+    AcademicProgramGetter,
+    InternalGroupGetter,
+    StudentGetter,
+    UUIDGeneratorService,
+  ],
 };
 
 export const communicationHandlers = [
   createCommunicationHandler,
   getCommunicationsHandler,
   searchCommunicationsHandler,
+  getCommunicationHandler,
+  editCommunicationHandler,
 ];

@@ -20,10 +20,12 @@ export class GetCommunicationsCriteria extends Criteria {
   static createFilters(query: GetCommunicationsQuery): Filter[] {
     return [
       new Filter(
-        'subject',
+        'message',
         query.subject,
-        FilterOperators.LIKE,
+        FilterOperators.JSON_VALUE,
         GroupOperator.AND,
+        undefined,
+        'subject',
       ),
       new Filter(
         'name',

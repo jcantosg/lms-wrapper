@@ -1,5 +1,3 @@
-import { CreateCommunicationHandler } from '#shared/application/communication/create-communication/create-communication.handler';
-import { CreateCommunicationCommand } from '#shared/application/communication/create-communication/create-communication.command';
 import { CommunicationMockRepository } from '#test/mocks/shared/communication.mock-repository';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
@@ -7,10 +5,10 @@ import { TitleGetter } from '#academic-offering/domain/service/title/title-gette
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
-import { CommunicationDuplicatedException } from '#shared/domain/exception/academic-offering/communication-duplicated.exception';
 import { getBusinessUnitGetterMock } from '#test/service-factory';
 import {
   getABusinessUnit,
+  getACommunication,
   getAnAcademicPeriod,
   getAnAcademicProgram,
   getAnAdminUser,
@@ -31,8 +29,12 @@ import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import clearAllMocks = jest.clearAllMocks;
 import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
+import { CommunicationNotFoundException } from '#shared/domain/exception/communication/communication.not-found.exception';
+import { EditCommunicationHandler } from '#shared/application/communication/edit-communication/edit-communication.handler';
+import { EditCommunicationCommand } from '#shared/application/communication/edit-communication/edit-communication.command';
+import { Message } from '#shared/domain/value-object/message.value-object';
 
-let handler: CreateCommunicationHandler;
+let handler: EditCommunicationHandler;
 let repository: CommunicationMockRepository;
 let communicationStudentRepository: CommunicationStudentRepository;
 let businessUnitGetter: BusinessUnitGetter;
@@ -50,7 +52,8 @@ let getTitleSpy: jest.SpyInstance;
 let getAcademicProgramSpy: jest.SpyInstance;
 let getInternalGroupSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
-let existsSpy: jest.SpyInstance;
+let getSpy: jest.SpyInstance;
+let deleteSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit();
 const adminUser = getAnAdminUser();
@@ -64,15 +67,21 @@ const internalGroup = getAnInternalGroup(
   getASubject(),
 );
 const student = getASGAStudent();
+const communication = getACommunication();
 
-const command = new CreateCommunicationCommand(
-  '06c094cb-c24d-4484-9e95-dcf908d73f60',
+const command = new EditCommunicationCommand(
+  communication.id,
   [businessUnit.id],
   [academicPeriod.id],
   [title.id],
   [academicProgram.id],
   [internalGroup.id],
   [student.id],
+  'subject',
+  'short description',
+  'body',
+  false,
+  false,
   adminUser,
 );
 
@@ -93,7 +102,7 @@ describe('Create Communication Handler', () => {
     );
     studentGetter = new StudentGetter(new StudentMockRepository());
 
-    handler = new CreateCommunicationHandler(
+    handler = new EditCommunicationHandler(
       repository,
       communicationStudentRepository,
       businessUnitGetter,
@@ -106,34 +115,40 @@ describe('Create Communication Handler', () => {
     );
 
     saveSpy = jest.spyOn(repository, 'save');
-    existsSpy = jest.spyOn(repository, 'exists');
+    getSpy = jest.spyOn(repository, 'get');
     getBusinessUnitSpy = jest.spyOn(businessUnitGetter, 'getByAdminUser');
     getAcademicPeriodSpy = jest.spyOn(academicPeriodGetter, 'get');
     getTitleSpy = jest.spyOn(titleGetter, 'get');
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
     getInternalGroupSpy = jest.spyOn(internalGroupGetter, 'getWithStudents');
     getStudentSpy = jest.spyOn(studentGetter, 'get');
-  });
-
-  it('should throw a CommunicationDuplicatedException if communication already exists', async () => {
-    existsSpy.mockResolvedValue(true);
-
-    await expect(handler.handle(command)).rejects.toThrow(
-      CommunicationDuplicatedException,
+    deleteSpy = jest.spyOn(
+      communicationStudentRepository,
+      'deleteByCommunication',
     );
   });
 
-  it('should save a new communication', async () => {
-    existsSpy.mockResolvedValue(false);
+  it('should throw a CommunicationNotFoundException if communication doesnt exist', async () => {
+    getSpy.mockResolvedValue(null);
+
+    await expect(handler.handle(command)).rejects.toThrow(
+      CommunicationNotFoundException,
+    );
+  });
+
+  it('should edit a communication', async () => {
+    getSpy.mockResolvedValue(communication);
     getBusinessUnitSpy.mockResolvedValue(businessUnit);
     getAcademicPeriodSpy.mockResolvedValue(academicPeriod);
     getTitleSpy.mockResolvedValue(title);
     getAcademicProgramSpy.mockResolvedValue(academicProgram);
     getInternalGroupSpy.mockResolvedValue(internalGroup);
     getStudentSpy.mockResolvedValue(student);
+    deleteSpy.mockResolvedValue(null);
 
     await handler.handle(command);
 
+    expect(deleteSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -159,9 +174,13 @@ describe('Create Communication Handler', () => {
         }),
         _createdAt: expect.any(Date),
         _updatedAt: expect.any(Date),
-        _message: null,
-        _publishOnBoard: null,
-        _sendByEmail: null,
+        _message: new Message({
+          subject: command.subject,
+          shortDescription: command.shortDescription,
+          body: command.body,
+        }),
+        _publishOnBoard: false,
+        _sendByEmail: false,
         _sentAt: null,
         _sentBy: null,
         _status: CommunicationStatus.DRAFT,

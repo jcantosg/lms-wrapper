@@ -20,10 +20,12 @@ export class SearchCommunicationsCriteria extends Criteria {
   static createFilters(query: SearchCommunicationsQuery): Filter[] {
     return [
       new Filter(
-        'subject',
+        'message',
         query.subjectText,
-        FilterOperators.LIKE,
+        FilterOperators.JSON_VALUE,
         GroupOperator.OR,
+        undefined,
+        'subject',
       ),
     ];
   }

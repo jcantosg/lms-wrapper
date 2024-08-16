@@ -1,9 +1,6 @@
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
-import { Communication } from '#shared/domain/entity/communication.entity';
 import { CommunicationRepository } from '#shared/domain/repository/communication.repository';
-import { CommunicationDuplicatedException } from '#shared/domain/exception/academic-offering/communication-duplicated.exception';
-import { CreateCommunicationCommand } from '#shared/application/communication/create-communication/create-communication.command';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic-period/academic-period-getter.service';
@@ -16,8 +13,11 @@ import { Student } from '#shared/domain/entity/student.entity';
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
+import { EditCommunicationCommand } from '#shared/application/communication/edit-communication/edit-communication.command';
+import { CommunicationNotFoundException } from '#shared/domain/exception/communication/communication.not-found.exception';
+import { Message } from '#shared/domain/value-object/message.value-object';
 
-export class CreateCommunicationHandler implements CommandHandler {
+export class EditCommunicationHandler implements CommandHandler {
   constructor(
     private readonly repository: CommunicationRepository,
     private readonly communicationStudentRepository: CommunicationStudentRepository,
@@ -30,9 +30,10 @@ export class CreateCommunicationHandler implements CommandHandler {
     private readonly uuidService: UUIDGeneratorService,
   ) {}
 
-  async handle(command: CreateCommunicationCommand): Promise<number> {
-    if (await this.repository.exists(command.id)) {
-      throw new CommunicationDuplicatedException();
+  async handle(command: EditCommunicationCommand): Promise<number> {
+    const communication = await this.repository.get(command.id);
+    if (!communication) {
+      throw new CommunicationNotFoundException();
     }
 
     const adminUserBusinessUnitsId = command.adminUser.businessUnits.map(
@@ -72,20 +73,32 @@ export class CreateCommunicationHandler implements CommandHandler {
       command.studentIds.map((id) => this.studentGetter.get(id)),
     );
 
-    const communication = Communication.create(
-      command.id,
-      command.adminUser,
+    communication.updateRecipients(
       businessUnits,
       academicPeriods,
       titles,
       academicPrograms,
       internalGroups,
-      null,
-      null,
+      command.adminUser,
+    );
+    communication.updateMessage(
+      new Message({
+        subject: command.subject,
+        shortDescription: command.shortDescription,
+        body: command.body,
+      }),
+      command.sendByEmail,
+      command.publishOnBoard,
       CommunicationStatus.DRAFT,
       null,
+      command.adminUser,
     );
+
     await this.repository.save(communication);
+
+    await this.communicationStudentRepository.deleteByCommunication(
+      communication.id,
+    );
 
     const allStudents = this.getAllStudents(students, internalGroups);
     for (const student of allStudents) {

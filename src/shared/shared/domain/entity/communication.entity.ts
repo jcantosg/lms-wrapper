@@ -5,7 +5,6 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
-import { Student } from '#shared/domain/entity/student.entity';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 import { Message } from '#shared/domain/value-object/message.value-object';
 
@@ -23,8 +22,6 @@ export class Communication extends BaseEntity {
     private _titles: Title[],
     private _academicPrograms: AcademicProgram[],
     private _internalGroups: InternalGroup[],
-    private _students: Student[],
-    private _subject: string | null,
     private _message: Message | null,
     private _sendByEmail: boolean | null,
     private _publishOnBoard: boolean | null,
@@ -41,8 +38,6 @@ export class Communication extends BaseEntity {
     titles: Title[],
     academicPrograms: AcademicProgram[],
     internalGroups: InternalGroup[],
-    students: Student[],
-    subject: string | null,
     sendByEmail: boolean | null,
     publishOnBoard: boolean | null,
     status: CommunicationStatus | null,
@@ -61,8 +56,6 @@ export class Communication extends BaseEntity {
       titles,
       academicPrograms,
       internalGroups,
-      students,
-      subject,
       message,
       sendByEmail,
       publishOnBoard,
@@ -174,23 +167,24 @@ export class Communication extends BaseEntity {
     this._internalGroups = value;
   }
 
-  get students(): Student[] {
-    return this._students;
+  public updateRecipients(
+    businessUnits: BusinessUnit[],
+    academicPeriods: AcademicPeriod[],
+    titles: Title[],
+    academicPrograms: AcademicProgram[],
+    internalGroups: InternalGroup[],
+    updatedBy: AdminUser,
+  ): void {
+    this._businessUnits = businessUnits;
+    this._academicPeriods = academicPeriods;
+    this._titles = titles;
+    this._academicPrograms = academicPrograms;
+    this._internalGroups = internalGroups;
+    this._updatedBy = updatedBy;
+    this.updatedAt = new Date();
   }
 
-  set students(value: Student[]) {
-    this._students = value;
-  }
-
-  get subject(): string | null {
-    return this._subject;
-  }
-
-  set subject(value: string | null) {
-    this._subject = value;
-  }
-
-  public update(
+  public updateMessage(
     message: Message,
     sendByEmail: boolean,
     publishOnBoard: boolean,

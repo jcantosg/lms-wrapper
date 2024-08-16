@@ -5,6 +5,8 @@ import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity'
 export abstract class CommunicationRepository {
   abstract save(communication: Communication): Promise<void>;
 
+  abstract get(id: string): Promise<Communication | null>;
+
   abstract exists(id: string): Promise<boolean>;
 
   abstract matching(

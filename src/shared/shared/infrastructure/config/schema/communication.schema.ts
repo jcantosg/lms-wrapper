@@ -39,10 +39,6 @@ export const CommunicationSchema = new EntitySchema<Communication>({
       nullable: true,
       transformer: ValueObjectTransformer(Message),
     },
-    subject: {
-      type: String,
-      nullable: true,
-    },
   },
   relations: {
     ...BaseSchemaRelations,
@@ -118,11 +114,6 @@ export const CommunicationSchema = new EntitySchema<Communication>({
           name: 'internal_group_id',
         },
       },
-    },
-    students: {
-      type: 'one-to-many',
-      target: 'CommunicationStudent',
-      inverseSide: 'communication',
     },
   },
 });

@@ -44,6 +44,8 @@ import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
+import { Communication } from '#shared/domain/entity/communication.entity';
+import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -390,5 +392,21 @@ export const getAnAdministrativeProcess = () => {
     getASGAStudent(),
     getAnAcademicRecord(),
     getABusinessUnit(),
+  );
+};
+
+export const getACommunication = () => {
+  return Communication.create(
+    uuid(),
+    getAnAdminUser(),
+    [],
+    [],
+    [],
+    [],
+    [],
+    null,
+    null,
+    CommunicationStatus.DRAFT,
+    null,
   );
 };

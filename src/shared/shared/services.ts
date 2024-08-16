@@ -23,7 +23,6 @@ import { ChatroomsByInternalGroupCreator } from '#shared/domain/service/chatroom
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
-import { StudentCount } from '#shared/infrastructure/service/student-count.service';
 import { ExcelJSFileParserBatch } from '#shared/infrastructure/service/exceljs-file-parser-batch.service';
 import { ExcelFileParserBatch } from '#shared/domain/service/excel-file-parser-batch.service';
 import { CityGetter } from '#shared/domain/service/city-getter.service';
@@ -148,5 +147,4 @@ export const services = [
   excelFileParserBatch,
   chatroomsByInternalGroupCreator,
   StudentSubjectsToChatGetter,
-  StudentCount,
 ];

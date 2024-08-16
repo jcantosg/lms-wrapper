@@ -37,7 +37,7 @@ import { CommunicationSchema } from '#shared/infrastructure/config/schema/commun
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 import { CommunicationStudentSchema } from '#shared/infrastructure/config/schema/communication-student.schema';
 
-export class CreateCommunicationE2eSeed implements E2eSeed {
+export class EditCommunicationE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
   public static superAdminUserPassword = 'pass123';
   public static superAdminUserId = uuid();
@@ -76,6 +76,8 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
   public static universaeEmail = 'juan.ros@universae.com';
 
   public static titleId = uuid();
+
+  public static communicationId = uuid();
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
@@ -133,9 +135,9 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
     });
 
     this.businessUnit = BusinessUnit.create(
-      CreateCommunicationE2eSeed.businessUnitId,
-      CreateCommunicationE2eSeed.businessUnitName,
-      CreateCommunicationE2eSeed.businessUnitCode,
+      EditCommunicationE2eSeed.businessUnitId,
+      EditCommunicationE2eSeed.businessUnitName,
+      EditCommunicationE2eSeed.businessUnitCode,
       country,
       this.superAdminUser,
     );
@@ -143,24 +145,24 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
 
     this.superAdminUser = await createAdminUser(
       this.datasource,
-      CreateCommunicationE2eSeed.superAdminUserId,
-      CreateCommunicationE2eSeed.superAdminUserEmail,
-      CreateCommunicationE2eSeed.superAdminUserPassword,
+      EditCommunicationE2eSeed.superAdminUserId,
+      EditCommunicationE2eSeed.superAdminUserEmail,
+      EditCommunicationE2eSeed.superAdminUserPassword,
       [AdminUserRoles.SUPERADMIN],
       [this.businessUnit],
     );
 
     this.adminUser = await createAdminUser(
       this.datasource,
-      CreateCommunicationE2eSeed.adminUserId,
-      CreateCommunicationE2eSeed.adminUserEmail,
-      CreateCommunicationE2eSeed.adminUserPassword,
+      EditCommunicationE2eSeed.adminUserId,
+      EditCommunicationE2eSeed.adminUserEmail,
+      EditCommunicationE2eSeed.adminUserPassword,
       [AdminUserRoles.JEFATURA],
       [this.businessUnit],
     );
 
     this.title = Title.create(
-      CreateCommunicationE2eSeed.titleId,
+      EditCommunicationE2eSeed.titleId,
       'title',
       'officialCode',
       'officialTitle',
@@ -171,9 +173,9 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
     await this.titleRepository.save(this.title);
 
     this.subject = Subject.create(
-      CreateCommunicationE2eSeed.subjectId,
+      EditCommunicationE2eSeed.subjectId,
       null,
-      CreateCommunicationE2eSeed.subjectName,
+      EditCommunicationE2eSeed.subjectName,
       'code',
       null,
       null,
@@ -189,9 +191,9 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
     await this.subjectRepository.save(this.subject);
 
     this.academicProgram = AcademicProgram.create(
-      CreateCommunicationE2eSeed.academicProgramId,
-      CreateCommunicationE2eSeed.academicProgramName,
-      CreateCommunicationE2eSeed.academicProgramCode,
+      EditCommunicationE2eSeed.academicProgramId,
+      EditCommunicationE2eSeed.academicProgramName,
+      EditCommunicationE2eSeed.academicProgramCode,
       this.title,
       this.businessUnit,
       this.superAdminUser,
@@ -211,23 +213,23 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
     await this.programBlockRepository.save(this.programBlock);
 
     this.academicPeriod = AcademicPeriod.create(
-      CreateCommunicationE2eSeed.academicPeriodId,
-      CreateCommunicationE2eSeed.academicPeriodName,
-      CreateCommunicationE2eSeed.academicPeriodCode,
-      new Date(CreateCommunicationE2eSeed.academicPeriodStartDate),
-      new Date(CreateCommunicationE2eSeed.academicPeriodEndDate),
+      EditCommunicationE2eSeed.academicPeriodId,
+      EditCommunicationE2eSeed.academicPeriodName,
+      EditCommunicationE2eSeed.academicPeriodCode,
+      new Date(EditCommunicationE2eSeed.academicPeriodStartDate),
+      new Date(EditCommunicationE2eSeed.academicPeriodEndDate),
       this.businessUnit,
-      CreateCommunicationE2eSeed.academicPeriodBlocksNumber,
+      EditCommunicationE2eSeed.academicPeriodBlocksNumber,
       this.superAdminUser,
     );
     this.academicPeriod.academicPrograms = [this.academicProgram];
 
     this.periodBlock = PeriodBlock.create(
-      CreateCommunicationE2eSeed.periodBlockId,
+      EditCommunicationE2eSeed.periodBlockId,
       this.academicPeriod,
-      CreateCommunicationE2eSeed.periodBlockName,
-      new Date(CreateCommunicationE2eSeed.academicPeriodStartDate),
-      new Date(CreateCommunicationE2eSeed.academicPeriodEndDate),
+      EditCommunicationE2eSeed.periodBlockName,
+      new Date(EditCommunicationE2eSeed.academicPeriodStartDate),
+      new Date(EditCommunicationE2eSeed.academicPeriodEndDate),
       this.superAdminUser,
     );
 
@@ -245,7 +247,7 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
     );
 
     this.internalGroup = InternalGroup.create(
-      CreateCommunicationE2eSeed.internalGroupId,
+      EditCommunicationE2eSeed.internalGroupId,
       'InternalGroupCode',
       [],
       [],
@@ -261,17 +263,42 @@ export class CreateCommunicationE2eSeed implements E2eSeed {
     await this.internalGroupRepository.save(this.internalGroup);
 
     this.student = Student.createFromSGA(
-      CreateCommunicationE2eSeed.studentId,
-      CreateCommunicationE2eSeed.studentName,
-      CreateCommunicationE2eSeed.studentSurname,
-      CreateCommunicationE2eSeed.studentSurname2,
-      CreateCommunicationE2eSeed.studentEmail,
-      CreateCommunicationE2eSeed.universaeEmail,
+      EditCommunicationE2eSeed.studentId,
+      EditCommunicationE2eSeed.studentName,
+      EditCommunicationE2eSeed.studentSurname,
+      EditCommunicationE2eSeed.studentSurname2,
+      EditCommunicationE2eSeed.studentEmail,
+      EditCommunicationE2eSeed.universaeEmail,
       this.superAdminUser,
       'test123',
       null,
     );
     await this.studentRepository.save(this.student);
+
+    const communication = Communication.create(
+      EditCommunicationE2eSeed.communicationId,
+      this.superAdminUser,
+      [this.businessUnit],
+      [this.academicPeriod],
+      [this.title],
+      [this.academicProgram],
+      [this.internalGroup],
+      null,
+      null,
+      null,
+      null,
+    );
+
+    await this.communicationRepository.save(communication);
+    await this.communicationStudentRepository.save(
+      CommunicationStudent.create(
+        uuid(),
+        communication,
+        this.student,
+        false,
+        false,
+      ),
+    );
   }
 
   async clear(): Promise<void> {

@@ -1,8 +1,5 @@
 import { EntitySchema } from 'typeorm';
-import {
-  BaseSchemaColumns,
-  BaseSchemaRelations,
-} from '#shared/infrastructure/config/schema/base.schema';
+import { BaseSchemaColumns } from '#shared/infrastructure/config/schema/base.schema';
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 
 export const CommunicationStudentSchema =
@@ -38,6 +35,5 @@ export const CommunicationStudentSchema =
           name: 'student_id',
         },
       },
-      ...BaseSchemaRelations,
     },
   });

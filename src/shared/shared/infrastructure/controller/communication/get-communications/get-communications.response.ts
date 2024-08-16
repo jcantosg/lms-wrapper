@@ -1,6 +1,6 @@
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
-import { Communication } from '#shared/domain/entity/communication.entity';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
+import { CommunicationWithStudents } from '#shared/application/communication/get-communications/get-communications.handler';
 
 export interface GetCommunicationsItem {
   id: string;
@@ -24,35 +24,37 @@ export interface GetCommunicationsItem {
 
 export class GetCommunicationsResponse {
   static create(
-    communications: Communication[],
+    communications: CommunicationWithStudents[],
     page: number,
     limit: number,
     total: number,
   ): CollectionResponse<GetCommunicationsItem> {
     return {
-      items: communications.map((communication: Communication) => {
+      items: communications.map((c: CommunicationWithStudents) => {
         return {
-          id: communication.id,
-          subject: communication.subject,
-          sentBy: communication.sentBy
+          id: c.communication.id,
+          subject: c.communication.message
+            ? c.communication.message.subject
+            : '',
+          sentBy: c.communication.sentBy
             ? {
-                id: communication.sentBy.id,
-                name: communication.sentBy.name,
-                surname: communication.sentBy.surname,
-                surname2: communication.sentBy.surname2,
-                avatar: communication.sentBy.avatar,
+                id: c.communication.sentBy.id,
+                name: c.communication.sentBy.name,
+                surname: c.communication.sentBy.surname,
+                surname2: c.communication.sentBy.surname2,
+                avatar: c.communication.sentBy.avatar,
               }
             : null,
-          businessUnits: communication.businessUnits.map((businessUnit) => {
+          businessUnits: c.communication.businessUnits.map((businessUnit) => {
             return {
               id: businessUnit.id,
               name: businessUnit.name,
             };
           }),
-          createdAt: communication.createdAt,
-          sentAt: communication.sentAt,
-          studentCount: communication.students.length,
-          status: communication.status,
+          createdAt: c.communication.createdAt,
+          sentAt: c.communication.sentAt,
+          studentCount: c.students.length,
+          status: c.communication.status,
         };
       }),
       pagination: {

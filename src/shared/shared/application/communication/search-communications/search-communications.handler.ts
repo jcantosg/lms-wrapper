@@ -2,15 +2,19 @@ import { QueryHandler } from '#shared/domain/bus/query.handler';
 import { CommunicationRepository } from '#shared/domain/repository/communication.repository';
 import { SearchCommunicationsQuery } from '#shared/application/communication/search-communications/search-communications.query';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
-import { Communication } from '#shared/domain/entity/communication.entity';
 import { SearchCommunicationsCriteria } from '#shared/application/communication/search-communications/search-communications.criteria';
+import { CommunicationWithStudents } from '#shared/application/communication/get-communications/get-communications.handler';
+import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
 
 export class SearchCommunicationsHandler implements QueryHandler {
-  constructor(private readonly repository: CommunicationRepository) {}
+  constructor(
+    private readonly repository: CommunicationRepository,
+    private readonly communicationStudentRepository: CommunicationStudentRepository,
+  ) {}
 
   async handle(
     query: SearchCommunicationsQuery,
-  ): Promise<CollectionHandlerResponse<Communication>> {
+  ): Promise<CollectionHandlerResponse<CommunicationWithStudents>> {
     const criteria = new SearchCommunicationsCriteria(query);
     const [communications, total] = await Promise.all([
       await this.repository.matching(
@@ -25,8 +29,18 @@ export class SearchCommunicationsHandler implements QueryHandler {
       ),
     ]);
 
+    const items: CommunicationWithStudents[] = [];
+    for (const communication of communications) {
+      items.push({
+        communication,
+        students: await this.communicationStudentRepository.getByCommunication(
+          communication.id,
+        ),
+      });
+    }
+
     return {
-      items: communications,
+      items,
       total,
     };
   }
