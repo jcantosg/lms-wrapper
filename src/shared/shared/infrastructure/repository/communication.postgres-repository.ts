@@ -20,6 +20,10 @@ export class CommunicationPostgresRepository
     super();
   }
 
+  async delete(id: string): Promise<void> {
+    await this.repository.delete({ id });
+  }
+
   async save(communication: Communication): Promise<void> {
     await this.repository.save({
       id: communication.id,

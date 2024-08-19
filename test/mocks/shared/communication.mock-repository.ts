@@ -6,4 +6,5 @@ export class CommunicationMockRepository implements CommunicationRepository {
   matching = jest.fn();
   count = jest.fn();
   get = jest.fn();
+  delete = jest.fn();
 }

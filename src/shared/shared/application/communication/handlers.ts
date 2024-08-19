@@ -12,6 +12,7 @@ import { GetCommunicationHandler } from '#shared/application/communication/get-c
 import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { EditCommunicationHandler } from '#shared/application/communication/edit-communication/edit-communication.handler';
+import { DeleteCommunicationHandler } from '#shared/application/communication/delete-communication/delete-communication.handler';
 
 const createCommunicationHandler = {
   provide: CreateCommunicationHandler,
@@ -117,10 +118,24 @@ const editCommunicationHandler = {
   ],
 };
 
+const deleteCommunicationHandler = {
+  provide: DeleteCommunicationHandler,
+  useFactory: (
+    communicationRepository: CommunicationRepository,
+    communicationStudentRepository: CommunicationStudentRepository,
+  ) =>
+    new DeleteCommunicationHandler(
+      communicationRepository,
+      communicationStudentRepository,
+    ),
+  inject: [CommunicationRepository, CommunicationStudentRepository],
+};
+
 export const communicationHandlers = [
   createCommunicationHandler,
   getCommunicationsHandler,
   searchCommunicationsHandler,
   getCommunicationHandler,
   editCommunicationHandler,
+  deleteCommunicationHandler,
 ];

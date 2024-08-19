@@ -3,6 +3,7 @@ import { SearchCommunicationsController } from '#shared/infrastructure/controlle
 import { GetCommunicationsController } from '#shared/infrastructure/controller/communication/get-communications/get-communications.controller';
 import { GetCommunicationController } from '#shared/infrastructure/controller/communication/get-communication/get-communication.controller';
 import { EditCommunicationController } from '#shared/infrastructure/controller/communication/edit-communication/edit-communication.controller';
+import { DeleteCommunicationController } from '#shared/infrastructure/controller/communication/delete-communication/delete-communication.controller';
 
 export const communicationControllers = [
   GetCommunicationsController,
@@ -10,4 +11,5 @@ export const communicationControllers = [
   CreateCommunicationController,
   GetCommunicationController,
   EditCommunicationController,
+  DeleteCommunicationController,
 ];

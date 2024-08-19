@@ -17,6 +17,8 @@ import { CreateCommunicationResponse } from '#shared/infrastructure/controller/c
 import { editCommunicationSchema } from '#shared/infrastructure/config/validation-schema/edit-communication.schema';
 import { EditCommunicationCommand } from '#shared/application/communication/edit-communication/edit-communication.command';
 import { EditCommunicationHandler } from '#shared/application/communication/edit-communication/edit-communication.handler';
+import { JoiRequestParamIdValidationPipeService } from '#shared/infrastructure/pipe/joi-request-param-id-validation-pipe.service';
+import { uuidSchema } from '#shared/infrastructure/config/validation-schema/uuid.schema';
 
 interface EditCommunicationBody {
   businessUnitIds: string[];
@@ -38,7 +40,10 @@ export class EditCommunicationController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UsePipes(new JoiRequestBodyValidationPipe(editCommunicationSchema))
+  @UsePipes(
+    new JoiRequestBodyValidationPipe(editCommunicationSchema),
+    new JoiRequestParamIdValidationPipeService(uuidSchema),
+  )
   @Roles(
     AdminUserRoles.SUPERADMIN,
     AdminUserRoles.SUPERVISOR_360,

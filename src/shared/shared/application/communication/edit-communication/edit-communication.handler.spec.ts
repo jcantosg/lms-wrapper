@@ -85,7 +85,7 @@ const command = new EditCommunicationCommand(
   adminUser,
 );
 
-describe('Create Communication Handler', () => {
+describe('Edit Communication Handler', () => {
   beforeEach(() => {
     repository = new CommunicationMockRepository();
     communicationStudentRepository = new CommunicationStudentMockRepository();

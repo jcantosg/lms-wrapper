@@ -7,6 +7,8 @@ export abstract class CommunicationRepository {
 
   abstract get(id: string): Promise<Communication | null>;
 
+  abstract delete(id: string): Promise<void>;
+
   abstract exists(id: string): Promise<boolean>;
 
   abstract matching(

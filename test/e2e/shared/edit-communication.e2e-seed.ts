@@ -36,6 +36,7 @@ import { Communication } from '#shared/domain/entity/communication.entity';
 import { CommunicationSchema } from '#shared/infrastructure/config/schema/communication.schema';
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 import { CommunicationStudentSchema } from '#shared/infrastructure/config/schema/communication-student.schema';
+import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 
 export class EditCommunicationE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -78,6 +79,7 @@ export class EditCommunicationE2eSeed implements E2eSeed {
   public static titleId = uuid();
 
   public static communicationId = uuid();
+  public static sentCommunicationId = uuid();
 
   private superAdminUser: AdminUser;
   private adminUser: AdminUser;
@@ -290,6 +292,22 @@ export class EditCommunicationE2eSeed implements E2eSeed {
     );
 
     await this.communicationRepository.save(communication);
+
+    const sentCommunication = Communication.create(
+      EditCommunicationE2eSeed.sentCommunicationId,
+      this.superAdminUser,
+      [this.businessUnit],
+      [this.academicPeriod],
+      [this.title],
+      [this.academicProgram],
+      [this.internalGroup],
+      null,
+      null,
+      CommunicationStatus.SENT,
+      null,
+    );
+
+    await this.communicationRepository.save(sentCommunication);
     await this.communicationStudentRepository.save(
       CommunicationStudent.create(
         uuid(),
