@@ -41,21 +41,35 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
       (subject) => subject.type !== SubjectType.SPECIALTY,
     );
     academicRecord.academicProgram.programBlocks.push(specialityBlock);
-    for (const programBlock of academicRecord.academicProgram.programBlocks) {
-      for (const subject of programBlock.subjects) {
-        subject.lmsCourse!.value.progress =
-          await this.getCourseProgressHandler.handle(
+    const programBlocks = academicRecord.academicProgram.programBlocks;
+
+    await Promise.all(
+      programBlocks.map(async (programBlock) => {
+        const subjectPromises = programBlock.subjects.map(async (subject) => {
+          const courseProgressPromise = this.getCourseProgressHandler.handle(
             new GetLmsCourseProgressQuery(
               subject.lmsCourse!.value.id,
               query.student.lmsStudent!.value.id,
             ),
           );
-        subject.defaultTeacher = await this.internalGroupTeacherGetter.get(
-          query.student.id,
-          subject.id,
-        );
-      }
-    }
+
+          const defaultTeacherPromise = this.internalGroupTeacherGetter.get(
+            query.student.id,
+            subject.id,
+          );
+
+          const [progress, defaultTeacher] = await Promise.all([
+            courseProgressPromise,
+            defaultTeacherPromise,
+          ]);
+
+          subject.lmsCourse!.value.progress = progress;
+          subject.defaultTeacher = defaultTeacher;
+        });
+
+        await Promise.all(subjectPromises);
+      }),
+    );
 
     return academicRecord;
   }
