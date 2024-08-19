@@ -617,4 +617,16 @@ export class Student extends BaseEntity {
       }
     }
   }
+
+  public isAdult(): boolean {
+    if (!this._birthDate) {
+      return false;
+    }
+
+    const ageMilis = Date.now() - this._birthDate.getTime();
+    const ageDate = new Date(ageMilis);
+    const yo = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+    return yo >= 18;
+  }
 }
