@@ -167,6 +167,16 @@ export class Communication extends BaseEntity {
     this._internalGroups = value;
   }
 
+  public updateStatus(status: CommunicationStatus, updatedBy: AdminUser): void {
+    this._status = status;
+    this._updatedBy = updatedBy;
+    this.updatedAt = new Date();
+    if (status === CommunicationStatus.SENT) {
+      this._sentBy = updatedBy;
+      this._sentAt = new Date();
+    }
+  }
+
   public updateRecipients(
     businessUnits: BusinessUnit[],
     academicPeriods: AcademicPeriod[],

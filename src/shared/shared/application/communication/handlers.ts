@@ -13,6 +13,8 @@ import { CommunicationStudentRepository } from '#shared/domain/repository/commun
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { EditCommunicationHandler } from '#shared/application/communication/edit-communication/edit-communication.handler';
 import { DeleteCommunicationHandler } from '#shared/application/communication/delete-communication/delete-communication.handler';
+import { SendCommunicationHandler } from '#shared/application/communication/send-communication/send-communication.handler';
+import { MailerService } from '@nestjs-modules/mailer';
 
 const createCommunicationHandler = {
   provide: CreateCommunicationHandler,
@@ -131,6 +133,46 @@ const deleteCommunicationHandler = {
   inject: [CommunicationRepository, CommunicationStudentRepository],
 };
 
+const sendCommunicationHandler = {
+  provide: SendCommunicationHandler,
+  useFactory: (
+    communicationRepository: CommunicationRepository,
+    communicationStudentRepository: CommunicationStudentRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    academicPeriodGetter: AcademicPeriodGetter,
+    titleGetter: TitleGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    internalGroupGetter: InternalGroupGetter,
+    studentGetter: StudentGetter,
+    uuidService: UUIDGeneratorService,
+    mailer: MailerService,
+  ) =>
+    new SendCommunicationHandler(
+      communicationRepository,
+      communicationStudentRepository,
+      businessUnitGetter,
+      academicPeriodGetter,
+      titleGetter,
+      academicProgramGetter,
+      internalGroupGetter,
+      studentGetter,
+      uuidService,
+      mailer,
+    ),
+  inject: [
+    CommunicationRepository,
+    CommunicationStudentRepository,
+    BusinessUnitGetter,
+    AcademicPeriodGetter,
+    TitleGetter,
+    AcademicProgramGetter,
+    InternalGroupGetter,
+    StudentGetter,
+    UUIDGeneratorService,
+    MailerService,
+  ],
+};
+
 export const communicationHandlers = [
   createCommunicationHandler,
   getCommunicationsHandler,
@@ -138,4 +180,5 @@ export const communicationHandlers = [
   getCommunicationHandler,
   editCommunicationHandler,
   deleteCommunicationHandler,
+  sendCommunicationHandler,
 ];

@@ -4,6 +4,7 @@ import { GetCommunicationsController } from '#shared/infrastructure/controller/c
 import { GetCommunicationController } from '#shared/infrastructure/controller/communication/get-communication/get-communication.controller';
 import { EditCommunicationController } from '#shared/infrastructure/controller/communication/edit-communication/edit-communication.controller';
 import { DeleteCommunicationController } from '#shared/infrastructure/controller/communication/delete-communication/delete-communication.controller';
+import { SendCommunicationController } from '#shared/infrastructure/controller/communication/send-communication/send-communication.controller';
 
 export const communicationControllers = [
   GetCommunicationsController,
@@ -12,4 +13,5 @@ export const communicationControllers = [
   GetCommunicationController,
   EditCommunicationController,
   DeleteCommunicationController,
+  SendCommunicationController,
 ];

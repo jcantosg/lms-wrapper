@@ -74,7 +74,7 @@ export class EditCommunicationE2eSeed implements E2eSeed {
   public static studentSurname = 'Ros';
   public static studentSurname2 = 'Lopez';
   public static studentEmail = 'juan@test.org';
-  public static universaeEmail = 'juan.ros@universae.com';
+  public static universaeEmail = 'test@universae.com';
 
   public static titleId = uuid();
 

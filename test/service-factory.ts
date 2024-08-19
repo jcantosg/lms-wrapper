@@ -43,6 +43,7 @@ import { UpdateAdministrativeGroupsService } from '#student/domain/service/updat
 import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -287,4 +288,8 @@ export function getAStudentAdministrativeGroupByAcademicRecordGetterMock(): Stud
       typeof StudentAdministrativeGroupByAcademicRecordGetter
     >
   ).prototype;
+}
+
+export function getMailerMock(): MailerService {
+  return (MailerService as jest.Mocked<typeof MailerService>).prototype;
 }
