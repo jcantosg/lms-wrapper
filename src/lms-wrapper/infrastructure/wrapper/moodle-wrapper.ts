@@ -452,8 +452,8 @@ export class MoodleWrapper implements LmsWrapper {
             moodleCourseContentIcon[
               stringToCamelCase(courseContentResponse.name)
             ] ?? '/courseContent.svg',
-          quizModules: undefined,
-          testModules: undefined,
+          autoEvaluationTests: undefined,
+          officialTests: undefined,
         };
       })
       .filter((value) => value.name !== '' && value.name !== 'Partners');
@@ -475,11 +475,11 @@ export class MoodleWrapper implements LmsWrapper {
     return warningRegex.test(description) ? 'warning' : 'content';
   }
 
-  private isQuizModule(name: string): boolean {
+  private isAutoEvaluationTestModule(name: string): boolean {
     return name.includes('Test de evaluación');
   }
 
-  private isSemesterQuizModule(name: string): boolean {
+  private isOfficialTestModule(name: string): boolean {
     return (
       name.toLowerCase() === 'prueba semestral' ||
       name.toLowerCase() === 'prueba repaso'
@@ -508,7 +508,7 @@ export class MoodleWrapper implements LmsWrapper {
       await this.wrapper.get(this.url, courseActivityStatusQueryParam);
     let responseModules = [];
     for (const contentResponse of courseContentResponse) {
-      if (this.isQuizModule(contentResponse.name)) {
+      if (this.isAutoEvaluationTestModule(contentResponse.name)) {
         const modules: Modules = [];
         let actualGroup = 0;
         for (const [
@@ -559,10 +559,10 @@ export class MoodleWrapper implements LmsWrapper {
           id: contentResponse.id,
           name: contentResponse.name,
           image: 'quiz.svg',
-          quizModules: modules,
-          testModules: undefined,
+          autoEvaluationTests: modules,
+          officialTests: undefined,
         });
-      } else if (this.isSemesterQuizModule(contentResponse.name)) {
+      } else if (this.isOfficialTestModule(contentResponse.name)) {
         const modules: Modules = [];
         let actualGroup = 0;
         for (const [
@@ -613,8 +613,8 @@ export class MoodleWrapper implements LmsWrapper {
           id: contentResponse.id,
           name: contentResponse.name,
           image: 'quiz.svg',
-          testModules: modules,
-          quizModules: undefined,
+          officialTests: modules,
+          autoEvaluationTests: undefined,
         });
       } else {
         responseModules.push({
@@ -627,11 +627,12 @@ export class MoodleWrapper implements LmsWrapper {
           image:
             moodleCourseContentIcon[stringToCamelCase(contentResponse.name)] ??
             '/courseContent.svg',
-          quizModules: undefined,
-          testModules: undefined,
+          autoEvaluationTests: undefined,
+          officialTests: undefined,
         });
       }
     }
+
     responseModules.filter(
       (value) => value.name !== '' && value.name !== 'Partners',
     );
@@ -661,7 +662,6 @@ export class MoodleWrapper implements LmsWrapper {
       this.url,
       queryParam,
     );
-
     const quiz = quizzes.find((quiz) => quiz.coursemodule === courseModule);
     if (!quiz) {
       throw new BadRequestException();

@@ -2,7 +2,7 @@ import { ValueObject } from '#/sga/shared/domain/value-object/value-object';
 import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
 
 export interface LmsModule {
-  quizModules:
+  autoEvaluationTests:
     | undefined
     | {
         id: number;
@@ -15,7 +15,7 @@ export interface LmsModule {
           attempts: number | undefined;
         }[];
       }[];
-  testModules:
+  officialTests:
     | undefined
     | {
         id: number;
