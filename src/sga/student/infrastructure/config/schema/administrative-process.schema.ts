@@ -25,7 +25,7 @@ export const administrativeProcessSchema =
       },
       files: {
         name: 'files',
-        type: 'simple-array',
+        type: 'json',
         nullable: true,
         transformer: ValueObjectTransformer(AdministrativeProcessFile),
       },

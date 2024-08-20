@@ -38,7 +38,7 @@ export class AdministrativeProcessPostgresRepository
     return await this.repository.findOne({
       where: { id },
       relations: {
-        academicRecord: true,
+        academicRecord: { academicProgram: { title: true } },
         student: true,
         businessUnit: true,
       },
@@ -49,7 +49,7 @@ export class AdministrativeProcessPostgresRepository
     return await this.repository.find({
       where: { student: { id: studentId } },
       relations: {
-        academicRecord: true,
+        academicRecord: { academicProgram: { title: true } },
         student: true,
         businessUnit: true,
       },
@@ -62,7 +62,7 @@ export class AdministrativeProcessPostgresRepository
     return await this.repository.find({
       where: { academicRecord: { id: academicRecordId } },
       relations: {
-        academicRecord: true,
+        academicRecord: { academicProgram: { title: true } },
         student: true,
         businessUnit: true,
       },

@@ -3,6 +3,7 @@ import { studentSubjectControllers } from '#student-360/academic-offering/subjec
 import { studentAuthControllers } from '#student-360/student/infrastructure/controller/controllers';
 import { chatControllers } from '#student-360/chat/controller';
 import { qualificationControllers } from '#student-360/academic-offering/qualification/infrastructure/controllers/controllers';
+import { administrativeProcessControllers } from '#student-360/administrative-process/controller';
 
 export const studentControllers = [
   ...studentAuthControllers,
@@ -10,4 +11,5 @@ export const studentControllers = [
   ...studentSubjectControllers,
   ...chatControllers,
   ...qualificationControllers,
+  ...administrativeProcessControllers,
 ];

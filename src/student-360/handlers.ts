@@ -20,6 +20,7 @@ import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
 import { qualificationHandlers } from '#student-360/academic-offering/qualification/handlers';
 import { StudentPasswordChecker } from '#student-360/student/domain/service/student-password-checker.service';
+import { administrativeProcessHandlers } from '#student-360/administrative-process/handlers';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -133,4 +134,5 @@ export const handlers = [
   ...chatHandlers,
   ...qualificationHandlers,
   updateProfileHandler,
+  ...administrativeProcessHandlers,
 ];
