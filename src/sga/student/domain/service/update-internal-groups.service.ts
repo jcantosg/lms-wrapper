@@ -7,6 +7,7 @@ import { AcademicProgram } from '#academic-offering/domain/entity/academic-progr
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 
 export class UpdateInternalGroupsService {
   constructor(private readonly repository: InternalGroupRepository) {}
@@ -47,12 +48,15 @@ export class UpdateInternalGroupsService {
         enrollment.subject,
       );
       const defaultGroup = groups.find((group) => group.isDefault);
-      if (defaultGroup) {
-        defaultGroup.addStudents([student]);
-        defaultGroup.updatedAt = new Date();
-        defaultGroup.updatedBy = adminUser;
-        internalGroups.push(defaultGroup);
+
+      if (!defaultGroup) {
+        throw new InternalGroupNotFoundException();
       }
+
+      defaultGroup.addStudents([student]);
+      defaultGroup.updatedAt = new Date();
+      defaultGroup.updatedBy = adminUser;
+      internalGroups.push(defaultGroup);
     }
 
     return internalGroups;

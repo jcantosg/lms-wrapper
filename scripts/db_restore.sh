@@ -4,8 +4,6 @@
 #   - Cloudformation DescribeStacks
 #   - SecretsManager GetSecretValue
 
-POSTGRES_VERSION=16.2
-
 usage() {
   echo "Usage: $0 -e <env> -d <dump_file>"
   echo " <env>: dev|pre|pro"
@@ -51,28 +49,30 @@ esac
 DB_SECRET=$(get_stack_output_value "$CLOUDFORMATION_STACK" "DatabaseSecretName")
 db_secret_value=$(aws secretsmanager get-secret-value --secret-id "$DB_SECRET" | jq -r .SecretString)
 
+DB_INSTANCE_ID=$(jq -r .dbInstanceIdentifier <<<"$db_secret_value")
 DB_HOST=$(jq -r .host <<<"$db_secret_value")
 DB_NAME=$(jq -r .dbname <<<"$db_secret_value")
 DB_USERNAME=$(jq -r .username <<<"$db_secret_value")
-export PGPASSWORD=$(jq -r .password <<<"$db_secret_value")
+DB_PASSWORD=$(jq -r .password <<<"$db_secret_value")
+ENGINE_VERSION=$(aws rds describe-db-instances --db-instance-identifier $DB_INSTANCE_ID --query "DBInstances[0]" | jq -r .EngineVersion)
 
 echo "Clearing existing data..."
 docker run --rm \
-  -e PGPASSWORD=$PGPASSWORD \
+  -e PGPASSWORD=$DB_PASSWORD \
   -v $(dirname $(realpath $DUMP_FILE)):/backups \
-  postgres:$POSTGRES_VERSION \
+  postgres:$ENGINE_VERSION \
   psql -h $DB_HOST -U $DB_USERNAME -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;"
 docker run --rm \
-  -e PGPASSWORD=$PGPASSWORD \
+  -e PGPASSWORD=$DB_PASSWORD \
   -v $(dirname $(realpath $DUMP_FILE)):/backups \
-  postgres:$POSTGRES_VERSION \
+  postgres:$ENGINE_VERSION \
   psql -h $DB_HOST -U $DB_USERNAME -d postgres -c "CREATE DATABASE $DB_NAME;"
 
 echo "Restoring DB..."
 docker run --rm \
-  -e PGPASSWORD=$PGPASSWORD \
+  -e PGPASSWORD=$DB_PASSWORD \
   -v $(dirname $(realpath $DUMP_FILE)):/backups \
-  postgres:$POSTGRES_VERSION \
+  postgres:$ENGINE_VERSION \
   pg_restore -h $DB_HOST -U $DB_USERNAME -d $DB_USERNAME -c /backups/$(basename $DUMP_FILE)
 
 echo "Database restored"

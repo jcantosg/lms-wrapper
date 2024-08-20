@@ -13,10 +13,13 @@ import {
   MoodleCreateUserResponse,
   MoodleGetUserResponse,
   MoodleLoginResponse,
+  MoodleQuizAttemptsResponse,
+  MoodleQuizzesResponse,
   MoodleVideotimeResponse,
 } from '#lms-wrapper/infrastructure/wrapper/moodle-responses';
-import { formatMoodleNames } from '#shared/domain/lib/format-moodle-names';
 import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
+import { formatMoodleDescriptions } from '#shared/domain/lib/format-moodle-descriptions';
+import { formatMoodleNames } from '#shared/domain/lib/format-moodle-names';
 
 const moodleCourseContentIcon: { [id: string]: string } = {
   temario: '/temario.svg',
@@ -33,6 +36,7 @@ const moodleResourceType: { [id: string]: string } = {
   videotime: 'video',
   scorm: 'scorm',
   webgl: 'webgl',
+  quiz: 'quiz',
 };
 
 export enum MoodleCourseModuleStatus {
@@ -42,12 +46,15 @@ export enum MoodleCourseModuleStatus {
 
 const STUDENT_ROLE_ID = 5;
 
+const warningRegex = new RegExp('class="(aviso)[a-z]+"');
+
 type MoodleModuleContent = {
   id: number;
   type: string;
   name: string;
   url: string;
   isCompleted: boolean;
+  attempts: number | undefined;
   contents:
     | {
         filename: string;
@@ -56,11 +63,14 @@ type MoodleModuleContent = {
       }[]
     | undefined;
 };
-type Modules = {
+export type Modules = {
   id: number;
   name: string;
+  type: string;
+  moduleType: string;
   url: string;
   indexPosition: number;
+  description: string;
   content: MoodleModuleContent[];
 }[];
 
@@ -72,7 +82,7 @@ export class MoodleWrapper implements LmsWrapper {
     private readonly loginUrl = '/login/token.php',
   ) {}
 
-  async getCourse(id: number): Promise<LmsCourse> {
+  async getCourse(id: number, isSpeciality: boolean): Promise<LmsCourse> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses&moodlewsrestformat=json&options[ids][0]=${id}`;
     const courseResponse: MoodleCourseResponse[] = await this.wrapper.get(
       this.url,
@@ -86,7 +96,7 @@ export class MoodleWrapper implements LmsWrapper {
         courseContentQueryParam,
       );
 
-    return this.createCourse(course, courseContentResponse);
+    return this.createCourse(course, courseContentResponse, isSpeciality);
   }
 
   async getAllCourses(): Promise<LmsCourse[]> {
@@ -165,6 +175,7 @@ export class MoodleWrapper implements LmsWrapper {
     id: number,
     moduleId: number,
     student: LmsStudent,
+    isSpeciality: boolean = false,
   ): Promise<LmsModuleContent> {
     const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
     const courseContentResponse: MoodleCourseContentResponse[] =
@@ -182,46 +193,114 @@ export class MoodleWrapper implements LmsWrapper {
     const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${student.value.id}`;
     const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
       await this.wrapper.get(this.url, courseActivityStatusQueryParam);
-    const userSessionKeyUrl = await this.getUrlWithSessionKey(
-      student.value.email,
-    );
-    let modules: Modules = [];
-    let actualGroup = 0;
-    for (const [
-      index,
-      courseContent,
-    ] of courseContentModule.modules.entries()) {
-      if (courseContent.modname === 'label') {
-        actualGroup = index;
-        modules.push({
-          id: courseContent.id,
-          url: courseContent.url,
-          name: formatMoodleNames(courseContent.name),
-          indexPosition: actualGroup,
-          content: [],
-        });
-      } else {
-        const actualModule = modules.find(
-          (module) => module.indexPosition === actualGroup,
-        );
-        actualModule!.content.push({
-          id: courseContent.id,
-          name: formatMoodleNames(courseContent.name),
-          url: await this.getResourceUrl(courseContent, userSessionKeyUrl),
-          type: moodleResourceType[courseContent.modname],
-          isCompleted: courseActivitiesCompletionResponse.statuses.some(
-            (status) => {
-              return (
-                status.cmid === courseContent.id &&
-                status.state === MoodleCourseModuleStatus.COMPLETED
-              );
-            },
-          ),
-          contents: courseContent.contents ?? undefined,
-        });
+    if (!isSpeciality) {
+      let modules: Modules = [];
+      let actualGroup = 0;
+      for (const [
+        index,
+        courseContent,
+      ] of courseContentModule.modules.entries()) {
+        if (courseContent.modname === 'label') {
+          actualGroup = index;
+          modules.push({
+            id: courseContent.id,
+            url: courseContent.url,
+            moduleType: courseContent.modname,
+            type: this.getModuleType(courseContent.description),
+            description: courseContent.description,
+            name: formatMoodleNames(
+              formatMoodleDescriptions(courseContent.description),
+            ),
+            indexPosition: actualGroup,
+            content: [],
+          });
+        } else {
+          const actualModule = modules.find(
+            (module) => module.indexPosition === actualGroup,
+          );
+          actualModule!.content.push({
+            id: courseContent.id,
+            name: formatMoodleNames(courseContent.name),
+            url: await this.getResourceUrl(courseContent),
+            type: moodleResourceType[courseContent.modname],
+            isCompleted: courseActivitiesCompletionResponse.statuses.some(
+              (status) => {
+                return (
+                  status.cmid === courseContent.id &&
+                  status.state === MoodleCourseModuleStatus.COMPLETED
+                );
+              },
+            ),
+            contents: courseContent.contents ?? undefined,
+            attempts: undefined,
+          });
+        }
       }
+      modules = modules.filter((module) => module.name !== 'Etiqueta');
+
+      return new LmsModuleContent({
+        id: courseContentModule.id,
+        name: courseContentModule.name,
+        modules: modules.map((module) => {
+          return {
+            id: module.id,
+            name: module.name,
+            description: formatMoodleNames(module.description),
+            moduleType: module.moduleType,
+            type: module.type,
+            url: module.url,
+            isCompleted: courseActivitiesCompletionResponse.statuses.some(
+              (response) => {
+                return (
+                  response.cmid === module.id &&
+                  response.state === MoodleCourseModuleStatus.COMPLETED
+                );
+              },
+            ),
+            contents: module.content
+              ? module.content.map((content) => {
+                  return {
+                    id: content.id,
+                    url: content.url,
+                    mimeType: content.type,
+                    name: content.name,
+                    isCompleted: content.isCompleted,
+                  };
+                })
+              : null,
+          };
+        }),
+      });
     }
-    modules = modules.filter((module) => module.name !== 'Etiqueta');
+    const modules: Modules = [];
+    for (const courseModule of courseContentModule.modules) {
+      modules.push({
+        id: courseModule.id,
+        name: courseModule.description
+          ? formatMoodleDescriptions(courseModule.description)
+          : formatMoodleNames(courseModule.name),
+        type: this.getModuleType(courseModule.description),
+        moduleType: courseModule.modname,
+        url: await this.getResourceUrl(courseModule),
+        description: courseModule.description
+          ? courseModule.description
+          : formatMoodleNames(courseModule.name),
+        indexPosition: 0,
+        content: courseModule.contents
+          ? courseModule.contents.map((content) => {
+              return {
+                id: courseModule.id,
+                name: content.filename,
+                url: content.fileurl,
+                type: content.mimetype,
+                isCompleted: true,
+                attempts: undefined,
+                contents: [content],
+              };
+            })
+          : [],
+      });
+    }
 
     return new LmsModuleContent({
       id: courseContentModule.id,
@@ -230,6 +309,9 @@ export class MoodleWrapper implements LmsWrapper {
         return {
           id: module.id,
           name: module.name,
+          type: module.type,
+          moduleType: module.moduleType,
+          description: module.description,
           url: module.url,
           isCompleted: courseActivitiesCompletionResponse.statuses.some(
             (response) => {
@@ -255,7 +337,10 @@ export class MoodleWrapper implements LmsWrapper {
     });
   }
 
-  public async getByName(name: string): Promise<LmsCourse | null> {
+  public async getByName(
+    name: string,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse | null> {
     const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses_by_field&moodlewsrestformat=json&field=shortname&value=${name}`;
     const courseResponse: MoodleCourseByFieldResponse = await this.wrapper.get(
       this.url,
@@ -272,17 +357,17 @@ export class MoodleWrapper implements LmsWrapper {
         courseContentQueryParam,
       );
 
-    return this.createCourse(course, courseContentResponse);
+    return this.createCourse(course, courseContentResponse, isSpeciality);
   }
 
-  private async getUrlWithSessionKey(email: string): Promise<string> {
+  async getUrlWithSessionKey(email: string): Promise<string> {
     const userKeyParams = `wstoken=${this.token}&wsfunction=auth_userkey_request_login_url&moodlewsrestformat=json&user[email]=${email}`;
     const loginResponse: MoodleLoginResponse = await this.wrapper.get(
       this.url,
       userKeyParams,
     );
 
-    return loginResponse.loginurl;
+    return `${loginResponse.loginurl}&wantsurl=`;
   }
 
   async getCourseProgress(courseId: number, studentId: number) {
@@ -337,14 +422,11 @@ export class MoodleWrapper implements LmsWrapper {
     return vimeo_url;
   }
 
-  private async getResourceUrl(
-    module: MoodleCourseModuleContentResponse,
-    userSessionKeyUrl: string,
-  ) {
+  private async getResourceUrl(module: MoodleCourseModuleContentResponse) {
     if (module.modname === 'videotime') {
       return await this.getVideoTimeUrl(module.id);
     } else if (module.modname === 'scorm' || module.modname === 'webgl') {
-      return `${userSessionKeyUrl}&wantsurl=${module.url}`;
+      return module.url;
     } else if (module.contents) {
       return `${module.contents[0].fileurl}&token=${this.token}`;
     }
@@ -355,25 +437,249 @@ export class MoodleWrapper implements LmsWrapper {
   private createCourse(
     course: MoodleCourseResponse,
     courseContentResponse: MoodleCourseContentResponse[],
+    isSpeciality: boolean,
   ): LmsCourse {
+    let modules = courseContentResponse
+      .map((courseContentResponse) => {
+        return {
+          id: courseContentResponse.id,
+          name: courseContentResponse?.description
+            ? formatMoodleNames(
+                formatMoodleDescriptions(courseContentResponse?.description),
+              )
+            : courseContentResponse.name,
+          image:
+            moodleCourseContentIcon[
+              stringToCamelCase(courseContentResponse.name)
+            ] ?? '/courseContent.svg',
+          autoEvaluationTests: undefined,
+          officialTests: undefined,
+        };
+      })
+      .filter((value) => value.name !== '' && value.name !== 'Partners');
+    if (!isSpeciality) {
+      modules = modules.filter((value) => value.name !== 'General');
+    }
+
     return new LmsCourse({
       id: course.id,
       categoryId: course.categoryid,
       shortname: course.shortname,
       name: course.displayname,
       progress: 0,
-      modules: courseContentResponse
-        .map((courseContentResponse) => {
-          return {
-            id: courseContentResponse.id,
-            name: courseContentResponse.name,
-            image:
-              moodleCourseContentIcon[
-                stringToCamelCase(courseContentResponse.name)
-              ] ?? '/courseContent.svg',
-          };
-        })
-        .filter((value) => value.name !== '' && value.name !== 'Partners'),
+      modules: modules,
     });
+  }
+
+  private getModuleType(description: string): string {
+    return warningRegex.test(description) ? 'warning' : 'content';
+  }
+
+  private isAutoEvaluationTestModule(name: string): boolean {
+    return name.includes('Test de evaluación');
+  }
+
+  private isOfficialTestModule(name: string): boolean {
+    return (
+      name.toLowerCase() === 'prueba semestral' ||
+      name.toLowerCase() === 'prueba repaso'
+    );
+  }
+
+  async getCourseWithQuizzes(
+    id: number,
+    studentId: number,
+    isSpeciality: boolean,
+  ) {
+    const queryParams = `wstoken=${this.token}&wsfunction=core_course_get_courses&moodlewsrestformat=json&options[ids][0]=${id}`;
+    const courseResponse: MoodleCourseResponse[] = await this.wrapper.get(
+      this.url,
+      queryParams,
+    );
+    const course = courseResponse[0];
+    const courseContentQueryParam = `wstoken=${this.token}&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=${id}`;
+    const courseContentResponse: MoodleCourseContentResponse[] =
+      await this.wrapper.get(
+        '/webservice/rest/server.php',
+        courseContentQueryParam,
+      );
+    const courseActivityStatusQueryParam = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${id}&userid=${studentId}`;
+    const courseActivitiesCompletionResponse: MoodleCourseActivitiesCompletionResponse =
+      await this.wrapper.get(this.url, courseActivityStatusQueryParam);
+    let responseModules = [];
+    for (const contentResponse of courseContentResponse) {
+      if (this.isAutoEvaluationTestModule(contentResponse.name)) {
+        const modules: Modules = [];
+        let actualGroup = 0;
+        for (const [
+          index,
+          courseContent,
+        ] of contentResponse.modules.entries()) {
+          if (courseContent.modname === 'label') {
+            actualGroup = index;
+            modules.push({
+              id: courseContent.id,
+              url: courseContent.url,
+              moduleType: courseContent.modname,
+              type: this.getModuleType(courseContent.description),
+              description: courseContent.description,
+              name: formatMoodleNames(
+                formatMoodleDescriptions(courseContent.description),
+              ),
+              indexPosition: actualGroup,
+              content: [],
+            });
+          } else {
+            const actualModule = modules.find(
+              (module) => module.indexPosition === actualGroup,
+            );
+            actualModule!.content.push({
+              id: courseContent.id,
+              name: formatMoodleNames(courseContent.name),
+              url: courseContent.url,
+              type: moodleResourceType[courseContent.modname],
+              isCompleted: courseActivitiesCompletionResponse.statuses.some(
+                (status) => {
+                  return (
+                    status.cmid === courseContent.id &&
+                    status.state === MoodleCourseModuleStatus.COMPLETED
+                  );
+                },
+              ),
+              contents: courseContent.contents ?? undefined,
+              attempts: await this.getQuizAttempts(
+                await this.getQuizFromCourseModule(id, courseContent.id),
+                studentId,
+              ),
+            });
+          }
+        }
+
+        responseModules.push({
+          id: contentResponse.id,
+          name: contentResponse.name,
+          image: 'quiz.svg',
+          autoEvaluationTests: modules,
+          officialTests: undefined,
+        });
+      } else if (this.isOfficialTestModule(contentResponse.name)) {
+        const modules: Modules = [];
+        let actualGroup = 0;
+        for (const [
+          index,
+          courseContent,
+        ] of contentResponse.modules.entries()) {
+          if (courseContent.modname === 'label') {
+            actualGroup = index;
+            modules.push({
+              id: courseContent.id,
+              url: courseContent.url,
+              moduleType: courseContent.modname,
+              type: this.getModuleType(courseContent.description),
+              description: courseContent.description,
+              name: formatMoodleNames(
+                formatMoodleDescriptions(courseContent.description),
+              ),
+              indexPosition: actualGroup,
+              content: [],
+            });
+          } else {
+            const actualModule = modules.find(
+              (module) => module.indexPosition === actualGroup,
+            );
+            actualModule!.content.push({
+              id: courseContent.id,
+              name: formatMoodleNames(courseContent.name),
+              url: courseContent.url,
+              type: moodleResourceType[courseContent.modname],
+              isCompleted: courseActivitiesCompletionResponse.statuses.some(
+                (status) => {
+                  return (
+                    status.cmid === courseContent.id &&
+                    status.state === MoodleCourseModuleStatus.COMPLETED
+                  );
+                },
+              ),
+              contents: courseContent.contents ?? undefined,
+              attempts: await this.getQuizAttempts(
+                await this.getQuizFromCourseModule(id, courseContent.id),
+                studentId,
+              ),
+            });
+          }
+        }
+
+        responseModules.push({
+          id: contentResponse.id,
+          name: contentResponse.name,
+          image: 'quiz.svg',
+          officialTests: modules,
+          autoEvaluationTests: undefined,
+        });
+      } else {
+        responseModules.push({
+          id: contentResponse.id,
+          name: contentResponse?.description
+            ? formatMoodleNames(
+                formatMoodleDescriptions(contentResponse?.description),
+              )
+            : contentResponse.name,
+          image:
+            moodleCourseContentIcon[stringToCamelCase(contentResponse.name)] ??
+            '/courseContent.svg',
+          autoEvaluationTests: undefined,
+          officialTests: undefined,
+        });
+      }
+    }
+
+    responseModules.filter(
+      (value) => value.name !== '' && value.name !== 'Partners',
+    );
+
+    if (!isSpeciality) {
+      responseModules = responseModules.filter(
+        (value) => value.name !== 'General',
+      );
+    }
+
+    return new LmsCourse({
+      id: course.id,
+      categoryId: course.categoryid,
+      shortname: course.shortname,
+      name: course.displayname,
+      progress: 0,
+      modules: responseModules,
+    });
+  }
+
+  private async getQuizFromCourseModule(
+    courseId: number,
+    courseModule: number,
+  ): Promise<number> {
+    const queryParam = `wstoken=${this.token}&wsfunction=mod_quiz_get_quizzes_by_courses&moodlewsrestformat=json&courseids[0]=${courseId}`;
+    const { quizzes }: MoodleQuizzesResponse = await this.wrapper.get(
+      this.url,
+      queryParam,
+    );
+    const quiz = quizzes.find((quiz) => quiz.coursemodule === courseModule);
+    if (!quiz) {
+      throw new BadRequestException();
+    }
+
+    return quiz.id;
+  }
+
+  private async getQuizAttempts(
+    quizId: number,
+    studentId: number,
+  ): Promise<number> {
+    const queryParams = `wstoken=${this.token}&wstoken=${this.token}&wsfunction=mod_quiz_get_user_attempts&moodlewsrestformat=json&quizid=${quizId}&userid=${studentId}`;
+    const quizAttemptsResponse: MoodleQuizAttemptsResponse =
+      await this.wrapper.get(this.url, queryParams);
+
+    return quizAttemptsResponse.attempts.length === 0
+      ? 0
+      : quizAttemptsResponse.attempts[0].attempt;
   }
 }

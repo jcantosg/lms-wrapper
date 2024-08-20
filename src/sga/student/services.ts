@@ -34,6 +34,8 @@ import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-l
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { CancelAcademicRecordTransactionalService } from '#student/domain/service/cancel-academic-record.transactional-service';
 import { CancelAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/cancel-academic-record.typeorm-transactional-service';
+import { MoveStudentFromAdministrativeGroupTransactionalService } from '#student/domain/service/move-student-from-administrative-group.transactional.service';
+import { MoveStudentFromAdministrativeGroupTypeormTransactionalService } from '#student/infrastructure/service/move-student-from-administrative-group.typeorm-transactional-service';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -238,6 +240,14 @@ const cancelAcademicRecordTransactionalService = {
   inject: [CreateLmsEnrollmentHandler, DeleteLmsEnrollmentHandler],
 };
 
+const moveStudentsFromAdministrativeGroupTransactionalService = {
+  provide: MoveStudentFromAdministrativeGroupTransactionalService,
+  useFactory: (): MoveStudentFromAdministrativeGroupTransactionalService =>
+    new MoveStudentFromAdministrativeGroupTypeormTransactionalService(
+      datasource,
+    ),
+};
+
 export const services = [
   academicRecordGetter,
   enrollmentGetter,
@@ -255,4 +265,5 @@ export const services = [
   updateInternalGroupsService,
   updateAdministrativeGroupsService,
   cancelAcademicRecordTransactionalService,
+  moveStudentsFromAdministrativeGroupTransactionalService,
 ];

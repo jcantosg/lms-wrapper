@@ -16,5 +16,5 @@ export const getStudentsSchema = createCollectionSchema(orderByFields, {
   identityDocumentNumber: Joi.string().optional(),
   businessUnit: Joi.string().optional(),
   academicProgram: Joi.string().optional(),
-  isDefense: Joi.boolean().optional()
+  isDefense: Joi.boolean().optional(),
 });

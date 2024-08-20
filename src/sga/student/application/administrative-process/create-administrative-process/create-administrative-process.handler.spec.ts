@@ -1,68 +1,102 @@
-import { getAnAcademicRecordGetterMock } from '#test/service-factory';
 import {
+  getAStudentGetterMock,
+  getAnAcademicRecordGetterMock,
+} from '#test/service-factory';
+import {
+  getASGAStudent,
   getAnAcademicRecord,
-  getAnAdministrativeProcessDocument,
   getAnAdminUser,
 } from '#test/entity-factory';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
-import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
 import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
 import { AdministrativeProcessMockRepository } from '#test/mocks/sga/student/administrative-process.mock-repository';
-import { AdministrativeProcessDocumentMockRepository } from '#test/mocks/sga/student/administrative-process-document.mock-repository';
-import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 
 let handler: CreateAdministrativeProcessHandler;
 let administrativeProcessRepository: AdministrativeProcessRepository;
-let administrativeProcessDocumentRepository: AdministrativeProcessDocumentRepository;
 let academicRecordGetter: AcademicRecordGetter;
+let studentGetter: StudentGetter;
 
 let saveSpy: jest.SpyInstance;
 let getAcademicRecordSpy: jest.SpyInstance;
-let getIdentityDocumentSpy: jest.SpyInstance;
+let getStudentSpy: jest.SpyInstance;
+
+const student = getASGAStudent();
 
 const academicRecord = getAnAcademicRecord();
-const identityDocument = getAnAdministrativeProcessDocument(
-  AdministrativeProcessTypeEnum.IDENTITY_DOCUMENTS,
-);
 
 const command = new CreateAdministrativeProcessCommand(
   'db801d43-883a-4eaa-8a1c-339adb4a464c',
   academicRecord.id,
-  'db801d43-883a-4eaa-8a1c-339adb4a464d',
+  student.id,
+  getAnAdminUser(),
+);
+const commandWithoutStudent = new CreateAdministrativeProcessCommand(
+  'db801d43-883a-4eaa-8a1c-339adb4a464c',
+  academicRecord.id,
+  null,
+  getAnAdminUser(),
+);
+const commandWithoutAcademicRecord = new CreateAdministrativeProcessCommand(
+  'db801d43-883a-4eaa-8a1c-339adb4a464c',
+  null,
+  student.id,
   getAnAdminUser(),
 );
 
 describe('Create Administrative Process Handler', () => {
   beforeAll(() => {
     administrativeProcessRepository = new AdministrativeProcessMockRepository();
-    administrativeProcessDocumentRepository =
-      new AdministrativeProcessDocumentMockRepository();
     academicRecordGetter = getAnAcademicRecordGetterMock();
+    studentGetter = getAStudentGetterMock();
 
     saveSpy = jest.spyOn(administrativeProcessRepository, 'save');
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
-    getIdentityDocumentSpy = jest.spyOn(
-      administrativeProcessDocumentRepository,
-      'getLastIdentityDocumentsByStudent',
-    );
+    getStudentSpy = jest.spyOn(studentGetter, 'get');
 
     handler = new CreateAdministrativeProcessHandler(
       administrativeProcessRepository,
-      administrativeProcessDocumentRepository,
       academicRecordGetter,
+      studentGetter,
     );
   });
 
-  it('should return 404 academic record not found', async () => {
-    getAcademicRecordSpy.mockImplementation(() => {
-      throw new AcademicRecordNotFoundException();
-    });
+  it('should save an administrative process without academicRecord', async () => {
+    getAcademicRecordSpy.mockImplementation(() =>
+      Promise.resolve(academicRecord),
+    );
+    getStudentSpy.mockImplementation(() => Promise.resolve(student));
 
-    await expect(handler.handle(command)).rejects.toThrow(
-      AcademicRecordNotFoundException,
+    await handler.handle(commandWithoutAcademicRecord);
+    expect(saveSpy).toHaveBeenCalledTimes(1);
+    expect(saveSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        _id: command.id,
+        _type: AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
+        _academicRecord: null,
+        _student: student,
+      }),
+    );
+  });
+
+  it('should save an administrative process without student', async () => {
+    getAcademicRecordSpy.mockImplementation(() =>
+      Promise.resolve(academicRecord),
+    );
+    getStudentSpy.mockImplementation(() => Promise.resolve(student));
+
+    await handler.handle(commandWithoutStudent);
+    expect(saveSpy).toHaveBeenCalledTimes(1);
+    expect(saveSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        _id: command.id,
+        _type: AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
+        _academicRecord: academicRecord,
+        _student: null,
+      }),
     );
   });
 
@@ -70,9 +104,7 @@ describe('Create Administrative Process Handler', () => {
     getAcademicRecordSpy.mockImplementation(() =>
       Promise.resolve(academicRecord),
     );
-    getIdentityDocumentSpy.mockImplementation(() =>
-      Promise.resolve(identityDocument),
-    );
+    getStudentSpy.mockImplementation(() => Promise.resolve(student));
 
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
@@ -81,13 +113,12 @@ describe('Create Administrative Process Handler', () => {
         _id: command.id,
         _type: AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
         _academicRecord: academicRecord,
-        _createdBy: command.adminUser,
-        _identityDocuments: identityDocument,
+        _student: student,
       }),
     );
   });
 
-  afterAll(() => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 });

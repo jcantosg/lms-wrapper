@@ -4,8 +4,6 @@
 #   - Cloudformation DescribeStacks
 #   - SecretsManager GetSecretValue
 
-POSTGRES_VERSION=16.2
-
 OUTPUT_FOLDER=$(pwd)
 
 usage() {
@@ -53,19 +51,21 @@ esac
 DB_SECRET=$(get_stack_output_value "$CLOUDFORMATION_STACK" "DatabaseSecretName")
 db_secret_value=$(aws secretsmanager get-secret-value --secret-id "$DB_SECRET" | jq -r .SecretString)
 
+DB_INSTANCE_ID=$(jq -r .dbInstanceIdentifier <<<"$db_secret_value")
 DB_HOST=$(jq -r .host <<<"$db_secret_value")
-DB_NAME=$(jq -r '.dbname' <<<"$db_secret_value")
-DB_USERNAME=$(jq -r '.username' <<<"$db_secret_value")
-export PGPASSWORD=$(jq -r .password <<<"$db_secret_value")
+DB_NAME=$(jq -r .dbname <<<"$db_secret_value")
+DB_USERNAME=$(jq -r .username <<<"$db_secret_value")
+DB_PASSWORD=$(jq -r .password <<<"$db_secret_value")
+ENGINE_VERSION=$(aws rds describe-db-instances --db-instance-identifier $DB_INSTANCE_ID --query "DBInstances[0]" | jq -r .EngineVersion)
 
 DUMP_NAME=${DB_NAME}.$(date +"%Y%m%d").dump
 
-echo "Extracting DB dump as ${DUMP_FILE}..."
+echo "Extracting DB dump as $OUTPUT_FOLDER/${DUMP_NAME}..."
 docker run \
   --rm \
-  -e PGPASSWORD=$PGPASSWORD \
+  -e PGPASSWORD=$DB_PASSWORD \
   -v $OUTPUT_FOLDER:/backups \
-  postgres:$POSTGRES_VERSION \
+  postgres:$ENGINE_VERSION \
   pg_dump -h $DB_HOST -U $DB_USERNAME -d $DB_USERNAME -Fc -f /backups/$DUMP_NAME
 
 echo "Database backed up."

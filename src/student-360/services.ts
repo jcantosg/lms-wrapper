@@ -6,6 +6,7 @@ import { RefreshTokenGenerator } from '#student-360/student/infrastructure/servi
 import { StudentAccessTokenRefresher } from '#student-360/student/infrastructure/service/student-access-token-refresher.service';
 import { StudentRecoveryPasswordTokenGetter } from '#student-360/student/domain/service/student-recovery-password-token-getter.service';
 import { StudentRecoveryPasswordTokenRepository } from '#student-360/student/domain/repository/student-recovery-password-token.repository';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
 
 const authenticator = {
   provide: Authenticator,
@@ -13,6 +14,7 @@ const authenticator = {
     jwtTokenGenerator: JwtTokenGenerator,
     refreshTokenGenerator: RefreshTokenGenerator,
     configService: ConfigService,
+    chatRepository: ChatRepository,
   ) => {
     const refreshTokenTTL = configService.get<number>('REFRESH_TOKEN_TTL')!;
 
@@ -20,9 +22,15 @@ const authenticator = {
       jwtTokenGenerator,
       refreshTokenGenerator,
       refreshTokenTTL,
+      chatRepository,
     );
   },
-  inject: [JwtTokenGenerator, RefreshTokenGenerator, ConfigService],
+  inject: [
+    JwtTokenGenerator,
+    RefreshTokenGenerator,
+    ConfigService,
+    ChatRepository,
+  ],
 };
 
 const studentRecoveryPasswordTokenGetter = {

@@ -248,7 +248,7 @@ export class Subject extends BaseEntity {
     );
   }
 
-  update(
+  public update(
     name: string,
     code: string,
     hours: number,
@@ -287,7 +287,7 @@ export class Subject extends BaseEntity {
     this.lmsCourse = lmsCourse;
   }
 
-  addTeacher(teacher: EdaeUser) {
+  public addTeacher(teacher: EdaeUser) {
     if (!teacher.isTeacher()) {
       throw new SubjectInvalidEdaeUserRoleException();
     }
@@ -297,7 +297,7 @@ export class Subject extends BaseEntity {
     }
   }
 
-  addDefaultTeacher(teacher: EdaeUser) {
+  public addDefaultTeacher(teacher: EdaeUser) {
     if (!teacher.isTeacher()) {
       throw new SubjectInvalidEdaeUserRoleException();
     }
@@ -305,15 +305,19 @@ export class Subject extends BaseEntity {
     this._defaultTeacher = teacher;
   }
 
-  removeTeacher(teacher: EdaeUser) {
+  public removeTeacher(teacher: EdaeUser) {
     this._teachers = this._teachers.filter((t) => t.id !== teacher.id);
   }
 
-  isDefaultTeacher(teacher: EdaeUser): boolean {
+  public isDefaultTeacher(teacher: EdaeUser): boolean {
     return this._defaultTeacher?.id === teacher.id;
   }
 
-  addLmsCourse(lmsCourse: LmsCourse | null): void {
+  public addLmsCourse(lmsCourse: LmsCourse | null): void {
     this.lmsCourse = lmsCourse;
+  }
+
+  public isZeroBlockSubject(): boolean {
+    return this.type === SubjectType.SPECIALTY || !this.isRegulated;
   }
 }

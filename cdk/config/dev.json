@@ -41,12 +41,13 @@
 
   "db": {
     "instance_type": "t4g.micro",
-    "engine_full_version": "16.2",
+    "engine_full_version": "16.4",
     "allocated_storage": 50,
     "enable_performance_insights": false,
     "multi_az": false,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
-    "preferred_maintenance_window": "sun:03:30-sun:04:30"
+    "preferred_maintenance_window": "sun:03:30-sun:04:30",
+    "preferred_backup_window": "02:30-03:30"
   },
 
   "monitoring": {

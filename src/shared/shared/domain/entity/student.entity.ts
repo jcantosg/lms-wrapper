@@ -13,6 +13,8 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
 import { LmsStudent } from '#/lms-wrapper/domain/entity/lms-student';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
+import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
+import { checkUnderage } from '#shared/domain/lib/check-underage';
 
 export const DEFAULT_PASSWORD = 'Universa3€';
 
@@ -54,6 +56,7 @@ export class Student extends BaseEntity {
     private _administrativeGroups: AdministrativeGroup[],
     private _internalGroups: InternalGroup[],
     private _isDefense: boolean,
+    private _communications: CommunicationStudent[],
   ) {
     super(id, new Date(), new Date());
   }
@@ -338,6 +341,14 @@ export class Student extends BaseEntity {
     this._internalGroups = value;
   }
 
+  public get communications(): CommunicationStudent[] {
+    return this._communications;
+  }
+
+  public set communications(value: CommunicationStudent[]) {
+    this._communications = value;
+  }
+
   public addInternalGroup(group: InternalGroup) {
     if (!this._internalGroups.find((ig) => ig.id === group.id)) {
       this._internalGroups.push(group);
@@ -398,6 +409,7 @@ export class Student extends BaseEntity {
       [],
       [],
       false,
+      [],
     );
   }
 
@@ -459,6 +471,7 @@ export class Student extends BaseEntity {
       [],
       [],
       isDefense,
+      [],
     );
   }
 
@@ -526,5 +539,94 @@ export class Student extends BaseEntity {
 
   public updateLMSStudent(lmsStudent: LmsStudent): void {
     this._lmsStudent = lmsStudent;
+  }
+
+  public updateProfile(
+    name: string,
+    surname: string,
+    surname2: string,
+    email: string,
+    password: string | null,
+    avatar: string | null,
+    birthDate: Date | null,
+    gender: StudentGender,
+    country: Country | null,
+    citizenship: Country | null,
+    socialSecurityNumber: string | null,
+    phone: string | null,
+    contactCountry: Country | null,
+    state: string | null,
+    city: string | null,
+    address: string | null,
+    guardianName: string | null,
+    guardianSurname: string | null,
+    guardianEmail: string | null,
+    guardianPhone: string | null,
+  ) {
+    this.name = name;
+    this.surname = surname;
+    this.surname2 = surname2;
+    this.email = email;
+    this.avatar = avatar;
+    this.birthDate = birthDate;
+    this.gender = gender;
+    this.country = country;
+    this.citizenship = citizenship;
+    this.socialSecurityNumber = socialSecurityNumber;
+    this.phone = phone;
+    this.contactCountry = contactCountry;
+    this.state = state;
+    this.city = city;
+    this.address = address;
+    this.guardianName = guardianName;
+    this.guardianSurname = guardianSurname;
+    this.guardianEmail = guardianEmail;
+    this.guardianPhone = guardianPhone;
+    this.password = password;
+    this.checkStatusCompleted();
+  }
+
+  private checkStatusCompleted() {
+    if (
+      this.avatar &&
+      this.city &&
+      this.birthDate &&
+      this.gender &&
+      this.citizenship &&
+      this.address &&
+      this.phone &&
+      this.state &&
+      this.country &&
+      this.socialSecurityNumber &&
+      this.state &&
+      this.address
+    ) {
+      if (checkUnderage(this.birthDate)) {
+        if (
+          this.guardianName &&
+          this.guardianEmail &&
+          this.guardianPhone &&
+          this.guardianSurname
+        ) {
+          this.status = StudentStatus.COMPLETED;
+        } else {
+          this.status = StudentStatus.UNDERAGE_MISSING_DATA;
+        }
+      } else {
+        this.status = StudentStatus.COMPLETED;
+      }
+    }
+  }
+
+  public isAdult(): boolean {
+    if (!this._birthDate) {
+      return false;
+    }
+
+    const ageMilis = Date.now() - this._birthDate.getTime();
+    const ageDate = new Date(ageMilis);
+    const yo = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+    return yo >= 18;
   }
 }

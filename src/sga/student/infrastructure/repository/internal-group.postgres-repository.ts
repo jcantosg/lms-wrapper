@@ -1,6 +1,6 @@
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
@@ -274,6 +274,30 @@ export class InternalGroupPostgresRepository
         subject: true,
         students: true,
         businessUnit: true,
+      },
+    });
+  }
+
+  async getByBusinessUnitsAndPeriodsAndPrograms(
+    businessUnitIds: string[],
+    academicPeriodIds: string[],
+    academicProgramIds: string[],
+  ): Promise<InternalGroup[]> {
+    return await this.repository.find({
+      where: {
+        businessUnit: { id: In(businessUnitIds) },
+        academicPeriod: { id: In(academicPeriodIds) },
+        academicProgram: { id: In(academicProgramIds) },
+      },
+      relations: {
+        businessUnit: true,
+        academicPeriod: true,
+        academicProgram: true,
+        periodBlock: true,
+        subject: true,
+        teachers: true,
+        students: true,
+        defaultTeacher: true,
       },
     });
   }

@@ -12,16 +12,18 @@ export class GetAcademicPeriodsByBusinessUnitHandler implements QueryHandler {
   async handle(
     query: GetAcademicPeriodsByBusinessUnitQuery,
   ): Promise<AcademicPeriod[]> {
-    const isBusinessUnitAccessible = query.adminUser.businessUnits.some(
-      (bu) => {
-        return bu.id === query.businessUnit;
-      },
+    const businessUnitIds = query.businessUnitIds;
+
+    const isBusinessUnitAccessible = businessUnitIds.every((id) =>
+      query.adminUser.businessUnits.some((bu) => bu.id === id),
     );
 
     if (!isBusinessUnitAccessible) {
       throw new BusinessUnitNotFoundException();
     }
 
-    return this.academicPeriodRepository.getByBusinessUnit(query.businessUnit);
+    return this.academicPeriodRepository.getByMultipleBusinessUnits(
+      businessUnitIds,
+    );
   }
 }

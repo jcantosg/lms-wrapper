@@ -17,8 +17,10 @@ import { GetAllInternalGroupsController } from '#academic-offering/infrastructur
 import { GetSpecialtiesByAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/get-specialties-by-academic-program/get-specialties-by-academic-program.controller';
 import { AddSpecialtyToAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/add-specialty-to-academic-program.controller';
 import { RemoveSpecialtyFromAcademicProgramController } from '#academic-offering/infrastructure/controller/academic-program/remove-specialty-from-academic-program.controller';
+import { GetAcademicProgramsByPeriodsController } from '#academic-offering/infrastructure/controller/academic-program/get-academic-programs-by-multiple-periods/get-academic-programs-by-multiple-periods.controller';
 
 export const academicProgramControllers = [
+  GetAcademicProgramsByPeriodsController,
   GetAcademicProgramsByTitleController,
   GetAllAcademicProgramsController,
   GetAllAcademicProgramsPlainController,

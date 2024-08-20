@@ -13,6 +13,8 @@ export enum SubjectCallFinalGradeEnum {
   NINE = '9',
   TEN = '10',
   NA = 'n/a',
+  PASS = 'Apto',
+  FAIL = 'No Apto',
 }
 
 export const getAllSubjectFinalCallGrades = (): SubjectCallFinalGradeEnum[] =>

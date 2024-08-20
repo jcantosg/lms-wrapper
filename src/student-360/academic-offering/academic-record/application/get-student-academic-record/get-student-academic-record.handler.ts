@@ -4,6 +4,9 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { GetLmsCourseProgressHandler } from '#lms-wrapper/application/lms-course/get-lms-course-progress/get-lms-course-progress.handler';
 import { GetLmsCourseProgressQuery } from '#lms-wrapper/application/lms-course/get-lms-course-progress/get-lms-course-progress.query';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { AcademicRecordBlockZeroNotFoundException } from '#student-360/academic-offering/academic-record/domain/exception/academic-record.block-zero-not-found.exception';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
 
 export class GetStudentAcademicRecordHandler implements QueryHandler {
@@ -19,21 +22,54 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
         query.academicRecordId,
         query.student,
       );
-    for (const programBlock of academicRecord.academicProgram.programBlocks) {
-      for (const subject of programBlock.subjects) {
-        subject.lmsCourse!.value.progress =
-          await this.getCourseProgressHandler.handle(
+    const blockZero = academicRecord.academicProgram.programBlocks.find(
+      (programBlock: ProgramBlock) => programBlock.name === 'Bloque 0',
+    );
+    if (!blockZero) {
+      throw new AcademicRecordBlockZeroNotFoundException();
+    }
+    const specialityBlock = ProgramBlock.create(
+      blockZero.id,
+      'Especialidades',
+      academicRecord.academicProgram,
+      blockZero.createdBy,
+    );
+    specialityBlock.subjects = blockZero?.subjects.filter(
+      (subject) => subject.type === SubjectType.SPECIALTY,
+    );
+    blockZero.subjects = blockZero?.subjects.filter(
+      (subject) => subject.type !== SubjectType.SPECIALTY,
+    );
+    academicRecord.academicProgram.programBlocks.push(specialityBlock);
+    const programBlocks = academicRecord.academicProgram.programBlocks;
+
+    await Promise.all(
+      programBlocks.map(async (programBlock) => {
+        const subjectPromises = programBlock.subjects.map(async (subject) => {
+          const courseProgressPromise = this.getCourseProgressHandler.handle(
             new GetLmsCourseProgressQuery(
               subject.lmsCourse!.value.id,
               query.student.lmsStudent!.value.id,
             ),
           );
-        subject.defaultTeacher = await this.internalGroupTeacherGetter.get(
-          query.student.id,
-          subject.id,
-        );
-      }
-    }
+
+          const defaultTeacherPromise = this.internalGroupTeacherGetter.get(
+            query.student.id,
+            subject.id,
+          );
+
+          const [progress, defaultTeacher] = await Promise.all([
+            courseProgressPromise,
+            defaultTeacherPromise,
+          ]);
+
+          subject.lmsCourse!.value.progress = progress;
+          subject.defaultTeacher = defaultTeacher;
+        });
+
+        await Promise.all(subjectPromises);
+      }),
+    );
 
     return academicRecord;
   }

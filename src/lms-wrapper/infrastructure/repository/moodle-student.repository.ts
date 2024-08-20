@@ -53,4 +53,10 @@ export class MoodleStudentRepository implements LmsStudentRepository {
   async delete(id: number): Promise<void> {
     await this.moodleWrapper.deleteStudent(id);
   }
+
+  async getUserSessionKeyUrl(lmsStudent: LmsStudent): Promise<string> {
+    return await this.moodleWrapper.getUrlWithSessionKey(
+      lmsStudent.value.email,
+    );
+  }
 }

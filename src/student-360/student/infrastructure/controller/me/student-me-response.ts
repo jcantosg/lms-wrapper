@@ -46,6 +46,8 @@ interface StudentMeResponseBody {
   guardianSurname: string | null;
   guardianEmail: string | null;
   guardianPhone: string | null;
+  isDefense: boolean;
+  isAdult: boolean;
 }
 
 export class StudentMeResponse {
@@ -99,6 +101,8 @@ export class StudentMeResponse {
       guardianSurname: student.guardianSurname,
       guardianEmail: student.guardianEmail,
       guardianPhone: student.guardianPhone,
+      isDefense: student.isDefense,
+      isAdult: student.isAdult(),
     };
   }
 }

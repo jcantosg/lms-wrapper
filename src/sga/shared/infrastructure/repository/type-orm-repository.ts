@@ -31,6 +31,9 @@ const fieldOrderByMapping: Record<string, string> = {
   startMonth: 'period_block.startMonth',
   blockName: 'period_block.name',
   startDate: 'period_block.startDate',
+  student: 'student.name',
+  adminUser: 'createdBy.name',
+  communicationStatus: 'communication.status',
 };
 
 export class TypeOrmRepository<T extends ObjectLiteral> {
@@ -105,8 +108,8 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
   ): Promise<void> {
     for (const filter of filters) {
       const fieldPath = this.getFieldPath(filter, aliasQuery, filter.value);
-      const paramName = this.getParamName(filter);
-      const parameter = this.getParameter(filter);
+      const paramName = this.getParamName(filter, filters);
+      const parameter = this.getParameter(filter, paramName);
 
       switch (filter.operator) {
         case FilterOperators.LIKE:
@@ -161,15 +164,34 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
     return path;
   }
 
-  private getParamName(filter: Filter): string {
-    return filter.relationPath
-      ? `${filter.relationPath}_${filter.field}`
-      : filter.field;
+  private paramNameExists(paramName: string, filters: Filter[]): boolean {
+    let exists = false;
+    for (const filter of filters) {
+      const otherParamName = filter.relationPath
+        ? `${filter.relationPath}_${filter.field}`
+        : filter.field;
+      if (paramName === otherParamName) {
+        exists = true;
+      }
+    }
+
+    return exists;
   }
 
-  private getParameter(filter: Filter): Object {
-    const paramName = this.getParamName(filter);
+  private getParamName(filter: Filter, filters: Filter[]): string {
+    const paramName = filter.relationPath
+      ? `${filter.relationPath}_${filter.field}`
+      : filter.field;
 
+    return this.paramNameExists(
+      paramName,
+      filters.filter((f) => f !== filter),
+    )
+      ? `${paramName}${Math.floor(1000 + Math.random() * 9000)}`
+      : paramName;
+  }
+
+  private getParameter(filter: Filter, paramName: string): Object {
     return {
       [paramName]:
         filter.operator === FilterOperators.LIKE

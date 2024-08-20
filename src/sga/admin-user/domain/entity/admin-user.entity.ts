@@ -236,4 +236,8 @@ export class AdminUser extends BaseEntity {
   public activateUser(): void {
     this.status = AdminUserStatus.ACTIVE;
   }
+
+  public isSuperAdmin(): boolean {
+    return this.roles.includes(AdminUserRoles.SUPERADMIN);
+  }
 }

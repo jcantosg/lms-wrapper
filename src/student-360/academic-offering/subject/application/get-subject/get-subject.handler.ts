@@ -11,6 +11,9 @@ import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { LmsCourseNotInSubjectException } from '#lms-wrapper/domain/exception/lms-course-not-in-subject.exception';
+import { GetLmsCourseWithQuizzesHandler } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.handler';
+import { GetLmsCourseWithQuizzesQuery } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.query';
 
 interface GetSubjectHandlerResponse {
   subject: Subject;
@@ -26,6 +29,7 @@ export class GetSubjectHandler implements QueryHandler {
     private readonly subjectGetter: SubjectGetter,
     private internalGroupTeacherGetter: InternalGroupDefaultTeacherGetter,
     private academicRecordGetter: AcademicRecordGetter,
+    private lmsCourseWithQuizzesGetter: GetLmsCourseWithQuizzesHandler,
   ) {}
 
   async handle(query: GetSubjectQuery): Promise<GetSubjectHandlerResponse> {
@@ -33,6 +37,17 @@ export class GetSubjectHandler implements QueryHandler {
     if (!this.checkStudentCanSeeSubject(query.student, subject)) {
       throw new StudentSubjectNotFoundException();
     }
+    if (!subject.lmsCourse) {
+      throw new LmsCourseNotInSubjectException();
+    }
+    subject.lmsCourse = await this.lmsCourseWithQuizzesGetter.handle(
+      new GetLmsCourseWithQuizzesQuery(
+        subject.lmsCourse.value.id,
+        query.student.lmsStudent!.value.id,
+        subject.isZeroBlockSubject(),
+      ),
+    );
+
     const defaultTeacher = await this.internalGroupTeacherGetter.get(
       query.student.id,
       subject.id,

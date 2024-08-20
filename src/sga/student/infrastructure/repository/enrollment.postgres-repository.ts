@@ -2,7 +2,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
@@ -58,7 +58,13 @@ export class EnrollmentPostgresRepository
     return await this.repository.find({
       where: { academicRecord: { id: academicRecord.id } },
       relations: {
-        calls: true,
+        calls: {
+          enrollment: {
+            subject: {
+              evaluationType: true,
+            },
+          },
+        },
         subject: true,
         academicRecord: { student: true },
       },
@@ -194,6 +200,42 @@ export class EnrollmentPostgresRepository
 
     return await queryBuilder
       .where('subject.id = :id', { id: subject.id })
+      .andWhere('academicRecord.businessUnit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getMany();
+  }
+
+  async getByMultipleSubjects(
+    subjects: Subject[],
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment[]> {
+    const queryBuilder = this.initializeQueryBuilder('enrollment');
+
+    if (isSuperAdmin) {
+      return await this.repository.find({
+        where: {
+          subject: {
+            id: In(subjects.map((subject) => subject.id)),
+          },
+        },
+        relations: {
+          calls: true,
+        },
+      });
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+
+    queryBuilder.leftJoinAndSelect('enrollment.calls', 'subjectCall');
+
+    return await queryBuilder
+      .where('subject.id IN(:...ids)', {
+        ids: subjects.map((subject) => subject.id),
+      })
       .andWhere('academicRecord.businessUnit.id IN(:...ids)', {
         ids: adminUserBusinessUnits,
       })

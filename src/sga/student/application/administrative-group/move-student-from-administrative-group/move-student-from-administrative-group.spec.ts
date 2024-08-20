@@ -1,29 +1,45 @@
 import { MoveStudentFromAdministrativeGroupHandler } from './move-student-from-administrative-group.handler';
 import { MoveStudentFromAdministrativeGroupCommand } from './move-student-from-administrative-group.command';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
-import { AdministrativeGroupMockRepository } from '#test/mocks/sga/student/administrative-group.mock-repository';
 import { StudentRepository } from '#shared/domain/repository/student.repository';
 import {
   getAnAdminUser,
   getAnAdministrativeGroup,
   getASGAStudent,
+  getAnAcademicRecord,
+  getAnEnrollment,
 } from '#test/entity-factory';
 import { v4 as uuid } from 'uuid';
 import clearAllMocks = jest.clearAllMocks;
-import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
-import { getAnAdministrativeGroupGetterMock } from '#test/service-factory';
+import {
+  getAnAdministrativeGroupGetterMock,
+  getAnEnrollmentGetterMock,
+  getAUpdateInternalGroupsServiceMock,
+} from '#test/service-factory';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';
 import { AdministrativeGroupNotFoundException } from '#shared/domain/exception/administrative-group/administrative-group.not-found.exception';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { TransactionalServiceMock } from '#test/mocks/shared/transactional-service-mock';
+import { AcademicRecordMockRepository } from '#test/mocks/sga/student/academic-record.mock-repository';
 
 let handler: MoveStudentFromAdministrativeGroupHandler;
 let studentRepository: StudentRepository;
-let administrativeGroupRepository: AdministrativeGroupRepository;
 let administrativeGroupGetter: AdministrativeGroupGetter;
+let transactionalService: TransactionalService;
+let academicRecordRepository: AcademicRecordRepository;
+let enrollmentGetter: EnrollmentGetter;
+let updateInternalGroupsService: UpdateInternalGroupsService;
 
-let moveStudentsSpy: jest.SpyInstance;
 let getAdministrativeGroupSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
+let getStudentAcademicRecordSpy: jest.SpyInstance;
+let getEnrollmentByAcademicRecordSpy: jest.SpyInstance;
+let executeTransactionSpy: jest.SpyInstance;
+let updateInternalGroupsServiceSpy: jest.SpyInstance;
 
 const student1 = getASGAStudent();
 student1.id = uuid();
@@ -40,6 +56,9 @@ originGroup.students = students;
 const destinationGroup = getAnAdministrativeGroup();
 destinationGroup.id = 'destinationGroupId';
 
+const academicRecord = getAnAcademicRecord();
+const enrollment = getAnEnrollment();
+
 const command = new MoveStudentFromAdministrativeGroupCommand(
   students.map((student) => student.id),
   originGroup.id,
@@ -49,21 +68,40 @@ const command = new MoveStudentFromAdministrativeGroupCommand(
 
 describe('MoveStudentFromAdministrativeGroupHandler', () => {
   beforeAll(async () => {
-    administrativeGroupRepository = new AdministrativeGroupMockRepository();
-    administrativeGroupGetter = getAnAdministrativeGroupGetterMock();
     studentRepository = new StudentMockRepository();
-    handler = new MoveStudentFromAdministrativeGroupHandler(
-      studentRepository,
-      administrativeGroupRepository,
-      administrativeGroupGetter,
-    );
+    administrativeGroupGetter = getAnAdministrativeGroupGetterMock();
+    transactionalService = new TransactionalServiceMock();
+    academicRecordRepository = new AcademicRecordMockRepository();
+    enrollmentGetter = getAnEnrollmentGetterMock();
+    updateInternalGroupsService = getAUpdateInternalGroupsServiceMock();
 
-    moveStudentsSpy = jest.spyOn(administrativeGroupRepository, 'moveStudents');
+    getStudentSpy = jest.spyOn(studentRepository, 'get');
     getAdministrativeGroupSpy = jest.spyOn(
       administrativeGroupGetter,
       'getByAdminUser',
     );
-    getStudentSpy = jest.spyOn(studentRepository, 'get');
+    executeTransactionSpy = jest.spyOn(transactionalService, 'execute');
+    getStudentAcademicRecordSpy = jest.spyOn(
+      academicRecordRepository,
+      'getStudentAcademicRecordByPeriodAndProgram',
+    );
+    getEnrollmentByAcademicRecordSpy = jest.spyOn(
+      enrollmentGetter,
+      'getByAcademicRecord',
+    );
+    updateInternalGroupsServiceSpy = jest.spyOn(
+      updateInternalGroupsService,
+      'update',
+    );
+
+    handler = new MoveStudentFromAdministrativeGroupHandler(
+      studentRepository,
+      administrativeGroupGetter,
+      transactionalService,
+      academicRecordRepository,
+      enrollmentGetter,
+      updateInternalGroupsService,
+    );
   });
 
   it('should move students from one administrative group to another', async () => {
@@ -74,14 +112,21 @@ describe('MoveStudentFromAdministrativeGroupHandler', () => {
       Promise.resolve(students.find((student) => student.id === id)),
     );
 
+    getStudentAcademicRecordSpy.mockImplementation(() =>
+      Promise.resolve(academicRecord),
+    );
+
+    getEnrollmentByAcademicRecordSpy.mockImplementation(() =>
+      Promise.resolve([enrollment]),
+    );
+
+    updateInternalGroupsServiceSpy.mockImplementation(() =>
+      Promise.resolve([]),
+    );
+
     await handler.handle(command);
 
-    expect(moveStudentsSpy).toHaveBeenCalledTimes(1);
-    expect(moveStudentsSpy).toHaveBeenCalledWith(
-      students,
-      originGroup,
-      destinationGroup,
-    );
+    expect(executeTransactionSpy).toHaveBeenCalledTimes(students.length);
   });
 
   it('should throw AdministrativeGroupNotFoundException', async () => {

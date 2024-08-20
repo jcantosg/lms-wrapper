@@ -15,6 +15,10 @@ import { RemoveEdaeUserFromAdministrativeGroupHandler } from '#student/applicati
 import { GetAdministrativeGroupByAcademicProgramHandler } from '#student/application/administrative-group/get-administrative-group-by-academic-program/get-administrative-group-by-academic-program.handler';
 import { MoveStudentFromAdministrativeGroupHandler } from '#student/application/administrative-group/move-student-from-administrative-group/move-student-from-administrative-group.handler';
 import { StudentRepository } from '#shared/domain/repository/student.repository';
+import { MoveStudentFromAdministrativeGroupTransactionalService } from '#student/domain/service/move-student-from-administrative-group.transactional.service';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -124,18 +128,27 @@ const moveStudentFromAdministrativeGroupHandler = {
   provide: MoveStudentFromAdministrativeGroupHandler,
   useFactory: (
     studentRepository: StudentRepository,
-    administrativeGroupRepository: AdministrativeGroupRepository,
     administrativeGroupGetter: AdministrativeGroupGetter,
+    transactionalService: MoveStudentFromAdministrativeGroupTransactionalService,
+    academicRecordRepository: AcademicRecordRepository,
+    enrollmentGetter: EnrollmentGetter,
+    updateInternalGroupsService: UpdateInternalGroupsService,
   ): MoveStudentFromAdministrativeGroupHandler =>
     new MoveStudentFromAdministrativeGroupHandler(
       studentRepository,
-      administrativeGroupRepository,
       administrativeGroupGetter,
+      transactionalService,
+      academicRecordRepository,
+      enrollmentGetter,
+      updateInternalGroupsService,
     ),
   inject: [
     StudentRepository,
-    AdministrativeGroupRepository,
     AdministrativeGroupGetter,
+    MoveStudentFromAdministrativeGroupTransactionalService,
+    AcademicRecordRepository,
+    EnrollmentGetter,
+    UpdateInternalGroupsService,
   ],
 };
 

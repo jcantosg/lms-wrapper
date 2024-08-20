@@ -8,10 +8,10 @@ import { EditPeriodBlockController } from '#academic-offering/infrastructure/con
 import { GetInternalGroupsController } from '#academic-offering/infrastructure/controller/academic-period/get-internal-groups/get-internal-groups.controller';
 
 export const academicPeriodControllers = [
-  EditAcademicPeriodController,
   GetAllAcademicPeriodsController,
-  SearchAcademicPeriodsController,
   GetAcademicPeriodsByBusinessUnitController,
+  EditAcademicPeriodController,
+  SearchAcademicPeriodsController,
   GetAcademicPeriodController,
   CreateAcademicPeriodController,
   EditPeriodBlockController,

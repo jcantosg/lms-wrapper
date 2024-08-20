@@ -22,6 +22,7 @@ export class EdaeUserCreatedListener {
       payload.password,
     );
     await this.repository.save(edaeUser);
+
     this.mailer.sendMail({
       to: payload.userEmail,
       subject: 'Testing',

@@ -69,7 +69,10 @@ export class EditSubjectHandler implements CommandHandler {
     if (command.lmsCourseId !== undefined) {
       if (command.lmsCourseId !== null) {
         lmsCourse = await this.lmsCourseHandler.handle(
-          new GetLMSCourseQuery(command.lmsCourseId),
+          new GetLMSCourseQuery(
+            command.lmsCourseId,
+            subject.isZeroBlockSubject(),
+          ),
         );
       } else {
         await this.createLmsCourseHandler.handle(
@@ -80,7 +83,10 @@ export class EditSubjectHandler implements CommandHandler {
           ),
         );
         lmsCourse = await this.getLmsCourseByNameHandler.handle(
-          new GetLMSCourseByNameQuery(command.code),
+          new GetLMSCourseByNameQuery(
+            command.code,
+            subject.isZeroBlockSubject(),
+          ),
         );
       }
     }

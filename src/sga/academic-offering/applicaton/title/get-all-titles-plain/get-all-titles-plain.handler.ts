@@ -1,21 +1,23 @@
 import { QueryHandler } from '#shared/domain/bus/query.handler';
-import { BusinessUnitGetter } from '#business-unit/domain/service/business-unit-getter.service';
 import { TitleRepository } from '#academic-offering/domain/repository/title.repository';
 import { Title } from '#academic-offering/domain/entity/title.entity';
 import { GetAllTitlesPlainQuery } from '#academic-offering/applicaton/title/get-all-titles-plain/get-all-titles-plain.query';
+import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
 
 export class GetAllTitlesPlainHandler implements QueryHandler {
-  constructor(
-    private readonly repository: TitleRepository,
-    private readonly businessUnitGetter: BusinessUnitGetter,
-  ) {}
+  constructor(private readonly repository: TitleRepository) {}
 
   async handle(query: GetAllTitlesPlainQuery): Promise<Title[]> {
-    const businessUnit = await this.businessUnitGetter.getByAdminUser(
-      query.businessUnitId,
-      query.adminUserBusinessUnits,
+    const businessUnitIds = query.businessUnitIds;
+
+    const isBusinessUnitAccessible = businessUnitIds.every((id) =>
+      query.adminUserBusinessUnits.includes(id),
     );
 
-    return await this.repository.getByBusinessUnit(businessUnit);
+    if (!isBusinessUnitAccessible) {
+      throw new BusinessUnitNotFoundException();
+    }
+
+    return this.repository.getByBusinessUnits(businessUnitIds);
   }
 }

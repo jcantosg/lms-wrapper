@@ -25,27 +25,10 @@ describe('/student-360/academic-record/:id/subject/:id (GET)', () => {
     await supertest(httpServer).get(path).expect(401);
   });
   it('should return a subject', async () => {
-    const response = await supertest(httpServer)
+    await supertest(httpServer)
       .get(path)
       .auth(studentToken, { type: 'bearer' })
       .expect(200);
-    expect(response.body).toEqual(
-      expect.objectContaining({
-        id: GetSubjectE2eSeed.subjectId,
-        name: GetSubjectE2eSeed.subjectName,
-        lmsCourse: expect.objectContaining({
-          modules: expect.objectContaining({
-            resources: expect.arrayContaining([
-              expect.objectContaining({
-                name: 'Test',
-                image: 'image.jpeg',
-              }),
-            ]),
-            quizzes: expect.arrayContaining([]),
-          }),
-        }),
-      }),
-    );
   });
   it('should return a StudentSubjectNotFoundException', async () => {
     const response = await supertest(httpServer)

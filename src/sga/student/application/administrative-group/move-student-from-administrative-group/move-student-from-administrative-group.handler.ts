@@ -3,16 +3,25 @@ import { MoveStudentFromAdministrativeGroupCommand } from './move-student-from-a
 import { Student } from '#shared/domain/entity/student.entity';
 import { AdministrativeGroupGetter } from '#student/domain/service/administrative-group.getter.service';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
-import { AdministrativeGroupRepository } from '#student/domain/repository/administrative-group.repository';
 import { StudentRepository } from '#shared/domain/repository/student.repository';
+import { TransactionalService } from '#shared/domain/service/transactional-service.service';
+import { AdministrativeGroup } from '#student/domain/entity/administrative-group.entity';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { AcademicRecordNotFoundException } from '#student/shared/exception/academic-record.not-found.exception';
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 export class MoveStudentFromAdministrativeGroupHandler
   implements CommandHandler
 {
   constructor(
     private readonly studentRepository: StudentRepository,
-    private readonly administrativeGroupRepository: AdministrativeGroupRepository,
     private readonly administrativeGroupGetter: AdministrativeGroupGetter,
+    private readonly transactionalService: TransactionalService,
+    private readonly academicRecordRepository: AcademicRecordRepository,
+    private readonly enrollmentGetter: EnrollmentGetter,
+    private readonly updateInternalGroupsService: UpdateInternalGroupsService,
   ) {}
 
   async handle(
@@ -41,10 +50,11 @@ export class MoveStudentFromAdministrativeGroupHandler
 
       this.validateStudentsInOriginGroup(studentIds, originGroup.students);
 
-      await this.administrativeGroupRepository.moveStudents(
-        students,
+      return await this.moveStudents(
         originGroup,
         destinationGroup,
+        students,
+        adminUser,
       );
     } catch (error) {
       throw error;
@@ -77,6 +87,57 @@ export class MoveStudentFromAdministrativeGroupHandler
 
     if (missingStudentIds.length > 0) {
       throw new StudentNotFoundException();
+    }
+  }
+
+  private async moveStudents(
+    originGroup: AdministrativeGroup,
+    destinationGroup: AdministrativeGroup,
+    students: Student[],
+    adminUser: AdminUser,
+  ) {
+    const isChangedAcademicPeriod =
+      originGroup.academicPeriod.id !== destinationGroup.academicPeriod.id;
+
+    for (const student of students) {
+      originGroup.removeStudent(student);
+      destinationGroup.addStudent(student);
+      const academicRecord =
+        await this.academicRecordRepository.getStudentAcademicRecordByPeriodAndProgram(
+          student.id,
+          originGroup.academicPeriod.id,
+          originGroup.academicProgram.id,
+        );
+
+      if (!academicRecord) {
+        throw new AcademicRecordNotFoundException();
+      }
+
+      const enrollments =
+        await this.enrollmentGetter.getByAcademicRecord(academicRecord);
+
+      const internalGroups = isChangedAcademicPeriod
+        ? await this.updateInternalGroupsService.update(
+            student,
+            academicRecord,
+            enrollments,
+            destinationGroup.academicPeriod,
+            academicRecord.academicProgram,
+            adminUser,
+          )
+        : [];
+
+      academicRecord.updateAcademicPeriod(
+        destinationGroup.academicPeriod,
+        adminUser,
+      );
+
+      await this.transactionalService.execute({
+        academicRecord,
+        internalGroups,
+        originAdminGroup: originGroup,
+        destinationAdminGroup: destinationGroup,
+      });
     }
   }
 }

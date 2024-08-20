@@ -29,6 +29,7 @@ import { AddSpecialtyToAcademicProgramHandler } from '#academic-offering/applica
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { RemoveSpecialtyFromAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/remove-specialty-from-academic-program/remove-specialty-from-academic-program.handler';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { GetAcademicProgramsByPeriodsHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-multiple-periods/get-academic-programs-by-multiple-periods.handler';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -256,6 +257,13 @@ const removeSpecialtyFromAcademicProgramHandler = {
   ],
 };
 
+const getAcademicProgramsByPeriodsHandler = {
+  provide: GetAcademicProgramsByPeriodsHandler,
+  useFactory: (academicProgramRepository: AcademicProgramRepository) =>
+    new GetAcademicProgramsByPeriodsHandler(academicProgramRepository),
+  inject: [AcademicProgramRepository],
+};
+
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -275,4 +283,5 @@ export const academicProgramHandlers = [
   getSpecialtiesByAcademicProgramHandler,
   addSpecialtyToAcademicProgramHandler,
   removeSpecialtyFromAcademicProgramHandler,
+  getAcademicProgramsByPeriodsHandler,
 ];

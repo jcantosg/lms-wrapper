@@ -53,8 +53,18 @@ import { UpdateAdministrativeGroupsService } from '#student/domain/service/updat
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
-import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { GetInternalGroupsByBuPeriodsAndProgramsHandler } from '#student/application/get-internal-groups-by-bu-periods-and-programs/get-internal-groups-by-bu-periods-and-programs.handler';
+import { GetStudentsByBuPeriodsAndProgramsHandler } from '#student/application/get-students-by-bu-periods-and-programs/get-students-by-bu-periods-and-programs.handler';
+import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
+import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
+import { GetStudentAdministrativeProcessDocumentsHandler } from '#student/application/administrative-process/get-student-administrative-process-documents/get-student-administrative-process-documents.handler';
+import { EditAdministrativeProcessHandler } from '#student/application/administrative-process/edit-administrative-process/edit-administrative-process.handler';
+import { CreateSubjectCallsBatchHandler } from '#student/application/subject-call/create-subject-calls-batch/create-subject-calls-batch.handler';
+import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
+import { GetSubjectCallScheduleHistoryHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry/get-subject-call-schedule-hisotry.handler';
+import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository/subject-call-schedule-history.repository';
+import { GetSubjectCallScheduleHistoryDetailHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry-detail/get-subject-call-schedule-hisotry-detail.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -422,19 +432,132 @@ const createAdministrativeProcessHandler = {
   provide: CreateAdministrativeProcessHandler,
   useFactory: (
     administrativeProcessRepository: AdministrativeProcessRepository,
-    administrativeProcessDocumentRepository: AdministrativeProcessDocumentRepository,
     academicRecordGetter: AcademicRecordGetter,
+    studentGetter: StudentGetter,
   ): CreateAdministrativeProcessHandler =>
     new CreateAdministrativeProcessHandler(
       administrativeProcessRepository,
-      administrativeProcessDocumentRepository,
+      academicRecordGetter,
+      studentGetter,
+    ),
+  inject: [
+    AdministrativeProcessRepository,
+    AcademicRecordGetter,
+    StudentGetter,
+  ],
+};
+
+const getInternalGroupsByBuPeriodsAndProgramsHandler = {
+  provide: GetInternalGroupsByBuPeriodsAndProgramsHandler,
+  useFactory: (
+    internalGroupRepository: InternalGroupRepository,
+  ): GetInternalGroupsByBuPeriodsAndProgramsHandler =>
+    new GetInternalGroupsByBuPeriodsAndProgramsHandler(internalGroupRepository),
+  inject: [InternalGroupRepository],
+};
+
+const getStudentsByBuPeriodsAndProgramsHandler = {
+  provide: GetStudentsByBuPeriodsAndProgramsHandler,
+  useFactory: (
+    studentRepository: StudentRepository,
+  ): GetStudentsByBuPeriodsAndProgramsHandler =>
+    new GetStudentsByBuPeriodsAndProgramsHandler(studentRepository),
+  inject: [StudentRepository],
+};
+
+const getAllAdministrativeProcessHandler = {
+  provide: GetAllAdministrativeProcessesHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+  ): GetAllAdministrativeProcessesHandler =>
+    new GetAllAdministrativeProcessesHandler(administrativeProcessRepository),
+  inject: [AdministrativeProcessRepository],
+};
+
+const searchAdministrativeProcessHandler = {
+  provide: SearchAdministrativeProcessesHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+  ): SearchAdministrativeProcessesHandler =>
+    new SearchAdministrativeProcessesHandler(administrativeProcessRepository),
+  inject: [AdministrativeProcessRepository],
+};
+
+const getStudentAdministrativeProcessDocumentsHandler = {
+  provide: GetStudentAdministrativeProcessDocumentsHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+    studentGetter: StudentGetter,
+    academicRecordGetter: AcademicRecordGetter,
+  ): GetStudentAdministrativeProcessDocumentsHandler =>
+    new GetStudentAdministrativeProcessDocumentsHandler(
+      administrativeProcessRepository,
+      studentGetter,
       academicRecordGetter,
     ),
   inject: [
     AdministrativeProcessRepository,
-    AdministrativeProcessDocumentRepository,
+    StudentGetter,
     AcademicRecordGetter,
   ],
+};
+
+const editAdministrativeProcessHandler = {
+  provide: EditAdministrativeProcessHandler,
+  useFactory: (
+    administrativeProcessRepository: AdministrativeProcessRepository,
+  ): EditAdministrativeProcessHandler =>
+    new EditAdministrativeProcessHandler(administrativeProcessRepository),
+  inject: [AdministrativeProcessRepository],
+};
+
+const createSubjectCallsBatchHandler = {
+  provide: CreateSubjectCallsBatchHandler,
+  useFactory: (
+    subjectCallRepository: SubjectCallRepository,
+    businessUnitGetter: BusinessUnitGetter,
+    academicPeriodGetter: AcademicPeriodGetter,
+    academicProgramGetter: AcademicProgramGetter,
+    enrollmentGetter: EnrollmentGetter,
+    uuidService: UUIDGeneratorService,
+    eventDispatcher: EventDispatcher,
+  ): CreateSubjectCallsBatchHandler =>
+    new CreateSubjectCallsBatchHandler(
+      subjectCallRepository,
+      businessUnitGetter,
+      academicPeriodGetter,
+      academicProgramGetter,
+      enrollmentGetter,
+      uuidService,
+      eventDispatcher,
+    ),
+  inject: [
+    SubjectCallRepository,
+    BusinessUnitGetter,
+    AcademicPeriodGetter,
+    AcademicProgramGetter,
+    EnrollmentGetter,
+    UUIDGeneratorService,
+    EventDispatcher,
+  ],
+};
+
+const getSubjectCallScheduleHistoryHandler = {
+  provide: GetSubjectCallScheduleHistoryHandler,
+  useFactory: (
+    repository: SubjectCallScheduleHistoryRepository,
+  ): GetSubjectCallScheduleHistoryHandler =>
+    new GetSubjectCallScheduleHistoryHandler(repository),
+  inject: [SubjectCallScheduleHistoryRepository],
+};
+
+const getSubjectCallScheduleHistoryDetailHandler = {
+  provide: GetSubjectCallScheduleHistoryDetailHandler,
+  useFactory: (
+    repository: SubjectCallScheduleHistoryRepository,
+  ): GetSubjectCallScheduleHistoryDetailHandler =>
+    new GetSubjectCallScheduleHistoryDetailHandler(repository),
+  inject: [SubjectCallScheduleHistoryRepository],
 };
 
 export const handlers = [
@@ -465,4 +588,13 @@ export const handlers = [
   getInternalGroupStudentsHandler,
   removeStudentFromInternalGroupHandler,
   createAdministrativeProcessHandler,
+  getInternalGroupsByBuPeriodsAndProgramsHandler,
+  getStudentsByBuPeriodsAndProgramsHandler,
+  getAllAdministrativeProcessHandler,
+  searchAdministrativeProcessHandler,
+  getStudentAdministrativeProcessDocumentsHandler,
+  editAdministrativeProcessHandler,
+  createSubjectCallsBatchHandler,
+  getSubjectCallScheduleHistoryHandler,
+  getSubjectCallScheduleHistoryDetailHandler,
 ];

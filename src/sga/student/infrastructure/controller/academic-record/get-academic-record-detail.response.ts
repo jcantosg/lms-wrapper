@@ -19,6 +19,11 @@ interface AcademicRecordDetailResponse {
     name: string;
     code: string;
   };
+  initialAcademicPeriod: {
+    id: string;
+    name: string;
+    code: string;
+  };
   academicProgram: {
     id: string;
     name: string;
@@ -53,6 +58,11 @@ export class GetAcademicRecordDetailResponse {
         id: record.academicRecord.academicPeriod.id,
         name: record.academicRecord.academicPeriod.name,
         code: record.academicRecord.academicPeriod.code,
+      },
+      initialAcademicPeriod: {
+        id: record.academicRecord.initialAcademicPeriod.id,
+        name: record.academicRecord.initialAcademicPeriod.name,
+        code: record.academicRecord.initialAcademicPeriod.code,
       },
       academicProgram: {
         id: record.academicRecord.academicProgram.id,

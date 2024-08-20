@@ -11,23 +11,23 @@ import { BusinessUnitNotFoundException } from '#shared/domain/exception/business
 
 let handler: GetAcademicPeriodsByBusinessUnitHandler;
 let academicPeriodRepository: AcademicPeriodRepository;
-let getByBusinessUnitSpy: jest.SpyInstance;
+let getByBusinessUnitsSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit('b29b9b2a-9f86-40a7-926a-38b4b8eb4d01');
 const adminUser = getAnAdminUser();
 const academicPeriod = getAnAcademicPeriod();
 
 const query = new GetAcademicPeriodsByBusinessUnitQuery(
-  businessUnit.id,
+  [businessUnit.id],
   adminUser,
 );
 
 describe('Get Academic Periods By Business Unit Handler', () => {
   beforeAll(() => {
     academicPeriodRepository = new AcademicPeriodMockRepository();
-    getByBusinessUnitSpy = jest.spyOn(
+    getByBusinessUnitsSpy = jest.spyOn(
       academicPeriodRepository,
-      'getByBusinessUnit',
+      'getByMultipleBusinessUnits',
     );
     handler = new GetAcademicPeriodsByBusinessUnitHandler(
       academicPeriodRepository,
@@ -42,12 +42,12 @@ describe('Get Academic Periods By Business Unit Handler', () => {
 
   it('should return academic periods', async () => {
     adminUser.businessUnits.push(businessUnit);
-    getByBusinessUnitSpy.mockImplementation(() => {
+    getByBusinessUnitsSpy.mockImplementation(() => {
       return Promise.resolve([academicPeriod]);
     });
 
     const academicPeriods = await handler.handle(query);
-    expect(getByBusinessUnitSpy).toHaveBeenCalledTimes(1);
+    expect(getByBusinessUnitsSpy).toHaveBeenCalledTimes(1);
     expect(academicPeriods).toEqual([academicPeriod]);
   });
 

@@ -3,7 +3,7 @@ import { LmsModuleContent } from '#/lms-wrapper/domain/entity/lms-module-content
 import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
 
 export abstract class LmsCourseRepository {
-  abstract getOne(id: number): Promise<LmsCourse>;
+  abstract getOne(id: number, isSpeciality: boolean): Promise<LmsCourse>;
 
   abstract getAll(): Promise<LmsCourse[]>;
 
@@ -13,9 +13,13 @@ export abstract class LmsCourseRepository {
     id: number,
     contentId: number,
     student: LmsStudent,
+    isZeroBlockSubject: boolean,
   ): Promise<LmsModuleContent>;
 
-  abstract getByName(name: string): Promise<LmsCourse | null>;
+  abstract getByName(
+    name: string,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse | null>;
 
   abstract getCourseProgress(
     courseId: number,
@@ -29,4 +33,10 @@ export abstract class LmsCourseRepository {
     studentId: number,
     newStatus: number,
   ): Promise<void>;
+
+  abstract getCourse(
+    id: number,
+    lmsStudent: number,
+    isSpeciality: boolean,
+  ): Promise<LmsCourse>;
 }

@@ -12,8 +12,10 @@ import { AcademicRecordTransferRepository } from '#student/domain/repository/aca
 import { AcademicRecordTransferPostgresRepository } from '#student/infrastructure/repository/academic-record-transfer.postgres-repository';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
 import { AdministrativeProcessPostgresRepository } from '#student/infrastructure/repository/administrative-process.postgres-repository';
-import { AdministrativeProcessDocumentRepository } from '#student/domain/repository/administrative-process-document.repository';
-import { AdministrativeProcessDocumentPostgresRepository } from '#student/infrastructure/repository/administrative-process-document.postgres-repository';
+import { ChatRepository } from '#shared/domain/repository/chat-repository';
+import { ChatFirebaseRepository } from '#shared/infrastructure/repository/chat.firebase-repository';
+import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository/subject-call-schedule-history.repository';
+import { SubjectCallScheduleHistoryPostgresRepository } from '#student/infrastructure/repository/subject-call-shcedule-history.postgres-repository';
 
 export const repositories = [
   {
@@ -45,7 +47,11 @@ export const repositories = [
     useClass: AdministrativeProcessPostgresRepository,
   },
   {
-    provide: AdministrativeProcessDocumentRepository,
-    useClass: AdministrativeProcessDocumentPostgresRepository,
+    provide: ChatRepository,
+    useClass: ChatFirebaseRepository,
+  },
+  {
+    provide: SubjectCallScheduleHistoryRepository,
+    useClass: SubjectCallScheduleHistoryPostgresRepository,
   },
 ];

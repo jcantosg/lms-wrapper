@@ -55,9 +55,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       if (!lmsStudent) {
         lmsStudent = await this.createLmsStudentHandler.handle(
           new CreateLmsStudentCommand(
-            this.normalizeUsername(
-              `${entities.student.name}-${entities.student.surname}-${entities.student.id}`.toLowerCase(),
-            ),
+            entities.student.id,
             entities.student.name,
             `${entities.student.surname} ${entities.student.surname2}`,
             entities.student.email,
@@ -66,10 +64,12 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         );
         lmsId = lmsStudent.value.id;
       }
+
       lmsStudent.value.password = await this.passwordEncoder.encodePassword(
         this.rawPassword,
       );
       entities.student.lmsStudent = lmsStudent;
+
       await queryRunner.manager.save(Student, {
         id: entities.student.id,
         name: entities.student.name,
@@ -103,6 +103,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
         updatedBy: entities.student.updatedBy,
         academicRecords: entities.student.academicRecords,
         password: entities.student.password,
+        isDefense: entities.student.isDefense,
         lmsStudent: entities.student.lmsStudent,
       });
 
@@ -159,6 +160,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
+
       if (!!lmsId) {
         await this.deleteLmsStudentHandler.handle(
           new DeleteLmsStudentCommand(lmsId),
@@ -171,6 +173,7 @@ export class CreateStudentFromCRMTypeormTransactionalService extends CreateStude
           );
         }
       }
+
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();

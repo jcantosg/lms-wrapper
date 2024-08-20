@@ -7,6 +7,9 @@ export interface LmsModuleContentBody {
     id: number;
     name: string;
     url: string;
+    type: string;
+    moduleType: string;
+    description: string;
     contents:
       | {
           id: number;

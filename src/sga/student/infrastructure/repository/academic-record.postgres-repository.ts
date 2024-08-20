@@ -28,6 +28,7 @@ export class AcademicRecordPostgresRepository
       virtualCampus: academicRecord.virtualCampus,
       student: academicRecord.student,
       academicPeriod: academicRecord.academicPeriod,
+      initialAcademicPeriod: academicRecord.initialAcademicPeriod,
       academicProgram: academicRecord.academicProgram,
       modality: academicRecord.modality,
       isModular: academicRecord.isModular,
@@ -63,6 +64,10 @@ export class AcademicRecordPostgresRepository
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPeriod`,
       'academicPeriod',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.initialAcademicPeriod`,
+      'initialAcademicPeriod',
     );
     queryBuilder.leftJoinAndSelect(
       'academicProgram.title',
@@ -116,6 +121,7 @@ export class AcademicRecordPostgresRepository
         businessUnit: true,
         student: true,
         academicPeriod: true,
+        initialAcademicPeriod: true,
         academicProgram: {
           title: true,
           programBlocks: {
@@ -174,6 +180,10 @@ export class AcademicRecordPostgresRepository
         academicProgram: { id: academicProgramId },
         status: Not(AcademicRecordStatusEnum.CANCELLED),
       },
+      relations: {
+        academicProgram: true,
+        academicPeriod: true,
+      },
     });
   }
 
@@ -224,6 +234,7 @@ export class AcademicRecordPostgresRepository
                 academicRecord: true,
                 calls: true,
               },
+              evaluationType: true,
             },
           },
         },

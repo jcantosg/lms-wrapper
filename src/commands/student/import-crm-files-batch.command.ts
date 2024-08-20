@@ -88,7 +88,9 @@ async function bootstrap() {
       if (failedRows.length > 0) {
         logger.log(`${failedRows.length} rows failed:`);
         failedRows.forEach((row) => {
-          logger.log(`Row ${row.id} failed. Reason: ${row.errorMessage}`);
+          logger.log(
+            `Row ${row.id} contactId: ${row.contactId} failed. Reason: ${row.errorMessage}`,
+          );
         });
         hasErrors = true;
       }
@@ -102,7 +104,7 @@ async function bootstrap() {
       importResponses.forEach((response) => {
         if (response.status === CRMImportStatus.IMPORT_ERROR) {
           logger.log(
-            `Error while importing row ${response.id}. Reason: ${response.errorMessage}`,
+            `Error while importing row ${response.id} contactId: ${response.contactId}. Reason: ${response.errorMessage}`,
           );
           hasErrors = true;
         } else {

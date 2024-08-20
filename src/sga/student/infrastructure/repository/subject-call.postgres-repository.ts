@@ -47,6 +47,33 @@ export class SubjectCallPostgresRepository
     });
   }
 
+  async saveBatch(subjectCalls: SubjectCall[]): Promise<void> {
+    const queryRunner = this.repository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      for (const subjectCall of subjectCalls) {
+        await queryRunner.manager.save(SubjectCall, {
+          id: subjectCall.id,
+          enrollment: subjectCall.enrollment,
+          callNumber: subjectCall.callNumber,
+          finalGrade: subjectCall.finalGrade,
+          status: subjectCall.status,
+          callDate: subjectCall.callDate,
+          createdBy: subjectCall.createdBy,
+          updatedBy: subjectCall.updatedBy,
+          createdAt: subjectCall.createdAt,
+          updatedAt: subjectCall.updatedAt,
+        });
+      }
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async delete(subjectCall: SubjectCall): Promise<void> {
     await this.repository.delete(subjectCall.id);
   }

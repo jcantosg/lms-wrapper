@@ -18,7 +18,7 @@ describe('Get LMS Course Handler Test', () => {
   });
   it('should return a lms course', async () => {
     getSpy.mockImplementation(() => Promise.resolve(course));
-    const response = await handler.handle(new GetLMSCourseQuery(123));
+    const response = await handler.handle(new GetLMSCourseQuery(123, false));
     expect(response).toBe(course);
     expect(getSpy).toHaveBeenCalledTimes(1);
   });

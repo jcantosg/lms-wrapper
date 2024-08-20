@@ -28,6 +28,12 @@ export abstract class EnrollmentRepository {
     isSuperAdmin: boolean,
   ): Promise<Enrollment[]>;
 
+  abstract getByMultipleSubjects(
+    subjects: Subject[],
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment[]>;
+
   abstract getByStudentAndSubject(
     studentId: string,
     subjectId: string,

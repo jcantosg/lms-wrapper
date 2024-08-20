@@ -1,23 +1,23 @@
+import { Student } from '#shared/domain/entity/student.entity';
 import { BaseEntity } from '#shared/domain/entity/base.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
-import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { AdministrativeProcessFile } from '#student/domain/entity/administrative-process-file';
+import { FileAlreadyExistsException } from '#shared/domain/exception/sga-student/file-already-exists.exception';
 import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
-import { AdministrativeProcessDocument } from '#student/domain/entity/administrative-process-document.entity';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 export class AdministrativeProcess extends BaseEntity {
   private constructor(
     id: string,
     createdAt: Date,
     updatedAt: Date,
-    private _createdBy: AdminUser,
-    private _updatedBy: AdminUser,
     private _type: AdministrativeProcessTypeEnum,
     private _status: AdministrativeProcessStatusEnum,
-    private _photo: AdministrativeProcessDocument | null,
-    private _identityDocuments: AdministrativeProcessDocument | null,
-    private _accessDocuments: AdministrativeProcessDocument | null,
-    private _academicRecord: AcademicRecord,
+    private _files: AdministrativeProcessFile[],
+    private _student: Student | null,
+    private _academicRecord: AcademicRecord | null,
+    private _businessUnit: BusinessUnit | null,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -38,6 +38,14 @@ export class AdministrativeProcess extends BaseEntity {
     this._status = value;
   }
 
+  public get student(): Student | null {
+    return this._student;
+  }
+
+  public set student(value: Student) {
+    this._student = value;
+  }
+
   public get academicRecord(): AcademicRecord | null {
     return this._academicRecord;
   }
@@ -46,65 +54,67 @@ export class AdministrativeProcess extends BaseEntity {
     this._academicRecord = value;
   }
 
-  get createdBy(): AdminUser {
-    return this._createdBy;
+  public get files(): AdministrativeProcessFile[] {
+    return this._files;
   }
 
-  set createdBy(value: AdminUser) {
-    this._createdBy = value;
+  public set files(value: AdministrativeProcessFile[]) {
+    this._files = value;
   }
 
-  get updatedBy(): AdminUser {
-    return this._updatedBy;
+  public get businessUnit(): BusinessUnit | null {
+    return this._businessUnit;
   }
 
-  set updatedBy(value: AdminUser) {
-    this._updatedBy = value;
+  public set businessUnit(value: BusinessUnit | null) {
+    this._businessUnit = value;
   }
 
-  get photo(): AdministrativeProcessDocument | null {
-    return this._photo;
+  public addFile(file: AdministrativeProcessFile) {
+    if (
+      this._files.find((f) => f.value.documentType === file.value.documentType)
+    ) {
+      throw new FileAlreadyExistsException();
+    } else {
+      this._files.push(file);
+    }
   }
 
-  set photo(value: AdministrativeProcessDocument) {
-    this._photo = value;
+  public removeFile(file: AdministrativeProcessFile) {
+    this._files = this._files.filter(
+      (f) => f.value.documentType !== file.value.documentType,
+    );
   }
 
-  get identityDocuments(): AdministrativeProcessDocument | null {
-    return this._identityDocuments;
+  public updateFile(file: AdministrativeProcessFile) {
+    this.removeFile(file);
+    this.addFile(file);
   }
 
-  set identityDocuments(value: AdministrativeProcessDocument) {
-    this._identityDocuments = value;
-  }
-
-  get accessDocuments(): AdministrativeProcessDocument | null {
-    return this._accessDocuments;
-  }
-
-  set accessDocuments(value: AdministrativeProcessDocument) {
-    this._accessDocuments = value;
+  public update(status: AdministrativeProcessStatusEnum) {
+    this._status = status;
+    this.updatedAt = new Date();
   }
 
   static create(
     id: string,
     type: AdministrativeProcessTypeEnum,
-    academicRecord: AcademicRecord,
-    user: AdminUser,
-    identityDocuments: AdministrativeProcessDocument | null,
+    student: Student | null,
+    academicRecord: AcademicRecord | null,
+    businessUnit: BusinessUnit | null,
   ): AdministrativeProcess {
     return new AdministrativeProcess(
       id,
       new Date(),
       new Date(),
-      user,
-      user,
       type,
-      AdministrativeProcessStatusEnum.PENDING_DOCUMENTS,
-      null,
-      identityDocuments,
-      null,
+      type === AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD
+        ? AdministrativeProcessStatusEnum.PENDING_DOCUMENTS
+        : AdministrativeProcessStatusEnum.PENDING_VALIDATION,
+      [],
+      student,
       academicRecord,
+      businessUnit,
     );
   }
 }

@@ -3,6 +3,8 @@ from aws_cdk import (
     Duration,
     RemovalPolicy,
     Stack,
+    Tags,
+    aws_backup as backup,
     aws_cloudwatch as cloudwatch,
     aws_cloudfront as cloudfront,
     aws_cloudfront_origins as cloudfront_origins,
@@ -11,6 +13,7 @@ from aws_cdk import (
     aws_ecs as ecs,
     aws_efs as efs,
     aws_elasticloadbalancingv2 as elbv2,
+    aws_events as events,
     aws_logs as logs,
     aws_rds as rds,
     aws_s3 as s3,
@@ -99,10 +102,15 @@ class APIStack(Stack):
         db_enable_performance_insights: bool = False,
         db_multi_az: bool = False,
         db_preferred_maintenance_window: str = None,
+        db_preferred_backup_window: str = None,
         db_cloudwatch_logs_exports: list[str] = ["postgresql"],
         enable_monitoring: bool = False,
         sns_topic_arn: str = None,
         enable_cloudflare_auth_header: bool = False,
+        aws_backup_enable: bool = False,
+        aws_backup_use_default_plan: bool = True,
+        aws_backup_retention_days: int = 15,
+        aws_backup_schedule: str = "cron(30 2 * * ? *)",
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -204,7 +212,12 @@ class APIStack(Stack):
             auto_minor_version_upgrade=False,
             parameter_group=self.db_parameter_group,
             preferred_maintenance_window=db_preferred_maintenance_window,
-            backup_retention=Duration.days(15),
+            backup_retention=(
+                Duration.days(0)
+                if aws_backup_enable
+                else Duration.days(min(35, aws_backup_retention_days))
+            ),
+            preferred_backup_window=db_preferred_backup_window,
             copy_tags_to_snapshot=True,
             enable_performance_insights=db_enable_performance_insights,
             cloudwatch_logs_exports=db_cloudwatch_logs_exports,
@@ -239,7 +252,9 @@ class APIStack(Stack):
             lifecycle_rules=[
                 s3.LifecycleRule(
                     enabled=True,
-                    noncurrent_version_expiration=Duration.days(30),
+                    noncurrent_version_expiration=Duration.days(
+                        aws_backup_retention_days
+                    ),
                     noncurrent_versions_to_retain=3,
                 )
             ],
@@ -275,6 +290,7 @@ class APIStack(Stack):
             encrypted=True,
             performance_mode=efs.PerformanceMode.GENERAL_PURPOSE,
             throughput_mode=efs.ThroughputMode.BURSTING,
+            enable_automatic_backups=False if aws_backup_enable else True,
             removal_policy=RemovalPolicy.DESTROY,
         )
 
@@ -297,6 +313,10 @@ class APIStack(Stack):
             create_acl=efs.Acl(
                 owner_uid=POSIX_USER, owner_gid=POSIX_GROUP, permissions="750"
             ),
+        )
+
+        self.efs_filesystem.connections.allow_default_port_from(
+            bastion_security_group, "Bastion access to EFS"
         )
 
         CfnOutput(self, "FileSystemID", value=self.efs_filesystem.file_system_id)
@@ -840,12 +860,10 @@ class APIStack(Stack):
                 on_insufficient_data_topic=_sns_topic,
             )
 
-            alarm_factory_defaults = (
-                AlarmFactoryDefaults(
-                    actions_enabled=True,
-                    alarm_name_prefix=self.stack_name,
-                    action=action_strategy_default,
-                ),
+            alarm_factory_defaults = AlarmFactoryDefaults(
+                actions_enabled=True,
+                alarm_name_prefix=self.stack_name,
+                action=action_strategy_default,
             )
         else:
             alarm_factory_defaults = None
@@ -1085,6 +1103,62 @@ class APIStack(Stack):
                     ),
                 ],
             )
+
+        ###########
+        # Backups #
+        ###########
+        if aws_backup_enable:
+            NagSuppressions.add_resource_suppressions(
+                construct=self.database_instance,
+                suppressions=[
+                    NagPackSuppression(
+                        id="AwsSolutions-RDS13",
+                        reason="Managed by AWS Backup",
+                    ),
+                ],
+            )
+            if aws_backup_use_default_plan:
+                Tags.of(self.database_instance).add("BackupPlan", "Default")
+                Tags.of(self.efs_filesystem).add("BackupPlan", "Default")
+                Tags.of(self.media_bucket).add("BackupPlan", "Default")
+            else:
+                self.vault = backup.BackupVault(
+                    self,
+                    id="BackupVault",
+                    backup_vault_name=Stack.of(self).stack_name,
+                )
+                self.plan = backup.BackupPlan(
+                    self,
+                    id="BackupPlan",
+                    backup_plan_name=Stack.of(self).stack_name,
+                    windows_vss=True,
+                    backup_vault=self.vault,
+                    backup_plan_rules=[
+                        backup.BackupPlanRule(
+                            rule_name=Stack.of(self).stack_name,
+                            backup_vault=self.vault,
+                            enable_continuous_backup=aws_backup_retention_days <= 35,
+                            start_window=Duration.hours(1),
+                            completion_window=Duration.hours(10),
+                            schedule_expression=events.Schedule.expression(
+                                aws_backup_schedule
+                            ),
+                            delete_after=Duration.days(aws_backup_retention_days),
+                        )
+                    ],
+                )
+                self.selection = backup.BackupSelection(
+                    self,
+                    id="BackupSelection",
+                    backup_plan=self.plan,
+                    backup_selection_name=Stack.of(self).stack_name,
+                    allow_restores=True,
+                    resources=[
+                        backup.BackupResource(construct=self.database_instance),
+                        backup.BackupResource(construct=self.efs_filesystem),
+                        backup.BackupResource(construct=self.media_bucket),
+                    ],
+                )
 
         #######################
         # CDK NAG Supressions #

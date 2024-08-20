@@ -29,4 +29,10 @@ export abstract class StudentRepository {
   ): Promise<number>;
 
   abstract getByEmail(email: string): Promise<Student | null>;
+
+  abstract findByBuPeriodsAndPrograms(
+    businessUnitIds: string[],
+    academicPeriodIds: string[],
+    academicProgramIds: string[],
+  ): Promise<Student[]>;
 }

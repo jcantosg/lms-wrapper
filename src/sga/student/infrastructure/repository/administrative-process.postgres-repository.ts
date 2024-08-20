@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
 import { administrativeProcessSchema } from '#student/infrastructure/config/schema/administrative-process.schema';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 @Injectable()
 export class AdministrativeProcessPostgresRepository
@@ -25,12 +27,10 @@ export class AdministrativeProcessPostgresRepository
       status: administrativeProcess.status,
       createdAt: administrativeProcess.createdAt,
       updatedAt: administrativeProcess.updatedAt,
-      createdBy: administrativeProcess.createdBy,
-      updatedBy: administrativeProcess.updatedBy,
-      photo: administrativeProcess.photo,
-      identityDocuments: administrativeProcess.identityDocuments,
-      accessDocuments: administrativeProcess.accessDocuments,
       academicRecord: administrativeProcess.academicRecord,
+      files: administrativeProcess.files,
+      student: administrativeProcess.student,
+      businessUnit: administrativeProcess.businessUnit,
     });
   }
 
@@ -38,13 +38,104 @@ export class AdministrativeProcessPostgresRepository
     return await this.repository.findOne({
       where: { id },
       relations: {
-        createdBy: true,
-        updatedBy: true,
         academicRecord: true,
-        photo: true,
-        identityDocuments: true,
-        accessDocuments: true,
+        student: true,
+        businessUnit: true,
       },
     });
+  }
+
+  async getByStudent(studentId: string): Promise<AdministrativeProcess[]> {
+    return await this.repository.find({
+      where: { student: { id: studentId } },
+      relations: {
+        academicRecord: true,
+        student: true,
+        businessUnit: true,
+      },
+    });
+  }
+
+  async getByAcademicRecord(
+    academicRecordId: string,
+  ): Promise<AdministrativeProcess[]> {
+    return await this.repository.find({
+      where: { academicRecord: { id: academicRecordId } },
+      relations: {
+        academicRecord: true,
+        student: true,
+        businessUnit: true,
+      },
+    });
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.businessUnit`,
+      'business_unit',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicRecord`,
+      'academic_record',
+    );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.student`, 'student');
+
+    return queryBuilder;
+  }
+
+  async count(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<number> {
+    const aliasQuery = 'administrativeProcess';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getCount(queryBuilder);
+  }
+
+  async matching(
+    criteria: Criteria,
+    adminUserBusinessUnits: BusinessUnit[],
+    isSuperAdmin: boolean,
+  ): Promise<AdministrativeProcess[]> {
+    const aliasQuery = 'administrativeProcess';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+    const baseRepository = isSuperAdmin
+      ? this
+      : await this.filterBusinessUnits(
+          queryBuilder,
+          'oneToMany',
+          adminUserBusinessUnits,
+        );
+
+    return await (
+      await baseRepository.convertCriteriaToQueryBuilder(
+        criteria,
+        queryBuilder,
+        aliasQuery,
+      )
+    )
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .applyPagination(criteria, queryBuilder)
+      .getMany(queryBuilder);
   }
 }
