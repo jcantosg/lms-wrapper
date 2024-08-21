@@ -6,6 +6,6 @@ const orderByFields = ['sentBy', 'communicationStatus'];
 export const searchCommunicationsSchema = createCollectionSchema(
   orderByFields,
   {
-    subjectText: Joi.string().optional(),
+    text: Joi.string().required(),
   },
 );

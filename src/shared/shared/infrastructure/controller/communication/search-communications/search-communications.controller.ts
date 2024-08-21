@@ -20,7 +20,7 @@ interface SearchCommunicationsQueryParams {
   limit: number;
   orderBy: string;
   orderType: OrderTypes;
-  subjectText: string;
+  text: string;
 }
 
 @Controller('communication')
@@ -37,7 +37,7 @@ export class SearchCommunicationsController {
     @Request() req: AuthRequest,
   ) {
     const query = new SearchCommunicationsQuery(
-      queryParams.subjectText,
+      queryParams.text,
       queryParams.page,
       queryParams.limit,
       queryParams.orderBy,

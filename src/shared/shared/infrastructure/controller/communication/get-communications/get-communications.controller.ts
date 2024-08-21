@@ -26,7 +26,7 @@ interface GetCommunicationsQueryParams {
   businessUnit: string | null;
   createdAt: Date | null;
   sentAt: Date | null;
-  status: CommunicationStatus | null;
+  communicationStatus: CommunicationStatus | null;
 }
 
 @Controller('communication')
@@ -49,7 +49,7 @@ export class GetCommunicationsController {
       queryParams.businessUnit,
       queryParams.createdAt,
       queryParams.sentAt,
-      queryParams.status,
+      queryParams.communicationStatus,
       queryParams.orderBy,
       queryParams.orderType,
       queryParams.page,
