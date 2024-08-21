@@ -208,9 +208,4 @@ export class Communication extends BaseEntity {
     this._updatedBy = updatedBy;
     this.updatedAt = new Date();
   }
-
-  public updateSender(adminUser: AdminUser) {
-    this._sentAt = new Date();
-    this._sentBy = adminUser;
-  }
 }

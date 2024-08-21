@@ -39,6 +39,8 @@ export class CommunicationPostgresRepository
       publishOnBoard: communication.publishOnBoard,
       status: communication.status,
       message: communication.message,
+      sentBy: communication.sentBy,
+      sentAt: communication.sentAt,
     });
   }
 

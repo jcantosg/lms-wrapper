@@ -98,7 +98,6 @@ export class SendCommunicationHandler implements CommandHandler {
       CommunicationStatus.DRAFT,
       command.adminUser,
     );
-    communication.updateSender(command.adminUser);
 
     await this.communicationStudentRepository.deleteByCommunication(
       communication.id,
