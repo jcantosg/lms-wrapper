@@ -7,4 +7,5 @@ export class CommunicationStudentMockRepository
   save = jest.fn();
   deleteByCommunication = jest.fn();
   getByStudent = jest.fn();
+  countUnread = jest.fn();
 }

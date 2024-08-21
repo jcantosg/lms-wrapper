@@ -28,6 +28,17 @@ export class CommunicationStudentPostgresRepository
     });
   }
 
+  async countUnread(studentId: string): Promise<number> {
+    return await this.repository.count({
+      where: {
+        student: { id: studentId },
+        isDeleted: false,
+        isRead: false,
+        communication: { status: CommunicationStatus.SENT },
+      },
+    });
+  }
+
   async getByStudent(studentId: string): Promise<CommunicationStudent[]> {
     return await this.repository.find({
       where: {
