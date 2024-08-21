@@ -18,7 +18,7 @@ describe('/student-360/administrative-process (POST)', () => {
     await seeder.arrange();
     studentToken = await loginStudent(
       httpServer,
-      GetStudentAdministrativeProcessesE2eSeed.studentUniversaeEmail,
+      GetStudentAdministrativeProcessesE2eSeed.newStudentUniversaeEmail,
       GetStudentAdministrativeProcessesE2eSeed.studentPassword,
     );
   });
@@ -59,8 +59,6 @@ describe('/student-360/administrative-process (POST)', () => {
       .field('type', AdministrativeProcessTypeEnum.PHOTO)
       .attach('files', 'test/universae.jpeg')
       .expect(201);
-
-    // usar el repo para ver si se ha guardado
   });
 
   it('should create another administrative process', async () => {
@@ -69,13 +67,11 @@ describe('/student-360/administrative-process (POST)', () => {
       .auth(studentToken, { type: 'bearer' })
       .field(
         'academicRecordId',
-        GetStudentAdministrativeProcessesE2eSeed.academicRecordId,
+        GetStudentAdministrativeProcessesE2eSeed.newAcademicRecordId,
       )
       .field('type', AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS)
       .attach('files', 'test/universae.jpeg')
       .expect(201);
-
-    // usar el repo para ver si se ha guardado
   });
 
   afterAll(async () => {

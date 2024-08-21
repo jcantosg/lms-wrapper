@@ -75,7 +75,15 @@ export class GetStudentAdministrativeProcessesE2eSeed implements E2eSeed {
   public static studentUniversaeEmail = 'juan.ros@universae.com';
   public static studentPassword = 'pass123';
 
+  public static newStudentId = uuid();
+  public static newStudentName = 'Pepe';
+  public static newStudentSurname = 'Ros';
+  public static newStudentSurname2 = 'Lopez';
+  public static newStudentEmail = 'pepe@test.org';
+  public static newStudentUniversaeEmail = 'pepe.ros@universae.com';
+
   public static academicRecordId = uuid();
+  public static newAcademicRecordId = uuid();
   public static academicRecordIsModular = false;
 
   public static identityDocumentAdministrativeProcessId = uuid();
@@ -90,8 +98,10 @@ export class GetStudentAdministrativeProcessesE2eSeed implements E2eSeed {
   private academicProgram: AcademicProgram;
   private programBlock: ProgramBlock;
   private student: Student;
+  private newStudent: Student;
   private title: Title;
   private academicRecord: AcademicRecord;
+  private newAcademicRecord: AcademicRecord;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -231,6 +241,34 @@ export class GetStudentAdministrativeProcessesE2eSeed implements E2eSeed {
     );
     await this.academicRecordRepository.save(this.academicRecord);
 
+    this.newStudent = Student.createFromSGA(
+      GetStudentAdministrativeProcessesE2eSeed.newStudentId,
+      GetStudentAdministrativeProcessesE2eSeed.newStudentName,
+      GetStudentAdministrativeProcessesE2eSeed.newStudentSurname,
+      GetStudentAdministrativeProcessesE2eSeed.newStudentSurname2,
+      GetStudentAdministrativeProcessesE2eSeed.newStudentEmail,
+      GetStudentAdministrativeProcessesE2eSeed.newStudentUniversaeEmail,
+      this.superAdminUser,
+      await passwordEncoder.encodePassword(
+        GetStudentAdministrativeProcessesE2eSeed.studentPassword,
+      ),
+      null,
+    );
+    await this.studentRepository.save(this.newStudent);
+
+    this.newAcademicRecord = AcademicRecord.create(
+      GetStudentAdministrativeProcessesE2eSeed.newAcademicRecordId,
+      this.businessUnit,
+      this.virtualCampus,
+      this.newStudent,
+      this.academicPeriod,
+      this.academicProgram,
+      AcademicRecordModalityEnum.ELEARNING,
+      GetStudentAdministrativeProcessesE2eSeed.academicRecordIsModular,
+      this.superAdminUser,
+    );
+    await this.academicRecordRepository.save(this.newAcademicRecord);
+
     const identityDocumentAdminProcess = AdministrativeProcess.create(
       GetStudentAdministrativeProcessesE2eSeed.identityDocumentAdministrativeProcessId,
       AdministrativeProcessTypeEnum.IDENTITY_DOCUMENTS,
@@ -306,16 +344,14 @@ export class GetStudentAdministrativeProcessesE2eSeed implements E2eSeed {
 
   async clear(): Promise<void> {
     await this.administrativeProcessRepository.delete({});
-    await this.academicRecordRepository.delete(
-      GetStudentAdministrativeProcessesE2eSeed.academicRecordId,
-    );
-    await this.studentRepository.delete(this.student.id);
-    await this.programBlockRepository.delete(this.programBlock.id);
-    await this.academicPeriodRepository.delete(this.academicPeriod.id);
-    await this.academicProgramRepository.delete(this.academicProgram.id);
-    await this.titleRepository.delete(this.title.id);
-    await this.virtualCampusRepository.delete(this.virtualCampus.id);
-    await this.businessUnitRepository.delete(this.businessUnit.id);
+    await this.academicRecordRepository.delete({});
+    await this.studentRepository.delete({});
+    await this.programBlockRepository.delete({});
+    await this.academicPeriodRepository.delete({});
+    await this.academicProgramRepository.delete({});
+    await this.titleRepository.delete({});
+    await this.virtualCampusRepository.delete({});
+    await this.businessUnitRepository.delete({});
     await removeAdminUser(this.datasource, this.superAdminUser);
   }
 }

@@ -20,6 +20,8 @@ let fileManager: FileManager;
 let uuidGenerator: UUIDGeneratorService;
 
 let getAcademicRecordSpy: jest.SpyInstance;
+let getAdministrativeProcessSpy: jest.SpyInstance;
+let getAdministrativeProcessAcademicRecordSpy: jest.SpyInstance;
 let uploadFileSpy: jest.SpyInstance;
 let saveSpy: jest.SpyInstance;
 
@@ -50,6 +52,11 @@ describe('Upload Administrative Process Handler', () => {
     saveSpy = jest.spyOn(repository, 'save');
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'get');
     uploadFileSpy = jest.spyOn(fileManager, 'uploadFile');
+    getAdministrativeProcessSpy = jest.spyOn(repository, 'getByStudent');
+    getAdministrativeProcessAcademicRecordSpy = jest.spyOn(
+      repository,
+      'getByAcademicRecord',
+    );
 
     handler = new UploadAdministrativeProcessHandler(
       repository,
@@ -68,6 +75,10 @@ describe('Upload Administrative Process Handler', () => {
   it('should create an administrative process', async () => {
     getAcademicRecordSpy.mockImplementation(() =>
       Promise.resolve(academicRecord),
+    );
+    getAdministrativeProcessSpy.mockImplementation(() => Promise.resolve([]));
+    getAdministrativeProcessAcademicRecordSpy.mockImplementation(() =>
+      Promise.resolve([]),
     );
 
     await handler.handle(command);

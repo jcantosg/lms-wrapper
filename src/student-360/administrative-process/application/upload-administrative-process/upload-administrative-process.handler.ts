@@ -8,6 +8,8 @@ import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrati
 import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 import { AdministrativeProcessFile } from '#student/domain/entity/administrative-process-file';
 import { InvalidAcademicRecordException } from '#shared/domain/exception/sga-student/invalid-academic-record.exception';
+import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
+import { InvalidAdministrativeProcessStatusException } from '#shared/domain/exception/student-360/administrative-process.invalid-status.exception';
 
 const BYTES_IN_MB = 1048576;
 
@@ -34,23 +36,66 @@ export class UploadAdministrativeProcessHandler implements CommandHandler {
         command.academicRecordId,
       );
 
-      administrativeProcess = AdministrativeProcess.create(
-        this.uuidService.generate(),
-        command.type,
-        command.student,
-        academicRecord,
-        academicRecord.businessUnit,
+      const existingAdminProcesses = await this.repository.getByAcademicRecord(
+        academicRecord.id,
       );
-    } else {
-      administrativeProcess = AdministrativeProcess.create(
-        this.uuidService.generate(),
-        command.type,
-        command.student,
-        null,
-        null,
-      );
-    }
 
+      const existingAccessDocuments = existingAdminProcesses.find(
+        (ap) => ap.type === AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS,
+      );
+      console.log(existingAccessDocuments);
+
+      if (
+        existingAccessDocuments &&
+        [
+          AdministrativeProcessStatusEnum.DOCUMENT_VALIDATED,
+          AdministrativeProcessStatusEnum.PENDING_VALIDATION,
+        ].includes(existingAccessDocuments.status)
+      ) {
+        console.log('HERE????');
+
+        throw new InvalidAdministrativeProcessStatusException();
+      }
+
+      administrativeProcess =
+        existingAccessDocuments ??
+        AdministrativeProcess.create(
+          this.uuidService.generate(),
+          command.type,
+          command.student,
+          academicRecord,
+          academicRecord.businessUnit,
+        );
+    } else {
+      const existingAdminProcesses = await this.repository.getByStudent(
+        command.student.id,
+      );
+
+      const existingDocument = existingAdminProcesses.find(
+        (ap) => ap.type === command.type,
+      );
+
+      if (
+        existingDocument &&
+        [
+          AdministrativeProcessStatusEnum.DOCUMENT_VALIDATED,
+          AdministrativeProcessStatusEnum.PENDING_VALIDATION,
+        ].includes(existingDocument.status)
+      ) {
+        throw new InvalidAdministrativeProcessStatusException();
+      }
+
+      administrativeProcess =
+        existingDocument ??
+        AdministrativeProcess.create(
+          this.uuidService.generate(),
+          command.type,
+          command.student,
+          null,
+          null,
+        );
+    }
+    administrativeProcess.files = [];
     for (const file of command.files) {
       const url = await this.fileManager.uploadFile(file);
       administrativeProcess.addFile(
@@ -64,6 +109,8 @@ export class UploadAdministrativeProcessHandler implements CommandHandler {
       );
     }
 
+    administrativeProcess.status =
+      AdministrativeProcessStatusEnum.PENDING_VALIDATION;
     await this.repository.save(administrativeProcess);
   }
 }

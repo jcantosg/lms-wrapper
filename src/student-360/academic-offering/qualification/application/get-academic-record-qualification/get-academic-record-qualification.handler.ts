@@ -20,19 +20,21 @@ export class GetAcademicRecordQualificationHandler implements QueryHandler {
       );
     const enrollments =
       await this.enrollmentGetter.getByAcademicRecord(academicRecord);
-    const subjectCalls = [];
+    const subjectCalls: SubjectCall[] = [];
     for (const enrollment of enrollments) {
-      subjectCalls.push(
-        enrollment.calls.sort((a: SubjectCall, b: SubjectCall) => {
-          if (a.callDate < b.callDate) {
-            return -1;
-          } else if (a.callDate > b.callDate) {
-            return 1;
-          }
+      if (enrollment.calls.length > 0) {
+        subjectCalls.push(
+          enrollment.calls.sort((a: SubjectCall, b: SubjectCall) => {
+            if (a.callDate < b.callDate) {
+              return -1;
+            } else if (a.callDate > b.callDate) {
+              return 1;
+            }
 
-          return 0;
-        })[0],
-      );
+            return 0;
+          })[0],
+        );
+      }
     }
 
     return subjectCalls;

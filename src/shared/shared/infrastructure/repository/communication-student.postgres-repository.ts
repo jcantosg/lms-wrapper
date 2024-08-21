@@ -5,6 +5,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
 import { CommunicationStudentSchema } from '#shared/infrastructure/config/schema/communication-student.schema';
+import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 
 @Injectable()
 export class CommunicationStudentPostgresRepository
@@ -24,6 +25,18 @@ export class CommunicationStudentPostgresRepository
     return await this.repository.find({
       where: { communication: { id: communicationId } },
       relations: { communication: true, student: true },
+    });
+  }
+
+  async getByStudent(studentId: string): Promise<CommunicationStudent[]> {
+    return await this.repository.find({
+      where: {
+        student: { id: studentId },
+        isDeleted: false,
+        communication: { status: CommunicationStatus.SENT },
+      },
+      relations: { communication: { sentBy: true }, student: true },
+      order: { communication: { sentAt: 'DESC' } },
     });
   }
 

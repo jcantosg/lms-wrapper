@@ -5,5 +5,6 @@ export abstract class CommunicationStudentRepository {
   abstract getByCommunication(
     communicationId: string,
   ): Promise<CommunicationStudent[]>;
+  abstract getByStudent(studentId: string): Promise<CommunicationStudent[]>;
   abstract deleteByCommunication(communicationId: string): Promise<void>;
 }

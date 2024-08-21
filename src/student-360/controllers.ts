@@ -4,6 +4,7 @@ import { studentAuthControllers } from '#student-360/student/infrastructure/cont
 import { chatControllers } from '#student-360/chat/controller';
 import { qualificationControllers } from '#student-360/academic-offering/qualification/infrastructure/controllers/controllers';
 import { administrativeProcessControllers } from '#student-360/administrative-process/controller';
+import { communicationControllers } from '#student-360/communications/controllers';
 
 export const studentControllers = [
   ...studentAuthControllers,
@@ -12,4 +13,5 @@ export const studentControllers = [
   ...chatControllers,
   ...qualificationControllers,
   ...administrativeProcessControllers,
+  ...communicationControllers,
 ];
