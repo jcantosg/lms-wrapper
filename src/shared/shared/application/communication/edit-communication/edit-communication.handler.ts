@@ -90,7 +90,6 @@ export class EditCommunicationHandler implements CommandHandler {
       command.sendByEmail,
       command.publishOnBoard,
       CommunicationStatus.DRAFT,
-      null,
       command.adminUser,
     );
 

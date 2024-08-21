@@ -199,15 +199,18 @@ export class Communication extends BaseEntity {
     sendByEmail: boolean,
     publishOnBoard: boolean,
     status: CommunicationStatus,
-    sentAt: Date | null,
     updatedBy: AdminUser,
   ): void {
     this._message = message;
     this._sendByEmail = sendByEmail;
     this._publishOnBoard = publishOnBoard;
     this._status = status;
-    this._sentAt = sentAt;
     this._updatedBy = updatedBy;
     this.updatedAt = new Date();
+  }
+
+  public updateSender(adminUser: AdminUser) {
+    this._sentAt = new Date();
+    this._sentBy = adminUser;
   }
 }
