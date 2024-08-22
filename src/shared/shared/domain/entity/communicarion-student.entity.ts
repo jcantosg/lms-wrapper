@@ -74,4 +74,8 @@ export class CommunicationStudent extends BaseEntity {
   public read() {
     this._isRead = true;
   }
+  
+  public delete() {
+    this._isDeleted = true;
+  }
 }
