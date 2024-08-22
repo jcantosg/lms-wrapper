@@ -28,6 +28,20 @@ export class CommunicationStudentPostgresRepository
     });
   }
 
+  async getByCommunicationAndStudent(
+    communicationId: string,
+    studentId: string,
+  ): Promise<CommunicationStudent | null> {
+    return await this.repository.findOne({
+      where: {
+        communication: { id: communicationId },
+        student: { id: studentId },
+        isDeleted: false,
+      },
+      relations: { communication: true, student: true },
+    });
+  }
+
   async countUnread(studentId: string): Promise<number> {
     return await this.repository.count({
       where: {

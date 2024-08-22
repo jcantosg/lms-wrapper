@@ -70,4 +70,8 @@ export class CommunicationStudent extends BaseEntity {
     this._isDeleted = isDeleted;
     this.updatedAt = new Date();
   }
+
+  public read() {
+    this._isRead = true;
+  }
 }
