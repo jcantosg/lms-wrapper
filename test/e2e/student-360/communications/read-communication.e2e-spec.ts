@@ -6,9 +6,9 @@ import { GetStudentCommunicationsE2eSeed } from '#test/e2e/student-360/communica
 import { CommunicationStudentSchema } from '#shared/infrastructure/config/schema/communication-student.schema';
 import { CommunicationStudentPostgresRepository } from '#shared/infrastructure/repository/communication-student.postgres-repository';
 
-const path = `/student-360/communication/${GetStudentCommunicationsE2eSeed.communicationId}`;
+const path = `/student-360/communications/${GetStudentCommunicationsE2eSeed.communicationId}`;
 
-describe('/student-360/communication/{{id}} (PUT)', () => {
+describe('/student-360/communications/{{id}} (PUT)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let studentToken: string;

@@ -17,7 +17,7 @@ import { ReadCommunicationCommand } from '#student-360/communications/applicatio
 export class ReadCommunicationController {
   constructor(private readonly handler: ReadCommunicationHandler) {}
 
-  @Put('communication/:id')
+  @Put('communications/:id')
   @UseGuards(StudentJwtAuthGuard)
   @UsePipes(new JoiRequestParamIdValidationPipeService(uuidSchema))
   async readCommunication(

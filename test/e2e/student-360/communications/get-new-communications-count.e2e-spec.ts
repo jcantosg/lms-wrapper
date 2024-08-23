@@ -4,9 +4,9 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { loginStudent } from '#test/e2e/sga/e2e-auth-helper';
 import { GetStudentCommunicationsE2eSeed } from '#test/e2e/student-360/communications/get-student-communications.e2e-seed';
 
-const path = `/student-360/communication/not-read`;
+const path = `/student-360/communications/not-read`;
 
-describe('/student-360/communication/not-read (GET)', () => {
+describe('/student-360/communications/not-read (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let studentToken: string;

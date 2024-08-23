@@ -79,7 +79,7 @@ export class GetAllStudentAdministrativeProcessesResponse {
         );
 
         return {
-          id: ap.id,
+          id: ap.academicRecord!.id,
           titleName: ap.academicRecord?.academicProgram.title.name ?? '',
           accessDocumentation: documentation
             ? {

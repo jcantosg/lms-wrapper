@@ -8,7 +8,7 @@ import { GetNewCommunicationsCountHandler } from '#student-360/communications/ap
 export class GetNewCommunicationsCountController {
   constructor(private readonly handler: GetNewCommunicationsCountHandler) {}
 
-  @Get('communication/not-read')
+  @Get('communications/not-read')
   @UseGuards(StudentJwtAuthGuard)
   async getStudentCommunications(@Request() req: StudentAuthRequest) {
     const query = new GetNewCommunicationsCountQuery(req.user);

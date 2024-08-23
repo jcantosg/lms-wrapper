@@ -65,7 +65,7 @@ describe('/student-360/administrative-processes (GET)', () => {
       },
       academicRecords: [
         {
-          id: GetStudentAdministrativeProcessesE2eSeed.newAcademicRecordAdministrativeProcessId,
+          id: GetStudentAdministrativeProcessesE2eSeed.academicRecordId,
           titleName: 'Ingenieria informatica',
           accessDocumentation: {
             id: GetStudentAdministrativeProcessesE2eSeed.accessDocumentAdministrativeProcessId,
