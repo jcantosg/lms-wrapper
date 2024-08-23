@@ -3,6 +3,8 @@ export enum AdministrativeProcessTypeEnum {
   PHOTO = 'Foto',
   IDENTITY_DOCUMENTS = 'Documento de indentidad',
   ACCESS_DOCUMENTS = 'Documento de acceso',
+  ACADEMIC_RECOGNITION = 'Convalidación',
+  RESIGNATION = 'Renuncia',
 }
 
 export const getAllAdministrativeProcessTypes =

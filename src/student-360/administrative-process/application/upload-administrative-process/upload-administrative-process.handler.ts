@@ -27,6 +27,8 @@ export class UploadAdministrativeProcessHandler implements CommandHandler {
       [
         AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS,
         AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
+        AdministrativeProcessTypeEnum.ACADEMIC_RECOGNITION,
+        AdministrativeProcessTypeEnum.RESIGNATION,
       ].includes(command.type)
     ) {
       if (command.academicRecordId === null) {
@@ -43,29 +45,81 @@ export class UploadAdministrativeProcessHandler implements CommandHandler {
       const existingAccessDocuments = existingAdminProcesses.find(
         (ap) => ap.type === AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS,
       );
-      console.log(existingAccessDocuments);
+
+      const existingAcademicRecognition = existingAdminProcesses.find(
+        (ap) => ap.type === AdministrativeProcessTypeEnum.ACADEMIC_RECOGNITION,
+      );
+
+      const existingResignation = existingAdminProcesses.find(
+        (ap) => ap.type === AdministrativeProcessTypeEnum.RESIGNATION,
+      );
 
       if (
-        existingAccessDocuments &&
-        [
-          AdministrativeProcessStatusEnum.DOCUMENT_VALIDATED,
-          AdministrativeProcessStatusEnum.PENDING_VALIDATION,
-        ].includes(existingAccessDocuments.status)
+        (existingAccessDocuments &&
+          command.type === AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS &&
+          [
+            AdministrativeProcessStatusEnum.DOCUMENT_VALIDATED,
+            AdministrativeProcessStatusEnum.PENDING_VALIDATION,
+          ].includes(existingAccessDocuments.status)) ||
+        (existingAcademicRecognition &&
+          command.type === AdministrativeProcessTypeEnum.ACADEMIC_RECOGNITION &&
+          [
+            AdministrativeProcessStatusEnum.DOCUMENT_VALIDATED,
+            AdministrativeProcessStatusEnum.PENDING_VALIDATION,
+          ].includes(existingAcademicRecognition.status)) ||
+        (existingResignation &&
+          command.type === AdministrativeProcessTypeEnum.RESIGNATION &&
+          [
+            AdministrativeProcessStatusEnum.DOCUMENT_VALIDATED,
+            AdministrativeProcessStatusEnum.PENDING_VALIDATION,
+          ].includes(existingResignation.status))
       ) {
-        console.log('HERE????');
-
         throw new InvalidAdministrativeProcessStatusException();
       }
 
-      administrativeProcess =
-        existingAccessDocuments ??
-        AdministrativeProcess.create(
-          this.uuidService.generate(),
-          command.type,
-          command.student,
-          academicRecord,
-          academicRecord.businessUnit,
-        );
+      switch (command.type) {
+        case AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS:
+          administrativeProcess =
+            existingAccessDocuments ??
+            AdministrativeProcess.create(
+              this.uuidService.generate(),
+              command.type,
+              command.student,
+              academicRecord,
+              academicRecord.businessUnit,
+            );
+          break;
+        case AdministrativeProcessTypeEnum.ACADEMIC_RECOGNITION:
+          administrativeProcess =
+            existingAcademicRecognition ??
+            AdministrativeProcess.create(
+              this.uuidService.generate(),
+              command.type,
+              command.student,
+              academicRecord,
+              academicRecord.businessUnit,
+            );
+          break;
+        case AdministrativeProcessTypeEnum.RESIGNATION:
+          administrativeProcess =
+            existingResignation ??
+            AdministrativeProcess.create(
+              this.uuidService.generate(),
+              command.type,
+              command.student,
+              academicRecord,
+              academicRecord.businessUnit,
+            );
+          break;
+        default:
+          administrativeProcess = AdministrativeProcess.create(
+            this.uuidService.generate(),
+            command.type,
+            command.student,
+            academicRecord,
+            academicRecord.businessUnit,
+          );
+      }
     } else {
       const existingAdminProcesses = await this.repository.getByStudent(
         command.student.id,

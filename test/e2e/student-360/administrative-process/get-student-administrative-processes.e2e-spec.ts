@@ -79,6 +79,9 @@ describe('/student-360/administrative-processes (GET)', () => {
               },
             ],
           },
+          academicRecognition: null,
+          resignation: null,
+          showRecognitionAndResignation: true,
         },
       ],
     });

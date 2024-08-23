@@ -51,7 +51,7 @@ export class AdministrativeProcessPostgresRepository
       relations: {
         academicRecord: { academicProgram: { title: true } },
         student: true,
-        businessUnit: true,
+        businessUnit: { country: true },
       },
     });
   }
@@ -64,7 +64,7 @@ export class AdministrativeProcessPostgresRepository
       relations: {
         academicRecord: { academicProgram: { title: true } },
         student: true,
-        businessUnit: true,
+        businessUnit: { country: true },
       },
     });
   }
