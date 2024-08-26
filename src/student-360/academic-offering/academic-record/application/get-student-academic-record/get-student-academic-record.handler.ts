@@ -8,6 +8,7 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { AcademicRecordBlockZeroNotFoundException } from '#student-360/academic-offering/academic-record/domain/exception/academic-record.block-zero-not-found.exception';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
 
 export class GetStudentAcademicRecordHandler implements QueryHandler {
   constructor(
@@ -34,9 +35,10 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
       academicRecord.academicProgram,
       blockZero.createdBy,
     );
-    specialityBlock.subjects = blockZero?.subjects.filter(
-      (subject) => subject.type === SubjectType.SPECIALTY,
+    specialityBlock.subjects = this.getSpecialties(
+      academicRecord.academicProgram.programBlocks,
     );
+
     blockZero.subjects = blockZero?.subjects.filter(
       (subject) => subject.type !== SubjectType.SPECIALTY,
     );
@@ -72,5 +74,24 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
     );
 
     return academicRecord;
+  }
+
+  private getSpecialties(programBlocks: ProgramBlock[]): Subject[] {
+    const specialties: Subject[] = [];
+    for (const block of programBlocks) {
+      specialties.push(
+        ...block.subjects.filter(
+          (subject) => subject.type === SubjectType.SPECIALTY,
+        ),
+      );
+    }
+
+    return specialties.reduce((accumulator: Subject[], current: Subject) => {
+      if (!accumulator.find((ap) => ap.id === current.id)) {
+        accumulator.push(current);
+      }
+
+      return accumulator;
+    }, []);
   }
 }
