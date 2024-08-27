@@ -17,6 +17,10 @@ type GetAcademicRecognitionApplicationQueryParams = {
   academicRecord: string;
 };
 
+type AcademicRecognitionApplicationResponse = {
+  url: string;
+};
+
 @Controller('student-360')
 export class GetAcademicRecognitionApplicationController {
   constructor(
@@ -33,12 +37,14 @@ export class GetAcademicRecognitionApplicationController {
   async getAcademicRecognitionApplication(
     @Req() req: StudentAuthRequest,
     @Query() queryParams: GetAcademicRecognitionApplicationQueryParams,
-  ): Promise<string> {
+  ): Promise<AcademicRecognitionApplicationResponse> {
     const query = new GetAcademicRecognitionApplicationQuery(
       queryParams.academicRecord,
       req.user,
     );
 
-    return await this.handler.handle(query);
+    const url = await this.handler.handle(query);
+
+    return { url };
   }
 }

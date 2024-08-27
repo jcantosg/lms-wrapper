@@ -17,6 +17,10 @@ type GetResignationApplicationQueryParams = {
   academicRecord: string;
 };
 
+type ResignationApplicationResponse = {
+  url: string;
+};
+
 @Controller('student-360')
 export class GetResignationApplicationController {
   constructor(private readonly handler: GetResignationApplicationHandler) {}
@@ -31,12 +35,14 @@ export class GetResignationApplicationController {
   async getResignationApplication(
     @Req() req: StudentAuthRequest,
     @Query() queryParams: GetResignationApplicationQueryParams,
-  ): Promise<string> {
+  ): Promise<ResignationApplicationResponse> {
     const query = new GetResignationApplicationQuery(
       queryParams.academicRecord,
       req.user,
     );
 
-    return await this.handler.handle(query);
+    const url = await this.handler.handle(query);
+
+    return { url };
   }
 }
