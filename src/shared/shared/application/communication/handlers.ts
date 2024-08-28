@@ -20,36 +20,30 @@ const createCommunicationHandler = {
   provide: CreateCommunicationHandler,
   useFactory: (
     communicationRepository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
     businessUnitGetter: BusinessUnitGetter,
     academicPeriodGetter: AcademicPeriodGetter,
     titleGetter: TitleGetter,
     academicProgramGetter: AcademicProgramGetter,
     internalGroupGetter: InternalGroupGetter,
     studentGetter: StudentGetter,
-    uuidService: UUIDGeneratorService,
   ) =>
     new CreateCommunicationHandler(
       communicationRepository,
-      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
-      uuidService,
     ),
   inject: [
     CommunicationRepository,
-    CommunicationStudentRepository,
     BusinessUnitGetter,
     AcademicPeriodGetter,
     TitleGetter,
     AcademicProgramGetter,
     InternalGroupGetter,
     StudentGetter,
-    UUIDGeneratorService,
   ],
 };
 
@@ -87,36 +81,30 @@ const editCommunicationHandler = {
   provide: EditCommunicationHandler,
   useFactory: (
     communicationRepository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
     businessUnitGetter: BusinessUnitGetter,
     academicPeriodGetter: AcademicPeriodGetter,
     titleGetter: TitleGetter,
     academicProgramGetter: AcademicProgramGetter,
     internalGroupGetter: InternalGroupGetter,
     studentGetter: StudentGetter,
-    uuidService: UUIDGeneratorService,
   ) =>
     new EditCommunicationHandler(
       communicationRepository,
-      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
-      uuidService,
     ),
   inject: [
     CommunicationRepository,
-    CommunicationStudentRepository,
     BusinessUnitGetter,
     AcademicPeriodGetter,
     TitleGetter,
     AcademicProgramGetter,
     InternalGroupGetter,
     StudentGetter,
-    UUIDGeneratorService,
   ],
 };
 

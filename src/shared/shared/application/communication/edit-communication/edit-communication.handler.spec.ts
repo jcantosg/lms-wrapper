@@ -23,27 +23,21 @@ import { TitleMockRepository } from '#test/mocks/sga/academic-offering/title.moc
 import { AcademicProgramMockRepository } from '#test/mocks/sga/academic-offering/academic-program.mock-repository';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';
-import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
-import { CommunicationStudentMockRepository } from '#test/mocks/shared/communication-student.mock-repository';
-import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
-import clearAllMocks = jest.clearAllMocks;
-import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 import { CommunicationNotFoundException } from '#shared/domain/exception/communication/communication.not-found.exception';
 import { EditCommunicationHandler } from '#shared/application/communication/edit-communication/edit-communication.handler';
 import { EditCommunicationCommand } from '#shared/application/communication/edit-communication/edit-communication.command';
 import { Message } from '#shared/domain/value-object/message.value-object';
+import clearAllMocks = jest.clearAllMocks;
 
 let handler: EditCommunicationHandler;
 let repository: CommunicationMockRepository;
-let communicationStudentRepository: CommunicationStudentRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let academicPeriodGetter: AcademicPeriodGetter;
 let titleGetter: TitleGetter;
 let academicProgramGetter: AcademicProgramGetter;
 let internalGroupGetter: InternalGroupGetter;
 let studentGetter: StudentGetter;
-const uuidGenerator: UUIDGeneratorService = new UUIDv4GeneratorService();
 
 let saveSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -53,7 +47,6 @@ let getAcademicProgramSpy: jest.SpyInstance;
 let getInternalGroupSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
 let getSpy: jest.SpyInstance;
-let deleteSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit();
 const adminUser = getAnAdminUser();
@@ -88,7 +81,6 @@ const command = new EditCommunicationCommand(
 describe('Edit Communication Handler', () => {
   beforeEach(() => {
     repository = new CommunicationMockRepository();
-    communicationStudentRepository = new CommunicationStudentMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     academicPeriodGetter = new AcademicPeriodGetter(
       new AcademicPeriodMockRepository(),
@@ -104,14 +96,12 @@ describe('Edit Communication Handler', () => {
 
     handler = new EditCommunicationHandler(
       repository,
-      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
-      uuidGenerator,
     );
 
     saveSpy = jest.spyOn(repository, 'save');
@@ -122,10 +112,6 @@ describe('Edit Communication Handler', () => {
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
     getInternalGroupSpy = jest.spyOn(internalGroupGetter, 'getWithStudents');
     getStudentSpy = jest.spyOn(studentGetter, 'get');
-    deleteSpy = jest.spyOn(
-      communicationStudentRepository,
-      'deleteByCommunication',
-    );
   });
 
   it('should throw a CommunicationNotFoundException if communication doesnt exist', async () => {
@@ -144,11 +130,9 @@ describe('Edit Communication Handler', () => {
     getAcademicProgramSpy.mockResolvedValue(academicProgram);
     getInternalGroupSpy.mockResolvedValue(internalGroup);
     getStudentSpy.mockResolvedValue(student);
-    deleteSpy.mockResolvedValue(null);
 
     await handler.handle(command);
 
-    expect(deleteSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({

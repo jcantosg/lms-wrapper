@@ -6,7 +6,6 @@ import { studentSchema } from '#shared/infrastructure/config/schema/student.sche
 import { Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
-import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
 export class StudentPostgresRepository
   extends TypeOrmRepository<Student>
@@ -218,30 +217,26 @@ export class StudentPostgresRepository
     });
   }
 
-  async findByBuPeriodsAndPrograms(
-    businessUnitIds: string[],
-    academicPeriodIds: string[],
+  async getByProgramsAndGroups(
     academicProgramIds: string[],
+    internalGroupIds: string[],
   ): Promise<Student[]> {
     const queryBuilder = this.repository
       .createQueryBuilder('student')
       .leftJoin('student.academicRecords', 'academicRecord')
-      .leftJoin('academicRecord.businessUnit', 'businessUnit')
-      .leftJoin('academicRecord.academicPeriod', 'academicPeriod')
       .leftJoin('academicRecord.academicProgram', 'academicProgram')
-      .where('businessUnit.id IN (:...businessUnitIds)', { businessUnitIds })
-      .andWhere('academicPeriod.id IN (:...academicPeriodIds)', {
-        academicPeriodIds,
-      })
-      .andWhere('academicProgram.id IN (:...academicProgramIds)', {
+      .where('academicProgram.id IN (:...academicProgramIds)', {
         academicProgramIds,
-      })
-      .andWhere('academicRecord.status = :status', {
-        status: AcademicRecordStatusEnum.VALID,
       });
 
-    const students = await queryBuilder.getMany();
+    if (internalGroupIds.length > 0) {
+      queryBuilder
+        .leftJoin('student.internalGroups', 'internalGroup')
+        .andWhere('internalGroup.id IN (:...internalGroupIds)', {
+          internalGroupIds,
+        });
+    }
 
-    return Array.from(new Set(students));
+    return await queryBuilder.getMany();
   }
 }

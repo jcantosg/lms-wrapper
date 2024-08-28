@@ -7,7 +7,7 @@ export interface StudentResponseBasic {
   avatar: string;
 }
 
-export class GetStudentsByBuPeriodsAndProgramsResponse {
+export class GetStudentsByProgramsAndGroupsResponse {
   static create(students: any[]): StudentResponseBasic[] {
     return students.map((student) => ({
       id: student.id,

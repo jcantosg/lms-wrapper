@@ -11,23 +11,19 @@ import { TitleGetter } from '#academic-offering/domain/service/title/title-gette
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
-import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
 import { Student } from '#shared/domain/entity/student.entity';
-import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
-import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 
 export class CreateCommunicationHandler implements CommandHandler {
   constructor(
     private readonly repository: CommunicationRepository,
-    private readonly communicationStudentRepository: CommunicationStudentRepository,
     private readonly businessUnitGetter: BusinessUnitGetter,
     private readonly academicPeriodGetter: AcademicPeriodGetter,
     private readonly titleGetter: TitleGetter,
     private readonly academicProgramGetter: AcademicProgramGetter,
     private readonly internalGroupGetter: InternalGroupGetter,
     private readonly studentGetter: StudentGetter,
-    private readonly uuidService: UUIDGeneratorService,
   ) {}
 
   async handle(command: CreateCommunicationCommand): Promise<number> {
@@ -84,42 +80,56 @@ export class CreateCommunicationHandler implements CommandHandler {
       null,
       CommunicationStatus.DRAFT,
       null,
+      students,
     );
     await this.repository.save(communication);
 
-    const allStudents = this.getAllStudents(students, internalGroups);
-    for (const student of allStudents) {
-      await this.communicationStudentRepository.save(
-        CommunicationStudent.create(
-          this.uuidService.generate(),
-          communication,
-          student,
-          false,
-          false,
-        ),
-      );
-    }
+    const allStudents = await this.getAllStudents(
+      command.studentIds,
+      internalGroups,
+      academicPrograms,
+    );
 
     return allStudents.length;
   }
 
-  private getAllStudents(students: Student[], internalGroups: InternalGroup[]) {
-    const allStudents: Student[] = [];
-
-    if (students && students.length > 0) {
-      allStudents.push(...students);
+  private async getAllStudents(
+    studentIds: string[],
+    internalGroups: InternalGroup[],
+    academicPrograms: AcademicProgram[],
+  ) {
+    if (studentIds.length > 0) {
+      return await Promise.all(
+        studentIds.map((id) => this.studentGetter.get(id)),
+      );
     }
 
     if (internalGroups && internalGroups.length > 0) {
+      const internalGroupsStudents: Student[] = [];
       for (const internalGroup of internalGroups) {
         if (internalGroup.students && internalGroup.students.length > 0) {
-          allStudents.push(...internalGroup.students);
+          internalGroupsStudents.push(...internalGroup.students);
         }
       }
+
+      return this.uniqueStudents(internalGroupsStudents);
     }
 
-    return allStudents.reduce((accumulator: Student[], current: Student) => {
-      if (!accumulator.find((student) => student.id === student.id)) {
+    if (academicPrograms && academicPrograms.length > 0) {
+      return this.uniqueStudents(
+        await this.studentGetter.getByAcademicProgramsAndGroups(
+          academicPrograms.map((ap) => ap.id),
+          [],
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  private uniqueStudents(students: Student[]): Student[] {
+    return students.reduce((accumulator: Student[], current: Student) => {
+      if (!accumulator.find((student) => student.id === current.id)) {
         accumulator.push(current);
       }
 

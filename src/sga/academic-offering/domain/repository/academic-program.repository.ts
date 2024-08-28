@@ -36,8 +36,9 @@ export abstract class AcademicProgramRepository {
 
   abstract getByCode(code: string): Promise<AcademicProgram | null>;
 
-  abstract findByAcademicPeriods(
+  abstract getByAcademicPeriodsAndTitles(
     academicPeriodIds: string[],
+    titleIds: string[],
     businessUnitIds: string[],
     isSuperAdmin: boolean,
   ): Promise<AcademicProgram[]>;

@@ -210,13 +210,10 @@ export class AcademicPeriodPostgresRepository
   async getByMultipleBusinessUnits(
     businessUnitIds: string[],
   ): Promise<AcademicPeriod[]> {
-    console.log(businessUnitIds);
-
     const academicPeriods = await this.repository.find({
       where: { businessUnit: { id: In(businessUnitIds) } },
       relations: { businessUnit: true, academicPrograms: true },
     });
-
     const filteredAcademicPeriods = academicPeriods.filter((academicPeriod) =>
       academicPeriod.hasAcademicPrograms(),
     );

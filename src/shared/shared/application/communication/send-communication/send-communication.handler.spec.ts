@@ -59,7 +59,6 @@ let getAcademicProgramSpy: jest.SpyInstance;
 let getInternalGroupSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
 let getSpy: jest.SpyInstance;
-let deleteSpy: jest.SpyInstance;
 let sendSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit();
@@ -131,10 +130,6 @@ describe('Send Communication Handler', () => {
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
     getInternalGroupSpy = jest.spyOn(internalGroupGetter, 'getWithStudents');
     getStudentSpy = jest.spyOn(studentGetter, 'get');
-    deleteSpy = jest.spyOn(
-      communicationStudentRepository,
-      'deleteByCommunication',
-    );
     sendSpy = jest.spyOn(mailer, 'sendMail');
   });
 
@@ -164,12 +159,10 @@ describe('Send Communication Handler', () => {
     getAcademicProgramSpy.mockResolvedValue(academicProgram);
     getInternalGroupSpy.mockResolvedValue(internalGroup);
     getStudentSpy.mockResolvedValue(student);
-    deleteSpy.mockResolvedValue(null);
     sendSpy.mockResolvedValue(null);
 
     await handler.handle(command);
 
-    expect(deleteSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({

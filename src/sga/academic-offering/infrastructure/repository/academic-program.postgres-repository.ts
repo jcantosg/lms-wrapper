@@ -228,16 +228,21 @@ export class AcademicProgramPostgresRepository
     );
   }
 
-  async findByAcademicPeriods(
+  async getByAcademicPeriodsAndTitles(
     academicPeriodIds: string[],
+    titleIds: string[],
     businessUnitIds: string[],
     isSuperAdmin: boolean,
   ): Promise<AcademicProgram[]> {
     const queryBuilder = this.repository
       .createQueryBuilder('academicProgram')
       .leftJoinAndSelect('academicProgram.academicPeriods', 'academicPeriod')
+      .leftJoinAndSelect('academicProgram.title', 'title')
       .where('academicPeriod.id IN (:...academicPeriodIds)', {
         academicPeriodIds,
+      })
+      .andWhere('title.id IN (:...titleIds)', {
+        titleIds,
       });
 
     if (!isSuperAdmin) {
