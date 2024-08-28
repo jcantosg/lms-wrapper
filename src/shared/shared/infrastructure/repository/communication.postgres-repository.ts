@@ -41,6 +41,7 @@ export class CommunicationPostgresRepository
       message: communication.message,
       sentBy: communication.sentBy,
       sentAt: communication.sentAt,
+      students: communication.students,
     });
   }
 
@@ -59,6 +60,7 @@ export class CommunicationPostgresRepository
         academicPrograms: true,
         titles: true,
         internalGroups: true,
+        students: true,
       },
     });
   }
@@ -143,6 +145,7 @@ export class CommunicationPostgresRepository
       `${aliasQuery}.businessUnits`,
       'businessUnit',
     );
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.students`, 'student');
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.sentBy`, 'sentBy');
 
     return queryBuilder;

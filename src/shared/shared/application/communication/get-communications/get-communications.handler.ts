@@ -3,25 +3,22 @@ import { CommunicationRepository } from '#shared/domain/repository/communication
 import { GetCommunicationsQuery } from '#shared/application/communication/get-communications/get-communications.query';
 import { GetCommunicationsCriteria } from '#shared/application/communication/get-communications/get-communications.criteria';
 import { CollectionHandlerResponse } from '#/sga/shared/application/collection.handler.response';
-import { Communication } from '#shared/domain/entity/communication.entity';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
-import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
-import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
-
-export interface CommunicationWithStudents {
-  communication: Communication;
-  students: CommunicationStudent[];
-}
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
+import { CommunicationDetail } from '#shared/application/communication/search-communications/search-communications.handler';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import { Student } from '#shared/domain/entity/student.entity';
 
 export class GetCommunicationsHandler implements QueryHandler {
   constructor(
     private readonly repository: CommunicationRepository,
-    private readonly communicationStudentRepository: CommunicationStudentRepository,
+    private readonly studentGetter: StudentGetter,
   ) {}
 
   async handle(
     query: GetCommunicationsQuery,
-  ): Promise<CollectionHandlerResponse<CommunicationWithStudents>> {
+  ): Promise<CollectionHandlerResponse<CommunicationDetail>> {
     const criteria = new GetCommunicationsCriteria(query);
 
     const [communications, count] = await Promise.all([
@@ -37,13 +34,17 @@ export class GetCommunicationsHandler implements QueryHandler {
       ),
     ]);
 
-    const items: CommunicationWithStudents[] = [];
+    const items: CommunicationDetail[] = [];
     for (const communication of communications) {
       items.push({
         communication,
-        students: await this.communicationStudentRepository.getByCommunication(
-          communication.id,
-        ),
+        count: (
+          await this.getAllStudents(
+            communication.students.map((s) => s.id),
+            communication.internalGroups,
+            communication.academicPrograms,
+          )
+        ).length,
       });
     }
 
@@ -51,5 +52,49 @@ export class GetCommunicationsHandler implements QueryHandler {
       items,
       total: count,
     };
+  }
+
+  private async getAllStudents(
+    studentIds: string[],
+    internalGroups: InternalGroup[],
+    academicPrograms: AcademicProgram[],
+  ) {
+    if (studentIds.length > 0) {
+      return await Promise.all(
+        studentIds.map((id) => this.studentGetter.get(id)),
+      );
+    }
+
+    if (internalGroups && internalGroups.length > 0) {
+      const internalGroupsStudents: Student[] = [];
+      for (const internalGroup of internalGroups) {
+        if (internalGroup.students && internalGroup.students.length > 0) {
+          internalGroupsStudents.push(...internalGroup.students);
+        }
+      }
+
+      return this.uniqueStudents(internalGroupsStudents);
+    }
+
+    if (academicPrograms && academicPrograms.length > 0) {
+      return this.uniqueStudents(
+        await this.studentGetter.getByAcademicProgramsAndGroups(
+          academicPrograms.map((ap) => ap.id),
+          [],
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  private uniqueStudents(students: Student[]): Student[] {
+    return students.reduce((accumulator: Student[], current: Student) => {
+      if (!accumulator.find((student) => student.id === current.id)) {
+        accumulator.push(current);
+      }
+
+      return accumulator;
+    }, []);
   }
 }

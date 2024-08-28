@@ -51,30 +51,30 @@ const getCommunicationsHandler = {
   provide: GetCommunicationsHandler,
   useFactory: (
     repository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
+    studentGetter: StudentGetter,
   ): GetCommunicationsHandler =>
-    new GetCommunicationsHandler(repository, communicationStudentRepository),
-  inject: [CommunicationRepository, CommunicationStudentRepository],
+    new GetCommunicationsHandler(repository, studentGetter),
+  inject: [CommunicationRepository, StudentGetter],
 };
 
 const searchCommunicationsHandler = {
   provide: SearchCommunicationsHandler,
   useFactory: (
     repository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
+    studentGetter: StudentGetter,
   ): SearchCommunicationsHandler =>
-    new SearchCommunicationsHandler(repository, communicationStudentRepository),
-  inject: [CommunicationRepository, CommunicationStudentRepository],
+    new SearchCommunicationsHandler(repository, studentGetter),
+  inject: [CommunicationRepository, StudentGetter],
 };
 
 const getCommunicationHandler = {
   provide: GetCommunicationHandler,
   useFactory: (
     repository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
+    studentGetter: StudentGetter,
   ): GetCommunicationHandler =>
-    new GetCommunicationHandler(repository, communicationStudentRepository),
-  inject: [CommunicationRepository, CommunicationStudentRepository],
+    new GetCommunicationHandler(repository, studentGetter),
+  inject: [CommunicationRepository, StudentGetter],
 };
 
 const editCommunicationHandler = {

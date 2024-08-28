@@ -206,6 +206,7 @@ export class GetStudentCommunicationsE2eSeed implements E2eSeed {
           GetStudentCommunicationsE2eSeed.communicationShortDescription,
         body: GetStudentCommunicationsE2eSeed.communicationBody,
       }),
+      [],
     );
     const communicationStudent = CommunicationStudent.create(
       uuid(),
