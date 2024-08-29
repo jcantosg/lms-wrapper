@@ -212,13 +212,11 @@ export class Communication extends BaseEntity {
     message: Message,
     sendByEmail: boolean,
     publishOnBoard: boolean,
-    status: CommunicationStatus,
     updatedBy: AdminUser,
   ): void {
     this._message = message;
     this._sendByEmail = sendByEmail;
     this._publishOnBoard = publishOnBoard;
-    this._status = status;
     this._updatedBy = updatedBy;
     this.updatedAt = new Date();
   }

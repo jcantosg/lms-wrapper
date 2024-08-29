@@ -146,6 +146,14 @@ export class CommunicationPostgresRepository
       'businessUnit',
     );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.students`, 'student');
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.internalGroups`,
+      'internalGroup',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.academicPrograms`,
+      'academicProgram',
+    );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.sentBy`, 'sentBy');
 
     return queryBuilder;

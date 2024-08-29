@@ -97,7 +97,6 @@ export class SendCommunicationHandler implements CommandHandler {
       }),
       command.sendByEmail,
       command.publishOnBoard,
-      CommunicationStatus.DRAFT,
       command.adminUser,
     );
 

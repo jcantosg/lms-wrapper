@@ -27,7 +27,7 @@ interface SendCommunicationBody {
   internalGroupIds: string[];
   studentIds: string[];
   subject: string;
-  shortDescription: string;
+  shortDescription?: string;
   body: string;
   sendByEmail: boolean;
   publishOnBoard: boolean;
@@ -62,7 +62,7 @@ export class SendCommunicationController {
       body.internalGroupIds,
       body.studentIds,
       body.subject,
-      body.shortDescription,
+      body.shortDescription ?? '',
       body.body,
       body.sendByEmail,
       body.publishOnBoard,

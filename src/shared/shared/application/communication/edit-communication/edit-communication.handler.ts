@@ -14,6 +14,7 @@ import { EditCommunicationCommand } from '#shared/application/communication/edit
 import { CommunicationNotFoundException } from '#shared/domain/exception/communication/communication.not-found.exception';
 import { Message } from '#shared/domain/value-object/message.value-object';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import { CommunicationAlreadySentException } from '#shared/domain/exception/communication/communication.already-sent.exception';
 
 export class EditCommunicationHandler implements CommandHandler {
   constructor(
@@ -30,6 +31,9 @@ export class EditCommunicationHandler implements CommandHandler {
     const communication = await this.repository.get(command.id);
     if (!communication) {
       throw new CommunicationNotFoundException();
+    }
+    if (communication.status === CommunicationStatus.SENT) {
+      throw new CommunicationAlreadySentException();
     }
 
     const adminUserBusinessUnitsId = command.adminUser.businessUnits.map(
@@ -86,7 +90,6 @@ export class EditCommunicationHandler implements CommandHandler {
       }),
       command.sendByEmail,
       command.publishOnBoard,
-      CommunicationStatus.DRAFT,
       command.adminUser,
     );
 
