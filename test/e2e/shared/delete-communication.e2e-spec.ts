@@ -65,9 +65,7 @@ describe('/communication/{id} (delete)', () => {
       .auth(superAdminAccessToken, { type: 'bearer' })
       .expect(409);
 
-    expect(response.body.message).toBe(
-      'student-360.communication.already-sent',
-    );
+    expect(response.body.message).toBe('sga.communication.already-sent');
   });
 
   it('should delete a communication', async () => {

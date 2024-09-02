@@ -19,6 +19,7 @@ import { SendCommunicationCommand } from '#shared/application/communication/send
 import { CommunicationAlreadySentException } from '#shared/domain/exception/communication/communication.already-sent.exception';
 import { MailerService } from '@nestjs-modules/mailer';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import * as showdown from 'showdown';
 
 export class SendCommunicationHandler implements CommandHandler {
   constructor(
@@ -127,7 +128,9 @@ export class SendCommunicationHandler implements CommandHandler {
           context: {
             subject: communication.message?.value.subject,
             shortDescription: communication.message?.value.shortDescription,
-            body: communication.message?.value.body,
+            body: new showdown.Converter().makeHtml(
+              communication.message?.value.body ?? '',
+            ),
           },
         });
       }

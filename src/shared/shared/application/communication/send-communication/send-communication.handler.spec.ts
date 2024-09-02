@@ -38,6 +38,7 @@ import { SendCommunicationHandler } from '#shared/application/communication/send
 import { MailerService } from '@nestjs-modules/mailer';
 import { SendCommunicationCommand } from '#shared/application/communication/send-communication/send-communication.command';
 import { CommunicationAlreadySentException } from '#shared/domain/exception/communication/communication.already-sent.exception';
+import * as showdown from 'showdown';
 
 let handler: SendCommunicationHandler;
 let repository: CommunicationMockRepository;
@@ -215,7 +216,9 @@ describe('Send Communication Handler', () => {
         context: {
           subject: communication.message?.value.subject,
           shortDescription: communication.message?.value.shortDescription,
-          body: communication.message?.value.body,
+          body: new showdown.Converter().makeHtml(
+            communication.message?.value.body ?? '',
+          ),
         },
       }),
     );
