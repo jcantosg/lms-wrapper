@@ -66,6 +66,10 @@ export class AcademicPeriodPostgresRepository
       'academic_programs',
     );
     queryBuilder.leftJoinAndSelect(
+      `academic_programs.administrativeGroups`,
+      'administrative_groups',
+    );
+    queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.periodBlocks`,
       'period_blocks',
     );
@@ -134,7 +138,7 @@ export class AcademicPeriodPostgresRepository
       where: { id },
       relations: {
         businessUnit: true,
-        academicPrograms: true,
+        academicPrograms: { administrativeGroups: true },
         periodBlocks: true,
       },
     });
