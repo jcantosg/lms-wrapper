@@ -22,7 +22,7 @@ export class SearchAdministrativeProcessesCriteria extends Criteria {
       new Filter(
         'name',
         query.text,
-        FilterOperators.EQUALS,
+        FilterOperators.LIKE,
         GroupOperator.OR,
         'student',
       ),

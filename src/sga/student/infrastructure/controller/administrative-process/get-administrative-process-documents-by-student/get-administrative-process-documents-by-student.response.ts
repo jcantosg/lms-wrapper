@@ -18,6 +18,8 @@ export interface AdministrativeProcessDocumentResponse {
 export interface AdministrativeProcessAccessDocumentResponse {
   titleName: string;
   administrativeProcessDocuments: AdministrativeProcessDocumentResponse;
+  academicRecognition: AdministrativeProcessDocumentResponse | null;
+  resignation: AdministrativeProcessDocumentResponse | null;
 }
 
 export interface StudentAdministrativeProcessDocumentsResponse {
@@ -41,6 +43,12 @@ export class GetStudentAdministrativeProcessDocumentsResponse {
 
     const access = administrativeProcesses.filter(
       (ap) => ap.type === AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS,
+    );
+    const academicRecognitions = administrativeProcesses.filter(
+      (ap) => ap.type === AdministrativeProcessTypeEnum.ACADEMIC_RECOGNITION,
+    );
+    const resignations = administrativeProcesses.filter(
+      (ap) => ap.type === AdministrativeProcessTypeEnum.RESIGNATION,
     );
 
     return {
@@ -70,20 +78,56 @@ export class GetStudentAdministrativeProcessDocumentsResponse {
             })),
           }
         : identity,
-      accessDocuments: access.map((ac) => ({
-        titleName: ac.academicRecord!.academicProgram.title.name,
-        administrativeProcessDocuments: {
-          id: ac.id,
-          createdAt: formatDate(ac.createdAt),
-          updatedAt: formatDate(ac.updatedAt),
-          status: ac.status,
-          files: ac.files.map((file) => ({
-            url: file.value.url,
-            name: file.value.name,
-            size: `${file.value.size}MB`,
-          })),
-        },
-      })),
+      accessDocuments: access.map((ac) => {
+        const ar = academicRecognitions.find(
+          (ar) => ar.academicRecord!.id === ac.academicRecord!.id,
+        );
+        const resignation = resignations.find(
+          (resignation) =>
+            resignation.academicRecord!.id === ac.academicRecord!.id,
+        );
+
+        return {
+          titleName: ac.academicRecord!.academicProgram.title.name,
+          administrativeProcessDocuments: {
+            id: ac.id,
+            createdAt: formatDate(ac.createdAt),
+            updatedAt: formatDate(ac.updatedAt),
+            status: ac.status,
+            files: ac.files.map((file) => ({
+              url: file.value.url,
+              name: file.value.name,
+              size: `${file.value.size}MB`,
+            })),
+          },
+          academicRecognition: ar
+            ? {
+                id: ar.id,
+                createdAt: formatDate(ar.createdAt),
+                updatedAt: formatDate(ar.updatedAt),
+                status: ar.status,
+                files: ar.files.map((file) => ({
+                  url: file.value.url,
+                  name: file.value.name,
+                  size: `${file.value.size}MB`,
+                })),
+              }
+            : null,
+          resignation: resignation
+            ? {
+                id: resignation.id,
+                createdAt: formatDate(resignation.createdAt),
+                updatedAt: formatDate(resignation.updatedAt),
+                status: resignation.status,
+                files: resignation.files.map((file) => ({
+                  url: file.value.url,
+                  name: file.value.name,
+                  size: `${file.value.size}MB`,
+                })),
+              }
+            : null,
+        };
+      }),
     };
   }
 }

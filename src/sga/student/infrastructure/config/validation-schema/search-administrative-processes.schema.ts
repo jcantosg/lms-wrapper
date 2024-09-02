@@ -16,6 +16,6 @@ export const searchAdministrativeProcessesSchema = createCollectionSchema(
     text: Joi.string().required(),
     orderBy: Joi.string()
       .valid(...orderByFields)
-      .default('name'),
+      .default('updatedAt'),
   },
 );
