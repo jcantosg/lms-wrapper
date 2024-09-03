@@ -38,7 +38,7 @@ export class AdministrativeProcessPostgresRepository
     return await this.repository.findOne({
       where: { id },
       relations: {
-        academicRecord: { academicProgram: { title: true } },
+        academicRecord: { academicProgram: { title: true }, student: true },
         student: true,
         businessUnit: true,
       },
