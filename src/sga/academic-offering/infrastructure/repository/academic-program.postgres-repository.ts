@@ -254,4 +254,26 @@ export class AcademicProgramPostgresRepository
 
     return queryBuilder.getMany();
   }
+
+  async findByAcademicPeriods(
+    academicPeriodIds: string[],
+    businessUnitIds: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicProgram[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('academicProgram')
+      .leftJoinAndSelect('academicProgram.academicPeriods', 'academicPeriod')
+      .where('academicPeriod.id IN (:...academicPeriodIds)', {
+        academicPeriodIds,
+      });
+
+    if (!isSuperAdmin) {
+      queryBuilder.andWhere(
+        'academicProgram.businessUnit.id IN (:...businessUnitIds)',
+        { businessUnitIds },
+      );
+    }
+
+    return queryBuilder.getMany();
+  }
 }
