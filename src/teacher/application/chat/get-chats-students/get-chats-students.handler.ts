@@ -6,15 +6,17 @@ import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { GetChatsStudentsCriteria } from '#/teacher/application/chat/get-chats-students/get-chats-students.criteria';
-import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 
 export class GetChatsStudentsHandler implements QueryHandler {
   constructor(
     private readonly chatroomRepository: ChatroomRepository,
     private readonly enrollmentRepository: EnrollmentRepository,
     private readonly academicRecordGetter: AcademicRecordGetter,
-    private readonly studentSubjectsToChatGetter: StudentSubjectsToChatGetter,
+    private readonly blockRelationRepository: BlockRelationRepository,
   ) {}
 
   async handle(query: GetChatsStudentsQuery) {
@@ -46,20 +48,36 @@ export class GetChatsStudentsHandler implements QueryHandler {
   private async hasStudentAccessToChat(
     enrollment: Enrollment,
   ): Promise<boolean> {
+    const programBlock = enrollment.programBlock;
+    const academicRecord = await this.academicRecordGetter.get(
+      enrollment.academicRecord.id,
+    );
+    const academicPeriod = academicRecord.academicPeriod;
+    const blockRelation =
+      await this.blockRelationRepository.getByProgramBlockAndAcademicPeriod(
+        programBlock,
+        academicPeriod,
+      );
+    const programBlockStartDate = blockRelation!.periodBlock.startDate;
+
     if (enrollment.academicRecord.status !== AcademicRecordStatusEnum.VALID) {
       return false;
     }
 
-    const academicRecordDetail =
-      await this.academicRecordGetter.getStudentAcademicRecord(
-        enrollment.academicRecord.id,
-        enrollment.academicRecord.student,
-      );
+    if (
+      enrollment.visibility === EnrollmentVisibilityEnum.YES ||
+      (enrollment.visibility === EnrollmentVisibilityEnum.PD &&
+        programBlockStartDate <= new Date())
+    ) {
+      if (!enrollment.subject.isRegulated) {
+        return true;
+      }
 
-    const subjectsToChat =
-      await this.studentSubjectsToChatGetter.getSubjects(academicRecordDetail);
-    const subjectsToChatIds = subjectsToChat.map((subject) => subject.id);
+      if (enrollment.getLastCall()?.status !== SubjectCallStatusEnum.PASSED) {
+        return true;
+      }
+    }
 
-    return subjectsToChatIds.includes(enrollment.subject.id);
+    return false;
   }
 }

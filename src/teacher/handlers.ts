@@ -11,8 +11,8 @@ import { GetChatsStudentsHandler } from '#/teacher/application/chat/get-chats-st
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
-import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
 import { EditChatroomHandler } from '#shared/application/edit-chatroom/edit-chatroom.handler';
+import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 
 const createEdaeUserRefreshTokenHandler = {
   provide: CreateEdaeUserRefreshTokenHandler,
@@ -76,19 +76,19 @@ const getChatsStudentsHandler = {
     chatroomRepository: ChatroomRepository,
     enrollmentRepository: EnrollmentRepository,
     academicRecordGetter: AcademicRecordGetter,
-    studentSubjectsToChatGetter: StudentSubjectsToChatGetter,
+    blockRelationRepository: BlockRelationRepository,
   ): GetChatsStudentsHandler =>
     new GetChatsStudentsHandler(
       chatroomRepository,
       enrollmentRepository,
       academicRecordGetter,
-      studentSubjectsToChatGetter,
+      blockRelationRepository,
     ),
   inject: [
     ChatroomRepository,
     EnrollmentRepository,
     AcademicRecordGetter,
-    StudentSubjectsToChatGetter,
+    BlockRelationRepository,
   ],
 };
 
