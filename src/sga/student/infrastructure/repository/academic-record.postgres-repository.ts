@@ -133,6 +133,24 @@ export class AcademicRecordPostgresRepository
     });
   }
 
+  async getStudentOwnAcademicRecords(id: string): Promise<AcademicRecord[]> {
+    return await this.repository.find({
+      where: { student: { id } },
+      relations: {
+        businessUnit: true,
+        student: true,
+        academicPeriod: true,
+        academicProgram: {
+          title: true,
+          programBlocks: {
+            subjects: true,
+          },
+        },
+        virtualCampus: true,
+      },
+    });
+  }
+
   async getStudentAcademicRecords(
     id: string,
     adminUserBusinessUnits: string[],

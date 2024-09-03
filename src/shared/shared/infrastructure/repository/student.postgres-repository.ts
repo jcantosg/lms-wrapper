@@ -218,6 +218,29 @@ export class StudentPostgresRepository
     });
   }
 
+  async getByProgramsAndGroups(
+    academicProgramIds: string[],
+    internalGroupIds: string[],
+  ): Promise<Student[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('student')
+      .leftJoin('student.academicRecords', 'academicRecord')
+      .leftJoin('academicRecord.academicProgram', 'academicProgram')
+      .where('academicProgram.id IN (:...academicProgramIds)', {
+        academicProgramIds,
+      });
+
+    if (internalGroupIds.length > 0) {
+      queryBuilder
+        .leftJoin('student.internalGroups', 'internalGroup')
+        .andWhere('internalGroup.id IN (:...internalGroupIds)', {
+          internalGroupIds,
+        });
+    }
+
+    return await queryBuilder.getMany();
+  }
+
   async findByBuPeriodsAndPrograms(
     businessUnitIds: string[],
     academicPeriodIds: string[],

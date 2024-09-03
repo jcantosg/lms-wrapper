@@ -18,6 +18,8 @@ import { Message } from '#shared/domain/value-object/message.value-object';
 import { SendCommunicationCommand } from '#shared/application/communication/send-communication/send-communication.command';
 import { CommunicationAlreadySentException } from '#shared/domain/exception/communication/communication.already-sent.exception';
 import { MailerService } from '@nestjs-modules/mailer';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
+import * as showdown from 'showdown';
 
 export class SendCommunicationHandler implements CommandHandler {
   constructor(
@@ -85,6 +87,7 @@ export class SendCommunicationHandler implements CommandHandler {
       titles,
       academicPrograms,
       internalGroups,
+      students,
       command.adminUser,
     );
     communication.updateMessage(
@@ -95,16 +98,15 @@ export class SendCommunicationHandler implements CommandHandler {
       }),
       command.sendByEmail,
       command.publishOnBoard,
-      CommunicationStatus.DRAFT,
-      null,
       command.adminUser,
     );
 
-    await this.communicationStudentRepository.deleteByCommunication(
-      communication.id,
+    const allStudents = await this.getAllStudents(
+      command.studentIds,
+      internalGroups,
+      academicPrograms,
     );
 
-    const allStudents = this.getAllStudents(students, internalGroups);
     for (const student of allStudents) {
       await this.communicationStudentRepository.save(
         CommunicationStudent.create(
@@ -126,7 +128,9 @@ export class SendCommunicationHandler implements CommandHandler {
           context: {
             subject: communication.message?.value.subject,
             shortDescription: communication.message?.value.shortDescription,
-            body: communication.message?.value.body,
+            body: new showdown.Converter().makeHtml(
+              communication.message?.value.body ?? '',
+            ),
           },
         });
       }
@@ -136,23 +140,43 @@ export class SendCommunicationHandler implements CommandHandler {
     await this.repository.save(communication);
   }
 
-  private getAllStudents(students: Student[], internalGroups: InternalGroup[]) {
-    const allStudents: Student[] = [];
-
-    if (students && students.length > 0) {
-      allStudents.push(...students);
+  private async getAllStudents(
+    studentIds: string[],
+    internalGroups: InternalGroup[],
+    academicPrograms: AcademicProgram[],
+  ) {
+    if (studentIds.length > 0) {
+      return await Promise.all(
+        studentIds.map((id) => this.studentGetter.get(id)),
+      );
     }
 
     if (internalGroups && internalGroups.length > 0) {
+      const internalGroupsStudents: Student[] = [];
       for (const internalGroup of internalGroups) {
         if (internalGroup.students && internalGroup.students.length > 0) {
-          allStudents.push(...internalGroup.students);
+          internalGroupsStudents.push(...internalGroup.students);
         }
       }
+
+      return this.uniqueStudents(internalGroupsStudents);
     }
 
-    return allStudents.reduce((accumulator: Student[], current: Student) => {
-      if (!accumulator.find((student) => student.id === student.id)) {
+    if (academicPrograms && academicPrograms.length > 0) {
+      return this.uniqueStudents(
+        await this.studentGetter.getByAcademicProgramsAndGroups(
+          academicPrograms.map((ap) => ap.id),
+          [],
+        ),
+      );
+    }
+
+    return [];
+  }
+
+  private uniqueStudents(students: Student[]): Student[] {
+    return students.reduce((accumulator: Student[], current: Student) => {
+      if (!accumulator.find((student) => student.id === current.id)) {
         accumulator.push(current);
       }
 

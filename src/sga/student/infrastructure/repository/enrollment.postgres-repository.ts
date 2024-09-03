@@ -93,6 +93,7 @@ export class EnrollmentPostgresRepository
       relations: {
         calls: true,
         subject: true,
+        programBlock: true,
         academicRecord: { student: true },
       },
       order: {

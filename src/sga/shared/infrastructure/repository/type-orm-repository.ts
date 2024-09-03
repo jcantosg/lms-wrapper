@@ -131,7 +131,7 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
         case FilterOperators.JSON_VALUE:
           this.addWhereCondition(
             queryBuilder,
-            `${fieldPath} ${filter.operator} '${filter.relationObject}' LIKE  '%' || :${paramName} || '%'`,
+            `unaccent(LOWER(cast(${fieldPath} ${filter.operator} '${filter.relationObject}' as text))) LIKE  '%' || unaccent(LOWER(:${paramName})) || '%'`,
             parameter,
             groupOperator,
           );

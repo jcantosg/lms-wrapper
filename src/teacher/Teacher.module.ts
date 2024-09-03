@@ -13,6 +13,7 @@ import { handlers } from '#/teacher/handlers';
 import { schemas } from '#/teacher/schemas';
 import { repositories } from '#/teacher/repositories';
 import { SGAStudentModule } from '#student/student.module';
+import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -42,6 +43,7 @@ const jwtStrategy = {
     SharedModule,
     EdaeUserModule,
     SGAStudentModule,
+    AcademicOfferingModule,
   ],
   providers: [
     ...services,

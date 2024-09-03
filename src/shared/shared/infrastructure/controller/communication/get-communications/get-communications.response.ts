@@ -1,6 +1,6 @@
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
-import { CommunicationWithStudents } from '#shared/application/communication/get-communications/get-communications.handler';
+import { CommunicationDetail } from '#shared/application/communication/search-communications/search-communications.handler';
 
 export interface GetCommunicationsItem {
   id: string;
@@ -24,13 +24,13 @@ export interface GetCommunicationsItem {
 
 export class GetCommunicationsResponse {
   static create(
-    communications: CommunicationWithStudents[],
+    communications: CommunicationDetail[],
     page: number,
     limit: number,
     total: number,
   ): CollectionResponse<GetCommunicationsItem> {
     return {
-      items: communications.map((c: CommunicationWithStudents) => {
+      items: communications.map((c: CommunicationDetail) => {
         return {
           id: c.communication.id,
           subject: c.communication.message
@@ -53,7 +53,7 @@ export class GetCommunicationsResponse {
           }),
           createdAt: c.communication.createdAt,
           sentAt: c.communication.sentAt,
-          studentCount: c.students.length,
+          studentCount: c.count,
           status: c.communication.status,
         };
       }),

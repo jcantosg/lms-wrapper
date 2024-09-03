@@ -13,6 +13,7 @@ export class FetchWrapper {
       const response = await fetch(`${this.baseUrl}${url}?${queryParams}`);
 
       const responseJson = await response.json();
+
       this.handleErrors(responseJson);
 
       return responseJson;

@@ -18,7 +18,8 @@ import { getAcademicProgramByMultiplePeriodsSchema } from '#student/infrastructu
 import { GetAcademicProgramsByPeriodsHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-multiple-periods/get-academic-programs-by-multiple-periods.handler';
 
 type GetAcademicProgramsByPeriodsQueryParams = {
-  academicPeriod: string[];
+  academicPeriods: string[];
+  titles: string[];
 };
 
 @Controller('academic-program')
@@ -44,7 +45,8 @@ export class GetAcademicProgramsByPeriodsController {
     @Req() req: AuthRequest,
   ): Promise<AcademicProgramsByPeriodsResponse> {
     const query = new GetAcademicProgramsByPeriodsQuery(
-      queryParams.academicPeriod,
+      queryParams.academicPeriods,
+      queryParams.titles,
       req.user,
     );
 

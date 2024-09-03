@@ -30,6 +30,11 @@ export abstract class StudentRepository {
 
   abstract getByEmail(email: string): Promise<Student | null>;
 
+  abstract getByProgramsAndGroups(
+    academicProgramIds: string[],
+    internalGroupIds: string[],
+  ): Promise<Student[]>;
+
   abstract findByBuPeriodsAndPrograms(
     businessUnitIds: string[],
     academicPeriodIds: string[],

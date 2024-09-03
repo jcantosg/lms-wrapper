@@ -268,6 +268,7 @@ class APIStack(Stack):
             default_behavior=cloudfront.BehaviorOptions(
                 origin=cloudfront_origins.S3Origin(self.media_bucket),
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                response_headers_policy=cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
             ),
             domain_names=[media_domain_name],
             certificate=media_certificate,

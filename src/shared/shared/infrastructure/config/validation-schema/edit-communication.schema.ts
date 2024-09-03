@@ -20,7 +20,7 @@ export const editCommunicationSchema = Joi.object({
     .required(),
   studentIds: Joi.array().items(Joi.string().uuid()).default([]).required(),
   subject: Joi.string().allow('', null).required(),
-  shortDescription: Joi.string().allow('', null).required(),
+  shortDescription: Joi.string().allow('', null).optional(),
   body: Joi.string().allow('', null).required(),
   sendByEmail: Joi.boolean().default(false).required(),
   publishOnBoard: Joi.boolean().default(false).required(),

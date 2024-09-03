@@ -21,4 +21,14 @@ export class StudentGetter {
 
     return student;
   }
+
+  async getByAcademicProgramsAndGroups(
+    academicProgramIds: string[],
+    groupIds: string[],
+  ) {
+    return await this.repository.getByProgramsAndGroups(
+      academicProgramIds,
+      groupIds,
+    );
+  }
 }

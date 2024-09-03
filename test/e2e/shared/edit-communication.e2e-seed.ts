@@ -289,6 +289,7 @@ export class EditCommunicationE2eSeed implements E2eSeed {
       null,
       null,
       null,
+      [],
     );
 
     await this.communicationRepository.save(communication);
@@ -305,6 +306,7 @@ export class EditCommunicationE2eSeed implements E2eSeed {
       null,
       CommunicationStatus.SENT,
       null,
+      [],
     );
 
     await this.communicationRepository.save(sentCommunication);

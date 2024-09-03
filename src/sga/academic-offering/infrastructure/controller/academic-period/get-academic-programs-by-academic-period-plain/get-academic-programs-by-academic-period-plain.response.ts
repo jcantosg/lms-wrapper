@@ -7,9 +7,11 @@ type AcademicProgramBasicInfo = {
 
 export class GetAcademicProgramsByAcademicPeriodPlainResponse {
   static create(academicPeriod: AcademicPeriod): AcademicProgramBasicInfo[] {
-    return academicPeriod.academicPrograms.map((academicProgram) => ({
-      id: academicProgram.id,
-      name: academicProgram.name,
-    }));
+    return academicPeriod.academicPrograms
+      .filter((ap) => ap.administrativeGroups.length === 0)
+      .map((academicProgram) => ({
+        id: academicProgram.id,
+        name: academicProgram.name,
+      }));
   }
 }

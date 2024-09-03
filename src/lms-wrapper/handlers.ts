@@ -14,8 +14,10 @@ import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-
 import { LmsEnrollmentRepository } from '#lms-wrapper/domain/repository/lms-enrollment.repository';
 import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
 import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
-import { GetUrlSessionKeyHandler } from '#lms-wrapper/application/get-url-session-key/get-url-session-key.handler';
+import { GetStudentUrlSessionKeyHandler } from '#lms-wrapper/application/lms-student/get-url-session-key/get-student-url-session-key.handler';
 import { GetLmsCourseWithQuizzesHandler } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.handler';
+import { GetEdaeUserUrlSessionKeyHandler } from '#lms-wrapper/application/lms-teacher/get-url-session-key/get-edae-user-url-session-key.handler';
+import { LmsTeacherRepository } from '#lms-wrapper/domain/repository/lms-teacher.repository';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -107,10 +109,12 @@ const getLmsStudentHandler = {
   inject: [LmsStudentRepository],
 };
 
-const getUrlSessionKeyHandler = {
-  provide: GetUrlSessionKeyHandler,
-  useFactory: (repository: LmsStudentRepository): GetUrlSessionKeyHandler =>
-    new GetUrlSessionKeyHandler(repository),
+const getStudentUrlSessionKeyHandler = {
+  provide: GetStudentUrlSessionKeyHandler,
+  useFactory: (
+    repository: LmsStudentRepository,
+  ): GetStudentUrlSessionKeyHandler =>
+    new GetStudentUrlSessionKeyHandler(repository),
   inject: [LmsStudentRepository],
 };
 
@@ -121,6 +125,15 @@ const getLmsCourseWithQuizzesHandler = {
   ): GetLmsCourseWithQuizzesHandler =>
     new GetLmsCourseWithQuizzesHandler(repository),
   inject: [LmsCourseRepository],
+};
+
+const getEdaeUrlSessionKeyHandler = {
+  provide: GetEdaeUserUrlSessionKeyHandler,
+  useFactory: (
+    repository: LmsTeacherRepository,
+  ): GetEdaeUserUrlSessionKeyHandler =>
+    new GetEdaeUserUrlSessionKeyHandler(repository),
+  inject: [LmsTeacherRepository],
 };
 
 export const handlers = [
@@ -136,6 +149,7 @@ export const handlers = [
   createLmsEnrollmentHandler,
   deleteLmsEnrollmentHandler,
   getLmsStudentHandler,
-  getUrlSessionKeyHandler,
+  getStudentUrlSessionKeyHandler,
   getLmsCourseWithQuizzesHandler,
+  getEdaeUrlSessionKeyHandler,
 ];

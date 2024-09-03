@@ -46,7 +46,7 @@ interface GetSubjectResponseBody {
         id: number;
         name: string;
         modules: TestModule[];
-      };
+      } | null;
     };
   };
 }
@@ -106,19 +106,23 @@ export class GetSubjectResponse {
                 modules: GetSubjectResponse.getOfficialTests(module),
               };
             }),
-          autoEvaluationTests: {
-            id: autoEvaluationTest.id,
-            name: autoEvaluationTest.name,
-            modules: autoEvaluationTest.autoEvaluationTests!.map((module) => {
-              return {
-                id: module.content[0].id,
-                name: module.content[0].name,
-                url: module.content[0].url,
-                isCompleted: module.content[0].isCompleted,
-                attempts: module.content[0].attempts,
-              };
-            }),
-          },
+          autoEvaluationTests: autoEvaluationTest
+            ? {
+                id: autoEvaluationTest.id,
+                name: autoEvaluationTest.name,
+                modules: autoEvaluationTest.autoEvaluationTests!.map(
+                  (module) => {
+                    return {
+                      id: module.content[0].id,
+                      name: module.content[0].name,
+                      url: module.content[0].url,
+                      isCompleted: module.content[0].isCompleted,
+                      attempts: module.content[0].attempts,
+                    };
+                  },
+                ),
+              }
+            : null,
         },
       },
     };

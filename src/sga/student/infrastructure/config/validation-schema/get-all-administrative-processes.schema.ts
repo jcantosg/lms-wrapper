@@ -23,6 +23,6 @@ export const getAllAdministrativeProcessesSchema = createCollectionSchema(
     status: Joi.valid(...getAllAdministrativeProcessStatus()).optional(),
     orderBy: Joi.string()
       .valid(...orderByFields)
-      .default('student'),
+      .default('updatedAt'),
   },
 );

@@ -8,6 +8,7 @@ import {
 } from '#test/entity-factory';
 import { AcademicPeriodMockRepository } from '#test/mocks/sga/academic-offering/academic-period.mock-repository';
 import { BusinessUnitNotFoundException } from '#shared/domain/exception/business-unit/business-unit/business-unit-not-found.exception';
+import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 
 let handler: GetAcademicPeriodsByBusinessUnitHandler;
 let academicPeriodRepository: AcademicPeriodRepository;
@@ -15,6 +16,7 @@ let getByBusinessUnitsSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit('b29b9b2a-9f86-40a7-926a-38b4b8eb4d01');
 const adminUser = getAnAdminUser();
+adminUser.roles = [AdminUserRoles.SECRETARIA];
 const academicPeriod = getAnAcademicPeriod();
 
 const query = new GetAcademicPeriodsByBusinessUnitQuery(

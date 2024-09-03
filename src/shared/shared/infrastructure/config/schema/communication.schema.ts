@@ -115,5 +115,18 @@ export const CommunicationSchema = new EntitySchema<Communication>({
         },
       },
     },
+    students: {
+      type: 'many-to-many',
+      target: 'Student',
+      joinTable: {
+        name: 'communication_recipients',
+        joinColumn: {
+          name: 'communication_id',
+        },
+        inverseJoinColumn: {
+          name: 'student_id',
+        },
+      },
+    },
   },
 });

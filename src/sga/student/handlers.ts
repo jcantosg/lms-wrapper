@@ -55,7 +55,6 @@ import { CreateAdministrativeProcessHandler } from '#student/application/adminis
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
 import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { GetInternalGroupsByBuPeriodsAndProgramsHandler } from '#student/application/get-internal-groups-by-bu-periods-and-programs/get-internal-groups-by-bu-periods-and-programs.handler';
-import { GetStudentsByBuPeriodsAndProgramsHandler } from '#student/application/get-students-by-bu-periods-and-programs/get-students-by-bu-periods-and-programs.handler';
 import { GetAllAdministrativeProcessesHandler } from '#student/application/administrative-process/get-all-administrative-processes/get-all-administrative-processes.handler';
 import { SearchAdministrativeProcessesHandler } from '#student/application/administrative-process/search-administrative-processes/search-administrative-processes.handler';
 import { GetStudentAdministrativeProcessDocumentsHandler } from '#student/application/administrative-process/get-student-administrative-process-documents/get-student-administrative-process-documents.handler';
@@ -65,6 +64,7 @@ import { SubjectCallRepository } from '#student/domain/repository/subject-call.r
 import { GetSubjectCallScheduleHistoryHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry/get-subject-call-schedule-hisotry.handler';
 import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository/subject-call-schedule-history.repository';
 import { GetSubjectCallScheduleHistoryDetailHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry-detail/get-subject-call-schedule-hisotry-detail.handler';
+import { GetStudentsByProgramsAndGroupsHandler } from '#student/application/get-students-by-programs-and-groups/get-students-by-programs-and-groups.handler';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -456,12 +456,12 @@ const getInternalGroupsByBuPeriodsAndProgramsHandler = {
   inject: [InternalGroupRepository],
 };
 
-const getStudentsByBuPeriodsAndProgramsHandler = {
-  provide: GetStudentsByBuPeriodsAndProgramsHandler,
+const getStudentsByProgramsAndGroupsHandler = {
+  provide: GetStudentsByProgramsAndGroupsHandler,
   useFactory: (
     studentRepository: StudentRepository,
-  ): GetStudentsByBuPeriodsAndProgramsHandler =>
-    new GetStudentsByBuPeriodsAndProgramsHandler(studentRepository),
+  ): GetStudentsByProgramsAndGroupsHandler =>
+    new GetStudentsByProgramsAndGroupsHandler(studentRepository),
   inject: [StudentRepository],
 };
 
@@ -589,7 +589,7 @@ export const handlers = [
   removeStudentFromInternalGroupHandler,
   createAdministrativeProcessHandler,
   getInternalGroupsByBuPeriodsAndProgramsHandler,
-  getStudentsByBuPeriodsAndProgramsHandler,
+  getStudentsByProgramsAndGroupsHandler,
   getAllAdministrativeProcessHandler,
   searchAdministrativeProcessHandler,
   getStudentAdministrativeProcessDocumentsHandler,

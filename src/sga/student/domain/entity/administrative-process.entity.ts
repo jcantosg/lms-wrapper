@@ -71,9 +71,7 @@ export class AdministrativeProcess extends BaseEntity {
   }
 
   public addFile(file: AdministrativeProcessFile) {
-    if (
-      this._files.find((f) => f.value.documentType === file.value.documentType)
-    ) {
+    if (this._files.find((f) => f.value.name === file.value.name)) {
       throw new FileAlreadyExistsException();
     } else {
       this._files.push(file);

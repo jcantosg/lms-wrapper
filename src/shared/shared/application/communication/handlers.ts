@@ -20,36 +20,30 @@ const createCommunicationHandler = {
   provide: CreateCommunicationHandler,
   useFactory: (
     communicationRepository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
     businessUnitGetter: BusinessUnitGetter,
     academicPeriodGetter: AcademicPeriodGetter,
     titleGetter: TitleGetter,
     academicProgramGetter: AcademicProgramGetter,
     internalGroupGetter: InternalGroupGetter,
     studentGetter: StudentGetter,
-    uuidService: UUIDGeneratorService,
   ) =>
     new CreateCommunicationHandler(
       communicationRepository,
-      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
-      uuidService,
     ),
   inject: [
     CommunicationRepository,
-    CommunicationStudentRepository,
     BusinessUnitGetter,
     AcademicPeriodGetter,
     TitleGetter,
     AcademicProgramGetter,
     InternalGroupGetter,
     StudentGetter,
-    UUIDGeneratorService,
   ],
 };
 
@@ -57,66 +51,60 @@ const getCommunicationsHandler = {
   provide: GetCommunicationsHandler,
   useFactory: (
     repository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
+    studentGetter: StudentGetter,
   ): GetCommunicationsHandler =>
-    new GetCommunicationsHandler(repository, communicationStudentRepository),
-  inject: [CommunicationRepository, CommunicationStudentRepository],
+    new GetCommunicationsHandler(repository, studentGetter),
+  inject: [CommunicationRepository, StudentGetter],
 };
 
 const searchCommunicationsHandler = {
   provide: SearchCommunicationsHandler,
   useFactory: (
     repository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
+    studentGetter: StudentGetter,
   ): SearchCommunicationsHandler =>
-    new SearchCommunicationsHandler(repository, communicationStudentRepository),
-  inject: [CommunicationRepository, CommunicationStudentRepository],
+    new SearchCommunicationsHandler(repository, studentGetter),
+  inject: [CommunicationRepository, StudentGetter],
 };
 
 const getCommunicationHandler = {
   provide: GetCommunicationHandler,
   useFactory: (
     repository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
+    studentGetter: StudentGetter,
   ): GetCommunicationHandler =>
-    new GetCommunicationHandler(repository, communicationStudentRepository),
-  inject: [CommunicationRepository, CommunicationStudentRepository],
+    new GetCommunicationHandler(repository, studentGetter),
+  inject: [CommunicationRepository, StudentGetter],
 };
 
 const editCommunicationHandler = {
   provide: EditCommunicationHandler,
   useFactory: (
     communicationRepository: CommunicationRepository,
-    communicationStudentRepository: CommunicationStudentRepository,
     businessUnitGetter: BusinessUnitGetter,
     academicPeriodGetter: AcademicPeriodGetter,
     titleGetter: TitleGetter,
     academicProgramGetter: AcademicProgramGetter,
     internalGroupGetter: InternalGroupGetter,
     studentGetter: StudentGetter,
-    uuidService: UUIDGeneratorService,
   ) =>
     new EditCommunicationHandler(
       communicationRepository,
-      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
-      uuidService,
     ),
   inject: [
     CommunicationRepository,
-    CommunicationStudentRepository,
     BusinessUnitGetter,
     AcademicPeriodGetter,
     TitleGetter,
     AcademicProgramGetter,
     InternalGroupGetter,
     StudentGetter,
-    UUIDGeneratorService,
   ],
 };
 

@@ -25,23 +25,17 @@ import { TitleMockRepository } from '#test/mocks/sga/academic-offering/title.moc
 import { AcademicProgramMockRepository } from '#test/mocks/sga/academic-offering/academic-program.mock-repository';
 import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-group.mock-repository';
 import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repository';
-import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
-import { CommunicationStudentMockRepository } from '#test/mocks/shared/communication-student.mock-repository';
-import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
-import clearAllMocks = jest.clearAllMocks;
-import { UUIDv4GeneratorService } from '#shared/infrastructure/service/uuid-v4.service';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
+import clearAllMocks = jest.clearAllMocks;
 
 let handler: CreateCommunicationHandler;
 let repository: CommunicationMockRepository;
-let communicationStudentRepository: CommunicationStudentRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let academicPeriodGetter: AcademicPeriodGetter;
 let titleGetter: TitleGetter;
 let academicProgramGetter: AcademicProgramGetter;
 let internalGroupGetter: InternalGroupGetter;
 let studentGetter: StudentGetter;
-const uuidGenerator: UUIDGeneratorService = new UUIDv4GeneratorService();
 
 let saveSpy: jest.SpyInstance;
 let getBusinessUnitSpy: jest.SpyInstance;
@@ -79,7 +73,6 @@ const command = new CreateCommunicationCommand(
 describe('Create Communication Handler', () => {
   beforeEach(() => {
     repository = new CommunicationMockRepository();
-    communicationStudentRepository = new CommunicationStudentMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     academicPeriodGetter = new AcademicPeriodGetter(
       new AcademicPeriodMockRepository(),
@@ -95,14 +88,12 @@ describe('Create Communication Handler', () => {
 
     handler = new CreateCommunicationHandler(
       repository,
-      communicationStudentRepository,
       businessUnitGetter,
       academicPeriodGetter,
       titleGetter,
       academicProgramGetter,
       internalGroupGetter,
       studentGetter,
-      uuidGenerator,
     );
 
     saveSpy = jest.spyOn(repository, 'save');

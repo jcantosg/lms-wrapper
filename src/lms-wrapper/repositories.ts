@@ -6,6 +6,8 @@ import { LmsStudentRepository } from '#/lms-wrapper/domain/repository/lms-studen
 import { MoodleStudentRepository } from '#/lms-wrapper/infrastructure/repository/moodle-student.repository';
 import { LmsEnrollmentRepository } from '#lms-wrapper/domain/repository/lms-enrollment.repository';
 import { MoodleEnrollmentRepository } from '#lms-wrapper/infrastructure/repository/moodle-enrollment.repository';
+import { LmsTeacherRepository } from '#lms-wrapper/domain/repository/lms-teacher.repository';
+import { MoodleTeacherRepository } from '#lms-wrapper/infrastructure/repository/moodle-teacher.repository';
 
 export const repositories = [
   {
@@ -26,6 +28,13 @@ export const repositories = [
     provide: LmsEnrollmentRepository,
     useFactory: (wrapper: MoodleWrapper): LmsEnrollmentRepository => {
       return new MoodleEnrollmentRepository(wrapper);
+    },
+    inject: [LmsWrapper],
+  },
+  {
+    provide: LmsTeacherRepository,
+    useFactory: (wrapper: MoodleWrapper): LmsTeacherRepository => {
+      return new MoodleTeacherRepository(wrapper);
     },
     inject: [LmsWrapper],
   },

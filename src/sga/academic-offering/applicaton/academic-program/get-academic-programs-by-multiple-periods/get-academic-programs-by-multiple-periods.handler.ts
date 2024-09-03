@@ -10,12 +10,13 @@ export class GetAcademicProgramsByPeriodsHandler {
   ) {}
 
   async handle(query: GetAcademicProgramsByPeriodsQuery) {
-    const { academicPeriodIds, adminUser } = query;
+    const { academicPeriodIds, titleIds, adminUser } = query;
     const businessUnitIds = adminUser.businessUnits.map((bu) => bu.id);
     const isSuperAdmin = adminUser.roles.includes(AdminUserRoles.SUPERADMIN);
 
-    return await this.academicProgramRepository.findByAcademicPeriods(
+    return await this.academicProgramRepository.getByAcademicPeriodsAndTitles(
       academicPeriodIds,
+      titleIds,
       businessUnitIds,
       isSuperAdmin,
     );

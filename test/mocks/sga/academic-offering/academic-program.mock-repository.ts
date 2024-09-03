@@ -13,4 +13,5 @@ export class AcademicProgramMockRepository
   getByAcademicPeriod = jest.fn();
   getByCode = jest.fn();
   findByAcademicPeriods = jest.fn();
+  getByAcademicPeriodsAndTitles = jest.fn();
 }

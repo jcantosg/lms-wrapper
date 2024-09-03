@@ -7,6 +7,7 @@ import { AcademicProgram } from '#academic-offering/domain/entity/academic-progr
 import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 import { Message } from '#shared/domain/value-object/message.value-object';
+import { Student } from '#shared/domain/entity/student.entity';
 
 export class Communication extends BaseEntity {
   constructor(
@@ -26,6 +27,7 @@ export class Communication extends BaseEntity {
     private _sendByEmail: boolean | null,
     private _publishOnBoard: boolean | null,
     private _status: CommunicationStatus | null,
+    private _students: Student[],
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -42,6 +44,7 @@ export class Communication extends BaseEntity {
     publishOnBoard: boolean | null,
     status: CommunicationStatus | null,
     message: Message | null,
+    students: Student[],
   ): Communication {
     return new Communication(
       id,
@@ -60,6 +63,7 @@ export class Communication extends BaseEntity {
       sendByEmail,
       publishOnBoard,
       status,
+      students,
     );
   }
 
@@ -167,6 +171,14 @@ export class Communication extends BaseEntity {
     this._internalGroups = value;
   }
 
+  get students(): Student[] {
+    return this._students;
+  }
+
+  set students(value: Student[]) {
+    this._students = value;
+  }
+
   public updateStatus(status: CommunicationStatus, updatedBy: AdminUser): void {
     this._status = status;
     this._updatedBy = updatedBy;
@@ -183,6 +195,7 @@ export class Communication extends BaseEntity {
     titles: Title[],
     academicPrograms: AcademicProgram[],
     internalGroups: InternalGroup[],
+    students: Student[],
     updatedBy: AdminUser,
   ): void {
     this._businessUnits = businessUnits;
@@ -191,6 +204,7 @@ export class Communication extends BaseEntity {
     this._academicPrograms = academicPrograms;
     this._internalGroups = internalGroups;
     this._updatedBy = updatedBy;
+    this._students = students;
     this.updatedAt = new Date();
   }
 
@@ -198,15 +212,11 @@ export class Communication extends BaseEntity {
     message: Message,
     sendByEmail: boolean,
     publishOnBoard: boolean,
-    status: CommunicationStatus,
-    sentAt: Date | null,
     updatedBy: AdminUser,
   ): void {
     this._message = message;
     this._sendByEmail = sendByEmail;
     this._publishOnBoard = publishOnBoard;
-    this._status = status;
-    this._sentAt = sentAt;
     this._updatedBy = updatedBy;
     this.updatedAt = new Date();
   }

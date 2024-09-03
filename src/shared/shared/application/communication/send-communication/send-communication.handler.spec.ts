@@ -38,6 +38,7 @@ import { SendCommunicationHandler } from '#shared/application/communication/send
 import { MailerService } from '@nestjs-modules/mailer';
 import { SendCommunicationCommand } from '#shared/application/communication/send-communication/send-communication.command';
 import { CommunicationAlreadySentException } from '#shared/domain/exception/communication/communication.already-sent.exception';
+import * as showdown from 'showdown';
 
 let handler: SendCommunicationHandler;
 let repository: CommunicationMockRepository;
@@ -59,7 +60,6 @@ let getAcademicProgramSpy: jest.SpyInstance;
 let getInternalGroupSpy: jest.SpyInstance;
 let getStudentSpy: jest.SpyInstance;
 let getSpy: jest.SpyInstance;
-let deleteSpy: jest.SpyInstance;
 let sendSpy: jest.SpyInstance;
 
 const businessUnit = getABusinessUnit();
@@ -131,10 +131,6 @@ describe('Send Communication Handler', () => {
     getAcademicProgramSpy = jest.spyOn(academicProgramGetter, 'get');
     getInternalGroupSpy = jest.spyOn(internalGroupGetter, 'getWithStudents');
     getStudentSpy = jest.spyOn(studentGetter, 'get');
-    deleteSpy = jest.spyOn(
-      communicationStudentRepository,
-      'deleteByCommunication',
-    );
     sendSpy = jest.spyOn(mailer, 'sendMail');
   });
 
@@ -164,12 +160,10 @@ describe('Send Communication Handler', () => {
     getAcademicProgramSpy.mockResolvedValue(academicProgram);
     getInternalGroupSpy.mockResolvedValue(internalGroup);
     getStudentSpy.mockResolvedValue(student);
-    deleteSpy.mockResolvedValue(null);
     sendSpy.mockResolvedValue(null);
 
     await handler.handle(command);
 
-    expect(deleteSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -222,7 +216,9 @@ describe('Send Communication Handler', () => {
         context: {
           subject: communication.message?.value.subject,
           shortDescription: communication.message?.value.shortDescription,
-          body: communication.message?.value.body,
+          body: new showdown.Converter().makeHtml(
+            communication.message?.value.body ?? '',
+          ),
         },
       }),
     );

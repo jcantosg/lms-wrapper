@@ -1,5 +1,5 @@
+import { CommunicationDetail } from '#shared/application/communication/search-communications/search-communications.handler';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
-import { CommunicationWithStudents } from '#shared/application/communication/get-communications/get-communications.handler';
 
 export interface GetCommunication {
   id: string;
@@ -41,10 +41,11 @@ export interface GetCommunication {
   sendByEmail: boolean;
   publishOnBoard: boolean;
   status: CommunicationStatus;
+  studentCount: number;
 }
 
 export class GetCommunicationResponse {
-  static create(c: CommunicationWithStudents): GetCommunication {
+  static create(c: CommunicationDetail): GetCommunication {
     return {
       id: c.communication.id,
       sentAt: c.communication.sentAt,
@@ -70,12 +71,12 @@ export class GetCommunicationResponse {
         id: ig.id,
         code: ig.code,
       })),
-      students: c.students.map((s) => ({
-        id: s.student.id,
-        name: s.student.name,
-        surname: s.student.surname,
-        surname2: s.student.surname2,
-        avatar: s.student.avatar,
+      students: c.communication.students.map((s) => ({
+        id: s.id,
+        name: s.name,
+        surname: s.surname,
+        surname2: s.surname2,
+        avatar: s.avatar,
       })),
       message: c.communication.message
         ? {
@@ -87,6 +88,7 @@ export class GetCommunicationResponse {
       sendByEmail: c.communication.sendByEmail ?? false,
       publishOnBoard: c.communication.publishOnBoard ?? false,
       status: c.communication.status ?? CommunicationStatus.DRAFT,
+      studentCount: c.count,
     };
   }
 }

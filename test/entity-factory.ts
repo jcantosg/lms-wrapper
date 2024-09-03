@@ -408,5 +408,6 @@ export const getACommunication = () => {
     null,
     CommunicationStatus.DRAFT,
     null,
+    [],
   );
 };

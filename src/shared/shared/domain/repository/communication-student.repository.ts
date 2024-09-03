@@ -5,5 +5,11 @@ export abstract class CommunicationStudentRepository {
   abstract getByCommunication(
     communicationId: string,
   ): Promise<CommunicationStudent[]>;
+  abstract getByCommunicationAndStudent(
+    communicationId: string,
+    studentId: string,
+  ): Promise<CommunicationStudent | null>;
+  abstract getByStudent(studentId: string): Promise<CommunicationStudent[]>;
+  abstract countUnread(studentId: string): Promise<number>;
   abstract deleteByCommunication(communicationId: string): Promise<void>;
 }

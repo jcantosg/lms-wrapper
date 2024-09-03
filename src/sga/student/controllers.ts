@@ -23,7 +23,6 @@ import { GetInternalGroupStudentsController } from '#student/infrastructure/cont
 import { RemoveTeacherFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-teacher-from-internal-group.controller';
 import { RemoveStudentFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-student-from-internal-group.controller';
 import { GetInternalGroupsByBuPeriodsAndProgramsController } from '#student/infrastructure/controller/internal-group/get-internal-groups-by-bu-periods-and-programs/get-internal-groups-by-bu-periods-and-programs.controller';
-import { GetStudentsByBuPeriodsAndProgramsController } from '#student/infrastructure/controller/get-students-by-bu-periods-and-programs/get-students-by-bu-periods-and-programs.controller';
 import { GetAllAdministrativeProcessStatusController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-types.controller';
 import { GetAllAdministrativeProcessTypesController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-status.controller';
 import { GetAllAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/get-all-administrative-process/get-all-administrative-process.controller';
@@ -32,6 +31,7 @@ import { GetStudentAdministrativeProcessDocumentsController } from '#student/inf
 import { EditAdministrativeProcessController } from '#student/infrastructure/controller/administrative-process/edit-administrative-process.controller';
 import { GetSubjectCallScheduleHistoryController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history.controller';
 import { GetSubjectCallScheduleHistoryDetailController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history-detail.controller';
+import { GetStudentsByProgramsAndGroupsController } from '#student/infrastructure/controller/get-students-by-programs-and-groups/get-students-by-programs-and-groups.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -41,7 +41,7 @@ export const controllers = [
   SearchStudentsController,
   GetCoursingSubjectStudentsController,
   GetInternalGroupsByBuPeriodsAndProgramsController,
-  GetStudentsByBuPeriodsAndProgramsController,
+  GetStudentsByProgramsAndGroupsController,
   GetInternalGroupsByBuPeriodsAndProgramsController,
   GetStudentController,
   ...academicRecordControllers,

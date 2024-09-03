@@ -5,6 +5,7 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
 import { CommunicationStudentSchema } from '#shared/infrastructure/config/schema/communication-student.schema';
+import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 
 @Injectable()
 export class CommunicationStudentPostgresRepository
@@ -24,6 +25,43 @@ export class CommunicationStudentPostgresRepository
     return await this.repository.find({
       where: { communication: { id: communicationId } },
       relations: { communication: true, student: true },
+    });
+  }
+
+  async getByCommunicationAndStudent(
+    communicationId: string,
+    studentId: string,
+  ): Promise<CommunicationStudent | null> {
+    return await this.repository.findOne({
+      where: {
+        communication: { id: communicationId },
+        student: { id: studentId },
+        isDeleted: false,
+      },
+      relations: { communication: true, student: true },
+    });
+  }
+
+  async countUnread(studentId: string): Promise<number> {
+    return await this.repository.count({
+      where: {
+        student: { id: studentId },
+        isDeleted: false,
+        isRead: false,
+        communication: { status: CommunicationStatus.SENT },
+      },
+    });
+  }
+
+  async getByStudent(studentId: string): Promise<CommunicationStudent[]> {
+    return await this.repository.find({
+      where: {
+        student: { id: studentId },
+        isDeleted: false,
+        communication: { status: CommunicationStatus.SENT },
+      },
+      relations: { communication: { sentBy: true }, student: true },
+      order: { communication: { sentAt: 'DESC' } },
     });
   }
 

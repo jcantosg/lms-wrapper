@@ -11,6 +11,7 @@ import {
 } from '#student/domain/service/cancel-academic-record.transactional-service';
 import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { ConflictException } from '#shared/domain/exception/conflict.exception';
 
 export class CancelAcademicRecordTypeormTransactionalService extends CancelAcademicRecordTransactionalService {
   private logger: Logger;
@@ -42,13 +43,15 @@ export class CancelAcademicRecordTypeormTransactionalService extends CancelAcade
       });
 
       this.logger.log('remove student from administrative group');
-      await queryRunner.manager.save(AdministrativeGroup, {
-        id: entities.administrativeGroup.id,
-        students: entities.administrativeGroup.students,
-        updatedAt: entities.administrativeGroup.updatedAt,
-        updatedBy: entities.administrativeGroup.updatedBy,
-        studentsNumber: entities.administrativeGroup.studentsNumber,
-      });
+      if (entities.administrativeGroup) {
+        await queryRunner.manager.save(AdministrativeGroup, {
+          id: entities.administrativeGroup.id,
+          students: entities.administrativeGroup.students,
+          updatedAt: entities.administrativeGroup.updatedAt,
+          updatedBy: entities.administrativeGroup.updatedBy,
+          studentsNumber: entities.administrativeGroup.studentsNumber,
+        });
+      }
 
       this.logger.log('remove student from internal groups');
       for (const group of entities.internalGroups) {
@@ -89,6 +92,8 @@ export class CancelAcademicRecordTypeormTransactionalService extends CancelAcade
           );
         }
       }
+
+      throw new ConflictException();
     } finally {
       await queryRunner.release();
     }
