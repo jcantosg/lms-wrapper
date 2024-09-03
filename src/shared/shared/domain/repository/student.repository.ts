@@ -34,4 +34,10 @@ export abstract class StudentRepository {
     academicProgramIds: string[],
     internalGroupIds: string[],
   ): Promise<Student[]>;
+
+  abstract findByBuPeriodsAndPrograms(
+    businessUnitIds: string[],
+    academicPeriodIds: string[],
+    academicProgramIds: string[],
+  ): Promise<Student[]>;
 }

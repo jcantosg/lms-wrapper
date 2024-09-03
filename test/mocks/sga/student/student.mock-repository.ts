@@ -10,4 +10,5 @@ export class StudentMockRepository implements StudentRepository {
   matching = jest.fn();
   getByEmail = jest.fn();
   getByProgramsAndGroups = jest.fn();
+  findByBuPeriodsAndPrograms = jest.fn();
 }

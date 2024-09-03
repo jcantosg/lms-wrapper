@@ -42,4 +42,10 @@ export abstract class AcademicProgramRepository {
     businessUnitIds: string[],
     isSuperAdmin: boolean,
   ): Promise<AcademicProgram[]>;
+
+  abstract findByAcademicPeriods(
+    academicPeriodIds: string[],
+    businessUnitIds: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicProgram[]>;
 }
