@@ -124,7 +124,7 @@ export class SendCommunicationHandler implements CommandHandler {
         await this.mailerService.sendMail({
           to: student.universaeEmail,
           template: './communication',
-          subject: 'Nuevo comunicado',
+          subject: communication.message?.value.subject,
           context: {
             subject: communication.message?.value.subject,
             shortDescription: communication.message?.value.shortDescription,
@@ -132,6 +132,7 @@ export class SendCommunicationHandler implements CommandHandler {
               communication.message?.value.body ?? '',
             ),
           },
+          from: 'Universae no-reply@universae.com',
         });
       }
     }
