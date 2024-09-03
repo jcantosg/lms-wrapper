@@ -24,17 +24,28 @@ export class GetChatsStudentsHandler implements QueryHandler {
       new GetChatsStudentsCriteria(query),
     );
 
+    const studentIds = chatrooms.map((chatroom) => chatroom.student.id);
+    const subjectIds = chatrooms.map(
+      (chatroom) => chatroom.internalGroup.subject.id,
+    );
+
+    const enrollments =
+      await this.enrollmentRepository.getByStudentsAndSubjects(
+        studentIds,
+        subjectIds,
+      );
+
     const visibleChatrooms: Chatroom[] = [];
 
     await Promise.all(
       chatrooms.map(async (chatroom) => {
         const subject = chatroom.internalGroup.subject;
         const student = chatroom.student;
-        const enrollment =
-          await this.enrollmentRepository.getByStudentAndSubject(
-            student.id,
-            subject.id,
-          );
+        const enrollment = enrollments.find(
+          (enrollment) =>
+            enrollment.academicRecord.student.id === student.id &&
+            enrollment.subject.id === subject.id,
+        );
 
         if (enrollment && (await this.hasStudentAccessToChat(enrollment))) {
           visibleChatrooms.push(chatroom);

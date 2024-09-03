@@ -38,4 +38,9 @@ export abstract class EnrollmentRepository {
     studentId: string,
     subjectId: string,
   ): Promise<Enrollment | null>;
+
+  abstract getByStudentsAndSubjects(
+    studentIds: string[],
+    subjectIds: string[],
+  ): Promise<Enrollment[]>;
 }

@@ -105,6 +105,24 @@ export class EnrollmentPostgresRepository
     });
   }
 
+  async getByStudentsAndSubjects(
+    studentIds: string[],
+    subjectIds: string[],
+  ): Promise<Enrollment[]> {
+    return await this.repository
+      .createQueryBuilder('enrollment')
+      .leftJoinAndSelect('enrollment.calls', 'calls')
+      .leftJoinAndSelect('enrollment.subject', 'subject')
+      .leftJoinAndSelect('enrollment.programBlock', 'programBlock')
+      .leftJoinAndSelect('enrollment.academicRecord', 'academicRecord')
+      .leftJoinAndSelect('academicRecord.student', 'student')
+      .where('student.id IN (:...studentIds)', { studentIds })
+      .andWhere('subject.id IN (:...subjectIds)', { subjectIds })
+      .orderBy('calls.callNumber', 'DESC')
+      .addOrderBy('calls.callDate', 'DESC')
+      .getMany();
+  }
+
   async matching(criteria: Criteria): Promise<Enrollment[]> {
     const queryBuilder = this.initializeQueryBuilder('enrollment');
     let criteriaToQueryBuilder = await this.convertCriteriaToQueryBuilder(
