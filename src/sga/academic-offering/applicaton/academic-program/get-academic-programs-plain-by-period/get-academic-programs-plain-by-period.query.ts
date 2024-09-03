@@ -4,6 +4,6 @@ export class GetAcademicProgramsPlainByPeriodQuery {
   constructor(
     public readonly academicPeriodId: string,
     public readonly adminUser: AdminUser,
-    public readonly hasAdministrativeGroup?: boolean,
+    public readonly hasAdministrativeGroup: boolean,
   ) {}
 }

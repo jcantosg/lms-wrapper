@@ -202,7 +202,7 @@ export class AcademicProgramPostgresRepository
 
   async getByAcademicPeriod(
     academicPeriodId: string,
-    hasAdministrativeGroup?: boolean,
+    hasAdministrativeGroup: boolean,
   ): Promise<AcademicProgram[]> {
     const academicPrograms = await this.repository.find({
       relations: { academicPeriods: true, administrativeGroups: true },
@@ -213,19 +213,12 @@ export class AcademicProgramPostgresRepository
       },
     });
 
-    if (hasAdministrativeGroup === undefined) {
-      return academicPrograms;
-    }
-
-    if (hasAdministrativeGroup) {
-      return academicPrograms.filter(
-        (academicProgram) => academicProgram.administrativeGroups.length > 0,
-      );
-    }
-
-    return academicPrograms.filter(
-      (academicProgram) => academicProgram.administrativeGroups.length === 0,
-    );
+    return hasAdministrativeGroup
+      ? academicPrograms
+      : academicPrograms.filter(
+          (academicProgram) =>
+            academicProgram.administrativeGroups.length === 0,
+        );
   }
 
   async getByAcademicPeriodsAndTitles(
