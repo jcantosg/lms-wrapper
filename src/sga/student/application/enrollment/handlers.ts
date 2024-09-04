@@ -38,6 +38,7 @@ const createEnrollmentHandler = {
     createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
     deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
     eventDispatcher: EventDispatcher,
+    enrollmentRepository: EnrollmentRepository,
   ) => {
     const transactionalService = new CreateEnrollmentTransactionalService(
       datasource,
@@ -51,6 +52,7 @@ const createEnrollmentHandler = {
       transactionalService,
       internalGroupRepository,
       eventDispatcher,
+      enrollmentRepository,
     );
   },
   inject: [
@@ -60,6 +62,7 @@ const createEnrollmentHandler = {
     CreateLmsEnrollmentHandler,
     DeleteLmsEnrollmentHandler,
     EventDispatcher,
+    EnrollmentRepository,
   ],
 };
 

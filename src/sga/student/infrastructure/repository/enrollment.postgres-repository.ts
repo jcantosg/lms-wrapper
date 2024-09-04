@@ -7,6 +7,7 @@ import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollme
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export class EnrollmentPostgresRepository
   extends TypeOrmRepository<Enrollment>
@@ -31,6 +32,22 @@ export class EnrollmentPostgresRepository
       maxCalls: enrollment.maxCalls,
       lmsEnrollment: enrollment.lmsEnrollment,
     });
+  }
+
+  async exists(
+    academicRecord: AcademicRecord,
+    subject: Subject,
+    programBlock: ProgramBlock,
+  ): Promise<boolean> {
+    const enrollment = await this.repository.findOne({
+      where: {
+        academicRecord: { id: academicRecord.id },
+        subject: { id: subject.id },
+        programBlock: { id: programBlock.id },
+      },
+    });
+
+    return enrollment !== null;
   }
 
   async get(id: string): Promise<Enrollment | null> {

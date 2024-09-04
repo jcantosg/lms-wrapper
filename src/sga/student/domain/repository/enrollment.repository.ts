@@ -2,6 +2,7 @@ import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export abstract class EnrollmentRepository {
   abstract save(enrollment: Enrollment): Promise<void>;
@@ -11,6 +12,12 @@ export abstract class EnrollmentRepository {
   abstract matching(criteria: Criteria): Promise<Enrollment[]>;
 
   abstract delete(enrollment: Enrollment): Promise<void>;
+
+  abstract exists(
+    academicRecord: AcademicRecord,
+    subject: Subject,
+    programBlock: ProgramBlock,
+  ): Promise<boolean>;
 
   abstract getByAcademicRecord(
     academicRecord: AcademicRecord,
