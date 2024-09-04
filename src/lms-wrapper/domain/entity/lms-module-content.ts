@@ -5,6 +5,7 @@ export interface LmsModuleContentBody {
   name: string;
   modules: {
     id: number;
+    isVisible: boolean;
     name: string;
     url: string;
     type: string;

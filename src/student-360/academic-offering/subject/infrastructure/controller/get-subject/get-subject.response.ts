@@ -37,14 +37,17 @@ interface GetSubjectResponseBody {
         id: number;
         name: string;
         image: string;
+        isVisible: boolean;
       }[];
       officialTests: {
         id: number;
         name: string;
+        isVisible: boolean;
       }[];
       autoEvaluationTests: {
         id: number;
         name: string;
+        isVisible: boolean;
         modules: TestModule[];
       } | null;
     };
@@ -95,6 +98,7 @@ export class GetSubjectResponse {
                 id: module.id,
                 name: module.name,
                 image: module.image,
+                isVisible: autoEvaluationTest.isVisible,
               };
             }),
           officialTests: subject
@@ -103,6 +107,7 @@ export class GetSubjectResponse {
               return {
                 id: module.id,
                 name: module.name,
+                isVisible: autoEvaluationTest.isVisible,
                 modules: GetSubjectResponse.getOfficialTests(module),
               };
             }),
@@ -110,6 +115,7 @@ export class GetSubjectResponse {
             ? {
                 id: autoEvaluationTest.id,
                 name: autoEvaluationTest.name,
+                isVisible: autoEvaluationTest.isVisible,
                 modules: autoEvaluationTest.autoEvaluationTests!.map(
                   (module) => {
                     return {

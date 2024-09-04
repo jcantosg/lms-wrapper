@@ -31,6 +31,7 @@ export interface LmsModule {
   id: number;
   name: string;
   image: string;
+  isVisible: boolean;
 }
 
 export interface LmsCourseValues {
