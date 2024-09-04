@@ -205,7 +205,12 @@ export class AcademicProgramPostgresRepository
     hasAdministrativeGroup: boolean,
   ): Promise<AcademicProgram[]> {
     const academicPrograms = await this.repository.find({
-      relations: { academicPeriods: true, administrativeGroups: true },
+      relations: {
+        academicPeriods: true,
+        administrativeGroups: {
+          academicPeriod: true,
+        },
+      },
       where: {
         academicPeriods: {
           id: academicPeriodId,
@@ -217,7 +222,9 @@ export class AcademicProgramPostgresRepository
       ? academicPrograms
       : academicPrograms.filter(
           (academicProgram) =>
-            academicProgram.administrativeGroups.length === 0,
+            academicProgram.administrativeGroups.filter(
+              (adminGroup) => adminGroup.academicPeriod.id === academicPeriodId,
+            ).length === 0,
         );
   }
 
