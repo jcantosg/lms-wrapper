@@ -51,6 +51,11 @@ export class EditAdministrativeProcessHandler implements CommandHandler {
       ) {
         academicRecordProcess.update(AdministrativeProcessStatusEnum.VALIDATED);
         await this.administrativeProcessRepository.save(academicRecordProcess);
+      } else {
+        academicRecordProcess.update(
+          AdministrativeProcessStatusEnum.PENDING_DOCUMENTS,
+        );
+        await this.administrativeProcessRepository.save(academicRecordProcess);
       }
     }
   }
