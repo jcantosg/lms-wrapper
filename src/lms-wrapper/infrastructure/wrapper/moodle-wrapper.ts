@@ -657,7 +657,6 @@ export class MoodleWrapper implements LmsWrapper {
     responseModules.filter(
       (value) => value.name !== '' && value.name !== 'Partners',
     );
-
     if (!isSpeciality) {
       responseModules = responseModules.filter(
         (value) => value.name !== 'General',
