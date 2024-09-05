@@ -210,9 +210,9 @@ describe('Send Communication Handler', () => {
     expect(sendSpy).toHaveBeenCalledTimes(1);
     expect(sendSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: student.universaeEmail,
+        to: [student.email, student.universaeEmail],
         template: './communication',
-        subject: 'Nuevo comunicado',
+        subject: communication.message?.value.subject,
         context: {
           subject: communication.message?.value.subject,
           shortDescription: communication.message?.value.shortDescription,
@@ -220,6 +220,7 @@ describe('Send Communication Handler', () => {
             communication.message?.value.body ?? '',
           ),
         },
+        from: 'Universae no-reply@universae.com',
       }),
     );
   });

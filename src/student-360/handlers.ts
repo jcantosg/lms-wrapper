@@ -62,7 +62,6 @@ const generateRecoveryPasswordTokenHandler = {
 const updateStudentPasswordHandler = {
   provide: UpdateStudentPasswordHandler,
   useFactory: (
-    studentGetter: StudentGetter,
     studentRepository: StudentRepository,
     recoveryPasswordTokenRepository: StudentRecoveryPasswordTokenRepository,
     recoveryPasswordTokenGetter: StudentRecoveryPasswordTokenGetter,
@@ -70,7 +69,6 @@ const updateStudentPasswordHandler = {
     passwordEncoder: PasswordEncoder,
   ) =>
     new UpdateStudentPasswordHandler(
-      studentGetter,
       studentRepository,
       recoveryPasswordTokenRepository,
       recoveryPasswordTokenGetter,
@@ -78,7 +76,6 @@ const updateStudentPasswordHandler = {
       passwordEncoder,
     ),
   inject: [
-    StudentGetter,
     StudentRepository,
     StudentRecoveryPasswordTokenRepository,
     StudentRecoveryPasswordTokenGetter,

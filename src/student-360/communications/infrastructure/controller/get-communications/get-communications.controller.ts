@@ -15,7 +15,7 @@ import { GetStudentCommunicationsHandler } from '#student-360/communications/app
 import { GetStudentCommunicationsQuery } from '#student-360/communications/application/get-student-communications/get-student-communications.query';
 
 interface GetStudentCommunicationsQueryParams {
-  subject: string;
+  subject?: string;
 }
 
 @Controller('student-360')
@@ -34,8 +34,8 @@ export class GetStudentCommunicationsController {
     @Request() req: StudentAuthRequest,
   ) {
     const query = new GetStudentCommunicationsQuery(
-      queryParams.subject,
       req.user,
+      queryParams.subject,
     );
 
     const response = await this.handler.handle(query);

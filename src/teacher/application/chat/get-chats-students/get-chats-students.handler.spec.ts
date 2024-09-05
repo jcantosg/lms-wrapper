@@ -30,7 +30,7 @@ let blockRelationRepository: BlockRelationRepository;
 let academicRecordGetter: AcademicRecordGetter;
 
 let chatroomMatchingSpy: jest.SpyInstance;
-let enrollmentGetByStudentAndSubjectSpy: jest.SpyInstance;
+let enrollmentGetByStudentsAndSubjectsSpy: jest.SpyInstance;
 let getByProgramBlockAndAcademicPeriodSpy: jest.SpyInstance;
 let getAcademicRecordSpy: jest.SpyInstance;
 
@@ -54,12 +54,16 @@ const internalGroup = getAnInternalGroup(
 );
 const chatroom = getAChatroom(internalGroup);
 const blockRelation = getABlockRelation(periodBlock, programBlock);
+internalGroup.subject = subject;
+chatroom.internalGroup = internalGroup;
+chatroom.student = student;
 
 programBlock.subjects = [subject];
 
 academicProgram.programBlocks = [programBlock];
 academicRecord.academicPeriod = academicPeriod;
 academicRecord.academicProgram = academicProgram;
+academicRecord.student = student;
 student.internalGroups = [internalGroup];
 internalGroup.subject = subject;
 internalGroup.academicPeriod = academicPeriod;
@@ -76,9 +80,9 @@ describe('GetChatsStudentsHandler', () => {
     blockRelationRepository = new BlockRelationMockRepository();
 
     chatroomMatchingSpy = jest.spyOn(chatroomRepository, 'matching');
-    enrollmentGetByStudentAndSubjectSpy = jest.spyOn(
+    enrollmentGetByStudentsAndSubjectsSpy = jest.spyOn(
       enrollmentRepository,
-      'getByStudentAndSubject',
+      'getByStudentsAndSubjects',
     );
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'get');
 
@@ -97,7 +101,7 @@ describe('GetChatsStudentsHandler', () => {
 
   it('should return visible chatrooms', async () => {
     chatroomMatchingSpy.mockResolvedValue([chatroom]);
-    enrollmentGetByStudentAndSubjectSpy.mockResolvedValue(enrollment);
+    enrollmentGetByStudentsAndSubjectsSpy.mockResolvedValue([enrollment]);
     getAcademicRecordSpy.mockResolvedValue(academicRecord);
     getByProgramBlockAndAcademicPeriodSpy.mockResolvedValue(blockRelation);
 

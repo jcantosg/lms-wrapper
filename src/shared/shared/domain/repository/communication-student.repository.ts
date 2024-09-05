@@ -1,3 +1,4 @@
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { CommunicationStudent } from '#shared/domain/entity/communicarion-student.entity';
 
 export abstract class CommunicationStudentRepository {
@@ -12,4 +13,5 @@ export abstract class CommunicationStudentRepository {
   abstract getByStudent(studentId: string): Promise<CommunicationStudent[]>;
   abstract countUnread(studentId: string): Promise<number>;
   abstract deleteByCommunication(communicationId: string): Promise<void>;
+  abstract matching(criteria: Criteria): Promise<CommunicationStudent[]>;
 }

@@ -21,8 +21,7 @@ describe('/student-360/recover-password', () => {
     await supertest(httpServer)
       .post(path)
       .send({
-        universaeEmail:
-          GenerateStudentRecoveryPasswordTokenSeed.studentUniversaeEmail,
+        email: GenerateStudentRecoveryPasswordTokenSeed.studentEmail,
       })
       .expect(201);
   });

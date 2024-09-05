@@ -218,6 +218,18 @@ export class StudentPostgresRepository
     });
   }
 
+  async getByPersonalEmail(email: string): Promise<Student | null> {
+    return await this.repository.findOne({
+      where: { email },
+      relations: {
+        academicRecords: true,
+        country: true,
+        citizenship: true,
+        contactCountry: true,
+      },
+    });
+  }
+
   async getByProgramsAndGroups(
     academicProgramIds: string[],
     internalGroupIds: string[],

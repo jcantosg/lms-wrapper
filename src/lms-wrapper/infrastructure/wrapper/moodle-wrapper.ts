@@ -53,6 +53,7 @@ type MoodleModuleContent = {
   type: string;
   name: string;
   url: string;
+  isVisible: boolean;
   isCompleted: boolean;
   attempts: number | undefined;
   contents:
@@ -64,6 +65,7 @@ type MoodleModuleContent = {
     | undefined;
 };
 export type Modules = {
+  isVisible: boolean;
   id: number;
   name: string;
   type: string;
@@ -205,6 +207,7 @@ export class MoodleWrapper implements LmsWrapper {
           modules.push({
             id: courseContent.id,
             url: courseContent.url,
+            isVisible: this.isVisible(courseContent.visible),
             moduleType: courseContent.modname,
             type: this.getModuleType(courseContent.description),
             description: courseContent.description,
@@ -223,6 +226,7 @@ export class MoodleWrapper implements LmsWrapper {
             name: formatMoodleNames(courseContent.name),
             url: await this.getResourceUrl(courseContent),
             type: moodleResourceType[courseContent.modname],
+            isVisible: this.isVisible(courseContent.visible),
             isCompleted: courseActivitiesCompletionResponse.statuses.some(
               (status) => {
                 return (
@@ -245,6 +249,7 @@ export class MoodleWrapper implements LmsWrapper {
           return {
             id: module.id,
             name: module.name,
+            isVisible: module.isVisible,
             description: formatMoodleNames(module.description),
             moduleType: module.moduleType,
             type: module.type,
@@ -281,6 +286,8 @@ export class MoodleWrapper implements LmsWrapper {
           : formatMoodleNames(courseModule.name),
         type: this.getModuleType(courseModule.description),
         moduleType: courseModule.modname,
+        isVisible: this.isVisible(courseModule.visible),
+
         url: await this.getResourceUrl(courseModule),
         description: courseModule.description
           ? courseModule.description
@@ -293,6 +300,7 @@ export class MoodleWrapper implements LmsWrapper {
                 name: content.filename,
                 url: content.fileurl,
                 type: content.mimetype,
+                isVisible: this.isVisible(courseModule.visible),
                 isCompleted: true,
                 attempts: undefined,
                 contents: [content],
@@ -310,6 +318,7 @@ export class MoodleWrapper implements LmsWrapper {
           id: module.id,
           name: module.name,
           type: module.type,
+          isVisible: module.isVisible,
           moduleType: module.moduleType,
           description: module.description,
           url: module.url,
@@ -371,17 +380,21 @@ export class MoodleWrapper implements LmsWrapper {
   }
 
   async getCourseProgress(courseId: number, studentId: number) {
-    const queryParams = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${courseId}&userid=${studentId}`;
-    const response: MoodleCourseActivitiesCompletionResponse =
-      await this.wrapper.get(this.url, queryParams);
-    const modulesNumber = response.statuses.length;
-    const completedModulesNumber = response.statuses.filter(
-      (modules) =>
-        modules.state === 1 &&
-        modules.details.some((detail) => detail.rulevalue.status === 1),
-    ).length;
+    try {
+      const queryParams = `wstoken=${this.token}&wsfunction=core_completion_get_activities_completion_status&moodlewsrestformat=json&courseid=${courseId}&userid=${studentId}`;
+      const response: MoodleCourseActivitiesCompletionResponse =
+        await this.wrapper.get(this.url, queryParams);
+      const modulesNumber = response.statuses.length;
+      const completedModulesNumber = response.statuses.filter(
+        (modules) =>
+          modules.state === 1 &&
+          modules.details.some((detail) => detail.rulevalue.status === 1),
+      ).length;
 
-    return Math.round((completedModulesNumber / modulesNumber) * 100);
+      return Math.round((completedModulesNumber / modulesNumber) * 100);
+    } catch (exception) {
+      return 0;
+    }
   }
 
   async deleteCourse(lmsCourse: LmsCourse) {
@@ -454,6 +467,7 @@ export class MoodleWrapper implements LmsWrapper {
             ] ?? '/courseContent.svg',
           autoEvaluationTests: undefined,
           officialTests: undefined,
+          isVisible: this.isVisible(courseContentResponse.visible),
         };
       })
       .filter((value) => value.name !== '' && value.name !== 'Partners');
@@ -520,6 +534,7 @@ export class MoodleWrapper implements LmsWrapper {
             modules.push({
               id: courseContent.id,
               url: courseContent.url,
+              isVisible: this.isVisible(courseContent.visible),
               moduleType: courseContent.modname,
               type: this.getModuleType(courseContent.description),
               description: courseContent.description,
@@ -538,6 +553,7 @@ export class MoodleWrapper implements LmsWrapper {
               name: formatMoodleNames(courseContent.name),
               url: courseContent.url,
               type: moodleResourceType[courseContent.modname],
+              isVisible: this.isVisible(courseContent.visible),
               isCompleted: courseActivitiesCompletionResponse.statuses.some(
                 (status) => {
                   return (
@@ -557,6 +573,7 @@ export class MoodleWrapper implements LmsWrapper {
 
         responseModules.push({
           id: contentResponse.id,
+          isVisible: this.isVisible(contentResponse.visible),
           name: contentResponse.name,
           image: 'quiz.svg',
           autoEvaluationTests: modules,
@@ -575,6 +592,7 @@ export class MoodleWrapper implements LmsWrapper {
               id: courseContent.id,
               url: courseContent.url,
               moduleType: courseContent.modname,
+              isVisible: this.isVisible(courseContent.visible),
               type: this.getModuleType(courseContent.description),
               description: courseContent.description,
               name: formatMoodleNames(
@@ -592,6 +610,7 @@ export class MoodleWrapper implements LmsWrapper {
               name: formatMoodleNames(courseContent.name),
               url: courseContent.url,
               type: moodleResourceType[courseContent.modname],
+              isVisible: this.isVisible(courseContent.visible),
               isCompleted: courseActivitiesCompletionResponse.statuses.some(
                 (status) => {
                   return (
@@ -612,6 +631,7 @@ export class MoodleWrapper implements LmsWrapper {
         responseModules.push({
           id: contentResponse.id,
           name: contentResponse.name,
+          isVisible: this.isVisible(contentResponse.visible),
           image: 'quiz.svg',
           officialTests: modules,
           autoEvaluationTests: undefined,
@@ -629,6 +649,7 @@ export class MoodleWrapper implements LmsWrapper {
             '/courseContent.svg',
           autoEvaluationTests: undefined,
           officialTests: undefined,
+          isVisible: this.isVisible(contentResponse.visible),
         });
       }
     }
@@ -636,7 +657,6 @@ export class MoodleWrapper implements LmsWrapper {
     responseModules.filter(
       (value) => value.name !== '' && value.name !== 'Partners',
     );
-
     if (!isSpeciality) {
       responseModules = responseModules.filter(
         (value) => value.name !== 'General',
@@ -681,5 +701,9 @@ export class MoodleWrapper implements LmsWrapper {
     return quizAttemptsResponse.attempts.length === 0
       ? 0
       : quizAttemptsResponse.attempts[0].attempt;
+  }
+
+  private isVisible(contentVisible: number): boolean {
+    return contentVisible === 1;
   }
 }

@@ -25,6 +25,8 @@ import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { EnrollmentMockRepository } from '#test/mocks/sga/student/enrollment.mock-repository';
 
 let handler: CreateEnrollmentHandler;
 let academicRecordGetter: AcademicRecordGetter;
@@ -32,7 +34,9 @@ let subjectGetter: SubjectGetter;
 let transactionalService: TransactionalService;
 let internalGroupRepository: InternalGroupRepository;
 let eventDispatcher: EventDispatcher;
+let enrollmentRepository: EnrollmentRepository;
 
+let existsEnrollmentSpy: jest.SpyInstance;
 let getAcademicRecordSpy: jest.SpyInstance;
 let getSubjectSpy: jest.SpyInstance;
 let executeSpy: jest.SpyInstance;
@@ -69,17 +73,20 @@ describe('Create Enrollment Unit Test', () => {
     transactionalService = new TransactionalServiceMock();
     internalGroupRepository = new InternalGroupMockRepository();
     eventDispatcher = new EventDispatcherMock();
+    enrollmentRepository = new EnrollmentMockRepository();
     handler = new CreateEnrollmentHandler(
       academicRecordGetter,
       subjectGetter,
       transactionalService,
       internalGroupRepository,
       eventDispatcher,
+      enrollmentRepository,
     );
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getSubjectSpy = jest.spyOn(subjectGetter, 'getByAdminUser');
     executeSpy = jest.spyOn(transactionalService, 'execute');
     getInternalGroupsSpy = jest.spyOn(internalGroupRepository, 'getByKeys');
+    existsEnrollmentSpy = jest.spyOn(enrollmentRepository, 'exists');
   });
 
   it('should throw an error if the academic record is cancelled', async () => {
@@ -96,6 +103,8 @@ describe('Create Enrollment Unit Test', () => {
     getAcademicRecordSpy.mockImplementation(() =>
       Promise.resolve(academicRecord),
     );
+    existsEnrollmentSpy.mockImplementation(() => Promise.resolve(false));
+
     academicRecord.status = AcademicRecordStatusEnum.VALID;
     getSubjectSpy.mockImplementation(() => Promise.resolve(subject));
     getInternalGroupsSpy.mockImplementation(() =>

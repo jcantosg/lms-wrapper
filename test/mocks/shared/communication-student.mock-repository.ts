@@ -9,4 +9,5 @@ export class CommunicationStudentMockRepository
   getByStudent = jest.fn();
   countUnread = jest.fn();
   getByCommunicationAndStudent = jest.fn();
+  matching = jest.fn();
 }

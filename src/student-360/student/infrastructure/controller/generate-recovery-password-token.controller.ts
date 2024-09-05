@@ -5,7 +5,7 @@ import { generateRecoveryPasswordTokenSchema } from '#/student-360/student/infra
 import { JoiRequestBodyValidationPipe } from '#shared/infrastructure/pipe/joi-request-body-validation-pipe.service';
 
 interface CreateRecoveryPasswordTokenBody {
-  universaeEmail: string;
+  email: string;
 }
 
 @Controller('student-360')
@@ -19,9 +19,7 @@ export class GenerateRecoveryPasswordTokenController {
   async generateRecoveryPasswordToken(
     @Body() body: CreateRecoveryPasswordTokenBody,
   ) {
-    const command = new GenerateRecoveryPasswordTokenCommand(
-      body.universaeEmail,
-    );
+    const command = new GenerateRecoveryPasswordTokenCommand(body.email);
     await this.handler.handle(command);
   }
 }

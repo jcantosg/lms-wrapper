@@ -182,7 +182,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
       city: validationResult.value.municipio,
       country: validationResult.value.country,
       cp: validationResult.value.cp,
-      gender: validationResult.value.sexo,
+      gender: this.parseGender(validationResult.value.sexo),
       birthDate: validationResult.value.birth_date,
       nuss: validationResult.value.nuss,
       defense: validationResult.value.defensa,
@@ -191,9 +191,33 @@ export class ExcelJSFileParser implements ExcelFileParser {
       virtualCampusCode: validationResult.value.sede_virtual,
       academicProgramCode: validationResult.value.programa_formativo,
       academicPeriodCode: validationResult.value.periodo,
-      modality: validationResult.value.modalidad,
+      modality: this.parseModality(validationResult.value.modalidad),
       leadId: validationResult.value.n_oportunidad,
     };
+  }
+
+  private parseGender(sexo: any): StudentGender {
+    switch (sexo) {
+      case 'H':
+        return StudentGender.MALE;
+      case 'M':
+        return StudentGender.FEMALE;
+      default:
+        return StudentGender.OTHER;
+    }
+  }
+
+  private parseModality(modality: any): AcademicRecordModalityEnum {
+    switch (modality) {
+      case 'Distancia':
+        return AcademicRecordModalityEnum.ELEARNING;
+      case 'Presencial':
+        return AcademicRecordModalityEnum.PRESENCIAL;
+      case 'Semipresencial':
+        return AcademicRecordModalityEnum.MIXED;
+      default:
+        return AcademicRecordModalityEnum.ELEARNING;
+    }
   }
 
   private rowsToObject(wb: Excel.Workbook): any {

@@ -6,6 +6,7 @@ import { CommunicationStudent } from '#shared/domain/entity/communicarion-studen
 import { CommunicationStudentRepository } from '#shared/domain/repository/communication-student.repository';
 import { CommunicationStudentSchema } from '#shared/infrastructure/config/schema/communication-student.schema';
 import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
+import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 
 @Injectable()
 export class CommunicationStudentPostgresRepository
@@ -79,5 +80,33 @@ export class CommunicationStudentPostgresRepository
       student: communicationStudent.student,
       updatedAt: communicationStudent.updatedAt,
     });
+  }
+
+  private initializeQueryBuilder(aliasQuery: string) {
+    const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
+
+    queryBuilder.leftJoinAndSelect(
+      `${aliasQuery}.communication`,
+      'communication',
+    );
+    queryBuilder.leftJoinAndSelect(`communication.sentBy`, 'sent_by');
+    queryBuilder.leftJoinAndSelect(`${aliasQuery}.student`, 'student');
+
+    return queryBuilder;
+  }
+
+  async matching(criteria: Criteria): Promise<CommunicationStudent[]> {
+    const aliasQuery = 'communicationStudent';
+    const queryBuilder = this.initializeQueryBuilder(aliasQuery);
+
+    const result = await this.convertCriteriaToQueryBuilder(
+      criteria,
+      queryBuilder,
+      aliasQuery,
+    );
+
+    return result
+      .applyOrder(criteria, queryBuilder, aliasQuery)
+      .getMany(queryBuilder);
   }
 }

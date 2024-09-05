@@ -22,6 +22,7 @@ import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-gr
 import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 
 export class CreateEnrollmentHandler implements CommandHandler {
   constructor(
@@ -30,6 +31,7 @@ export class CreateEnrollmentHandler implements CommandHandler {
     private readonly transactionalService: TransactionalService,
     private readonly internalGroupRepository: InternalGroupRepository,
     private readonly eventDispatcher: EventDispatcher,
+    private readonly enrollmentRepository: EnrollmentRepository,
   ) {}
 
   async handle(command: CreateEnrollmentCommand): Promise<void> {
@@ -60,44 +62,53 @@ export class CreateEnrollmentHandler implements CommandHandler {
       if (!programBlock) {
         throw new ProgramBlockNotFoundException();
       }
-      const enrollment = Enrollment.createUniversae(
-        enrollmentSubject.enrollmentId,
-        subject,
-        academicRecord,
-        programBlock,
-        command.user,
-      );
-      const subjectCall = SubjectCall.create(
-        uuid(),
-        enrollment,
-        1,
-        new Date(),
-        SubjectCallFinalGradeEnum.ONGOING,
-        SubjectCallStatusEnum.ONGOING,
-        command.user,
-      );
-      enrollment.addSubjectCall(subjectCall);
 
-      const internalGroup =
-        subject.type !== SubjectType.SPECIALTY
-          ? await this.getInternalGroup(enrollment.subject, academicRecord)
-          : null;
-
-      if (internalGroup) {
-        internalGroup.updatedBy = command.user;
-        internalGroup.updatedAt = new Date();
-
-        await this.eventDispatcher.dispatch(
-          new InternalGroupMemberAddedEvent(internalGroup),
+      if (
+        !(await this.enrollmentRepository.exists(
+          academicRecord,
+          subject,
+          programBlock,
+        ))
+      ) {
+        const enrollment = Enrollment.createUniversae(
+          enrollmentSubject.enrollmentId,
+          subject,
+          academicRecord,
+          programBlock,
+          command.user,
         );
-      }
+        const subjectCall = SubjectCall.create(
+          uuid(),
+          enrollment,
+          1,
+          new Date(),
+          SubjectCallFinalGradeEnum.ONGOING,
+          SubjectCallStatusEnum.ONGOING,
+          command.user,
+        );
+        enrollment.addSubjectCall(subjectCall);
 
-      await this.transactionalService.execute({
-        subjectCall: subjectCall,
-        enrollment: enrollment,
-        internalGroup,
-        student: academicRecord.student,
-      });
+        const internalGroup =
+          subject.type !== SubjectType.SPECIALTY
+            ? await this.getInternalGroup(enrollment.subject, academicRecord)
+            : null;
+
+        if (internalGroup) {
+          internalGroup.updatedBy = command.user;
+          internalGroup.updatedAt = new Date();
+
+          await this.eventDispatcher.dispatch(
+            new InternalGroupMemberAddedEvent(internalGroup),
+          );
+        }
+
+        await this.transactionalService.execute({
+          subjectCall: subjectCall,
+          enrollment: enrollment,
+          internalGroup,
+          student: academicRecord.student,
+        });
+      }
     }
   }
 

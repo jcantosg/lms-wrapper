@@ -1,7 +1,7 @@
 export enum AdministrativeProcessTypeEnum {
   NEW_ACADEMIC_RECORD = 'Nuevo expediente',
   PHOTO = 'Foto',
-  IDENTITY_DOCUMENTS = 'Documento de indentidad',
+  IDENTITY_DOCUMENTS = 'Documento de identidad',
   ACCESS_DOCUMENTS = 'Documento de acceso',
   ACADEMIC_RECOGNITION = 'Convalidación',
   RESIGNATION = 'Renuncia',

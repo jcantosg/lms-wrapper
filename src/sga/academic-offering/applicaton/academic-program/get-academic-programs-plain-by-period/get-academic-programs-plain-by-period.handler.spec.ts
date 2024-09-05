@@ -20,6 +20,7 @@ const academicProgram = getAnAcademicProgram();
 const query = new GetAcademicProgramsPlainByPeriodQuery(
   '67b2659f-9745-476e-b4f5-fb8ae941d77c',
   adminUser,
+  true,
 );
 
 describe('Get Academic Programs Plain By Period Handler', () => {

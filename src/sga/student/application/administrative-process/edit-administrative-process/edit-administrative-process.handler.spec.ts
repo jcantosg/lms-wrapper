@@ -11,6 +11,7 @@ let handler: EditAdministrativeProcessHandler;
 let repository: AdministrativeProcessRepository;
 
 let getSpy: jest.SpyInstance;
+let getByStudentSpy: jest.SpyInstance;
 let saveSpy: jest.SpyInstance;
 
 const adminProcess = getAnAdministrativeProcess();
@@ -25,6 +26,7 @@ describe('Edit Administrative Process Handler', () => {
     repository = new AdministrativeProcessMockRepository();
 
     getSpy = jest.spyOn(repository, 'get');
+    getByStudentSpy = jest.spyOn(repository, 'getByStudent');
     saveSpy = jest.spyOn(repository, 'save');
 
     handler = new EditAdministrativeProcessHandler(repository);
@@ -43,6 +45,9 @@ describe('Edit Administrative Process Handler', () => {
     getSpy.mockImplementation(
       (): Promise<AdministrativeProcess | null> =>
         Promise.resolve(adminProcess),
+    );
+    getByStudentSpy.mockImplementation(
+      (): Promise<AdministrativeProcess[]> => Promise.resolve([]),
     );
     adminProcess.status = AdministrativeProcessStatusEnum.VALIDATED;
     await handler.handle(command);

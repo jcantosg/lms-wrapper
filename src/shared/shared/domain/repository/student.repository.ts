@@ -29,6 +29,7 @@ export abstract class StudentRepository {
   ): Promise<number>;
 
   abstract getByEmail(email: string): Promise<Student | null>;
+  abstract getByPersonalEmail(email: string): Promise<Student | null>;
 
   abstract getByProgramsAndGroups(
     academicProgramIds: string[],

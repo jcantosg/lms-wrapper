@@ -6,6 +6,7 @@ import { StudentNotFoundException } from '#student/shared/exception/student-not-
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { AcademicRecordProcess } from '#student/infrastructure/controller/academic-record/get-student-academic-record.response';
 import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
+import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
 
 export class GetStudentAcademicRecordHandler implements QueryHandler {
   constructor(
@@ -36,7 +37,10 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
       academicRecordProcesses.push({
         record: ar,
         administrativeProcess:
-          adminProcesses.length > 0 ? adminProcesses[0] : null,
+          adminProcesses.find(
+            (ap) =>
+              ap.type === AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
+          ) ?? null,
       });
     }
 
