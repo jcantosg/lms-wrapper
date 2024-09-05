@@ -631,6 +631,8 @@ class APIStack(Stack):
                 ),
             ],
             enable_execute_command=True,
+            enable_ecs_managed_tags=True,
+            propagate_tags=ecs.PropagatedTagSource.SERVICE,
         )
         self.cron_service = ecs.FargateService(
             self,
@@ -653,6 +655,8 @@ class APIStack(Stack):
                 ),
             ],
             enable_execute_command=True,
+            enable_ecs_managed_tags=True,
+            propagate_tags=ecs.PropagatedTagSource.SERVICE,
         )
         self.sftp_service = ecs.FargateService(
             self,
@@ -675,6 +679,8 @@ class APIStack(Stack):
                 ),
             ],
             enable_execute_command=True,
+            enable_ecs_managed_tags=True,
+            propagate_tags=ecs.PropagatedTagSource.SERVICE,
         )
 
         self.envvars_bucket.grant_read(
