@@ -5,13 +5,11 @@ import {
 import { RecoveryPasswordTokenMockRepository } from '#test/mocks/sga/adminUser/recovery-password-token.mock-repository';
 import {
   getAJwtServiceMock,
-  getAStudentGetterMock,
   getAStudentRecoveryPasswordTokenGetterMock,
   PasswordEncoderMock,
 } from '#test/service-factory';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
-import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentRecoveryPasswordTokenRepository } from '#/student-360/student/domain/repository/student-recovery-password-token.repository';
 import { StudentRecoveryPasswordTokenGetter } from '#/student-360/student/domain/service/student-recovery-password-token-getter.service';
@@ -21,7 +19,6 @@ import { StudentMockRepository } from '#test/mocks/sga/student/student.mock-repo
 import { Student } from '#shared/domain/entity/student.entity';
 import { StudentRecoveryPasswordToken } from '#/student-360/student/domain/entity/student-recovery-password-token.entity';
 
-let studentGetter: StudentGetter;
 let studentRepository: StudentRepository;
 let tokenRepository: StudentRecoveryPasswordTokenRepository;
 let tokenGetter: StudentRecoveryPasswordTokenGetter;
@@ -37,7 +34,6 @@ const command = new UpdateStudentPasswordCommand('password', 'token');
 
 describe('update password handler', () => {
   beforeEach(() => {
-    studentGetter = getAStudentGetterMock();
     tokenRepository = new RecoveryPasswordTokenMockRepository();
     studentRepository = new StudentMockRepository();
     tokenGetter = getAStudentRecoveryPasswordTokenGetterMock();
@@ -48,7 +44,6 @@ describe('update password handler', () => {
     saveTokenSpy = jest.spyOn(tokenRepository, 'save');
 
     handler = new UpdateStudentPasswordHandler(
-      studentGetter,
       studentRepository,
       tokenRepository,
       tokenGetter,
@@ -61,7 +56,7 @@ describe('update password handler', () => {
     const student = getASGAStudent();
     const recoveryPasswordToken = getAStudentRecoveryPasswordToken();
     jest
-      .spyOn(studentGetter, 'getByEmail')
+      .spyOn(studentRepository, 'getByPersonalEmail')
       .mockImplementation((): Promise<Student> => {
         return Promise.resolve(student);
       });

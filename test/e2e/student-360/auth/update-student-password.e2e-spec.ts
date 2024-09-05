@@ -46,7 +46,7 @@ describe('/student-360/auth/update-password (PUT)', () => {
     await supertest(httpServer)
       .post('/student-360/recover-password')
       .send({
-        universaeEmail: UpdateStudentPasswordE2eSeed.studentUniversaeEmail,
+        email: UpdateStudentPasswordE2eSeed.studentEmail,
       })
       .expect(201);
 

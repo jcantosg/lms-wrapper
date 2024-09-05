@@ -18,13 +18,13 @@ export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
   ) {}
 
   async handle(command: GenerateRecoveryPasswordTokenCommand): Promise<void> {
-    const student = await this.repository.getByEmail(command.universaeEmail);
+    const student = await this.repository.getByPersonalEmail(command.email);
     if (!student) {
       return;
     }
     const token = this.jwtTokenGenerator.generateToken(
       student.id,
-      student.universaeEmail,
+      student.email,
     );
     const recoveryPasswordToken = StudentRecoveryPasswordToken.create(
       uuid(),
@@ -37,7 +37,7 @@ export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
     await this.eventDispatcher.dispatch(
       new RecoveryPasswordTokenGeneratedEvent(
         student.name,
-        student.email ?? student.universaeEmail,
+        student.email,
         token,
       ),
     );
