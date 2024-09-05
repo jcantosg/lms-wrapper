@@ -122,7 +122,7 @@ export class SendCommunicationHandler implements CommandHandler {
     if (communication.sendByEmail) {
       for (const student of allStudents) {
         await this.mailerService.sendMail({
-          to: student.universaeEmail,
+          to: [student.email, student.universaeEmail],
           template: './communication',
           subject: communication.message?.value.subject,
           context: {
