@@ -135,7 +135,12 @@ export class AcademicRecordPostgresRepository
 
   async getStudentOwnAcademicRecords(id: string): Promise<AcademicRecord[]> {
     return await this.repository.find({
-      where: { student: { id } },
+      where: {
+        student: { id },
+        status:
+          Not(AcademicRecordStatusEnum.CANCELLED) ||
+          Not(AcademicRecordStatusEnum.CANCELLED_TRANSFER),
+      },
       relations: {
         businessUnit: true,
         student: true,
