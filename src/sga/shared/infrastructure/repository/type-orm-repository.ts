@@ -32,7 +32,7 @@ const fieldOrderByMapping: Record<string, string> = {
   blockName: 'period_block.name',
   startDate: 'period_block.startDate',
   student: 'student.name',
-  adminUser: 'createdBy.name',
+  adminUser: 'created_by.name',
   communicationStatus: 'communication.status',
 };
 
