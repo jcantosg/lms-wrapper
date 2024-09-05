@@ -98,7 +98,9 @@ export class GetSubjectResponse {
                 id: module.id,
                 name: module.name,
                 image: module.image,
-                isVisible: autoEvaluationTest.isVisible,
+                isVisible: autoEvaluationTest
+                  ? autoEvaluationTest.isVisible
+                  : true,
               };
             }),
           officialTests: subject
@@ -107,7 +109,9 @@ export class GetSubjectResponse {
               return {
                 id: module.id,
                 name: module.name,
-                isVisible: autoEvaluationTest.isVisible,
+                isVisible: autoEvaluationTest
+                  ? autoEvaluationTest.isVisible
+                  : true,
                 modules: GetSubjectResponse.getOfficialTests(module),
               };
             }),
