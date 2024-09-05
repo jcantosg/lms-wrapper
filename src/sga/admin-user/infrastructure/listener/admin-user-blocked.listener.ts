@@ -21,7 +21,7 @@ export class AdminUserBlockedListener {
       template: './admin-blocked',
       subject: 'Account Blocked',
       context: {
-        urlApp: url,
+        url,
       },
     });
   }
