@@ -104,6 +104,8 @@ class APIStack(Stack):
         db_preferred_maintenance_window: str = None,
         db_preferred_backup_window: str = None,
         db_cloudwatch_logs_exports: list[str] = ["postgresql"],
+        db_read_replicas: int = 0,
+        db_read_replicas_instance_type: str = None,
         enable_monitoring: bool = False,
         sns_topic_arn: str = None,
         enable_cloudflare_auth_header: bool = False,
@@ -236,6 +238,52 @@ class APIStack(Stack):
             )
 
         CfnOutput(self, "DatabaseSecretName", value=self.secret_db.secret_name)
+
+        for i in range(db_read_replicas):
+            db_read_replica = rds.DatabaseInstanceReadReplica(
+                self,
+                f"ReadReplica{i}",
+                source_database_instance=self.database_instance,
+                instance_type=ec2.InstanceType(db_read_replicas_instance_type),
+                vpc=self.vpc,
+                vpc_subnets=ec2.SubnetSelection(
+                    subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
+                ),
+                publicly_accessible=False,
+                storage_encrypted=True,
+                storage_type=rds.StorageType.GP3,
+                auto_minor_version_upgrade=True,
+                parameter_group=self.db_parameter_group,
+                preferred_maintenance_window=db_preferred_maintenance_window,
+                preferred_backup_window=db_preferred_backup_window,
+                cloudwatch_logs_exports=db_cloudwatch_logs_exports,
+                cloudwatch_logs_retention=logs.RetentionDays.ONE_MONTH,
+                deletion_protection=False,
+                removal_policy=RemovalPolicy.DESTROY,
+                ca_certificate=rds.CaCertificate.RDS_CA_RDS2048_G1,
+            )
+
+            db_read_replica.connections.allow_default_port_from(
+                bastion_security_group, "Bastion access to RDS"
+            )
+            for cidr in VPN_CIDRS:
+                db_read_replica.connections.allow_default_port_from(
+                    ec2.Peer.ipv4(cidr), "VPN access to RDS"
+                )
+
+            NagSuppressions.add_resource_suppressions(
+                construct=db_read_replica,
+                suppressions=[
+                    NagPackSuppression(
+                        id="AwsSolutions-RDS3",
+                        reason="Not necessary for read replicas",
+                    ),
+                    NagPackSuppression(
+                        id="AwsSolutions-RDS10",
+                        reason="Not necessary for read replicas",
+                    ),
+                ],
+            )
 
         #########
         # Media #
