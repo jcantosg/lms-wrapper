@@ -24,6 +24,7 @@ export class GetStudentCommunicationsCriteria extends Criteria {
         GroupOperator.AND,
         'student',
       ),
+      new Filter('isDeleted', false, FilterOperators.EQUALS, GroupOperator.AND),
     ];
     if (query.subject) {
       filters.push(
