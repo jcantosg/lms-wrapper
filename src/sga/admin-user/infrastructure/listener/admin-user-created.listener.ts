@@ -24,9 +24,9 @@ export class AdminUserCreatedListener {
     await this.repository.save(adminUser);
     this.mailer.sendMail({
       to: payload.userEmail,
-      subject: 'Testing',
-      text: `This is your password ${payload.password}`,
-      html: `This is your password ${payload.password}`,
+      subject: 'Usuario creado',
+      text: `Esta es tu contraseña: ${payload.password}`,
+      html: `Esta es tu contraseña: ${payload.password}`,
     });
   }
 }
