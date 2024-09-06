@@ -5,7 +5,7 @@ import { GenerateRecoveryPasswordTokenHandler } from '#student-360/student/appli
 import { StudentRecoveryPasswordTokenRepository } from '#student-360/student/domain/repository/student-recovery-password-token.repository';
 import { JwtTokenGenerator } from '#shared/infrastructure/service/jwt-token-generator.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { UpdateStudentPasswordHandler } from '#student-360/student/application/update-password/update-password.handler';
 import { StudentRecoveryPasswordTokenGetter } from '#student-360/student/domain/service/student-recovery-password-token-getter.service';
 import { JwtService } from '@nestjs/jwt';
@@ -15,6 +15,13 @@ import { ExpireStudentRefreshTokenHandler } from '#student-360/student/applicati
 import { studentAcademicRecordHandlers } from '#student-360/academic-offering/academic-record/handlers';
 import { studentSubjectHandlers } from '#student-360/academic-offering/subject/handlers';
 import { chatHandlers } from '#student-360/chat/handlers';
+import { UpdateProfileHandler } from '#student-360/student/application/update-profile/update-profile.handler';
+import { CountryGetter } from '#shared/domain/service/country-getter.service';
+import { ImageUploader } from '#shared/domain/service/image-uploader.service';
+import { qualificationHandlers } from '#student-360/academic-offering/qualification/handlers';
+import { StudentPasswordChecker } from '#student-360/student/domain/service/student-password-checker.service';
+import { administrativeProcessHandlers } from '#student-360/administrative-process/handlers';
+import { communicationHandlers } from '#student-360/communications/handlers';
 
 const createRefreshTokenHandler = {
   provide: CreateRefreshTokenHandler,
@@ -55,7 +62,6 @@ const generateRecoveryPasswordTokenHandler = {
 const updateStudentPasswordHandler = {
   provide: UpdateStudentPasswordHandler,
   useFactory: (
-    studentGetter: StudentGetter,
     studentRepository: StudentRepository,
     recoveryPasswordTokenRepository: StudentRecoveryPasswordTokenRepository,
     recoveryPasswordTokenGetter: StudentRecoveryPasswordTokenGetter,
@@ -63,7 +69,6 @@ const updateStudentPasswordHandler = {
     passwordEncoder: PasswordEncoder,
   ) =>
     new UpdateStudentPasswordHandler(
-      studentGetter,
       studentRepository,
       recoveryPasswordTokenRepository,
       recoveryPasswordTokenGetter,
@@ -71,7 +76,6 @@ const updateStudentPasswordHandler = {
       passwordEncoder,
     ),
   inject: [
-    StudentGetter,
     StudentRepository,
     StudentRecoveryPasswordTokenRepository,
     StudentRecoveryPasswordTokenGetter,
@@ -90,6 +94,34 @@ const expireStudentRefreshTokenHandler = {
   inject: [StudentGetter, StudentRefreshTokenRepository],
 };
 
+const updateProfileHandler = {
+  provide: UpdateProfileHandler,
+  useFactory: (
+    repository: StudentRepository,
+    studentGetter: StudentGetter,
+    countryGetter: CountryGetter,
+    imageUploader: ImageUploader,
+    passwordEncoder: PasswordEncoder,
+    studentPasswordChecker: StudentPasswordChecker,
+  ): UpdateProfileHandler =>
+    new UpdateProfileHandler(
+      repository,
+      studentGetter,
+      countryGetter,
+      imageUploader,
+      passwordEncoder,
+      studentPasswordChecker,
+    ),
+  inject: [
+    StudentRepository,
+    StudentGetter,
+    CountryGetter,
+    ImageUploader,
+    PasswordEncoder,
+    StudentPasswordChecker,
+  ],
+};
+
 export const handlers = [
   createRefreshTokenHandler,
   generateRecoveryPasswordTokenHandler,
@@ -98,4 +130,8 @@ export const handlers = [
   ...studentAcademicRecordHandlers,
   ...studentSubjectHandlers,
   ...chatHandlers,
+  ...qualificationHandlers,
+  updateProfileHandler,
+  ...administrativeProcessHandlers,
+  ...communicationHandlers,
 ];

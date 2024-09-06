@@ -1,5 +1,5 @@
 import { CollectionResponse } from '#/sga/shared/infrastructure/controller/collection.response';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export interface GetInternalGroupResponse {
   id: string;
@@ -11,10 +11,12 @@ export interface GetInternalGroupResponse {
   academicProgram: {
     id: string;
     name: string;
+    code: string;
   };
   subject: {
     id: string;
     name: string;
+    code: string;
   };
 }
 
@@ -43,10 +45,12 @@ export class GetInternalGroupsResponse {
             academicProgram: {
               id: internalGroup.academicPeriod.id,
               name: internalGroup.academicPeriod.name,
+              code: internalGroup.academicPeriod.code,
             },
             subject: {
               id: internalGroup.academicPeriod.id,
               name: internalGroup.academicPeriod.name,
+              code: internalGroup.academicPeriod.code,
             },
           };
         },

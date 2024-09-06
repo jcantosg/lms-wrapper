@@ -31,7 +31,7 @@ describe('/student-360/subject/:id/progress (GET)', () => {
       .expect(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        progress: 5,
+        progress: 0,
       }),
     );
   });

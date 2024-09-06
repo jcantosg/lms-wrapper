@@ -21,6 +21,9 @@ import { LocalStorageManager } from '#shared/infrastructure/file-manager/local-s
 import { AWSStorageManager } from '#shared/infrastructure/file-manager/aws-storage-manager';
 import { controllers } from '#shared/controllers';
 import { SGAStudentModule } from '#student/student.module';
+import { BusinessUnitModule } from '#business-unit/business-unit.module';
+import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
+import * as admin from 'firebase-admin';
 
 const fileManager: FactoryProvider = {
   provide: FileManager,
@@ -34,10 +37,43 @@ const fileManager: FactoryProvider = {
     return new AWSStorageManager(
       configService.get<string>('AWS_BUCKET_NAME')!,
       configService.get<string>('AWS_REGION')!,
+      configService.get<string>('MEDIA_DOMAIN_NAME')!,
       new Logger(),
     );
   },
   inject: [ConfigService],
+};
+
+const firebaseProvider = {
+  provide: 'FIREBASE_APP',
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) => {
+    const firebaseConfig = {
+      type: configService.get<string>('FB_TYPE'),
+      project_id: configService.get<string>('FB_PROJECT_ID'),
+      private_key_id: configService.get<string>('FB_PRIVATE_KEY_ID'),
+      private_key: configService
+        .get<string>('FB_PRIVATE_KEY')!
+        .replace(/\\n/g, '\n'),
+      client_email: configService.get<string>('FB_CLIENT_EMAIL'),
+      client_id: configService.get<string>('FB_CLIENT_ID'),
+      auth_uri: configService.get<string>('FB_AUTH_URI'),
+      token_uri: configService.get<string>('FB_TOKEN_URI'),
+      auth_provider_x509_cert_url: configService.get<string>(
+        'FB_AUTH_PROVIDER_X509_CERT_URL',
+      ),
+      client_x509_cert_url: configService.get<string>(
+        'FB_CLIENT_X509_CERT_URL',
+      ),
+      universe_domain: configService.get<string>('FB_UNIVERSE_DOMAIN'),
+    } as admin.ServiceAccount;
+
+    return admin.initializeApp({
+      credential: admin.credential.cert(firebaseConfig),
+      databaseURL: `https://${firebaseConfig.projectId}.firebaseio.com`,
+      storageBucket: `${firebaseConfig.projectId}.appspot.com`,
+    });
+  },
 };
 
 const providers: Provider[] = [
@@ -49,6 +85,7 @@ const providers: Provider[] = [
   ...services,
   ...handlers,
   fileManager,
+  firebaseProvider,
 ];
 
 @Global()
@@ -61,9 +98,19 @@ const providers: Provider[] = [
     HttpModule,
     SGAStudentModule,
     TypeOrmModule.forFeature(sharedSchemas),
+    BusinessUnitModule,
+    AcademicOfferingModule,
   ],
   providers,
   controllers: [...controllers],
-  exports: [...repositories, ...services, fileManager],
+  exports: [
+    ...repositories,
+    ...services,
+    ...handlers,
+    fileManager,
+    BusinessUnitModule,
+    firebaseProvider,
+    BusinessUnitModule,
+  ],
 })
 export class SharedModule {}

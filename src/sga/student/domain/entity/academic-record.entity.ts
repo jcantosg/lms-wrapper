@@ -24,6 +24,7 @@ export class AcademicRecord extends BaseEntity {
     private _createdBy: AdminUser,
     private _updatedBy: AdminUser,
     private _leadId: string | null,
+    private _initialAcademicPeriod: AcademicPeriod,
   ) {
     super(id, createdAt, updatedAt);
   }
@@ -116,6 +117,14 @@ export class AcademicRecord extends BaseEntity {
     this._leadId = value;
   }
 
+  public get initialAcademicPeriod(): AcademicPeriod {
+    return this._initialAcademicPeriod;
+  }
+
+  public set initialAcademicPeriod(value: AcademicPeriod) {
+    this._initialAcademicPeriod = value;
+  }
+
   static create(
     id: string,
     businessUnit: BusinessUnit,
@@ -142,6 +151,7 @@ export class AcademicRecord extends BaseEntity {
       user,
       user,
       null,
+      academicPeriod,
     );
   }
 
@@ -172,6 +182,7 @@ export class AcademicRecord extends BaseEntity {
       user,
       user,
       leadId,
+      academicPeriod,
     );
   }
 
@@ -190,6 +201,12 @@ export class AcademicRecord extends BaseEntity {
 
   updateStatus(status: AcademicRecordStatusEnum, adminUser: AdminUser) {
     this._status = status;
+    this.updatedAt = new Date();
+    this._updatedBy = adminUser;
+  }
+
+  updateAcademicPeriod(academicPeriod: AcademicPeriod, adminUser: AdminUser) {
+    this._academicPeriod = academicPeriod;
     this.updatedAt = new Date();
     this._updatedBy = adminUser;
   }

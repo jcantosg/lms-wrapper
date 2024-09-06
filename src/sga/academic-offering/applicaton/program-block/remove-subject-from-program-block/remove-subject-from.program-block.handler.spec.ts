@@ -15,15 +15,19 @@ import {
 } from '#test/service-factory';
 import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
 import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject.not-found.exception';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { EnrollmentMockRepository } from '#test/mocks/sga/student/enrollment.mock-repository';
 
 let handler: RemoveSubjectFromProgramBlockHandler;
 let repository: ProgramBlockRepository;
 let programBlockGetter: ProgramBlockGetter;
 let subjectGetter: SubjectGetter;
+let enrollmentRepository: EnrollmentRepository;
 
 let saveSpy: jest.SpyInstance;
 let getSubjectSpy: jest.SpyInstance;
 let getProgramBlockSpy: jest.SpyInstance;
+let getEnrollmentsSpy: jest.SpyInstance;
 
 const adminUser = getAnAdminUser();
 
@@ -42,18 +46,22 @@ describe('Remove Subjects from Program Block handler', () => {
     repository = new ProgramBlockMockRepository();
     subjectGetter = getASubjectGetterMock();
     programBlockGetter = getAProgramBlockGetterMock();
+    enrollmentRepository = new EnrollmentMockRepository();
     handler = new RemoveSubjectFromProgramBlockHandler(
       repository,
       subjectGetter,
       programBlockGetter,
+      enrollmentRepository,
     );
     saveSpy = jest.spyOn(repository, 'save');
     getSubjectSpy = jest.spyOn(subjectGetter, 'getByAdminUser');
     getProgramBlockSpy = jest.spyOn(programBlockGetter, 'getByAdminUser');
+    getEnrollmentsSpy = jest.spyOn(enrollmentRepository, 'getBySubject');
   });
   it('should remove a subject', async () => {
     getSubjectSpy.mockImplementation(() => firstSubject);
     getProgramBlockSpy.mockImplementation(() => programBlock);
+    getEnrollmentsSpy.mockImplementation(() => Promise.resolve([]));
     await handler.handle(command);
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(

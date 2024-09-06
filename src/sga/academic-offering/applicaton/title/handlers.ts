@@ -34,11 +34,9 @@ const searchTitlesHandler = {
 
 const getAllTitlesPlainHandler = {
   provide: GetAllTitlesPlainHandler,
-  useFactory: (
-    repository: TitleRepository,
-    businessUnitGetter: BusinessUnitGetter,
-  ) => new GetAllTitlesPlainHandler(repository, businessUnitGetter),
-  inject: [TitleRepository, BusinessUnitGetter],
+  useFactory: (repository: TitleRepository) =>
+    new GetAllTitlesPlainHandler(repository),
+  inject: [TitleRepository],
 };
 
 const deleteTitleHandler = {

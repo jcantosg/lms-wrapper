@@ -3,7 +3,7 @@ import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { UpdateStudentPasswordE2eSeed } from '#test/e2e/student-360/auth/update-student-password.e2e-seeds';
 import { StudentRecoveryPasswordTokenPostgresRepository } from '#/student-360/student/infrastructure/repository/student-recovery-password-token.postgres-repository';
-import { StudentPostgresRepository } from '#/student-360/student/infrastructure/repository/student.postgres-repository';
+import { StudentPostgresRepository } from '#shared/infrastructure/repository/student.postgres-repository';
 import { studentRecoveryPasswordTokenSchema } from '#/student-360/student/infrastructure/config/schema/student-recovery-password-token.schema';
 import { studentSchema } from '#shared/infrastructure/config/schema/student.schema';
 
@@ -46,7 +46,7 @@ describe('/student-360/auth/update-password (PUT)', () => {
     await supertest(httpServer)
       .post('/student-360/recover-password')
       .send({
-        universaeEmail: UpdateStudentPasswordE2eSeed.studentUniversaeEmail,
+        email: UpdateStudentPasswordE2eSeed.studentEmail,
       })
       .expect(201);
 

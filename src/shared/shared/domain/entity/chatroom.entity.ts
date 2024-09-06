@@ -1,5 +1,5 @@
 import { BaseEntity } from '#shared/domain/entity/base.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { Student } from '#shared/domain/entity/student.entity';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 
@@ -63,5 +63,10 @@ export class Chatroom extends BaseEntity {
 
   set chatroomId(chatroomId: string | null) {
     this._chatroomId = chatroomId;
+  }
+
+  public update(chatroomId: string): void {
+    this._chatroomId = chatroomId;
+    this.updatedAt = new Date();
   }
 }

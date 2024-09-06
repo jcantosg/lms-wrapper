@@ -29,5 +29,8 @@ export const getAllAdministrativeGroupsSchema = createCollectionSchema(
       .optional(),
     academicYear: Joi.string().optional(),
     blockName: Joi.string().optional(),
+    orderBy: Joi.string()
+      .valid(...orderByFields)
+      .default('code'),
   },
 );

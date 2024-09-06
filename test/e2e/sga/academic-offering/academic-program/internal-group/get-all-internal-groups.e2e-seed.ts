@@ -14,7 +14,7 @@ import {
 } from '#test/e2e/sga/e2e-auth-helper';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { ProgramBlockStructureType } from '#academic-offering/domain/enum/program-block-structure-type.enum';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';

@@ -1,8 +1,8 @@
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
@@ -37,6 +37,7 @@ export class InternalGroupPostgresRepository
       updatedAt: internalGroup.updatedAt,
       createdBy: internalGroup.createdBy,
       updatedBy: internalGroup.updatedBy,
+      defaultTeacher: internalGroup.defaultTeacher,
     });
   }
 
@@ -57,6 +58,7 @@ export class InternalGroupPostgresRepository
         updatedAt: internalGroup.updatedAt,
         createdBy: internalGroup.createdBy,
         updatedBy: internalGroup.updatedBy,
+        defaultTeacher: internalGroup.defaultTeacher,
       })),
     );
   }
@@ -213,6 +215,89 @@ export class InternalGroupPostgresRepository
         defaultTeacher: true,
         subject: true,
         students: true,
+      },
+    });
+  }
+
+  async getAllByStudentAndKeys(
+    studentId: string,
+    academicPeriod: AcademicPeriod,
+    academicProgram: AcademicProgram,
+  ): Promise<InternalGroup[]> {
+    const groups = await this.repository.find({
+      where: {
+        academicPeriod: { id: academicPeriod.id },
+        academicProgram: { id: academicProgram.id },
+      },
+      relations: {
+        defaultTeacher: true,
+        subject: true,
+        students: true,
+      },
+    });
+
+    return groups.filter((group) => {
+      return group.students.find((student) => student.id === studentId);
+    });
+  }
+
+  async getAllByStudent(studentId: string): Promise<InternalGroup[]> {
+    return await this.repository.find({
+      where: {
+        students: {
+          id: studentId,
+        },
+      },
+      relations: {
+        defaultTeacher: true,
+        subject: true,
+        academicProgram: true,
+        academicPeriod: true,
+        students: true,
+      },
+    });
+  }
+
+  async getAllByTeacher(teacherId: string): Promise<InternalGroup[]> {
+    return await this.repository.find({
+      where: {
+        teachers: {
+          id: teacherId,
+        },
+      },
+      relations: {
+        defaultTeacher: true,
+        academicPeriod: true,
+        academicProgram: {
+          title: true,
+        },
+        subject: true,
+        students: true,
+        businessUnit: true,
+      },
+    });
+  }
+
+  async getByBusinessUnitsAndPeriodsAndPrograms(
+    businessUnitIds: string[],
+    academicPeriodIds: string[],
+    academicProgramIds: string[],
+  ): Promise<InternalGroup[]> {
+    return await this.repository.find({
+      where: {
+        businessUnit: { id: In(businessUnitIds) },
+        academicPeriod: { id: In(academicPeriodIds) },
+        academicProgram: { id: In(academicProgramIds) },
+      },
+      relations: {
+        businessUnit: true,
+        academicPeriod: true,
+        academicProgram: true,
+        periodBlock: true,
+        subject: true,
+        teachers: true,
+        students: true,
+        defaultTeacher: true,
       },
     });
   }

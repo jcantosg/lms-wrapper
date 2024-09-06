@@ -6,4 +6,5 @@ export class SubjectCallMockRepository implements SubjectCallRepository {
   get = jest.fn();
   getByAdminUser = jest.fn();
   existsById = jest.fn();
+  saveBatch = jest.fn();
 }

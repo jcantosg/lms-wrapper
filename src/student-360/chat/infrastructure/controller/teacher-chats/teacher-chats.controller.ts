@@ -11,7 +11,9 @@ export class TeacherChatsController {
 
   @Get('teacher-chat')
   @UseGuards(StudentJwtAuthGuard)
-  async getTeacherChats(@Request() req: StudentAuthRequest): Promise<any[]> {
+  async getTeacherChats(
+    @Request() req: StudentAuthRequest,
+  ): Promise<TeacherChatResponse[]> {
     const query = new TeacherChatsQuery(req.user);
 
     const response = await this.handler.handle(query);

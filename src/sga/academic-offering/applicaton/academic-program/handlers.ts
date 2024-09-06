@@ -24,6 +24,12 @@ import { CreateAcademicProgramTransactionService } from '#academic-offering/doma
 import { GetSubjectsByAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/get-subjects-by-academic-program/get-subjects-by-academic-program.handler';
 import { GetAllInternalGroupsHandler } from '#academic-offering/applicaton/academic-program/get-all-internal-groups/get-all-internal-groups.handler';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
+import { GetSpecialtiesByAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/get-specialties-by-academic-program/get-specialties-by-academic-program.handler';
+import { AddSpecialtyToAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/add-specialty-to-academic-program/add-specialty-to-academic-program.handler';
+import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
+import { RemoveSpecialtyFromAcademicProgramHandler } from '#academic-offering/applicaton/academic-program/remove-specialty-from-academic-program/remove-specialty-from-academic-program.handler';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { GetAcademicProgramsByPeriodsHandler } from '#academic-offering/applicaton/academic-program/get-academic-programs-by-multiple-periods/get-academic-programs-by-multiple-periods.handler';
 
 const createAcademicProgramHandler = {
   provide: CreateAcademicProgramHandler,
@@ -207,6 +213,57 @@ const getAllInternalGroupsHandler = {
   inject: [InternalGroupRepository],
 };
 
+const getSpecialtiesByAcademicProgramHandler = {
+  provide: GetSpecialtiesByAcademicProgramHandler,
+  useFactory: (academicProgramGetter: AcademicProgramGetter) =>
+    new GetSpecialtiesByAcademicProgramHandler(academicProgramGetter),
+  inject: [AcademicProgramGetter],
+};
+
+const addSpecialtyToAcademicProgramHandler = {
+  provide: AddSpecialtyToAcademicProgramHandler,
+  useFactory: (
+    repository: ProgramBlockRepository,
+    academicProgramGetter: AcademicProgramGetter,
+    subjectGetter: SubjectGetter,
+  ) =>
+    new AddSpecialtyToAcademicProgramHandler(
+      repository,
+      academicProgramGetter,
+      subjectGetter,
+    ),
+  inject: [ProgramBlockRepository, AcademicProgramGetter, SubjectGetter],
+};
+
+const removeSpecialtyFromAcademicProgramHandler = {
+  provide: RemoveSpecialtyFromAcademicProgramHandler,
+  useFactory: (
+    academicProgramGetter: AcademicProgramGetter,
+    subjectGetter: SubjectGetter,
+    enrollmentRepository: EnrollmentRepository,
+    repository: ProgramBlockRepository,
+  ) =>
+    new RemoveSpecialtyFromAcademicProgramHandler(
+      academicProgramGetter,
+      subjectGetter,
+      enrollmentRepository,
+      repository,
+    ),
+  inject: [
+    AcademicProgramGetter,
+    SubjectGetter,
+    EnrollmentRepository,
+    ProgramBlockRepository,
+  ],
+};
+
+const getAcademicProgramsByPeriodsHandler = {
+  provide: GetAcademicProgramsByPeriodsHandler,
+  useFactory: (academicProgramRepository: AcademicProgramRepository) =>
+    new GetAcademicProgramsByPeriodsHandler(academicProgramRepository),
+  inject: [AcademicProgramRepository],
+};
+
 export const academicProgramHandlers = [
   createAcademicProgramHandler,
   getAcademicProgramHandler,
@@ -223,4 +280,8 @@ export const academicProgramHandlers = [
   getAcademicProgramsPlainByPeriodHandler,
   getSubjectsByAcademicProgramHandler,
   getAllInternalGroupsHandler,
+  getSpecialtiesByAcademicProgramHandler,
+  addSpecialtyToAcademicProgramHandler,
+  removeSpecialtyFromAcademicProgramHandler,
+  getAcademicProgramsByPeriodsHandler,
 ];

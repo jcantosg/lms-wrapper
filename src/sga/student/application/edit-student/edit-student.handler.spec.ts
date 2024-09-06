@@ -1,5 +1,5 @@
 import { EditStudentHandler } from '#student/application/edit-student/edit-student.handler';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
 import { ImageUploader } from '#shared/domain/service/image-uploader.service';
@@ -53,6 +53,7 @@ const command = new EditStudentCommand(
   null,
   null,
   null,
+  false,
 );
 
 describe('Edit Student Handler', () => {

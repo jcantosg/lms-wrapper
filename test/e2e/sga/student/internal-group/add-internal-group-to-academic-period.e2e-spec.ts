@@ -3,7 +3,7 @@ import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { Repository } from 'typeorm';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AddInternalGroupToAcademicPeriodE2eSeed } from '#test/e2e/sga/student/internal-group/add-internal-group-to-academic-period.e2e-seed';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
 
@@ -148,7 +148,7 @@ describe('/internal-group (POST)', () => {
     const internalGroups = await internalGroupRepository.find({});
 
     expect(internalGroups.length).toBe(1);
-    expect(internalGroups[0].code).toBe('MAD-INAScodeM-23-250');
+    expect(internalGroups[0].code).toBe('MAD-INAS code M-23-25 0');
   });
 
   afterAll(async () => {

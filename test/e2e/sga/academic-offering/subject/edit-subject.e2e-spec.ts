@@ -45,22 +45,7 @@ describe('/subject/:id (PUT)', () => {
       .send({})
       .expect(400);
   });
-  it('should edit subject', async () => {
-    await supertest(httpServer)
-      .put(path)
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .send({
-        name: EditSubjectE2eSeed.subjectName,
-        code: EditSubjectE2eSeed.subjectCode,
-        hours: EditSubjectE2eSeed.subjectHours,
-        modality: EditSubjectE2eSeed.subjectModality,
-        evaluationType: EditSubjectE2eSeed.subjectEvaluationType,
-        type: EditSubjectE2eSeed.subjectType,
-        isRegulated: EditSubjectE2eSeed.subjectIsRegulated,
-        isCore: EditSubjectE2eSeed.subjectIsCore,
-      })
-      .expect(200);
-  });
+
   it('should throw a SubjectDuplicatedCodeException', async () => {
     const response = await supertest(httpServer)
       .put(path)
@@ -77,6 +62,41 @@ describe('/subject/:id (PUT)', () => {
       })
       .expect(409);
     expect(response.body.message).toBe('sga.subject.duplicated-code');
+  });
+
+  it('should throw invalid evaluation type exception', async () => {
+    const response = await supertest(httpServer)
+      .put(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        name: EditSubjectE2eSeed.subjectName,
+        code: EditSubjectE2eSeed.subjectCode,
+        hours: EditSubjectE2eSeed.subjectHours,
+        modality: EditSubjectE2eSeed.subjectModality,
+        evaluationType: EditSubjectE2eSeed.subjectEvaluationType,
+        type: EditSubjectE2eSeed.subjectTypeSpecialty,
+        isRegulated: EditSubjectE2eSeed.subjectIsRegulated,
+        isCore: EditSubjectE2eSeed.subjectIsCore,
+      })
+      .expect(409);
+    expect(response.body.message).toBe('sga.subject.invalid-evaluation-type');
+  });
+
+  it('should edit subject', async () => {
+    await supertest(httpServer)
+      .put(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        name: EditSubjectE2eSeed.subjectName,
+        code: EditSubjectE2eSeed.subjectCode,
+        hours: EditSubjectE2eSeed.subjectHours,
+        modality: EditSubjectE2eSeed.subjectModality,
+        evaluationType: EditSubjectE2eSeed.subjectEvaluationType,
+        type: EditSubjectE2eSeed.subjectType,
+        isRegulated: EditSubjectE2eSeed.subjectIsRegulated,
+        isCore: EditSubjectE2eSeed.subjectIsCore,
+      })
+      .expect(200);
   });
 
   afterAll(async () => {

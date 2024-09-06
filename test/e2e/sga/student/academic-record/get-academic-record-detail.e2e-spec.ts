@@ -6,11 +6,12 @@ import { E2eSeed } from '#test/e2e/e2e-seed';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 
+const path = `/academic-record/${EditAcademicRecordE2eSeed.academicRecordId}`;
+
 describe('/academic-record/:id (GET)', () => {
   let httpServer: HttpServer;
   let seeder: E2eSeed;
   let superAdminAccessToken: string;
-  let path: string;
 
   beforeAll(async () => {
     httpServer = app.getHttpServer();
@@ -21,7 +22,6 @@ describe('/academic-record/:id (GET)', () => {
       EditAcademicRecordE2eSeed.superAdminUserEmail,
       EditAcademicRecordE2eSeed.superAdminUserPassword,
     );
-    path = `/academic-record/${EditAcademicRecordE2eSeed.academicRecordId}`;
   });
 
   it('should return unauthorized', async () => {
@@ -46,8 +46,16 @@ describe('/academic-record/:id (GET)', () => {
           avatar: null,
           isActive: true || false,
         }),
-        academicPeriod: EditAcademicRecordE2eSeed.academicPeriodName,
-        academicProgram: EditAcademicRecordE2eSeed.academicProgramName,
+        academicPeriod: {
+          id: EditAcademicRecordE2eSeed.academicPeriodId,
+          name: EditAcademicRecordE2eSeed.academicPeriodName,
+          code: EditAcademicRecordE2eSeed.academicPeriodCode,
+        },
+        academicProgram: {
+          id: EditAcademicRecordE2eSeed.academicProgramId,
+          name: EditAcademicRecordE2eSeed.academicProgramName,
+          code: EditAcademicRecordE2eSeed.academicProgramCode,
+        },
         modality: AcademicRecordModalityEnum.ELEARNING,
         isModular: EditAcademicRecordE2eSeed.academicRecordIsModular,
         status: AcademicRecordStatusEnum.VALID,

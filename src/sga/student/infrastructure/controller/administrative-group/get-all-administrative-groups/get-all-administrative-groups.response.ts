@@ -12,10 +12,12 @@ export interface GetAdministrativeGroupResponse {
   academicProgram: {
     id: string;
     name: string;
+    code: string;
   };
   academicPeriod: {
     id: string;
     name: string;
+    code: string;
   };
   startMonth: MonthEnum;
   academicYear: string;
@@ -51,10 +53,12 @@ export class GetAllAdministrativeGroupsResponse {
             academicProgram: {
               id: administrativeGroup.academicProgram.id,
               name: administrativeGroup.academicProgram.name,
+              code: administrativeGroup.academicProgram.code,
             },
             academicPeriod: {
               id: administrativeGroup.academicPeriod.id,
               name: administrativeGroup.academicPeriod.name,
+              code: administrativeGroup.academicPeriod.code,
             },
             startMonth: administrativeGroup.periodBlock.startMonth,
             academicYear: administrativeGroup.periodBlock.academicYear,

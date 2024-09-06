@@ -8,23 +8,16 @@ import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock
 import { SubjectNotFoundException } from '#shared/domain/exception/academic-offering/subject.not-found.exception';
 import {
   getALmsContentModule,
+  getALmsCourse,
   getALmsStudent,
 } from '#test/value-object-factory';
-import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
-import { LmsCourseCategoryEnum } from '#/lms-wrapper/domain/enum/lms-course-category.enum';
 import clearAllMocks = jest.clearAllMocks;
 
 let handler: GetLmsCourseContentHandler;
 let subjectGetter: SubjectGetter;
 let lmsCourseRepository: LmsCourseRepository;
 const subject = getASubject();
-subject.lmsCourse = new LmsCourse({
-  id: 2,
-  categoryId: LmsCourseCategoryEnum.MIXTA,
-  name: 'test',
-  shortname: 'test',
-  modules: [],
-});
+subject.lmsCourse = getALmsCourse(5, 'test');
 const student = getASGAStudent();
 student.lmsStudent = getALmsStudent();
 const query = new GetLmsCourseContentQuery(subject.id, 56, student);

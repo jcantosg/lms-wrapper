@@ -5,28 +5,34 @@ export interface MoodleCourseResponse {
   displayname: string;
 }
 
+export interface MoodleCourseModuleContentResponse {
+  id: number;
+  name: string;
+  url: string;
+  description: string;
+  image: string;
+  visible: number;
+  modname: string;
+  contents:
+    | {
+        filename: string;
+        fileurl: string;
+        mimetype: string;
+      }[]
+    | undefined;
+  contentinfo:
+    | {
+        mimetypes: string[];
+      }[]
+    | undefined;
+}
+
 export interface MoodleCourseContentResponse {
   id: number;
   name: string;
-  modules: {
-    id: number;
-    name: string;
-    url: string;
-    image: string;
-    uservisible: boolean;
-    contents:
-      | {
-          filename: string;
-          fileurl: string;
-          mimetype: string;
-        }[]
-      | undefined;
-    contentinfo:
-      | {
-          mimetypes: string[];
-        }[]
-      | undefined;
-  }[];
+  description: string;
+  visible: number;
+  modules: MoodleCourseModuleContentResponse[];
 }
 
 export interface MoodleLoginResponse {
@@ -37,6 +43,27 @@ export interface MoodleLoginResponse {
 export interface MoodleCreateUserResponse {
   id: number;
   username: string;
+}
+
+export interface MoodleGetUserResponse {
+  id: number;
+  username: string;
+  firstname: string;
+  lastname: string;
+  fullname: string;
+  email: string;
+  department: string;
+  firstaccess: number;
+  lastaccess: number;
+  auth: string;
+  suspended: boolean;
+  confirmed: boolean;
+  lang: string;
+  theme: string;
+  timezone: string;
+  mailformat: number;
+  profileimageurlsmall: string;
+  profileimageurl: string;
 }
 
 export interface MoodleLoginResponse {
@@ -55,5 +82,27 @@ export interface MoodleCourseActivitiesCompletionResponse {
         description: string;
       };
     }[];
+  }[];
+}
+
+export interface MoodleCourseByFieldResponse {
+  courses: MoodleCourseResponse[];
+}
+
+export interface MoodleVideotimeResponse {
+  vimeo_url: string;
+}
+
+export interface MoodleQuizAttemptsResponse {
+  attempts: {
+    attempt: number;
+  }[];
+  exception: string | undefined;
+}
+
+export interface MoodleQuizzesResponse {
+  quizzes: {
+    id: number;
+    coursemodule: number;
   }[];
 }

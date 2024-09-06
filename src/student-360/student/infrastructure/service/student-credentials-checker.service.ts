@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentPasswordChecker } from '#/student-360/student/domain/service/student-password-checker.service';
 import { Student } from '#shared/domain/entity/student.entity';
 

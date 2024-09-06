@@ -10,6 +10,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { stringWithoutWhitespaces } from '#shared/domain/lib/string-without-whitespaces';
+import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
+import { GetLmsStudentCommand } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.command';
 
 export class CreateStudentFromSGATyperomTransactionService extends CreateStudentFromSGATransactionService {
   private logger: Logger;
@@ -20,6 +22,7 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
     private readonly deleteLmsStudentHandler: DeleteLmsStudentHandler,
     private readonly passwordEncoder: PasswordEncoder,
     private readonly rawPassword: string,
+    private readonly getLmsStudentHandler: GetLmsStudentHandler,
   ) {
     super();
     this.logger = new Logger(CreateStudentFromSGATransactionService.name);
@@ -32,27 +35,38 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
     await queryRunner.startTransaction();
     let lmsId;
     try {
-      const lmsStudent = await this.createLmsStudentHandler.handle(
-        new CreateLmsStudentCommand(
-          `${stringWithoutWhitespaces(entities.student.name)}-${
-            entities.student.surname
-          }-${entities.student.surname2}`.toLowerCase(),
-          entities.student.name,
-          `${entities.student.surname} ${entities.student.surname2}`,
+      let lmsStudent;
+      lmsStudent = await this.getLmsStudentHandler.handle(
+        new GetLmsStudentCommand(
           entities.student.email,
-          this.rawPassword,
+          entities.student.universaeEmail,
         ),
       );
-      lmsId = lmsStudent.value.id;
+      if (!lmsStudent) {
+        lmsStudent = await this.createLmsStudentHandler.handle(
+          new CreateLmsStudentCommand(
+            `${stringWithoutWhitespaces(entities.student.name)}-${
+              entities.student.surname
+            }-${entities.student.id}`.toLowerCase(),
+            entities.student.name,
+            `${entities.student.surname} ${entities.student.surname2}`,
+            entities.student.email,
+            this.rawPassword,
+          ),
+        );
+        lmsId = lmsStudent.value.id;
+      }
       lmsStudent.value.password = await this.passwordEncoder.encodePassword(
         this.rawPassword,
       );
       entities.student.lmsStudent = lmsStudent;
+
       await queryRunner.manager.save(entities.student);
 
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
+
       if (!!lmsId) {
         await this.deleteLmsStudentHandler.handle(
           new DeleteLmsStudentCommand(lmsId),

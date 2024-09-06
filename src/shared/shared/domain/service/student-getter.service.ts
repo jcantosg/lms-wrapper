@@ -1,4 +1,4 @@
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 
 export class StudentGetter {
@@ -20,5 +20,15 @@ export class StudentGetter {
     }
 
     return student;
+  }
+
+  async getByAcademicProgramsAndGroups(
+    academicProgramIds: string[],
+    groupIds: string[],
+  ) {
+    return await this.repository.getByProgramsAndGroups(
+      academicProgramIds,
+      groupIds,
+    );
   }
 }

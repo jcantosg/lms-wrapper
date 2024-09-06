@@ -3,17 +3,23 @@ from aws_cdk import (
     Duration,
     RemovalPolicy,
     Stack,
+    Tags,
+    aws_backup as backup,
     aws_cloudwatch as cloudwatch,
+    aws_cloudfront as cloudfront,
+    aws_cloudfront_origins as cloudfront_origins,
     aws_ec2 as ec2,
     aws_ecr as ecr,
     aws_ecs as ecs,
     aws_efs as efs,
     aws_elasticloadbalancingv2 as elbv2,
+    aws_events as events,
     aws_logs as logs,
     aws_rds as rds,
     aws_s3 as s3,
     aws_secretsmanager as secrets,
     aws_ses as ses,
+    aws_certificatemanager as acm,
     aws_sns as sns,
 )
 from constructs import Construct
@@ -60,6 +66,8 @@ SES_SMTP_HOST = "email-smtp.eu-west-3.amazonaws.com"
 
 CLOUDFLARE_SECRET_HEADER = "X-Universae-CloudFlare-Auth"
 
+CRM_IMPORTS_PATH_MOUNTDIR = "/var/lib/sftp"
+
 
 class APIStack(Stack):
     def __init__(
@@ -70,6 +78,8 @@ class APIStack(Stack):
         app_url: str,
         api_alb_host: str,
         sftp_alb_host: str,
+        media_domain_name: str,
+        media_certificate_arn: str,
         image_tag: str = "latest",
         api_alb_priority: int = 100,
         api_cpu: int = 256,
@@ -88,14 +98,19 @@ class APIStack(Stack):
         sftp_allowed_cidrs: list[str] = ["0.0.0.0/0"],
         db_instance_type: str = "t4g.micro",
         db_engine_full_version: str = "16.3",
-        db_max_allocated_storage: int = 100,
+        db_allocated_storage: int = 100,
         db_enable_performance_insights: bool = False,
         db_multi_az: bool = False,
         db_preferred_maintenance_window: str = None,
+        db_preferred_backup_window: str = None,
         db_cloudwatch_logs_exports: list[str] = ["postgresql"],
         enable_monitoring: bool = False,
         sns_topic_arn: str = None,
         enable_cloudflare_auth_header: bool = False,
+        aws_backup_enable: bool = False,
+        aws_backup_use_default_plan: bool = True,
+        aws_backup_retention_days: int = 15,
+        aws_backup_schedule: str = "cron(30 2 * * ? *)",
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -139,6 +154,10 @@ class APIStack(Stack):
             self,
             "BastionSecurityGroup",
             security_group_id=BASTION_SECURITY_GROUP_ID,
+        )
+
+        media_certificate = acm.Certificate.from_certificate_arn(
+            self, "MediaCertificate", certificate_arn=media_certificate_arn
         )
 
         #######
@@ -188,12 +207,17 @@ class APIStack(Stack):
             publicly_accessible=False,
             storage_encrypted=True,
             storage_type=rds.StorageType.GP3,
-            allocated_storage=db_max_allocated_storage,
+            allocated_storage=db_allocated_storage,
             allow_major_version_upgrade=True,
             auto_minor_version_upgrade=False,
             parameter_group=self.db_parameter_group,
             preferred_maintenance_window=db_preferred_maintenance_window,
-            backup_retention=Duration.days(15),
+            backup_retention=(
+                Duration.days(0)
+                if aws_backup_enable
+                else Duration.days(min(35, aws_backup_retention_days))
+            ),
+            preferred_backup_window=db_preferred_backup_window,
             copy_tags_to_snapshot=True,
             enable_performance_insights=db_enable_performance_insights,
             cloudwatch_logs_exports=db_cloudwatch_logs_exports,
@@ -213,27 +237,43 @@ class APIStack(Stack):
 
         CfnOutput(self, "DatabaseSecretName", value=self.secret_db.secret_name)
 
-        ######
-        # S3 #
-        ######
+        #########
+        # Media #
+        #########
         self.media_bucket = s3.Bucket(
             self,
             "MediaBucket",
             bucket_name=f"media-api-{environment}-{self.region}-{self.account}",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
-            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
             enforce_ssl=True,
             versioned=True,
             lifecycle_rules=[
                 s3.LifecycleRule(
                     enabled=True,
-                    noncurrent_version_expiration=Duration.days(30),
+                    noncurrent_version_expiration=Duration.days(
+                        aws_backup_retention_days
+                    ),
                     noncurrent_versions_to_retain=3,
                 )
             ],
             auto_delete_objects=True,
             removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        self.media_cloudfront_distribution = cloudfront.Distribution(
+            self,
+            "MediaCloudfrontDistribution",
+            default_behavior=cloudfront.BehaviorOptions(
+                origin=cloudfront_origins.S3Origin(self.media_bucket),
+                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                response_headers_policy=cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+            ),
+            domain_names=[media_domain_name],
+            certificate=media_certificate,
+            minimum_protocol_version=cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
+            publish_additional_metrics=enable_monitoring,
         )
 
         CfnOutput(self, "MediaBucketName", value=self.secret_db.secret_name)
@@ -251,6 +291,7 @@ class APIStack(Stack):
             encrypted=True,
             performance_mode=efs.PerformanceMode.GENERAL_PURPOSE,
             throughput_mode=efs.ThroughputMode.BURSTING,
+            enable_automatic_backups=False if aws_backup_enable else True,
             removal_policy=RemovalPolicy.DESTROY,
         )
 
@@ -273,6 +314,10 @@ class APIStack(Stack):
             create_acl=efs.Acl(
                 owner_uid=POSIX_USER, owner_gid=POSIX_GROUP, permissions="750"
             ),
+        )
+
+        self.efs_filesystem.connections.allow_default_port_from(
+            bastion_security_group, "Bastion access to EFS"
         )
 
         CfnOutput(self, "FileSystemID", value=self.efs_filesystem.file_system_id)
@@ -348,6 +393,8 @@ class APIStack(Stack):
             "NO_COLOR": "1",
             "SMTP_HOST": SES_SMTP_HOST,
             "SMTP_PORT": "587",
+            "MEDIA_DOMAIN_NAME": media_domain_name,
+            "CRM_IMPORTS_PATH": f"{CRM_IMPORTS_PATH_MOUNTDIR}/data/crm",
         }
 
         sftp_ecs_secrets = {
@@ -540,7 +587,7 @@ class APIStack(Stack):
 
         self.cron_container.add_mount_points(
             ecs.MountPoint(
-                container_path="/var/lib/sftp",
+                container_path=CRM_IMPORTS_PATH_MOUNTDIR,
                 source_volume="sftp-data",
                 read_only=False,
             ),
@@ -584,6 +631,8 @@ class APIStack(Stack):
                 ),
             ],
             enable_execute_command=True,
+            enable_ecs_managed_tags=True,
+            propagate_tags=ecs.PropagatedTagSource.SERVICE,
         )
         self.cron_service = ecs.FargateService(
             self,
@@ -606,6 +655,8 @@ class APIStack(Stack):
                 ),
             ],
             enable_execute_command=True,
+            enable_ecs_managed_tags=True,
+            propagate_tags=ecs.PropagatedTagSource.SERVICE,
         )
         self.sftp_service = ecs.FargateService(
             self,
@@ -628,6 +679,8 @@ class APIStack(Stack):
                 ),
             ],
             enable_execute_command=True,
+            enable_ecs_managed_tags=True,
+            propagate_tags=ecs.PropagatedTagSource.SERVICE,
         )
 
         self.envvars_bucket.grant_read(
@@ -752,8 +805,7 @@ class APIStack(Stack):
             elbv2.ListenerCondition.host_headers(values=[api_alb_host])
         ]
         sftp_target_group_conditions = [
-            elbv2.ListenerCondition.host_headers(values=[sftp_alb_host]),
-            elbv2.ListenerCondition.source_ips(sftp_allowed_cidrs),
+            elbv2.ListenerCondition.host_headers(values=[sftp_alb_host])
         ]
 
         if enable_cloudflare_auth_header:
@@ -815,12 +867,10 @@ class APIStack(Stack):
                 on_insufficient_data_topic=_sns_topic,
             )
 
-            alarm_factory_defaults = (
-                AlarmFactoryDefaults(
-                    actions_enabled=True,
-                    alarm_name_prefix=self.stack_name,
-                    action=action_strategy_default,
-                ),
+            alarm_factory_defaults = AlarmFactoryDefaults(
+                actions_enabled=True,
+                alarm_name_prefix=self.stack_name,
+                action=action_strategy_default,
             )
         else:
             alarm_factory_defaults = None
@@ -943,6 +993,16 @@ class APIStack(Stack):
                     "100": HighConnectionCountThreshold(max_connection_count=100)
                 },
             )
+            self.monitoring.monitor_cloud_front_distribution(
+                distribution=self.media_cloudfront_distribution,
+                additional_metrics_enabled=True,
+                # add_error4xx_rate={
+                #     "GreaterThan10Percent": ErrorRateThreshold(max_error_rate=10)
+                # },
+                # add_fault5xx_rate={
+                #     "GreaterThan1Percent": ErrorRateThreshold(max_error_rate=1)
+                # },
+            )
             self.monitoring.monitor_s3_bucket(bucket=self.media_bucket)
 
             efs_services_alarm_factory = self.monitoring.create_alarm_factory(
@@ -1051,6 +1111,62 @@ class APIStack(Stack):
                 ],
             )
 
+        ###########
+        # Backups #
+        ###########
+        if aws_backup_enable:
+            NagSuppressions.add_resource_suppressions(
+                construct=self.database_instance,
+                suppressions=[
+                    NagPackSuppression(
+                        id="AwsSolutions-RDS13",
+                        reason="Managed by AWS Backup",
+                    ),
+                ],
+            )
+            if aws_backup_use_default_plan:
+                Tags.of(self.database_instance).add("BackupPlan", "Default")
+                Tags.of(self.efs_filesystem).add("BackupPlan", "Default")
+                Tags.of(self.media_bucket).add("BackupPlan", "Default")
+            else:
+                self.vault = backup.BackupVault(
+                    self,
+                    id="BackupVault",
+                    backup_vault_name=Stack.of(self).stack_name,
+                )
+                self.plan = backup.BackupPlan(
+                    self,
+                    id="BackupPlan",
+                    backup_plan_name=Stack.of(self).stack_name,
+                    windows_vss=True,
+                    backup_vault=self.vault,
+                    backup_plan_rules=[
+                        backup.BackupPlanRule(
+                            rule_name=Stack.of(self).stack_name,
+                            backup_vault=self.vault,
+                            enable_continuous_backup=aws_backup_retention_days <= 35,
+                            start_window=Duration.hours(1),
+                            completion_window=Duration.hours(10),
+                            schedule_expression=events.Schedule.expression(
+                                aws_backup_schedule
+                            ),
+                            delete_after=Duration.days(aws_backup_retention_days),
+                        )
+                    ],
+                )
+                self.selection = backup.BackupSelection(
+                    self,
+                    id="BackupSelection",
+                    backup_plan=self.plan,
+                    backup_selection_name=Stack.of(self).stack_name,
+                    allow_restores=True,
+                    resources=[
+                        backup.BackupResource(construct=self.database_instance),
+                        backup.BackupResource(construct=self.efs_filesystem),
+                        backup.BackupResource(construct=self.media_bucket),
+                    ],
+                )
+
         #######################
         # CDK NAG Supressions #
         #######################
@@ -1148,6 +1264,23 @@ class APIStack(Stack):
                 NagPackSuppression(
                     id="AwsSolutions-EC23",
                     reason="Required during tests phase",
+                ),
+            ],
+        )
+        NagSuppressions.add_resource_suppressions(
+            construct=self.media_cloudfront_distribution,
+            suppressions=[
+                NagPackSuppression(
+                    id="AwsSolutions-CFR1",
+                    reason="Not aligned with security posture",
+                ),
+                NagPackSuppression(
+                    id="AwsSolutions-CFR2",
+                    reason="Not aligned with security posture",
+                ),
+                NagPackSuppression(
+                    id="AwsSolutions-CFR3",
+                    reason="Not yet decided if access log required at this level",
                 ),
             ],
         )

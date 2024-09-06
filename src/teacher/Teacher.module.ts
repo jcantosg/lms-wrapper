@@ -12,6 +12,8 @@ import { LocalStrategy } from '#/teacher/infrastructure/auth/local.strategy';
 import { handlers } from '#/teacher/handlers';
 import { schemas } from '#/teacher/schemas';
 import { repositories } from '#/teacher/repositories';
+import { SGAStudentModule } from '#student/student.module';
+import { AcademicOfferingModule } from '#academic-offering/academic-offering.module';
 
 const jwtModule = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -40,6 +42,8 @@ const jwtStrategy = {
     jwtModule,
     SharedModule,
     EdaeUserModule,
+    SGAStudentModule,
+    AcademicOfferingModule,
   ],
   providers: [
     ...services,

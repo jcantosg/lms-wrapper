@@ -20,7 +20,8 @@ export class GetLmsCourseContentHandler implements QueryHandler {
     return await this.lmsCourseRepository.getContent(
       subject.lmsCourse!.value.id,
       query.resourcesId,
-      query.student.lmsStudent.value.id,
+      query.student.lmsStudent,
+      subject.isZeroBlockSubject(),
     );
   }
 }

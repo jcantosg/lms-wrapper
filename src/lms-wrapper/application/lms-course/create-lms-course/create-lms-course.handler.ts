@@ -12,6 +12,7 @@ export class CreateLmsCourseHandler implements CommandHandler {
       name: command.name,
       categoryId: command.categoryId,
       shortname: command.shortName,
+      progress: 0,
       modules: [],
     });
     await this.repository.save(lmsCourse);

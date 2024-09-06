@@ -138,6 +138,11 @@ export const studentSchema = new EntitySchema<Student>({
       transformer: ValueObjectTransformer(LmsStudent),
       default: {},
     },
+    isDefense: {
+      type: Boolean,
+      nullable: false,
+      default: false,
+    },
   },
   relations: {
     ...BaseSchemaRelations,
@@ -195,6 +200,11 @@ export const studentSchema = new EntitySchema<Student>({
           name: 'internal_group_id',
         },
       },
+    },
+    communications: {
+      type: 'one-to-many',
+      target: 'CommunicationStudent',
+      inverseSide: 'student',
     },
   },
 });

@@ -2,6 +2,7 @@ import { AddSubjectCallHandler } from '#student/application/subject-call/add-sub
 import { SubjectCallRepository } from '#student/domain/repository/subject-call.repository';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import {
+  getAnAcademicRecord,
   getAnAdminUser,
   getAnEnrollment,
   getATakenSubjectCall,
@@ -15,6 +16,8 @@ import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-c
 import { SubjectCallNotTakenException } from '#shared/domain/exception/subject-call/subject-call.not-taken.exception';
 import { SubjectCallAlreadyPassedException } from '#shared/domain/exception/subject-call/subject-call.already-passed.exception';
 import { SubjectCallMaxReachedException } from '#shared/domain/exception/subject-call/subject-call.max-reached.exception';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 let handler: AddSubjectCallHandler;
 let repository: SubjectCallRepository;
@@ -24,9 +27,11 @@ let saveSpy: jest.SpyInstance;
 let getByAdminUserSpy: jest.SpyInstance;
 let existsByIdSpy: jest.SpyInstance;
 
+const academicRecord = getAnAcademicRecord();
 const subjectCall = getATakenSubjectCall();
 const enrollment = getAnEnrollment();
 const adminUser = getAnAdminUser();
+enrollment.academicRecord = academicRecord;
 
 const command = new AddSubjectCallCommand(
   enrollment.id,
@@ -56,10 +61,20 @@ describe('Add Subject Call Handler', () => {
     );
   });
 
+  it('should throw an error if the academic record is cancelled', async () => {
+    existsByIdSpy.mockImplementation(() => Promise.resolve(false));
+    getByAdminUserSpy.mockImplementation(() => Promise.resolve(enrollment));
+    enrollment.academicRecord.status = AcademicRecordStatusEnum.CANCELLED;
+
+    await expect(handler.handle(command)).rejects.toThrow(
+      AcademicRecordCancelledException,
+    );
+  });
+
   it('should add a subject call with call number 1', async () => {
     existsByIdSpy.mockImplementation(() => Promise.resolve(false));
     getByAdminUserSpy.mockImplementation(() => Promise.resolve(enrollment));
-
+    enrollment.academicRecord.status = AcademicRecordStatusEnum.VALID;
     await handler.handle(command);
 
     expect(saveSpy).toHaveBeenCalledTimes(1);

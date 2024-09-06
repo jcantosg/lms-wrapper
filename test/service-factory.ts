@@ -38,6 +38,12 @@ import { EnrollmentCreator } from '#student/domain/service/enrollment-creator.se
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
 import { EdaeUserPasswordGenerator } from '#edae-user/domain/service/edae-user-password-generator.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
+import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
+import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
+import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 export function getCountryGetterMock(): CountryGetter {
   return (CountryGetter as jest.Mocked<typeof CountryGetter>).prototype;
@@ -242,4 +248,48 @@ export function getAnInternalGroupDefaultTeacherGetterMock(): InternalGroupDefau
       typeof InternalGroupDefaultTeacherGetter
     >
   ).prototype;
+}
+
+export function getAUpdateInternalGroupsServiceMock(): UpdateInternalGroupsService {
+  return (
+    UpdateInternalGroupsService as jest.Mocked<
+      typeof UpdateInternalGroupsService
+    >
+  ).prototype;
+}
+
+export function getASubjectsToChatGetterMock(): StudentSubjectsToChatGetter {
+  return (
+    StudentSubjectsToChatGetter as jest.Mocked<
+      typeof StudentSubjectsToChatGetter
+    >
+  ).prototype;
+}
+
+export function getAUpdateAdministrativeGroupsServiceMock(): UpdateAdministrativeGroupsService {
+  return (
+    UpdateAdministrativeGroupsService as jest.Mocked<
+      typeof UpdateAdministrativeGroupsService
+    >
+  ).prototype;
+}
+
+export function getACreateAdministrativeProcessHandlerMock(): CreateAdministrativeProcessHandler {
+  return (
+    CreateAdministrativeProcessHandler as jest.Mocked<
+      typeof CreateAdministrativeProcessHandler
+    >
+  ).prototype;
+}
+
+export function getAStudentAdministrativeGroupByAcademicRecordGetterMock(): StudentAdministrativeGroupByAcademicRecordGetter {
+  return (
+    StudentAdministrativeGroupByAcademicRecordGetter as jest.Mocked<
+      typeof StudentAdministrativeGroupByAcademicRecordGetter
+    >
+  ).prototype;
+}
+
+export function getMailerMock(): MailerService {
+  return (MailerService as jest.Mocked<typeof MailerService>).prototype;
 }

@@ -32,5 +32,6 @@ export class EditStudentCommand implements Command {
     public readonly guardianSurname: string | null,
     public readonly guardianEmail: string | null,
     public readonly guardianPhone: string | null,
+    public readonly isDefense: boolean,
   ) {}
 }

@@ -3,6 +3,8 @@ import { SubjectCallRepository } from '#student/domain/repository/subject-call.r
 import { RemoveSubjectCallCommand } from '#student/application/subject-call/remove-subject-call/remove-subject-call.command';
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { SubjectCallAlreadyEvaluatedException } from '#shared/domain/exception/subject-call/subject-call.already-evaluated.exception';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 export class RemoveSubjectCallHandler implements CommandHandler {
   constructor(
@@ -15,6 +17,13 @@ export class RemoveSubjectCallHandler implements CommandHandler {
       command.subjectCallId,
       command.adminUser,
     );
+
+    if (
+      subjectCall.enrollment.academicRecord.status ===
+      AcademicRecordStatusEnum.CANCELLED
+    ) {
+      throw new AcademicRecordCancelledException();
+    }
 
     if (subjectCall.hasFinalGrade()) {
       throw new SubjectCallAlreadyEvaluatedException();

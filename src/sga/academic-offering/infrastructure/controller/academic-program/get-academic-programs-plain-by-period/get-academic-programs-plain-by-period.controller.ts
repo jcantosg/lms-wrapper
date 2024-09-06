@@ -44,7 +44,7 @@ export class GetAcademicProgramsPlainByPeriodController {
     const query = new GetAcademicProgramsPlainByPeriodQuery(
       academicPeriodId,
       req.user,
-      queryParams.hasAdministrativeGroup,
+      queryParams.hasAdministrativeGroup ?? true,
     );
 
     const response = await this.handler.handle(query);

@@ -6,14 +6,19 @@
 
   "app_url": "https://dev-ucp360.universae.com",
 
+  "media": {
+    "domain_name": "dev-media360.universae.com",
+    "certificate_arn": "arn:aws:acm:us-east-1:603941717969:certificate/7626222a-1d74-4d2c-a50d-53ec147e9346"
+  },
+
   "spot_capacity_percent": 100,
-  "enable_cloudflare_auth_header": false,
+  "enable_cloudflare_auth_header": true,
 
   "api": {
     "alb_host": "dev-back-ucp360.universae.com",
     "alb_priority": 300,
-    "cpu": 512,
-    "memory": 1024,
+    "cpu": 1024,
+    "memory": 2048,
     "min_tasks": 1,
     "max_tasks": 1
   },
@@ -25,27 +30,28 @@
   },
 
   "sftp": {
-    "alb_host": "dev-sftp.universae.com",
+    "alb_host": "dev-adm-sftp360.universae.com",
     "alb_priority": 301,
     "cpu": 512,
     "memory": 1024,
     "min_tasks": 1,
     "max_tasks": 1,
-    "allowed_cidrs": ["79.117.39.158/32"]
+    "allowed_cidrs": ["0.0.0.0/0"]
   },
 
   "db": {
-    "instance_type": "t4g.micro",
-    "engine_full_version": "16.2",
-    "max_allocated_storage": 50,
+    "instance_type": "t4g.small",
+    "engine_full_version": "16.4",
+    "allocated_storage": 50,
     "enable_performance_insights": false,
     "multi_az": false,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
-    "preferred_maintenance_window": "sun:03:30-sun:04:30"
+    "preferred_maintenance_window": "sun:03:30-sun:04:30",
+    "preferred_backup_window": "02:30-03:30"
   },
 
   "monitoring": {
-    "enable": true,
+    "enable": false,
     "sns_topic_arn": null
   }
 }

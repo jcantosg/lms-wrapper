@@ -3,15 +3,18 @@ import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { EdaeUserNotFoundException } from '#shared/domain/exception/edae-user/edae-user-not-found.exception';
 import { CommandHandler } from '#shared/domain/bus/command.handler';
 import { AddTeacherToInternalGroupCommand } from '#student/application/add-teacher-to-internal-group/add-teacher-to-internal-group.command';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
 
 export class AddTeacherToInternalGroupHandler implements CommandHandler {
   constructor(
     private readonly internalGroupRepository: InternalGroupRepository,
     private readonly internalGroupGetter: InternalGroupGetter,
     private readonly edaeUserGetter: EdaeUserGetter,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: AddTeacherToInternalGroupCommand) {
@@ -38,6 +41,10 @@ export class AddTeacherToInternalGroupHandler implements CommandHandler {
 
       internalGroup.addTeachers([edaeUser]);
       await this.internalGroupRepository.save(internalGroup);
+
+      await this.eventDispatcher.dispatch(
+        new InternalGroupMemberAddedEvent(internalGroup),
+      );
     }
   }
 }

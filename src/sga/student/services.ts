@@ -27,6 +27,15 @@ import { InternalGroupRepository } from '#student/domain/repository/internal-gro
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
+import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
+import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
+import { CancelAcademicRecordTransactionalService } from '#student/domain/service/cancel-academic-record.transactional-service';
+import { CancelAcademicRecordTypeormTransactionalService } from '#student/infrastructure/service/cancel-academic-record.typeorm-transactional-service';
+import { MoveStudentFromAdministrativeGroupTransactionalService } from '#student/domain/service/move-student-from-administrative-group.transactional.service';
+import { MoveStudentFromAdministrativeGroupTypeormTransactionalService } from '#student/infrastructure/service/move-student-from-administrative-group.typeorm-transactional-service';
 
 const academicRecordGetter = {
   provide: AcademicRecordGetter,
@@ -64,9 +73,16 @@ const enrollmentCreator = {
 
 const transferAcademicRecordTransactionalService = {
   provide: TransferAcademicRecordTransactionalService,
-  useFactory: (): TransferAcademicRecordTypeormTransactionalService =>
-    new TransferAcademicRecordTypeormTransactionalService(datasource),
-  inject: [],
+  useFactory: (
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+  ): TransferAcademicRecordTypeormTransactionalService =>
+    new TransferAcademicRecordTypeormTransactionalService(
+      datasource,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
+    ),
+  inject: [CreateLmsEnrollmentHandler, DeleteLmsEnrollmentHandler],
 };
 
 const createStudentFromSGATransactionService = {
@@ -76,6 +92,7 @@ const createStudentFromSGATransactionService = {
     deleteLmsStudentHandler: DeleteLmsStudentHandler,
     passwordEncoder: PasswordEncoder,
     configService: ConfigService,
+    getLmsStudentHandler: GetLmsStudentHandler,
   ): CreateStudentFromSGATyperomTransactionService => {
     const defaultPassword = configService.get<string>(
       'DEFAULT_LMS_PASSWORD',
@@ -88,6 +105,7 @@ const createStudentFromSGATransactionService = {
       deleteLmsStudentHandler,
       passwordEncoder,
       defaultPassword,
+      getLmsStudentHandler,
     );
   },
   inject: [
@@ -95,6 +113,7 @@ const createStudentFromSGATransactionService = {
     DeleteLmsStudentHandler,
     PasswordEncoder,
     ConfigService,
+    GetLmsStudentHandler,
   ],
 };
 
@@ -105,6 +124,9 @@ const createStudentFromCRMTransactionalService = {
     deleteLmsStudentHandler: DeleteLmsStudentHandler,
     passwordEncoder: PasswordEncoder,
     configService: ConfigService,
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+    getLmsStudentHandler: GetLmsStudentHandler,
   ): CreateStudentFromCRMTypeormTransactionalService => {
     const defaultPassword = configService.get<string>(
       'DEFAULT_LMS_PASSWORD',
@@ -115,8 +137,11 @@ const createStudentFromCRMTransactionalService = {
       datasource,
       createLmsStudentHandler,
       deleteLmsStudentHandler,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
       passwordEncoder,
       defaultPassword,
+      getLmsStudentHandler,
     );
   },
   inject: [
@@ -124,6 +149,9 @@ const createStudentFromCRMTransactionalService = {
     DeleteLmsStudentHandler,
     PasswordEncoder,
     ConfigService,
+    CreateLmsEnrollmentHandler,
+    DeleteLmsEnrollmentHandler,
+    GetLmsStudentHandler,
   ],
 };
 
@@ -171,12 +199,53 @@ const studentAdministrativeGroupByAcademicRecordGetter = {
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
     studentGetter: StudentGetter,
+    administrativeGroupRepository: AdministrativeGroupRepository,
   ): StudentAdministrativeGroupByAcademicRecordGetter =>
     new StudentAdministrativeGroupByAcademicRecordGetter(
       academicRecordGetter,
       studentGetter,
+      administrativeGroupRepository,
     ),
-  inject: [AcademicRecordGetter, StudentGetter],
+  inject: [AcademicRecordGetter, StudentGetter, AdministrativeGroupRepository],
+};
+
+const updateInternalGroupsService = {
+  provide: UpdateInternalGroupsService,
+  useFactory: (
+    repository: InternalGroupRepository,
+  ): UpdateInternalGroupsService => new UpdateInternalGroupsService(repository),
+  inject: [InternalGroupRepository],
+};
+
+const updateAdministrativeGroupsService = {
+  provide: UpdateAdministrativeGroupsService,
+  useFactory: (
+    repository: AdministrativeGroupRepository,
+  ): UpdateAdministrativeGroupsService =>
+    new UpdateAdministrativeGroupsService(repository),
+  inject: [AdministrativeGroupRepository],
+};
+
+const cancelAcademicRecordTransactionalService = {
+  provide: CancelAcademicRecordTransactionalService,
+  useFactory: (
+    createLmsEnrollmentHandler: CreateLmsEnrollmentHandler,
+    deleteLmsEnrollmentHandler: DeleteLmsEnrollmentHandler,
+  ): CancelAcademicRecordTypeormTransactionalService =>
+    new CancelAcademicRecordTypeormTransactionalService(
+      datasource,
+      createLmsEnrollmentHandler,
+      deleteLmsEnrollmentHandler,
+    ),
+  inject: [CreateLmsEnrollmentHandler, DeleteLmsEnrollmentHandler],
+};
+
+const moveStudentsFromAdministrativeGroupTransactionalService = {
+  provide: MoveStudentFromAdministrativeGroupTransactionalService,
+  useFactory: (): MoveStudentFromAdministrativeGroupTransactionalService =>
+    new MoveStudentFromAdministrativeGroupTypeormTransactionalService(
+      datasource,
+    ),
 };
 
 export const services = [
@@ -193,4 +262,8 @@ export const services = [
   internalGroupGetter,
   studentAdministrativeGroupByAcademicRecordGetter,
   internalGroupDefaulTeacherGetter,
+  updateInternalGroupsService,
+  updateAdministrativeGroupsService,
+  cancelAcademicRecordTransactionalService,
+  moveStudentsFromAdministrativeGroupTransactionalService,
 ];

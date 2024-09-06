@@ -9,4 +9,8 @@ export class InternalGroupMockRepository implements InternalGroupRepository {
   matching = jest.fn();
   getByAdminUser = jest.fn();
   getByStudentAndSubject = jest.fn();
+  getAllByStudentAndKeys = jest.fn();
+  getAllByStudent = jest.fn();
+  getAllByTeacher = jest.fn();
+  getByBusinessUnitsAndPeriodsAndPrograms = jest.fn();
 }

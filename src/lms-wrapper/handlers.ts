@@ -10,6 +10,14 @@ import { SubjectGetter } from '#academic-offering/domain/service/subject/subject
 import { GetLmsCourseByNameHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-by-name/get-lms-course-by-name.handler';
 import { GetLmsCourseProgressHandler } from '#/lms-wrapper/application/lms-course/get-lms-course-progress/get-lms-course-progress.handler';
 import { UpdateCourseModuleProgressHandler } from '#lms-wrapper/application/lms-course/update-course-module-progress/update-course-module-progress.handler';
+import { CreateLmsEnrollmentHandler } from '#lms-wrapper/application/create-lms-enrollment/create-lms-enrollment.handler';
+import { LmsEnrollmentRepository } from '#lms-wrapper/domain/repository/lms-enrollment.repository';
+import { DeleteLmsEnrollmentHandler } from '#lms-wrapper/application/delete-lms-enrollment/delete-lms-enrollment.handler';
+import { GetLmsStudentHandler } from '#lms-wrapper/application/lms-student/get-lms-student/get-lms-student.handler';
+import { GetStudentUrlSessionKeyHandler } from '#lms-wrapper/application/lms-student/get-url-session-key/get-student-url-session-key.handler';
+import { GetLmsCourseWithQuizzesHandler } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.handler';
+import { GetEdaeUserUrlSessionKeyHandler } from '#lms-wrapper/application/lms-teacher/get-url-session-key/get-edae-user-url-session-key.handler';
+import { LmsTeacherRepository } from '#lms-wrapper/domain/repository/lms-teacher.repository';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -78,6 +86,56 @@ const updateLmsCourseModuleProgressHandler = {
   inject: [LmsCourseRepository],
 };
 
+const createLmsEnrollmentHandler = {
+  provide: CreateLmsEnrollmentHandler,
+  useFactory: (
+    repository: LmsEnrollmentRepository,
+  ): CreateLmsEnrollmentHandler => new CreateLmsEnrollmentHandler(repository),
+  inject: [LmsEnrollmentRepository],
+};
+
+const deleteLmsEnrollmentHandler = {
+  provide: DeleteLmsEnrollmentHandler,
+  useFactory: (
+    repository: LmsEnrollmentRepository,
+  ): DeleteLmsEnrollmentHandler => new DeleteLmsEnrollmentHandler(repository),
+  inject: [LmsEnrollmentRepository],
+};
+
+const getLmsStudentHandler = {
+  provide: GetLmsStudentHandler,
+  useFactory: (repository: LmsStudentRepository): GetLmsStudentHandler =>
+    new GetLmsStudentHandler(repository),
+  inject: [LmsStudentRepository],
+};
+
+const getStudentUrlSessionKeyHandler = {
+  provide: GetStudentUrlSessionKeyHandler,
+  useFactory: (
+    repository: LmsStudentRepository,
+  ): GetStudentUrlSessionKeyHandler =>
+    new GetStudentUrlSessionKeyHandler(repository),
+  inject: [LmsStudentRepository],
+};
+
+const getLmsCourseWithQuizzesHandler = {
+  provide: GetLmsCourseWithQuizzesHandler,
+  useFactory: (
+    repository: LmsCourseRepository,
+  ): GetLmsCourseWithQuizzesHandler =>
+    new GetLmsCourseWithQuizzesHandler(repository),
+  inject: [LmsCourseRepository],
+};
+
+const getEdaeUrlSessionKeyHandler = {
+  provide: GetEdaeUserUrlSessionKeyHandler,
+  useFactory: (
+    repository: LmsTeacherRepository,
+  ): GetEdaeUserUrlSessionKeyHandler =>
+    new GetEdaeUserUrlSessionKeyHandler(repository),
+  inject: [LmsTeacherRepository],
+};
+
 export const handlers = [
   getLmsCoursesHandler,
   createLmsCourseHandler,
@@ -88,4 +146,10 @@ export const handlers = [
   getLmsCourseByNameHandler,
   getLmsCourseProgressHandler,
   updateLmsCourseModuleProgressHandler,
+  createLmsEnrollmentHandler,
+  deleteLmsEnrollmentHandler,
+  getLmsStudentHandler,
+  getStudentUrlSessionKeyHandler,
+  getLmsCourseWithQuizzesHandler,
+  getEdaeUrlSessionKeyHandler,
 ];

@@ -16,6 +16,8 @@ import {
 import { SubjectCallNotTakenException } from '#shared/domain/exception/subject-call/subject-call.not-taken.exception';
 import { SubjectCallMaxReachedException } from '#shared/domain/exception/subject-call/subject-call.max-reached.exception';
 import { SubjectCallAlreadyPassedException } from '#shared/domain/exception/subject-call/subject-call.already-passed.exception';
+import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
 
 export class AddSubjectCallHandler implements CommandHandler {
   constructor(
@@ -32,6 +34,12 @@ export class AddSubjectCallHandler implements CommandHandler {
       command.enrollmentId,
       command.adminUser,
     );
+
+    if (
+      enrollment.academicRecord.status === AcademicRecordStatusEnum.CANCELLED
+    ) {
+      throw new AcademicRecordCancelledException();
+    }
 
     const subjectLastCall = enrollment.getLastCall();
     const nextNumberCall = this.calculateNextNumberCall(

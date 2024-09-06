@@ -1,4 +1,4 @@
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export interface TeacherResponse {
   id: string;
@@ -11,9 +11,9 @@ export interface TeacherResponse {
 export interface InternalGroupDetailResponse {
   id: string;
   code: string;
-  subject: { id: string; name: string };
-  academicProgram: { id: string; name: string };
-  academicPeriod: { id: string; name: string };
+  subject: { id: string; name: string; code: string };
+  academicProgram: { id: string; name: string; code: string };
+  academicPeriod: { id: string; name: string; code: string };
   businessUnit: { id: string; name: string };
   startDate: Date;
   isDefaultGroup: boolean;
@@ -28,14 +28,17 @@ export class GetInternalGroupDetailResponse {
       subject: {
         id: internalGroup.subject.id,
         name: internalGroup.subject.name,
+        code: internalGroup.subject.code,
       },
       academicProgram: {
         id: internalGroup.academicProgram.id,
         name: internalGroup.academicProgram.name,
+        code: internalGroup.academicProgram.code,
       },
       academicPeriod: {
         id: internalGroup.academicPeriod.id,
         name: internalGroup.academicPeriod.name,
+        code: internalGroup.academicPeriod.code,
       },
       businessUnit: {
         id: internalGroup.businessUnit.id,

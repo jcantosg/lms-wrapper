@@ -6,6 +6,7 @@ import { ProgramBlock } from '#academic-offering/domain/entity/program-block.ent
 import { programBlockSchema } from '#academic-offering/infrastructure/config/schema/program-block.schema';
 import { ProgramBlockRepository } from '#academic-offering/domain/repository/program-block.repository';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 
 @Injectable()
 export class ProgramBlockPostgresRepository
@@ -36,6 +37,18 @@ export class ProgramBlockPostgresRepository
         },
         subjects: true,
       },
+    });
+  }
+
+  async getFirstBlockByProgram(
+    academicProgram: AcademicProgram,
+  ): Promise<ProgramBlock | null> {
+    return await this.repository.findOne({
+      where: { academicProgram: { id: academicProgram.id } },
+      relations: {
+        subjects: true,
+      },
+      order: { createdAt: 'ASC' },
     });
   }
 

@@ -3,6 +3,7 @@ import { LmsCourse } from '#/lms-wrapper/domain/entity/lms-course';
 interface GetCoursesItemResponse {
   id: number;
   name: string;
+  code: string;
 }
 
 export class GetCoursesResponse {
@@ -11,6 +12,7 @@ export class GetCoursesResponse {
       return {
         id: lmsCourse.value.id,
         name: lmsCourse.value.name,
+        code: lmsCourse.value.shortname,
       };
     });
   }

@@ -4,7 +4,7 @@ import { AcademicPeriodGetter } from '#academic-offering/domain/service/academic
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { AcademicProgramGetter } from '#academic-offering/domain/service/academic-program/academic-program-getter.service';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { AddInternalGroupToAcademicPeriodCommand } from '#student/application/add-internal-group-to-academic-period/add-internal-group-to-academic-period.command';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import { ProgramBlockNotFoundException } from '#shared/domain/exception/academic-offering/program-block.not-found.exception';
@@ -12,6 +12,8 @@ import { BlockRelationNotFoundException } from '#shared/domain/exception/academi
 import { AcademicProgramNotFoundException } from '#shared/domain/exception/academic-offering/academic-program.not-found.exception';
 import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { InvalidSubjectTypeException } from '#shared/domain/exception/academic-offering/subject.invalid-type.exception';
 
 export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
   constructor(
@@ -51,6 +53,10 @@ export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
       command.adminUser.businessUnits.map((bu) => bu.id),
       command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
+
+    if (subject.type === SubjectType.SPECIALTY) {
+      throw new InvalidSubjectTypeException();
+    }
 
     const programBlock = academicProgram.programBlocks.find((block) =>
       block.subjects.map((subject) => subject.id).includes(subject.id),
@@ -92,9 +98,11 @@ export class AddInternalGroupToAcademicPeriodHandler implements CommandHandler {
     await this.repository.save(
       InternalGroup.create(
         command.id,
-        `${command.prefix ?? ''}${academicProgram.code}${subject.code}${
-          academicPeriod.code
-        }${existentInternalGroups.length}${command.sufix ?? ''}`,
+        `${command.prefix ?? ''}${command.prefix ? ' ' : ''}${
+          academicProgram.code
+        } ${subject.code} ${academicPeriod.code} ${
+          existentInternalGroups.length
+        }${command.sufix ? ' ' : ''}${command.sufix ?? ''}`,
         [],
         teachers,
         academicPeriod,

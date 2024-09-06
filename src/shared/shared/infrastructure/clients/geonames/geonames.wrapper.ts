@@ -1,6 +1,8 @@
 import { Country } from '#shared/domain/entity/country.entity';
 import { Province } from '#shared/domain/value-object/province.value-object';
 import { FetchWrapper } from '#shared/infrastructure/clients/fetch-wrapper';
+import { City } from '#shared/domain/value-object/city';
+import { ProvinceNotFoundException } from '#shared/domain/exception/country/province-not-found.exception';
 
 interface CountryInfoResponse {
   geonames: [
@@ -87,5 +89,61 @@ export class GeonamesWrapper {
     }
 
     return states;
+  }
+
+  async getCities(country: Country, province: string) {
+    const { geonames: countryJSON }: CountryInfoResponse =
+      await this.wrapper.get(
+        'countryInfoJSON',
+        `country=${country.iso}&username=${this.username}`,
+      );
+
+    const { geonames: statesGeonames }: ChildrenResponse =
+      await this.wrapper.get(
+        'childrenJSON',
+        `lang=es&geonameId=${countryJSON[0].geonameId}&username=${this.username}`,
+      );
+    const cities: City[] = [];
+    if (country.iso === 'ES') {
+      let i = 0;
+      let provinceJson = null;
+      while (i < statesGeonames.length && !provinceJson) {
+        const stateJson = statesGeonames[i];
+        const { geonames: provincesJson }: ChildrenResponse =
+          await this.wrapper.get(
+            'childrenJSON',
+            `lang=es&geonameId=${stateJson.geonameId}&username=${this.username}`,
+          );
+        provinceJson = provincesJson.find((value) => value.name === province);
+        if (!provinceJson) {
+          throw new ProvinceNotFoundException();
+        }
+        const { geonames: citiesJson }: ChildrenResponse =
+          await this.wrapper.get(
+            'childrenJSON',
+            `lang=es&geonameId=${provinceJson.geonameId}&username=${this.username}`,
+          );
+        for (const city of citiesJson) {
+          cities.push(new City(city.name));
+        }
+        i++;
+      }
+    } else {
+      const provinceJson = statesGeonames.find(
+        (state) => state.name === province,
+      );
+      if (!provinceJson) {
+        throw new ProvinceNotFoundException();
+      }
+      const { geonames: citiesJson }: ChildrenResponse = await this.wrapper.get(
+        'childrenJSON',
+        `lang=es&geonameId=${provinceJson.geonameId}&username=${this.username}`,
+      );
+      for (const city of citiesJson) {
+        cities.push(new City(city.name));
+      }
+    }
+
+    return cities;
   }
 }

@@ -3,6 +3,7 @@ import { Subject } from '#academic-offering/domain/entity/subject.entity';
 export interface SubjectByAcademicProgramResponse {
   id: string;
   name: string;
+  code: string;
 }
 
 export class GetSubjectsByAcademicProgramResponse {
@@ -14,6 +15,7 @@ export class GetSubjectsByAcademicProgramResponse {
         return {
           id: subject.id,
           name: subject.name,
+          code: subject.code,
         };
       },
     );

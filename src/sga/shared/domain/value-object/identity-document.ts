@@ -16,8 +16,25 @@ export type IdentityDocumentValues = {
   identityDocumentNumber: string;
 };
 
-const dniRegex = /^\d{8}[a-zA-Z]$/;
+export const nieRegex = /^[XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
+export const dniRegex = /^\d{8}[a-zA-Z]$/;
 const letters = 'TRWAGMYFPDXBNJZSQVHLCKET';
+
+export function getIdentityDocumentType(
+  documentNumber: string | null,
+): IdentityDocumentType | null {
+  if (documentNumber) {
+    if (dniRegex.test(documentNumber)) {
+      return IdentityDocumentType.DNI;
+    } else if (nieRegex.test(documentNumber)) {
+      return IdentityDocumentType.NIE;
+    } else {
+      return IdentityDocumentType.PASSPORT;
+    }
+  }
+
+  return null;
+}
 
 export class IdentityDocument extends ValueObject<IdentityDocumentValues> {
   constructor(identityDocument: IdentityDocumentValues) {

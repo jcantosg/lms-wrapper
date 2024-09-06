@@ -5,14 +5,19 @@ export interface LmsModuleContentBody {
   name: string;
   modules: {
     id: number;
+    isVisible: boolean;
     name: string;
     url: string;
-    isCompleted: boolean;
+    type: string;
+    moduleType: string;
+    description: string;
     contents:
       | {
+          id: number;
           name: string;
           url: string;
           mimeType: string;
+          isCompleted: boolean;
         }[]
       | null;
   }[];

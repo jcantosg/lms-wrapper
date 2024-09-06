@@ -16,9 +16,15 @@ export class GetSubjectsByBusinessUnitHandler implements QueryHandler {
       throw new BusinessUnitNotFoundException();
     }
 
-    return await this.repository.getByBusinessUnit(
+    const subjects = await this.repository.getByBusinessUnit(
       query.businessUnitId,
       query.academicProgramId,
     );
+
+    if (query.subjectType) {
+      return subjects.filter((subject) => subject.type === query.subjectType);
+    }
+
+    return subjects;
   }
 }

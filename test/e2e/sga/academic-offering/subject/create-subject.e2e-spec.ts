@@ -44,26 +44,6 @@ describe('/subject (POST)', () => {
       .send({})
       .expect(400);
   });
-  it('should create a subject', async () => {
-    await supertest(httpServer)
-      .post(path)
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .send({
-        id: CreateSubjectE2eSeed.subjectId,
-        name: CreateSubjectE2eSeed.subjectName,
-        code: CreateSubjectE2eSeed.subjectCode,
-        hours: CreateSubjectE2eSeed.subjectHours,
-        officialCode: CreateSubjectE2eSeed.subjectOfficialCode,
-        modality: CreateSubjectE2eSeed.subjectModality,
-        evaluationType: CreateSubjectE2eSeed.subjectEvaluationType,
-        type: CreateSubjectE2eSeed.subjectType,
-        businessUnit: CreateSubjectE2eSeed.businessUnitId,
-        isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
-        isCore: CreateSubjectE2eSeed.subjectIsCore,
-        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
-      })
-      .expect(201);
-  });
 
   it('should throw a duplicated code error', async () => {
     const response = await supertest(httpServer)
@@ -72,7 +52,7 @@ describe('/subject (POST)', () => {
       .send({
         id: CreateSubjectE2eSeed.secondSubjectId,
         name: CreateSubjectE2eSeed.subjectName,
-        code: CreateSubjectE2eSeed.subjectCode,
+        code: CreateSubjectE2eSeed.alreadyInsertedSubjectCode,
         hours: CreateSubjectE2eSeed.subjectHours,
         officialCode: CreateSubjectE2eSeed.subjectOfficialCode,
         modality: CreateSubjectE2eSeed.subjectModality,
@@ -129,6 +109,49 @@ describe('/subject (POST)', () => {
       })
       .expect(404);
     expect(response.body.message).toBe('sga.business-unit.not-found');
+  });
+
+  it('should throw a invalid evaluation type exception', async () => {
+    const response = await supertest(httpServer)
+      .post(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        id: CreateSubjectE2eSeed.subjectId,
+        name: CreateSubjectE2eSeed.subjectName,
+        code: CreateSubjectE2eSeed.subjectCode,
+        hours: CreateSubjectE2eSeed.subjectHours,
+        officialCode: CreateSubjectE2eSeed.subjectOfficialCode,
+        modality: CreateSubjectE2eSeed.subjectModality,
+        evaluationType: CreateSubjectE2eSeed.subjectEvaluationType,
+        type: CreateSubjectE2eSeed.subjectTypeSpecialty,
+        businessUnit: CreateSubjectE2eSeed.businessUnitId,
+        isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
+        isCore: CreateSubjectE2eSeed.subjectIsCore,
+        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
+      })
+      .expect(409);
+    expect(response.body.message).toBe('sga.subject.invalid-evaluation-type');
+  });
+
+  it('should create a subject', async () => {
+    await supertest(httpServer)
+      .post(path)
+      .auth(superAdminAccessToken, { type: 'bearer' })
+      .send({
+        id: CreateSubjectE2eSeed.subjectId,
+        name: CreateSubjectE2eSeed.subjectName,
+        code: CreateSubjectE2eSeed.subjectCode,
+        hours: CreateSubjectE2eSeed.subjectHours,
+        officialCode: CreateSubjectE2eSeed.subjectOfficialCode,
+        modality: CreateSubjectE2eSeed.subjectModality,
+        evaluationType: CreateSubjectE2eSeed.subjectEvaluationType,
+        type: CreateSubjectE2eSeed.subjectType,
+        businessUnit: CreateSubjectE2eSeed.businessUnitId,
+        isRegulated: CreateSubjectE2eSeed.subjectIsRegulated,
+        isCore: CreateSubjectE2eSeed.subjectIsCore,
+        officialRegionalCode: CreateSubjectE2eSeed.subjectOfficialRegionalCode,
+      })
+      .expect(201);
   });
 
   afterAll(async () => {

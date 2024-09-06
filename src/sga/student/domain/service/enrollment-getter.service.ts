@@ -62,4 +62,15 @@ export class EnrollmentGetter {
       adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
     );
   }
+
+  public async getByMultipleSubjects(
+    subjects: Subject[],
+    adminUser: AdminUser,
+  ): Promise<Enrollment[]> {
+    return await this.repository.getByMultipleSubjects(
+      subjects,
+      adminUser.businessUnits.map((bu) => bu.id),
+      adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+    );
+  }
 }

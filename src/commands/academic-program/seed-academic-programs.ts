@@ -62,14 +62,15 @@ export async function seedAcademicPrograms(logger: Logger) {
         adminSga!,
       ),
     );
-    programBlocks.push(
-      ProgramBlock.create(
-        academicProgramRaw.programBlocks[1],
-        'Bloque 2',
-        academicProgram,
-        adminSga!,
-      ),
+    const bloque2 = ProgramBlock.create(
+      academicProgramRaw.programBlocks[1],
+      'Bloque 2',
+      academicProgram,
+      adminSga!,
     );
+    bloque2.createdAt = new Date(bloque2.createdAt.getTime() + 1000);
+    bloque2.updatedAt = new Date(bloque2.updatedAt.getTime() + 1000);
+    programBlocks.push(bloque2);
     academicProgram.addProgramBlock(programBlocks[0]);
     academicProgram.addProgramBlock(programBlocks[1]);
     academicPrograms.push(academicProgram);

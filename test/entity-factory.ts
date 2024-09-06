@@ -31,7 +31,7 @@ import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { BlockRelation } from '#academic-offering/domain/entity/block-relation.entity';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
@@ -40,7 +40,12 @@ import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-c
 import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { StudentRecoveryPasswordToken } from '#/student-360/student/domain/entity/student-recovery-password-token.entity';
+import { LmsEnrollment } from '#lms-wrapper/domain/entity/lms-enrollment';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
+import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
+import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrative-process-type.enum';
+import { Communication } from '#shared/domain/entity/communication.entity';
+import { CommunicationStatus } from '#shared/domain/enum/communication-status.enum';
 
 export const getACountry = (id = uuid()): Country => {
   return Country.create(id, 'ES', 'ESP', 'España', '+34', '🇪🇸');
@@ -368,6 +373,41 @@ export const getAStudentRecoveryPasswordToken =
     );
   };
 
+export const getALmsEnrollment = () =>
+  new LmsEnrollment({
+    courseId: 1,
+    studentId: 4,
+    startDate: new Date().getTime(),
+    endDate: new Date().getTime(),
+  });
+
 export const getAChatroom = (internalGroup: InternalGroup, id = uuid()) => {
   return Chatroom.create(id, internalGroup, getASGAStudent(), getAnEdaeUser());
+};
+
+export const getAnAdministrativeProcess = () => {
+  return AdministrativeProcess.create(
+    uuid(),
+    AdministrativeProcessTypeEnum.NEW_ACADEMIC_RECORD,
+    getASGAStudent(),
+    getAnAcademicRecord(),
+    getABusinessUnit(),
+  );
+};
+
+export const getACommunication = () => {
+  return Communication.create(
+    uuid(),
+    getAnAdminUser(),
+    [],
+    [],
+    [],
+    [],
+    [],
+    null,
+    null,
+    CommunicationStatus.DRAFT,
+    null,
+    [],
+  );
 };

@@ -16,10 +16,12 @@ import {
   SubjectByBusinessUnitResponse,
 } from '#academic-offering/infrastructure/controller/subject/get-subjects-by-business-unit/get-subjects-by-business-unit.response';
 import { AuthRequest } from '#shared/infrastructure/http/request';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 interface GetSubjectsByBusinessUnitQueryParams {
   businessUnit: string;
   academicProgramId: string;
+  subjectType?: SubjectType;
 }
 
 @Controller('subject')
@@ -41,6 +43,7 @@ export class GetSubjectByBusinessUnitController {
       queryParams.businessUnit,
       queryParams.academicProgramId,
       request.user,
+      queryParams.subjectType,
     );
     const response = await this.handler.handle(query);
 

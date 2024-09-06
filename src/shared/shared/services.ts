@@ -14,7 +14,7 @@ import { BCryptPasswordEncoder } from '#shared/infrastructure/service/bcrypt-pas
 import { StudentPasswordChecker } from '#/student-360/student/domain/service/student-password-checker.service';
 import { BcryptStudentPasswordChecker } from '#/student-360/student/infrastructure/service/bcrypt-student-password-checker.service';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { Logger } from '@nestjs/common';
 import { ExcelFileParser } from '#shared/domain/service/excel-file-parser.service';
 import { ExcelJSFileParser } from '#shared/infrastructure/service/exceljs-file-parser.service';
@@ -22,6 +22,11 @@ import { CRMImportRepository } from '#shared/domain/repository/crm-import.reposi
 import { ChatroomsByInternalGroupCreator } from '#shared/domain/service/chatrooms-by-internal-group-creator.service';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
+import { StudentSubjectsToChatGetter } from '#shared/domain/service/student-subjects-to-chat-getter.service';
+import { ExcelJSFileParserBatch } from '#shared/infrastructure/service/exceljs-file-parser-batch.service';
+import { ExcelFileParserBatch } from '#shared/domain/service/excel-file-parser-batch.service';
+import { CityGetter } from '#shared/domain/service/city-getter.service';
+import { GeonamesCityGetter } from '#shared/infrastructure/service/geonames-city-getter.service';
 
 const countryGetter = {
   provide: CountryGetter,
@@ -48,6 +53,21 @@ const provinceGetter = {
     new GeonamesProvinceGetter(
       new GeonamesWrapper(
         new FetchWrapper(configService.getOrThrow('GEONAMES_URL'), logger),
+        configService.getOrThrow('GEONAMES_NAME'),
+      ),
+    ),
+  inject: [ConfigService],
+};
+
+const cityGetter = {
+  provide: CityGetter,
+  useFactory: (configService: ConfigService): GeonamesCityGetter =>
+    new GeonamesCityGetter(
+      new GeonamesWrapper(
+        new FetchWrapper(
+          configService.getOrThrow('GEONAMES_URL'),
+          new Logger(),
+        ),
         configService.getOrThrow('GEONAMES_NAME'),
       ),
     ),
@@ -87,6 +107,17 @@ const excelFileParser = {
   inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
 };
 
+const excelFileParserBatch = {
+  provide: ExcelFileParserBatch,
+  useFactory: (
+    repository: CRMImportRepository,
+    provincesGetter: ProvinceGetter,
+    countryGetter: CountryGetter,
+  ): ExcelJSFileParserBatch =>
+    new ExcelJSFileParserBatch(repository, provincesGetter, countryGetter),
+  inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
+};
+
 const chatroomsByInternalGroupCreator = {
   provide: ChatroomsByInternalGroupCreator,
   useFactory: (
@@ -107,10 +138,13 @@ export const services = [
   countryGetter,
   imageUploader,
   provinceGetter,
+  cityGetter,
   uuidService,
   studentGetter,
   passwordEncoder,
   passwordChecker,
   excelFileParser,
+  excelFileParserBatch,
   chatroomsByInternalGroupCreator,
+  StudentSubjectsToChatGetter,
 ];

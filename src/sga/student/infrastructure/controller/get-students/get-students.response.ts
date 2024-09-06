@@ -17,7 +17,9 @@ export interface GetStudentResponse {
   academicProgram: {
     id: string;
     name: string;
+    code: string;
   }[];
+  isDefense: boolean;
 }
 
 export class GetStudentsResponse {
@@ -47,9 +49,11 @@ export class GetStudentsResponse {
               return {
                 id: academicRecord.academicProgram.id,
                 name: academicRecord.academicProgram.name,
+                code: academicRecord.academicProgram.code,
               };
             },
           ),
+          isDefense: student.isDefense,
         };
       }),
     };

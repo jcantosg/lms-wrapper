@@ -9,6 +9,7 @@ import { SubjectCall } from '#student/domain/entity/subject-call.entity';
 import { SubjectCallFinalGradeEnum } from '#student/domain/enum/enrollment/subject-call-final-grade.enum';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
 
 export class EnrollmentCreator {
   constructor(
@@ -20,9 +21,11 @@ export class EnrollmentCreator {
     academicRecord: AcademicRecord,
     adminUser: AdminUser,
   ): Promise<Enrollment[]> {
-    const subjects = await this.subjectRepository.getSubjectsByAcademicProgram(
-      academicRecord.academicProgram.id,
-    );
+    const subjects = (
+      await this.subjectRepository.getSubjectsByAcademicProgram(
+        academicRecord.academicProgram.id,
+      )
+    ).filter((subject) => subject.type !== SubjectType.ELECTIVE);
 
     const enrollments: Enrollment[] = [];
     subjects.forEach((subject) => {

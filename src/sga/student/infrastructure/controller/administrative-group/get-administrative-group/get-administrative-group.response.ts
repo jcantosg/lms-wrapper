@@ -27,11 +27,13 @@ type AdministrativeGroupDetail = {
   academicProgram: {
     id: string;
     name: string;
+    code: string;
   };
   block: number;
   academicPeriod: {
     id: string;
     name: string;
+    code: string;
   };
   startMonth: MonthEnum;
   businessUnit: {
@@ -52,11 +54,13 @@ export class GetAdministrativeGroupResponse {
       academicProgram: {
         id: administrativeGroup.academicProgram.id,
         name: administrativeGroup.academicProgram.name,
+        code: administrativeGroup.academicProgram.code,
       },
       block: administrativeGroup.periodBlock.blockNumber(),
       academicPeriod: {
         id: administrativeGroup.academicPeriod.id,
         name: administrativeGroup.academicPeriod.name,
+        code: administrativeGroup.academicPeriod.code,
       },
       startMonth: administrativeGroup.periodBlock.startMonth,
       businessUnit: {

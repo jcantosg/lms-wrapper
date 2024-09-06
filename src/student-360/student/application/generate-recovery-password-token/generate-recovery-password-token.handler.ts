@@ -6,7 +6,7 @@ import { StudentRecoveryPasswordToken } from '#student-360/student/domain/entity
 import { v4 as uuid } from 'uuid';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { RecoveryPasswordTokenGeneratedEvent } from '#student-360/student/domain/event/recovery-password-token-generated.event';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 
 export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
   constructor(
@@ -18,13 +18,13 @@ export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
   ) {}
 
   async handle(command: GenerateRecoveryPasswordTokenCommand): Promise<void> {
-    const student = await this.repository.getByEmail(command.universaeEmail);
+    const student = await this.repository.getByPersonalEmail(command.email);
     if (!student) {
       return;
     }
     const token = this.jwtTokenGenerator.generateToken(
       student.id,
-      student.universaeEmail,
+      student.email,
     );
     const recoveryPasswordToken = StudentRecoveryPasswordToken.create(
       uuid(),
@@ -37,7 +37,7 @@ export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
     await this.eventDispatcher.dispatch(
       new RecoveryPasswordTokenGeneratedEvent(
         student.name,
-        student.universaeEmail,
+        student.email,
         token,
       ),
     );

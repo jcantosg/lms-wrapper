@@ -3,7 +3,7 @@ import { AcademicPeriod } from '#academic-offering/domain/entity/academic-period
 import { AcademicPeriodRepository } from '#academic-offering/domain/repository/academic-period.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 import { academicPeriodSchema } from '#academic-offering/infrastructure/config/schema/academic-period.schema';
@@ -64,6 +64,10 @@ export class AcademicPeriodPostgresRepository
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPrograms`,
       'academic_programs',
+    );
+    queryBuilder.leftJoinAndSelect(
+      `academic_programs.administrativeGroups`,
+      'administrative_groups',
     );
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.periodBlocks`,
@@ -134,7 +138,7 @@ export class AcademicPeriodPostgresRepository
       where: { id },
       relations: {
         businessUnit: true,
-        academicPrograms: true,
+        academicPrograms: { administrativeGroups: true },
         periodBlocks: true,
       },
     });
@@ -205,5 +209,19 @@ export class AcademicPeriodPostgresRepository
     return academicPeriods.filter((academicPeriod) =>
       academicPeriod.hasAcademicPrograms(),
     );
+  }
+
+  async getByMultipleBusinessUnits(
+    businessUnitIds: string[],
+  ): Promise<AcademicPeriod[]> {
+    const academicPeriods = await this.repository.find({
+      where: { businessUnit: { id: In(businessUnitIds) } },
+      relations: { businessUnit: true, academicPrograms: true },
+    });
+    const filteredAcademicPeriods = academicPeriods.filter((academicPeriod) =>
+      academicPeriod.hasAcademicPrograms(),
+    );
+
+    return filteredAcademicPeriods;
   }
 }

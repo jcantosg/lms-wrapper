@@ -1,4 +1,4 @@
-import { StudentRepository } from '#/student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 
 export class StudentMockRepository implements StudentRepository {
   save = jest.fn();
@@ -9,4 +9,7 @@ export class StudentMockRepository implements StudentRepository {
   count = jest.fn();
   matching = jest.fn();
   getByEmail = jest.fn();
+  getByPersonalEmail = jest.fn();
+  getByProgramsAndGroups = jest.fn();
+  findByBuPeriodsAndPrograms = jest.fn();
 }

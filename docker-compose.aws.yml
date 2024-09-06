@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16.2
+    image: postgres:16.4
     environment:
       POSTGRES_PASSWORD: universae360
       POSTGRES_USER: universae360

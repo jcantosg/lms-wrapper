@@ -4,6 +4,7 @@ import { GetStudentAcademicRecordE2eSeed } from '#test/e2e/sga/student/academic-
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { login } from '#test/e2e/sga/e2e-auth-helper';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
 
 describe('/academic-record/:id (GET)', () => {
   let httpServer: HttpServer;
@@ -45,9 +46,19 @@ describe('/academic-record/:id (GET)', () => {
       {
         id: GetStudentAcademicRecordE2eSeed.academicRecordId,
         title: GetStudentAcademicRecordE2eSeed.titleName,
-        academicProgram: GetStudentAcademicRecordE2eSeed.academicProgramName,
-        academicPeriod: GetStudentAcademicRecordE2eSeed.academicPeriodName,
+        academicProgram: {
+          id: GetStudentAcademicRecordE2eSeed.academicProgramId,
+          name: GetStudentAcademicRecordE2eSeed.academicProgramName,
+          code: GetStudentAcademicRecordE2eSeed.academicProgramCode,
+        },
+        academicPeriod: {
+          id: GetStudentAcademicRecordE2eSeed.academicPeriodId,
+          name: GetStudentAcademicRecordE2eSeed.academicPeriodName,
+          code: GetStudentAcademicRecordE2eSeed.academicPeriodCode,
+        },
         status: AcademicRecordStatusEnum.VALID,
+        administrativeProcessStatus:
+          AdministrativeProcessStatusEnum.PENDING_DOCUMENTS,
       },
     ]);
   });

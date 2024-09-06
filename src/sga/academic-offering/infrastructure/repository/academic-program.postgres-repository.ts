@@ -74,6 +74,11 @@ export class AcademicProgramPostgresRepository
     );
 
     queryBuilder.leftJoinAndSelect(
+      `programBlockSubject.defaultTeacher`,
+      'defaultTeacher',
+    );
+
+    queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.academicPeriods`,
       'academicPeriods',
     );
@@ -87,7 +92,11 @@ export class AcademicProgramPostgresRepository
       relations: {
         businessUnit: true,
         title: true,
-        programBlocks: { subjects: true },
+        programBlocks: {
+          subjects: {
+            defaultTeacher: true,
+          },
+        },
         academicPeriods: true,
       },
     });
@@ -170,24 +179,38 @@ export class AcademicProgramPostgresRepository
           adminUserBusinessUnits,
         );
 
-    return await (
+    let criteriaToQueryBuilder =
       await baseRepository.convertCriteriaToQueryBuilder(
         criteria,
         queryBuilder,
         aliasQuery,
-      )
-    )
-      .applyOrder(criteria, queryBuilder, aliasQuery)
-      .applyPagination(criteria, queryBuilder)
-      .getMany(queryBuilder);
+      );
+
+    if (criteria.page !== null && criteria.limit !== null) {
+      criteriaToQueryBuilder = criteriaToQueryBuilder.applyPagination(
+        criteria,
+        queryBuilder,
+      );
+    }
+
+    if (criteria.order !== null) {
+      criteriaToQueryBuilder.applyOrder(criteria, queryBuilder, aliasQuery);
+    }
+
+    return await this.getMany(queryBuilder);
   }
 
   async getByAcademicPeriod(
     academicPeriodId: string,
-    hasAdministrativeGroup?: boolean,
+    hasAdministrativeGroup: boolean,
   ): Promise<AcademicProgram[]> {
     const academicPrograms = await this.repository.find({
-      relations: { academicPeriods: true, administrativeGroups: true },
+      relations: {
+        academicPeriods: true,
+        administrativeGroups: {
+          academicPeriod: true,
+        },
+      },
       where: {
         academicPeriods: {
           id: academicPeriodId,
@@ -195,18 +218,62 @@ export class AcademicProgramPostgresRepository
       },
     });
 
-    if (hasAdministrativeGroup === undefined) {
-      return academicPrograms;
-    }
+    return hasAdministrativeGroup
+      ? academicPrograms
+      : academicPrograms.filter(
+          (academicProgram) =>
+            academicProgram.administrativeGroups.filter(
+              (adminGroup) => adminGroup.academicPeriod.id === academicPeriodId,
+            ).length === 0,
+        );
+  }
 
-    if (hasAdministrativeGroup) {
-      return academicPrograms.filter(
-        (academicProgram) => academicProgram.administrativeGroups.length > 0,
+  async getByAcademicPeriodsAndTitles(
+    academicPeriodIds: string[],
+    titleIds: string[],
+    businessUnitIds: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicProgram[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('academicProgram')
+      .leftJoinAndSelect('academicProgram.academicPeriods', 'academicPeriod')
+      .leftJoinAndSelect('academicProgram.title', 'title')
+      .where('academicPeriod.id IN (:...academicPeriodIds)', {
+        academicPeriodIds,
+      })
+      .andWhere('title.id IN (:...titleIds)', {
+        titleIds,
+      });
+
+    if (!isSuperAdmin) {
+      queryBuilder.andWhere(
+        'academicProgram.businessUnit.id IN (:...businessUnitIds)',
+        { businessUnitIds },
       );
     }
 
-    return academicPrograms.filter(
-      (academicProgram) => academicProgram.administrativeGroups.length === 0,
-    );
+    return queryBuilder.getMany();
+  }
+
+  async findByAcademicPeriods(
+    academicPeriodIds: string[],
+    businessUnitIds: string[],
+    isSuperAdmin: boolean,
+  ): Promise<AcademicProgram[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('academicProgram')
+      .leftJoinAndSelect('academicProgram.academicPeriods', 'academicPeriod')
+      .where('academicPeriod.id IN (:...academicPeriodIds)', {
+        academicPeriodIds,
+      });
+
+    if (!isSuperAdmin) {
+      queryBuilder.andWhere(
+        'academicProgram.businessUnit.id IN (:...businessUnitIds)',
+        { businessUnitIds },
+      );
+    }
+
+    return queryBuilder.getMany();
   }
 }

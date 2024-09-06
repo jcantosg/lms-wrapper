@@ -3,7 +3,7 @@ import {
   BaseSchemaColumns,
   BaseSchemaRelations,
 } from '#shared/infrastructure/config/schema/base.schema';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 
 export const internalGroupSchema = new EntitySchema<InternalGroup>({
   name: 'InternalGroup',

@@ -5,4 +5,6 @@ export class ChatroomMockRepository implements ChatroomRepository {
   saveBatch = jest.fn();
   getByStudent = jest.fn();
   existsByStudentAndTeacherAndInternalGroup = jest.fn();
+  get = jest.fn();
+  matching = jest.fn();
 }

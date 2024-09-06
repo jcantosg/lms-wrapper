@@ -1,11 +1,12 @@
-import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AcademicRecordModalityEnum } from '#student/domain/enum/academic-record-modality.enum';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
+import { AcademicRecordDetail } from '#student/application/academic-record/get-academic-record-detail/get-academic-record-detail.handler';
 
 interface AcademicRecordDetailResponse {
   id: string;
   title: string;
   businessUnit: string;
+  createdAt: Date;
   student: {
     id: string;
     name: string;
@@ -13,35 +14,74 @@ interface AcademicRecordDetailResponse {
     avatar: string | null;
     isActive: boolean;
   };
-  academicPeriod: string;
-  academicProgram: string;
+  academicPeriod: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  initialAcademicPeriod: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  academicProgram: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  administrativeGroup: {
+    id: string;
+    code: string;
+  } | null;
   modality: AcademicRecordModalityEnum;
   isModular: boolean;
   status: AcademicRecordStatusEnum;
-  block: number;
+  block: number | null;
   leadId: string | null;
 }
 
 export class GetAcademicRecordDetailResponse {
-  static create(record: AcademicRecord): AcademicRecordDetailResponse {
+  static create(record: AcademicRecordDetail): AcademicRecordDetailResponse {
     return {
-      id: record.id,
-      title: record.academicProgram.title.name,
-      businessUnit: record.businessUnit.name,
+      id: record.academicRecord.id,
+      title: record.academicRecord.academicProgram.title.name,
+      businessUnit: record.academicRecord.businessUnit.name,
+      createdAt: record.academicRecord.createdAt,
       student: {
-        id: record.student.id,
-        name: record.student.name,
-        surname: record.student.surname,
-        avatar: record.student.avatar,
-        isActive: record.student.isActive,
+        id: record.academicRecord.student.id,
+        name: record.academicRecord.student.name,
+        surname: record.academicRecord.student.surname,
+        avatar: record.academicRecord.student.avatar,
+        isActive: record.academicRecord.student.isActive,
       },
-      academicPeriod: record.academicPeriod.name,
-      academicProgram: record.academicProgram.name,
-      modality: record.modality,
-      isModular: record.isModular,
-      status: record.status,
-      block: record.academicPeriod.blocksNumber,
-      leadId: record.leadId,
+      academicPeriod: {
+        id: record.academicRecord.academicPeriod.id,
+        name: record.academicRecord.academicPeriod.name,
+        code: record.academicRecord.academicPeriod.code,
+      },
+      initialAcademicPeriod: {
+        id: record.academicRecord.initialAcademicPeriod.id,
+        name: record.academicRecord.initialAcademicPeriod.name,
+        code: record.academicRecord.initialAcademicPeriod.code,
+      },
+      academicProgram: {
+        id: record.academicRecord.academicProgram.id,
+        name: record.academicRecord.academicProgram.name,
+        code: record.academicRecord.academicProgram.code,
+      },
+      administrativeGroup: record.administrativeGroup
+        ? {
+            id: record.administrativeGroup.id,
+            code: record.administrativeGroup.code,
+          }
+        : null,
+      modality: record.academicRecord.modality,
+      isModular: record.academicRecord.isModular,
+      status: record.academicRecord.status,
+      block: record?.administrativeGroup
+        ? record.administrativeGroup.periodBlock.blockNumber()
+        : null,
+      leadId: record.academicRecord.leadId,
     };
   }
 }

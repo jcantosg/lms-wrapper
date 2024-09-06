@@ -98,8 +98,8 @@ export class CreateAdministrativeGroupHandler implements CommandHandler {
   ): Promise<AdministrativeGroup[]> {
     return Promise.all(
       academicProgram.programBlocks
-        .slice(1)
         .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        .slice(1)
         .map(async (programBlock, index) => {
           const blockRelation =
             await this.blockRelationRepository.getByProgramBlockAndAcademicPeriod(

@@ -34,4 +34,8 @@ export abstract class AcademicPeriodRepository {
   abstract getByBusinessUnit(businessUnitId: string): Promise<AcademicPeriod[]>;
 
   abstract getByCode(code: string): Promise<AcademicPeriod | null>;
+
+  abstract getByMultipleBusinessUnits(
+    businessUnitIds: string[],
+  ): Promise<AcademicPeriod[]>;
 }

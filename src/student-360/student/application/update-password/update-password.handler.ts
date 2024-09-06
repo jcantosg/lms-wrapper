@@ -3,15 +3,13 @@ import { UpdatePasswordCommand } from '#admin-user/application/update-password/u
 import { JwtService } from '@nestjs/jwt';
 import { getNow } from '#shared/domain/lib/date';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
-import { StudentGetter } from '#shared/domain/service/student-getter.service';
-import { StudentRepository } from '#student-360/student/domain/repository/student.repository';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
 import { StudentRecoveryPasswordTokenRepository } from '#student-360/student/domain/repository/student-recovery-password-token.repository';
-import { Student } from '#shared/domain/entity/student.entity';
 import { StudentRecoveryPasswordTokenGetter } from '#student-360/student/domain/service/student-recovery-password-token-getter.service';
+import { StudentNotFoundException } from '#student/shared/exception/student-not-found.exception';
 
 export class UpdateStudentPasswordHandler implements CommandHandler {
   constructor(
-    private readonly studentGetter: StudentGetter,
     private readonly studentRepository: StudentRepository,
     private readonly recoveryPasswordTokenRepository: StudentRecoveryPasswordTokenRepository,
     private readonly recoveryPasswordTokenGetter: StudentRecoveryPasswordTokenGetter,
@@ -27,7 +25,13 @@ export class UpdateStudentPasswordHandler implements CommandHandler {
       recoveryPasswordToken.token,
     );
 
-    const student: Student = await this.studentGetter.getByEmail(payload.email);
+    const student = await this.studentRepository.getByPersonalEmail(
+      payload.email,
+    );
+
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
 
     student.password = await this.passwordEncoder.encodePassword(
       command.newPassword,

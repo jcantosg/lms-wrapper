@@ -229,7 +229,7 @@ describe('Add internal group to academic period Handler Test', () => {
     expect(saveSpy).toHaveBeenCalledTimes(1);
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        code: `${command.prefix}${academicProgram.code}${subject.code}${academicPeriod.code}0${command.sufix}`,
+        code: `${command.prefix} ${academicProgram.code} ${subject.code} ${academicPeriod.code} 0 ${command.sufix}`,
       }),
     );
   });

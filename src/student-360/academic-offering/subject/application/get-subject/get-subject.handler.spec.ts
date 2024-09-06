@@ -10,42 +10,54 @@ import {
 import { GetSubjectQuery } from '#student-360/academic-offering/subject/application/get-subject/get-subject.query';
 import { SubjectGetter } from '#academic-offering/domain/service/subject/subject-getter.service';
 import {
+  getAnAcademicRecordGetterMock,
   getAnInternalGroupDefaultTeacherGetterMock,
   getASubjectGetterMock,
 } from '#test/service-factory';
 import { StudentSubjectNotFoundException } from '#shared/domain/exception/student-360/student-subject-not-found.exception';
 import { InternalGroupDefaultTeacherGetter } from '#student/domain/service/internal-group-default-teacher-getter.service';
-import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
-import { AcademicRecordMockRepository } from '#test/mocks/sga/student/academic-record.mock-repository';
+import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
+import { getALmsCourse, getALmsStudent } from '#test/value-object-factory';
+import { GetLmsCourseWithQuizzesHandler } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.handler';
+import { LmsCourseMockRepository } from '#test/mocks/lms-wrapper/lms-course.mock-repository';
 
 let handler: GetSubjectHandler;
 const student = getASGAStudent();
+student.lmsStudent = getALmsStudent();
 let subject = getASubject();
+subject.lmsCourse = getALmsCourse(1, 'test');
 const academicRecord = getAnAcademicRecord();
 const academicProgram = getAnAcademicProgram();
 const programBlock = getAProgramBlock();
 let subjectGetter: SubjectGetter;
-let academicRecordRepository: AcademicRecordRepository;
+let academicRecordGetter: AcademicRecordGetter;
 let internalGroupDefaultTeacher: InternalGroupDefaultTeacherGetter;
+let getLmsCourseWithQuizzesHandler: GetLmsCourseWithQuizzesHandler;
 let getSubjectSpy: jest.SpyInstance;
 let getDefaultTeacherSpy: jest.SpyInstance;
 let getAcademicRecordSpy: jest.SpyInstance;
+let getCourseSpy: jest.SpyInstance;
 
-const query = new GetSubjectQuery(subject.id, student);
+const query = new GetSubjectQuery(subject.id, student, academicRecord.id);
 
 describe('Get Subject Handler Unit Test', () => {
   beforeAll(() => {
     subjectGetter = getASubjectGetterMock();
     internalGroupDefaultTeacher = getAnInternalGroupDefaultTeacherGetterMock();
-    academicRecordRepository = new AcademicRecordMockRepository();
+    academicRecordGetter = getAnAcademicRecordGetterMock();
+    getLmsCourseWithQuizzesHandler = new GetLmsCourseWithQuizzesHandler(
+      new LmsCourseMockRepository(),
+    );
     handler = new GetSubjectHandler(
       subjectGetter,
       internalGroupDefaultTeacher,
-      academicRecordRepository,
+      academicRecordGetter,
+      getLmsCourseWithQuizzesHandler,
     );
     getSubjectSpy = jest.spyOn(subjectGetter, 'get');
     getDefaultTeacherSpy = jest.spyOn(internalGroupDefaultTeacher, 'get');
-    getAcademicRecordSpy = jest.spyOn(academicRecordRepository, 'matching');
+    getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'get');
+    getCourseSpy = jest.spyOn(getLmsCourseWithQuizzesHandler, 'handle');
   });
 
   it('should return a subject', async () => {
@@ -58,7 +70,10 @@ describe('Get Subject Handler Unit Test', () => {
       Promise.resolve(getAnEdaeUser()),
     );
     getAcademicRecordSpy.mockImplementation(() =>
-      Promise.resolve([academicRecord]),
+      Promise.resolve(academicRecord),
+    );
+    getCourseSpy.mockImplementation(() =>
+      Promise.resolve(getALmsCourse(1, 'test')),
     );
     const response = await handler.handle(query);
     expect(response).toEqual(expect.objectContaining({ subject: subject }));

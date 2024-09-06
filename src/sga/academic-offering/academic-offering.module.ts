@@ -30,6 +30,7 @@ const fileManager: FactoryProvider = {
     return new AWSStorageManager(
       configService.get<string>('AWS_BUCKET_NAME')!,
       configService.get<string>('AWS_REGION')!,
+      configService.get<string>('MEDIA_DOMAIN_NAME')!,
       new Logger(),
     );
   },

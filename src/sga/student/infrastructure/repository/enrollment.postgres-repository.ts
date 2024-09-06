@@ -2,11 +2,12 @@ import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-o
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
 export class EnrollmentPostgresRepository
   extends TypeOrmRepository<Enrollment>
@@ -29,13 +30,36 @@ export class EnrollmentPostgresRepository
       programBlock: enrollment.programBlock,
       calls: enrollment.calls,
       maxCalls: enrollment.maxCalls,
+      lmsEnrollment: enrollment.lmsEnrollment,
     });
+  }
+
+  async exists(
+    academicRecord: AcademicRecord,
+    subject: Subject,
+    programBlock: ProgramBlock,
+  ): Promise<boolean> {
+    const enrollment = await this.repository.findOne({
+      where: {
+        academicRecord: { id: academicRecord.id },
+        subject: { id: subject.id },
+        programBlock: { id: programBlock.id },
+      },
+    });
+
+    return enrollment !== null;
   }
 
   async get(id: string): Promise<Enrollment | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: { calls: true },
+      relations: {
+        calls: true,
+        academicRecord: {
+          student: true,
+        },
+        subject: true,
+      },
       order: {
         calls: {
           callNumber: 'DESC',
@@ -50,7 +74,17 @@ export class EnrollmentPostgresRepository
   ): Promise<Enrollment[]> {
     return await this.repository.find({
       where: { academicRecord: { id: academicRecord.id } },
-      relations: { calls: true, subject: true },
+      relations: {
+        calls: {
+          enrollment: {
+            subject: {
+              evaluationType: true,
+            },
+          },
+        },
+        subject: true,
+        academicRecord: { student: true },
+      },
       order: {
         calls: {
           callNumber: 'DESC',
@@ -58,6 +92,52 @@ export class EnrollmentPostgresRepository
         },
       },
     });
+  }
+
+  async getByStudentAndSubject(
+    studentId: string,
+    subjectId: string,
+  ): Promise<Enrollment | null> {
+    return await this.repository.findOne({
+      where: {
+        academicRecord: {
+          student: {
+            id: studentId,
+          },
+        },
+        subject: { id: subjectId },
+      },
+      relations: {
+        calls: true,
+        subject: true,
+        programBlock: true,
+        academicRecord: { student: true },
+      },
+      order: {
+        calls: {
+          callNumber: 'DESC',
+          callDate: 'DESC',
+        },
+      },
+    });
+  }
+
+  async getByStudentsAndSubjects(
+    studentIds: string[],
+    subjectIds: string[],
+  ): Promise<Enrollment[]> {
+    return await this.repository
+      .createQueryBuilder('enrollment')
+      .leftJoinAndSelect('enrollment.calls', 'calls')
+      .leftJoinAndSelect('enrollment.subject', 'subject')
+      .leftJoinAndSelect('enrollment.programBlock', 'programBlock')
+      .leftJoinAndSelect('enrollment.academicRecord', 'academicRecord')
+      .leftJoinAndSelect('academicRecord.student', 'student')
+      .where('student.id IN (:...studentIds)', { studentIds })
+      .andWhere('subject.id IN (:...subjectIds)', { subjectIds })
+      .orderBy('calls.callNumber', 'DESC')
+      .addOrderBy('calls.callDate', 'DESC')
+      .getMany();
   }
 
   async matching(criteria: Criteria): Promise<Enrollment[]> {
@@ -156,6 +236,42 @@ export class EnrollmentPostgresRepository
 
     return await queryBuilder
       .where('subject.id = :id', { id: subject.id })
+      .andWhere('academicRecord.businessUnit.id IN(:...ids)', {
+        ids: adminUserBusinessUnits,
+      })
+      .getMany();
+  }
+
+  async getByMultipleSubjects(
+    subjects: Subject[],
+    adminUserBusinessUnits: string[],
+    isSuperAdmin: boolean,
+  ): Promise<Enrollment[]> {
+    const queryBuilder = this.initializeQueryBuilder('enrollment');
+
+    if (isSuperAdmin) {
+      return await this.repository.find({
+        where: {
+          subject: {
+            id: In(subjects.map((subject) => subject.id)),
+          },
+        },
+        relations: {
+          calls: true,
+        },
+      });
+    }
+
+    adminUserBusinessUnits = this.normalizeAdminUserBusinessUnits(
+      adminUserBusinessUnits,
+    );
+
+    queryBuilder.leftJoinAndSelect('enrollment.calls', 'subjectCall');
+
+    return await queryBuilder
+      .where('subject.id IN(:...ids)', {
+        ids: subjects.map((subject) => subject.id),
+      })
       .andWhere('academicRecord.businessUnit.id IN(:...ids)', {
         ids: adminUserBusinessUnits,
       })

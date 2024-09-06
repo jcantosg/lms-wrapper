@@ -5,12 +5,15 @@ import { ProgramBlockRepository } from '#academic-offering/domain/repository/pro
 import { RemoveSubjectFromProgramBlockCommand } from '#academic-offering/applicaton/program-block/remove-subject-from-program-block/remove-subject-from-program-block.command';
 import { AdminUserRoles } from '#/sga/shared/domain/enum/admin-user-roles.enum';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { SubjectHasEnrollmentsException } from '#shared/domain/exception/academic-offering/subject.has-enrollments.exception';
 
 export class RemoveSubjectFromProgramBlockHandler implements CommandHandler {
   constructor(
     private readonly repository: ProgramBlockRepository,
     private readonly subjectGetter: SubjectGetter,
     private readonly programBlockGetter: ProgramBlockGetter,
+    private readonly enrollmentRepository: EnrollmentRepository,
   ) {}
 
   async handle(command: RemoveSubjectFromProgramBlockCommand): Promise<void> {
@@ -26,6 +29,17 @@ export class RemoveSubjectFromProgramBlockHandler implements CommandHandler {
         ),
         command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
       );
+
+      const enrollments = await this.enrollmentRepository.getBySubject(
+        subject,
+        command.adminUser.businessUnits.map((bu) => bu.id),
+        command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
+      );
+
+      if (enrollments.length > 0) {
+        throw new SubjectHasEnrollmentsException();
+      }
+
       programBlock.removeSubject(subject);
     }
 

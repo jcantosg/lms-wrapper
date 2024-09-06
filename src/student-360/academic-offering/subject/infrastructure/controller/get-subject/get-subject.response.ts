@@ -3,6 +3,14 @@ import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 
+interface TestModule {
+  id: number;
+  name: string;
+  url: string;
+  isCompleted: boolean;
+  attempts: number | undefined;
+}
+
 interface GetSubjectResponseBody {
   id: string;
   name: string;
@@ -29,11 +37,19 @@ interface GetSubjectResponseBody {
         id: number;
         name: string;
         image: string;
+        isVisible: boolean;
       }[];
-      quizzes: {
+      officialTests: {
         id: number;
         name: string;
+        isVisible: boolean;
       }[];
+      autoEvaluationTests: {
+        id: number;
+        name: string;
+        isVisible: boolean;
+        modules: TestModule[];
+      } | null;
     };
   };
 }
@@ -44,6 +60,11 @@ export class GetSubjectResponse {
     defaultTeacher: EdaeUser | null,
     breadCrumb: { academicRecord: AcademicRecord; programBlock: ProgramBlock },
   ): GetSubjectResponseBody {
+    const autoEvaluationTest =
+      subject.lmsCourse!.value.modules.filter(
+        (module) => module.autoEvaluationTests,
+      )[0] ?? null;
+
     return {
       id: subject.id,
       name: subject.name,
@@ -70,31 +91,68 @@ export class GetSubjectResponse {
         modules: {
           resources: subject
             .lmsCourse!.value.modules.filter(
-              (module) =>
-                module.name !== 'pruebaSemestral' &&
-                module.name !== 'testDeEvaluacion',
+              (module) => !module.autoEvaluationTests && !module.officialTests,
             )
             .map((module) => {
               return {
                 id: module.id,
                 name: module.name,
                 image: module.image,
+                isVisible: autoEvaluationTest
+                  ? autoEvaluationTest.isVisible
+                  : true,
               };
             }),
-          quizzes: subject
-            .lmsCourse!.value.modules.filter(
-              (module) =>
-                module.name === 'pruebaSemestral' ||
-                module.name === 'testDeEvaluacion',
-            )
+          officialTests: subject
+            .lmsCourse!.value.modules.filter((module) => module.officialTests)
             .map((module) => {
               return {
                 id: module.id,
                 name: module.name,
+                isVisible: autoEvaluationTest
+                  ? autoEvaluationTest.isVisible
+                  : true,
+                modules: GetSubjectResponse.getOfficialTests(module),
               };
             }),
+          autoEvaluationTests: autoEvaluationTest
+            ? {
+                id: autoEvaluationTest.id,
+                name: autoEvaluationTest.name,
+                isVisible: autoEvaluationTest.isVisible,
+                modules: autoEvaluationTest.autoEvaluationTests!.map(
+                  (module) => {
+                    return {
+                      id: module.content[0].id,
+                      name: module.content[0].name,
+                      url: module.content[0].url,
+                      isCompleted: module.content[0].isCompleted,
+                      attempts: module.content[0].attempts,
+                    };
+                  },
+                ),
+              }
+            : null,
         },
       },
     };
+  }
+
+  static getOfficialTests(module: any): any[] {
+    const officialTests: TestModule[] = [];
+
+    module.officialTests!.map((module: any) => {
+      return module.content.map((quiz: any) => {
+        officialTests.push({
+          id: quiz.id,
+          name: quiz.name,
+          url: quiz.url,
+          isCompleted: quiz.isCompleted,
+          attempts: quiz.attempts,
+        });
+      });
+    });
+
+    return officialTests;
   }
 }

@@ -77,3 +77,18 @@ export async function loginStudent(
 
   return loginResponse.body.accessToken;
 }
+
+export async function loginTeacher(
+  httpServer: HttpServer,
+  email: string,
+  password: string,
+): Promise<string> {
+  const loginResponse = await supertest(httpServer)
+    .post('/edae-360/login')
+    .send({
+      username: email,
+      password: password,
+    });
+
+  return loginResponse.body.accessToken;
+}

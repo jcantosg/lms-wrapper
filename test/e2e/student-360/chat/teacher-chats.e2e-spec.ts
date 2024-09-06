@@ -2,7 +2,7 @@ import { HttpServer } from '@nestjs/common';
 import supertest from 'supertest';
 import { E2eSeed } from '#test/e2e/e2e-seed';
 import { loginStudent } from '#test/e2e/sga/e2e-auth-helper';
-import { TeacherChatsE2eSeed } from '#test/e2e/student-360/chat/teacher-chats.e2e-seed';
+import { ChatsE2eSeed } from '#test/e2e/student-360/chat/chats.e2e-seed';
 
 const path = `/student-360/teacher-chat`;
 
@@ -13,12 +13,12 @@ describe('/student-360/teacher-chat (GET)', () => {
 
   beforeAll(async () => {
     httpServer = app.getHttpServer();
-    seeder = new TeacherChatsE2eSeed(datasource);
+    seeder = new ChatsE2eSeed(datasource);
     await seeder.arrange();
     studentToken = await loginStudent(
       httpServer,
-      TeacherChatsE2eSeed.studentUniversaeEmail,
-      TeacherChatsE2eSeed.studentPassword,
+      ChatsE2eSeed.studentUniversaeEmail,
+      ChatsE2eSeed.studentPassword,
     );
   });
 
@@ -35,27 +35,27 @@ describe('/student-360/teacher-chat (GET)', () => {
     expect(response.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: TeacherChatsE2eSeed.chatroomId,
+          id: ChatsE2eSeed.chatroomId,
           chatroomId: null,
           teacher: expect.objectContaining({
-            id: TeacherChatsE2eSeed.edaeUserId,
-            name: TeacherChatsE2eSeed.edaeUserName,
-            surname1: TeacherChatsE2eSeed.edaeUserSurname,
+            id: ChatsE2eSeed.edaeUserId,
+            name: ChatsE2eSeed.edaeUserName,
+            surname1: ChatsE2eSeed.edaeUserSurname,
             avatar: null,
           }),
           student: expect.objectContaining({
-            id: TeacherChatsE2eSeed.studentId,
-            name: TeacherChatsE2eSeed.studentName,
-            surname: TeacherChatsE2eSeed.studentSurname,
+            id: ChatsE2eSeed.studentId,
+            name: ChatsE2eSeed.studentName,
+            surname: ChatsE2eSeed.studentSurname,
             avatar: null,
           }),
           subject: expect.objectContaining({
-            id: TeacherChatsE2eSeed.subjectId,
-            name: TeacherChatsE2eSeed.subjectName,
-            code: TeacherChatsE2eSeed.subjectCode,
+            id: ChatsE2eSeed.subjectId,
+            name: ChatsE2eSeed.subjectName,
+            code: ChatsE2eSeed.subjectCode,
           }),
           internalGroup: expect.objectContaining({
-            id: TeacherChatsE2eSeed.internalGroupId,
+            id: ChatsE2eSeed.internalGroupId,
           }),
         }),
       ]),

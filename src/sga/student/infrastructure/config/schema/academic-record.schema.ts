@@ -63,6 +63,13 @@ export const academicRecordSchema = new EntitySchema<AcademicRecord>({
         name: 'academic_period_id',
       },
     },
+    initialAcademicPeriod: {
+      type: 'many-to-one',
+      target: 'AcademicPeriod',
+      joinColumn: {
+        name: 'initial_academic_period_id',
+      },
+    },
     academicProgram: {
       type: 'many-to-one',
       target: 'AcademicProgram',

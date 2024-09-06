@@ -12,6 +12,13 @@ import { GetAdministrativeGroupHandler } from '#student/application/administrati
 import { AddEdaeUserToAdministrativeGroupHandler } from '#student/application/administrative-group/add-teacher-to-administrative-group/add-edae-user-to-administrative-group.handler';
 import { EdaeUserGetter } from '#edae-user/domain/service/edae-user-getter.service';
 import { RemoveEdaeUserFromAdministrativeGroupHandler } from '#student/application/administrative-group/remove-edae-user-from-administrative-group/remove-edae-user-from-administrative-group.handler';
+import { GetAdministrativeGroupByAcademicProgramHandler } from '#student/application/administrative-group/get-administrative-group-by-academic-program/get-administrative-group-by-academic-program.handler';
+import { MoveStudentFromAdministrativeGroupHandler } from '#student/application/administrative-group/move-student-from-administrative-group/move-student-from-administrative-group.handler';
+import { StudentRepository } from '#shared/domain/repository/student.repository';
+import { MoveStudentFromAdministrativeGroupTransactionalService } from '#student/domain/service/move-student-from-administrative-group.transactional.service';
+import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
+import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -106,6 +113,45 @@ const removeEdaeUserFromAdministrativeGroupHandler = {
   ],
 };
 
+const getAdministrativeGroupByAcademicProgramHandler = {
+  provide: GetAdministrativeGroupByAcademicProgramHandler,
+  useFactory: (
+    administrativeGroupRepository: AdministrativeGroupRepository,
+  ): GetAdministrativeGroupByAcademicProgramHandler =>
+    new GetAdministrativeGroupByAcademicProgramHandler(
+      administrativeGroupRepository,
+    ),
+  inject: [AdministrativeGroupRepository],
+};
+
+const moveStudentFromAdministrativeGroupHandler = {
+  provide: MoveStudentFromAdministrativeGroupHandler,
+  useFactory: (
+    studentRepository: StudentRepository,
+    administrativeGroupGetter: AdministrativeGroupGetter,
+    transactionalService: MoveStudentFromAdministrativeGroupTransactionalService,
+    academicRecordRepository: AcademicRecordRepository,
+    enrollmentGetter: EnrollmentGetter,
+    updateInternalGroupsService: UpdateInternalGroupsService,
+  ): MoveStudentFromAdministrativeGroupHandler =>
+    new MoveStudentFromAdministrativeGroupHandler(
+      studentRepository,
+      administrativeGroupGetter,
+      transactionalService,
+      academicRecordRepository,
+      enrollmentGetter,
+      updateInternalGroupsService,
+    ),
+  inject: [
+    StudentRepository,
+    AdministrativeGroupGetter,
+    MoveStudentFromAdministrativeGroupTransactionalService,
+    AcademicRecordRepository,
+    EnrollmentGetter,
+    UpdateInternalGroupsService,
+  ],
+};
+
 export const administrativeGroupHandlers = [
   createAdministrativeGroupHandler,
   getAllAdministrativeGroupsHandler,
@@ -113,4 +159,6 @@ export const administrativeGroupHandlers = [
   getAdministrativeGroupHandler,
   addEdaeUserToAdministrativeGroupHandler,
   removeEdaeUserFromAdministrativeGroupHandler,
+  getAdministrativeGroupByAcademicProgramHandler,
+  moveStudentFromAdministrativeGroupHandler,
 ];

@@ -37,8 +37,9 @@ import { virtualCampusSchema } from '#business-unit/infrastructure/config/schema
 import { academicRecordSchema } from '#student/infrastructure/config/schema/academic-record.schema';
 import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
 import { subjectCallSchema } from '#student/infrastructure/config/schema/subject-call.schema';
-import { InternalGroup } from '#student/domain/entity/internal-group-entity';
+import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { internalGroupSchema } from '#student/infrastructure/config/schema/internal-group.schema';
+import { getALmsCourse, getALmsStudent } from '#test/value-object-factory';
 
 export class CreateEnrollmentE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -252,6 +253,7 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
+    this.subject.lmsCourse = getALmsCourse(5606, 'Test');
     await this.subjectRepository.save(this.subject);
 
     this.otherSubject = Subject.create(
@@ -270,6 +272,7 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
       this.superAdminUser,
       null,
     );
+    this.otherSubject.lmsCourse = getALmsCourse(5606, 'Test');
     await this.subjectRepository.save(this.otherSubject);
 
     this.programBlock.addSubject(this.subject, this.superAdminUser);
@@ -288,6 +291,7 @@ export class CreateEnrollmentE2eSeed implements E2eSeed {
       'test123',
       null,
     );
+    this.student.lmsStudent = getALmsStudent(8389);
     await this.studentRepository.save(this.student);
 
     this.academicRecord = AcademicRecord.create(

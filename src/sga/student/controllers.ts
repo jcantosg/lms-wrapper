@@ -22,6 +22,16 @@ import { AddStudentToInternalGroupController } from '#student/infrastructure/con
 import { GetInternalGroupStudentsController } from '#student/infrastructure/controller/internal-group/get-internal-group-students/get-internal-group-students.controller';
 import { RemoveTeacherFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-teacher-from-internal-group.controller';
 import { RemoveStudentFromInternalGroupController } from '#student/infrastructure/controller/internal-group/remove-student-from-internal-group.controller';
+import { GetInternalGroupsByBuPeriodsAndProgramsController } from '#student/infrastructure/controller/internal-group/get-internal-groups-by-bu-periods-and-programs/get-internal-groups-by-bu-periods-and-programs.controller';
+import { GetAllAdministrativeProcessStatusController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-types.controller';
+import { GetAllAdministrativeProcessTypesController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-status.controller';
+import { GetAllAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/get-all-administrative-process/get-all-administrative-process.controller';
+import { SearchAdministrativeProcessesController } from '#student/infrastructure/controller/administrative-process/search-administrative-processes.controller';
+import { GetStudentAdministrativeProcessDocumentsController } from '#student/infrastructure/controller/administrative-process/get-administrative-process-documents-by-student/get-administrative-process-documents-by-student.controller';
+import { EditAdministrativeProcessController } from '#student/infrastructure/controller/administrative-process/edit-administrative-process.controller';
+import { GetSubjectCallScheduleHistoryController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history.controller';
+import { GetSubjectCallScheduleHistoryDetailController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history-detail.controller';
+import { GetStudentsByProgramsAndGroupsController } from '#student/infrastructure/controller/get-students-by-programs-and-groups/get-students-by-programs-and-groups.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
@@ -30,6 +40,9 @@ export const controllers = [
   GetStudentsController,
   SearchStudentsController,
   GetCoursingSubjectStudentsController,
+  GetInternalGroupsByBuPeriodsAndProgramsController,
+  GetStudentsByProgramsAndGroupsController,
+  GetInternalGroupsByBuPeriodsAndProgramsController,
   GetStudentController,
   ...academicRecordControllers,
   CreateInternalGroupsBatchController,
@@ -48,4 +61,12 @@ export const controllers = [
   RemoveTeacherFromInternalGroupController,
   GetInternalGroupStudentsController,
   RemoveStudentFromInternalGroupController,
+  GetAllAdministrativeProcessStatusController,
+  GetAllAdministrativeProcessTypesController,
+  GetAllAdministrativeProcessesController,
+  SearchAdministrativeProcessesController,
+  GetStudentAdministrativeProcessDocumentsController,
+  EditAdministrativeProcessController,
+  GetSubjectCallScheduleHistoryController,
+  GetSubjectCallScheduleHistoryDetailController,
 ];

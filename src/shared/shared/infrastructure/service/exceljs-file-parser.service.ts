@@ -19,12 +19,17 @@ import {
   AcademicRecordModalityEnum,
   getAllAcademicRecordModalities,
 } from '#student/domain/enum/academic-record-modality.enum';
+import {
+  IdentityDocumentType,
+  getIdentityDocumentType,
+} from '#/sga/shared/domain/value-object/identity-document';
 
 export interface ImportData {
   name: string;
   surname1: string;
   surname2: string;
   personalEmail: string;
+  documentType: IdentityDocumentType | null;
   documentNumber: string | null;
   universaeEmail: string;
   password: string;
@@ -71,7 +76,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
         null,
         null,
         null,
-        CRMImportErrorMessage.FORMAT_ERROR,
+        validationResult.error.details[0].message,
       );
       await this.crmImportRepository.save(importResult);
 
@@ -168,6 +173,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
       surname1: validationResult.value.apellido_1,
       surname2: validationResult.value.apellido_2,
       personalEmail: validationResult.value.email_personal,
+      documentType: getIdentityDocumentType(validationResult.value.NIF),
       documentNumber: validationResult.value.NIF,
       universaeEmail: validationResult.value.email_universae,
       password: validationResult.value.password_alumno,
@@ -176,7 +182,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
       city: validationResult.value.municipio,
       country: validationResult.value.country,
       cp: validationResult.value.cp,
-      gender: validationResult.value.sexo,
+      gender: this.parseGender(validationResult.value.sexo),
       birthDate: validationResult.value.birth_date,
       nuss: validationResult.value.nuss,
       defense: validationResult.value.defensa,
@@ -185,9 +191,33 @@ export class ExcelJSFileParser implements ExcelFileParser {
       virtualCampusCode: validationResult.value.sede_virtual,
       academicProgramCode: validationResult.value.programa_formativo,
       academicPeriodCode: validationResult.value.periodo,
-      modality: validationResult.value.modalidad,
+      modality: this.parseModality(validationResult.value.modalidad),
       leadId: validationResult.value.n_oportunidad,
     };
+  }
+
+  private parseGender(sexo: any): StudentGender {
+    switch (sexo) {
+      case 'H':
+        return StudentGender.MALE;
+      case 'M':
+        return StudentGender.FEMALE;
+      default:
+        return StudentGender.OTHER;
+    }
+  }
+
+  private parseModality(modality: any): AcademicRecordModalityEnum {
+    switch (modality) {
+      case 'Distancia':
+        return AcademicRecordModalityEnum.ELEARNING;
+      case 'Presencial':
+        return AcademicRecordModalityEnum.PRESENCIAL;
+      case 'Semipresencial':
+        return AcademicRecordModalityEnum.MIXED;
+      default:
+        return AcademicRecordModalityEnum.ELEARNING;
+    }
   }
 
   private rowsToObject(wb: Excel.Workbook): any {

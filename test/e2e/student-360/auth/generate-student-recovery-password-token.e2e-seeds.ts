@@ -16,7 +16,7 @@ export class GenerateStudentRecoveryPasswordTokenSeed implements E2eSeed {
   private static studentName = 'Juan';
   private static studentSurname = 'Ros';
   private static studentSurname2 = 'Lopez';
-  private static studentEmail = 'juan@test.com';
+  public static studentEmail = 'juan@test.com';
   private static studentPassword = 'test123';
   public static studentUniversaeEmail = 'juan@universae.com';
   private student: Student;
@@ -59,6 +59,7 @@ export class GenerateStudentRecoveryPasswordTokenSeed implements E2eSeed {
       null,
       this.adminUser,
       null,
+      false,
     );
     await this.studentRepository.save(this.student);
   }

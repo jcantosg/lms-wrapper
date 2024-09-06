@@ -18,12 +18,16 @@ export const getALmsCourse = (id: number = Math.random(), name: string) =>
     id: id,
     categoryId: LmsCourseCategoryEnum.MIXTA,
     shortname: 'test',
+    progress: 0,
     name: name,
     modules: [
       {
         id: 1,
         name: 'Test',
         image: 'image.jpeg',
+        isVisible: true,
+        officialTests: undefined,
+        autoEvaluationTests: undefined,
       },
     ],
   });
@@ -47,8 +51,19 @@ export const getALmsContentModule = (id: number = Math.random()) =>
         id: id,
         name: 'test',
         url: 'url',
-        contents: [],
-        isCompleted: false,
+        type: 'content',
+        isVisible: true,
+        moduleType: 'resource',
+        description: 'description',
+        contents: [
+          {
+            id: id,
+            name: 'test',
+            url: 'url',
+            mimeType: 'pdf',
+            isCompleted: false,
+          },
+        ],
       },
     ],
   });
