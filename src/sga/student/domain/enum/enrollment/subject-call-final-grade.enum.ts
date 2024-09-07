@@ -15,6 +15,7 @@ export enum SubjectCallFinalGradeEnum {
   NA = 'n/a',
   PASS = 'Apto',
   FAIL = 'No Apto',
+  EXEMPT = 'EX',
 }
 
 export const getAllSubjectFinalCallGrades = (): SubjectCallFinalGradeEnum[] =>

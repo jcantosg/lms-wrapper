@@ -53,6 +53,7 @@ const configModule = ConfigModule.forRoot({
     SMTP_USERNAME: Joi.string().required(),
     SMTP_PASSWORD: Joi.string().required(),
     FROM_EMAIL: Joi.string().required(),
+    FROM_EMAIL_COMMUNICATIONS: Joi.string().required(),
     AWS_BUCKET_NAME: Joi.string().required(),
     AWS_REGION: Joi.string().required(),
     APP_URL: Joi.string().required(),

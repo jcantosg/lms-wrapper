@@ -259,6 +259,15 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
             new InternalGroupMemberAddedEvent(group),
           );
         });
+
+        await this.createAdministrativeProcessHandler.handle(
+          new CreateAdministrativeProcessCommand(
+            this.uuidService.generate(),
+            newAcademicRecord.id,
+            student.id,
+            adminUser,
+          ),
+        );
       } else {
         await this.createStudentFromCRMTransactionalService.execute({
           student,

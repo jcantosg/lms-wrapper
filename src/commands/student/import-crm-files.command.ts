@@ -10,6 +10,7 @@ import { CreateStudentFromCRMCommand } from '#student/application/create-student
 import { zohoExcelImportSchema } from '#shared/infrastructure/config/validation-schema/zoho-excel-import.schema';
 import { CRMImport } from '#shared/domain/entity/crm-import.entity';
 import { CRMImportStatus } from '#shared/domain/enum/crm-import-status.enum';
+import { MailerService } from '@nestjs-modules/mailer';
 
 function filterFileType(fileNames: string[], fileType: string): string[] {
   return fileNames.filter((name) => {
@@ -31,16 +32,21 @@ async function readFiles(filesPath: string): Promise<File[]> {
   return files;
 }
 
-function moveImportedFile(filesPath: string, fileName: string): void {
+function moveImportedFile(
+  filesPath: string,
+  fileName: string,
+  subPath: string,
+): void {
   fs.renameSync(
     `${filesPath}/${fileName}`,
-    `${filesPath}/processed/${fileName}`,
+    `${filesPath}/${subPath}/${fileName}`,
   );
 }
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const configService = await app.resolve(ConfigService);
+  const mailer = await app.resolve(MailerService);
   const filesPath = configService.get('CRM_IMPORTS_PATH');
   const fileParser = app.get(ExcelFileParser);
   const handler = app.get(CreateStudentFromCRMHandler);
@@ -50,7 +56,6 @@ async function bootstrap() {
   const importResponses: CRMImport[] = [];
 
   const files = await readFiles(filesPath);
-
   for (const file of files) {
     const parsedResponse = await fileParser.parse(file, zohoExcelImportSchema);
     if (parsedResponse.status !== CRMImportStatus.PARSED) {
@@ -71,9 +76,25 @@ async function bootstrap() {
       logger.log(
         `Error while importing file ${response.fileName}: ${response.errorMessage}`,
       );
+
+      mailer.sendMail({
+        to: [
+          'jefatura@universae.com',
+          'alvaro.lombardo@universae.com',
+          'soporte360@universae.com ',
+          'juan.ros@universae.com',
+        ],
+        template: './import-failed',
+        subject: 'Importación de alumno fallida',
+        context: {
+          fileName: response.fileName,
+          errorMessage: response.errorMessage,
+        },
+      });
+      moveImportedFile(filesPath, response.fileName, 'failed');
     } else {
       logger.log(`contact ${response.contactId} imported.`);
-      moveImportedFile(filesPath, response.fileName);
+      moveImportedFile(filesPath, response.fileName, 'processed');
     }
   });
 

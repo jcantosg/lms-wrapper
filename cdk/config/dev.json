@@ -25,8 +25,8 @@
 
   "cron": {
     "enable": true,
-    "cpu": 512,
-    "memory": 1024
+    "cpu": 1024,
+    "memory": 2048
   },
 
   "sftp": {
@@ -47,7 +47,9 @@
     "multi_az": false,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
     "preferred_maintenance_window": "sun:03:30-sun:04:30",
-    "preferred_backup_window": "02:30-03:30"
+    "preferred_backup_window": "02:30-03:30",
+    "read_replicas": 0,
+    "read_replicas_instance_type": null
   },
 
   "monitoring": {

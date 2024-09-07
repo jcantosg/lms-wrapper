@@ -33,6 +33,7 @@ export class SendCommunicationHandler implements CommandHandler {
     private readonly studentGetter: StudentGetter,
     private readonly uuidService: UUIDGeneratorService,
     private readonly mailerService: MailerService,
+    private readonly communicationsMailAddress: string,
   ) {}
 
   async handle(command: SendCommunicationCommand): Promise<void> {
@@ -132,7 +133,7 @@ export class SendCommunicationHandler implements CommandHandler {
               communication.message?.value.body ?? '',
             ),
           },
-          from: 'Universae no-reply@universae.com',
+          from: `Universae ${this.communicationsMailAddress}`,
         });
       }
     }
