@@ -68,6 +68,14 @@ CLOUDFLARE_SECRET_HEADER = "X-Universae-CloudFlare-Auth"
 
 CRM_IMPORTS_PATH_MOUNTDIR = "/var/lib/sftp"
 
+HEALTHCHECK_GRACE_PERIOD = Duration.seconds(60)
+HEALTHCHECK_HEALTHY_THR = 4
+HEALTHCHECK_INTERVAL = Duration.seconds(15)
+HEALTHCHECK_PATH_API = "/health"
+HEALTHCHECK_PATH_SFTP = "/web/admin/login"
+HEALTHCHECK_TIMEOUT = Duration.seconds(5)
+HEALTHCHECK_UNHEALTHY_THR = 2
+
 
 class APIStack(Stack):
     def __init__(
@@ -314,7 +322,9 @@ class APIStack(Stack):
             self,
             "MediaCloudfrontDistribution",
             default_behavior=cloudfront.BehaviorOptions(
-                origin=cloudfront_origins.S3Origin(self.media_bucket),
+                origin=cloudfront_origins.S3BucketOrigin.with_origin_access_control(
+                    self.media_bucket
+                ),
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 response_headers_policy=cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
             ),
@@ -589,6 +599,16 @@ class APIStack(Stack):
                     protocol=ecs.Protocol.TCP,
                 )
             ],
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD-SHELL",
+                    f"wget --no-verbose --tries=1 --spider http://localhost:{API_LISTEN_PORT}{HEALTHCHECK_PATH_API} || exit 1",
+                ],
+                interval=HEALTHCHECK_INTERVAL,
+                retries=HEALTHCHECK_UNHEALTHY_THR,
+                start_period=HEALTHCHECK_GRACE_PERIOD,
+                timeout=HEALTHCHECK_TIMEOUT,
+            ),
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.api_log_group
             ),
@@ -605,6 +625,17 @@ class APIStack(Stack):
             ],
             secrets=api_ecs_secrets,
             essential=True,
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD",
+                    "pgrep",
+                    "cron",
+                ],
+                interval=HEALTHCHECK_INTERVAL,
+                retries=HEALTHCHECK_UNHEALTHY_THR,
+                start_period=HEALTHCHECK_GRACE_PERIOD,
+                timeout=HEALTHCHECK_TIMEOUT,
+            ),
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.cron_log_group
             ),
@@ -628,6 +659,16 @@ class APIStack(Stack):
                     protocol=ecs.Protocol.TCP,
                 ),
             ],
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD-SHELL",
+                    f"wget --no-verbose --tries=1 --spider http://localhost:{SFTP_ADMIN_LISTEN_PORT}{HEALTHCHECK_PATH_SFTP} || exit 1",
+                ],
+                interval=HEALTHCHECK_INTERVAL,
+                retries=HEALTHCHECK_UNHEALTHY_THR,
+                start_period=HEALTHCHECK_GRACE_PERIOD,
+                timeout=HEALTHCHECK_TIMEOUT,
+            ),
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.sftp_log_group
             ),
@@ -663,7 +704,6 @@ class APIStack(Stack):
             desired_count=_api_desired_count,
             min_healthy_percent=100,
             max_healthy_percent=200,
-            health_check_grace_period=Duration.seconds(60),
             assign_public_ip=False,
             vpc_subnets=ec2.SubnetSelection(
                 subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
@@ -820,12 +860,12 @@ class APIStack(Stack):
             deregistration_delay=Duration.seconds(60),
             health_check=elbv2.HealthCheck(
                 enabled=True,
-                path="/health",
+                path=HEALTHCHECK_PATH_API,
                 healthy_http_codes="200",
-                healthy_threshold_count=4,
-                unhealthy_threshold_count=2,
-                interval=Duration.seconds(15),
-                timeout=Duration.seconds(5),
+                healthy_threshold_count=HEALTHCHECK_HEALTHY_THR,
+                unhealthy_threshold_count=HEALTHCHECK_UNHEALTHY_THR,
+                interval=HEALTHCHECK_INTERVAL,
+                timeout=HEALTHCHECK_TIMEOUT,
             ),
             vpc=self.vpc,
             target_type=elbv2.TargetType.IP,
@@ -838,12 +878,12 @@ class APIStack(Stack):
             deregistration_delay=Duration.seconds(60),
             health_check=elbv2.HealthCheck(
                 enabled=True,
-                path="/web/admin/login",
+                path=HEALTHCHECK_PATH_SFTP,
                 healthy_http_codes="200,302",
-                healthy_threshold_count=4,
-                unhealthy_threshold_count=2,
-                interval=Duration.seconds(15),
-                timeout=Duration.seconds(5),
+                healthy_threshold_count=HEALTHCHECK_HEALTHY_THR,
+                unhealthy_threshold_count=HEALTHCHECK_UNHEALTHY_THR,
+                interval=HEALTHCHECK_INTERVAL,
+                timeout=HEALTHCHECK_TIMEOUT,
             ),
             vpc=self.vpc,
             target_type=elbv2.TargetType.IP,
