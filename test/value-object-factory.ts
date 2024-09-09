@@ -64,6 +64,7 @@ export const getALmsContentModule = (id: number = Math.random()) =>
             url: 'url',
             mimeType: 'pdf',
             isCompleted: false,
+            isVisible: true,
           },
         ],
       },

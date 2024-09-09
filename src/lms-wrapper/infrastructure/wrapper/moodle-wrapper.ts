@@ -292,6 +292,7 @@ export class MoodleWrapper implements LmsWrapper {
                     mimeType: content.type,
                     name: content.name,
                     isCompleted: content.isCompleted,
+                    isVisible: content.isVisible,
                   };
                 })
               : null,
@@ -362,6 +363,7 @@ export class MoodleWrapper implements LmsWrapper {
                   mimeType: content.type,
                   name: content.name,
                   isCompleted: content.isCompleted,
+                  isVisible: content.isVisible,
                 };
               })
             : null,
