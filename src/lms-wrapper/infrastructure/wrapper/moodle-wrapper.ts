@@ -32,23 +32,23 @@ const moodleCourseContentIcon: { [id: string]: string } = {
 };
 
 const thumbnailResourceContent: { [id: string]: string } = {
-  temario: '/renderTemario.svg',
-  infografias: '/renderInfografias.svg',
-  clasesInteractivas: '/renderClasesInteractivas.svg',
-  simuladores: '/renderSimuladores.svg',
-  profesor180: '/renderProfesor180.svg',
-  entorno3603DVR: '/renderEntorno360.svg',
-  simuladores3DAR: '/renderSimuladores.svg',
+  temario: '/renderTemario.png',
+  infografias: '/renderInfografias.png',
+  clasesInteractivas: '/renderClasesInteractivas.png',
+  simuladores: '/renderSimuladores.png',
+  profesor180: '/renderProfesor180.png',
+  entorno3603DVR: '/renderEntorno360.png',
+  simuladores3DAR: '/renderSimuladores.png',
 };
 
 const selectedThumbnailResourceContent: { [id: string]: string } = {
-  temario: '/selectedRenderTemario.svg',
-  infografias: '/selectedRenderInfografias.svg',
-  clasesInteractivas: '/selectedRenderClasesInteractivas.svg',
-  simuladores: '/selectedRenderSimuladores.svg',
-  profesor180: '/selectedRenderProfesor180.svg',
-  entorno3603DVR: '/selectedRenderEntorno360.svg',
-  simuladores3DAR: '/selectedRenderSimuladores.svg',
+  temario: '/selectedRenderTemario.png',
+  infografias: '/selectedRenderInfografias.png',
+  clasesInteractivas: '/selectedRenderClasesInteractivas.png',
+  simuladores: '/selectedRenderSimuladores.png',
+  profesor180: '/selectedRenderProfesor180.png',
+  entorno3603DVR: '/selectedRenderEntorno360.png',
+  simuladores3DAR: '/selectedRenderSimuladores.png',
 };
 
 const moodleResourceType: { [id: string]: string } = {
@@ -292,6 +292,7 @@ export class MoodleWrapper implements LmsWrapper {
                     mimeType: content.type,
                     name: content.name,
                     isCompleted: content.isCompleted,
+                    isVisible: content.isVisible,
                   };
                 })
               : null,
@@ -362,6 +363,7 @@ export class MoodleWrapper implements LmsWrapper {
                   mimeType: content.type,
                   name: content.name,
                   isCompleted: content.isCompleted,
+                  isVisible: content.isVisible,
                 };
               })
             : null,

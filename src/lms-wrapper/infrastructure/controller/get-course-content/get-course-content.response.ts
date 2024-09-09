@@ -17,6 +17,7 @@ interface LmsCourseModuleBodyResponse {
       url: string;
       mimeType: string;
       isCompleted: boolean;
+      isVisible: boolean;
     }[];
   }[];
 }
@@ -43,6 +44,7 @@ export class GetCourseContentResponse {
                   url: content.url,
                   mimeType: content.mimeType,
                   isCompleted: content.isCompleted,
+                  isVisible: content.isVisible,
                 };
               })
             : [],
