@@ -18,6 +18,7 @@ export interface MoodleCourseModuleContentResponse {
         filename: string;
         fileurl: string;
         mimetype: string;
+        visible: number;
       }[]
     | undefined;
   contentinfo:

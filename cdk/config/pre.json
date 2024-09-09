@@ -17,10 +17,10 @@
   "api": {
     "alb_host": "pre-back-ucp360.universae.com",
     "alb_priority": 300,
-    "cpu": 1024,
-    "memory": 2048,
-    "min_tasks": 1,
-    "max_tasks": 1
+    "cpu": 2048,
+    "memory": 4096,
+    "min_tasks": 2,
+    "max_tasks": 8
   },
 
   "cron": {
