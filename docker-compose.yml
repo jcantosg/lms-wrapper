@@ -1,13 +1,13 @@
 services:
  db:
   container_name: universae_db
-  image: postgres
+  image: postgres:16.4
   user: '1001'
   restart: always
   environment:
    POSTGRES_PASSWORD: easrevinu
-   POSTGRES_USER: universae
-   POSTGRES_DB: universae
+   POSTGRES_USER: universae360
+   POSTGRES_DB: universae360
    PGDATA: /var/lib/postgresql/data/universae
   volumes:
    - ${PWD}/etc/infrastructure/db-data:/var/lib/postgresql/data
