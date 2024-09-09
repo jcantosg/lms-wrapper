@@ -97,7 +97,7 @@ aws s3 sync s3://media-api-$SRC_ENV-eu-west-3-603941717969/ s3://media-api-$DST_
 echo
 echo "[$DST_ENV] Update URLs in database for appropiate media URL."
 echo "Sample SQL provided for PRO->PRE migration, please fix as required for your environment selection:"
-echo "  Connect to arget DB with: ./db_connect.sh -e $DST_ENV"
+echo "  Connect to target DB with: ./db_connect.sh -e $DST_ENV"
 echo "  UPDATE admin_users SET avatar = REPLACE(avatar, 'https://media360.universae.com', 'https://pre-media360.universae.com') WHERE avatar != '';"
 echo "  UPDATE edae_users  SET avatar = REPLACE(avatar, 'https://media360.universae.com', 'https://pre-media360.universae.com') WHERE avatar != '';"
 echo "  UPDATE students    SET avatar = REPLACE(avatar, 'https://media360.universae.com', 'https://pre-media360.universae.com') WHERE avatar != '';"
