@@ -334,7 +334,8 @@ class APIStack(Stack):
             publish_additional_metrics=enable_monitoring,
         )
 
-        CfnOutput(self, "MediaBucketName", value=self.secret_db.secret_name)
+        CfnOutput(self, "MediaBucketName", value=self.media_bucket.bucket_name)
+        CfnOutput(self, "MediaDomainName", value=media_domain_name)
 
         #######
         # EFS #
