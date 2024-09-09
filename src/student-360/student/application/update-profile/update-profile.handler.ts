@@ -7,7 +7,7 @@ import { StudentDuplicatedEmailException } from '#student/shared/exception/stude
 import { UpdateProfileCommand } from '#student-360/student/application/update-profile/update-profile.command';
 import { PasswordEncoder } from '#shared/domain/service/password-encoder.service';
 import { StudentPasswordChecker } from '#student-360/student/domain/service/student-password-checker.service';
-import { UnauthorizedException } from '@nestjs/common';
+import { StudentWrongOldPasswordException } from '#student-360/student/domain/exception/student-wrong-old-password.exception';
 
 export class UpdateProfileHandler implements CommandHandler {
   constructor(
@@ -28,7 +28,7 @@ export class UpdateProfileHandler implements CommandHandler {
       command.oldPassword &&
       !(await this.passwordChecker.checkPassword(command.oldPassword, student))
     ) {
-      throw new UnauthorizedException();
+      throw new StudentWrongOldPasswordException();
     }
     const newAvatar = command.avatar
       ? await this.imageUploader.uploadImage(

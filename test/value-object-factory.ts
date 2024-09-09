@@ -25,6 +25,8 @@ export const getALmsCourse = (id: number = Math.random(), name: string) =>
         id: 1,
         name: 'Test',
         image: 'image.jpeg',
+        thumbnail: 'thumbnail.png',
+        selectedThumbnail: 'thumbnail.png',
         isVisible: true,
         officialTests: undefined,
         autoEvaluationTests: undefined,

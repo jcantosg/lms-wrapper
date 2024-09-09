@@ -31,6 +31,26 @@ const moodleCourseContentIcon: { [id: string]: string } = {
   simuladores3DAR: '/simuladores.svg',
 };
 
+const thumbnailResourceContent: { [id: string]: string } = {
+  temario: '/renderTemario.svg',
+  infografias: '/renderInfografias.svg',
+  clasesInteractivas: '/renderClasesInteractivas.svg',
+  simuladores: '/renderSimuladores.svg',
+  profesor180: '/renderProfesor180.svg',
+  entorno3603DVR: '/renderEntorno360.svg',
+  simuladores3DAR: '/renderSimuladores.svg',
+};
+
+const selectedThumbnailResourceContent: { [id: string]: string } = {
+  temario: '/selectedRenderTemario.svg',
+  infografias: '/selectedRenderInfografias.svg',
+  clasesInteractivas: '/selectedRenderClasesInteractivas.svg',
+  simuladores: '/selectedRenderSimuladores.svg',
+  profesor180: '/selectedRenderProfesor180.svg',
+  entorno3603DVR: '/selectedRenderEntorno360.svg',
+  simuladores3DAR: '/selectedRenderSimuladores.svg',
+};
+
 const moodleResourceType: { [id: string]: string } = {
   resource: 'pdf',
   videotime: 'video',
@@ -250,7 +270,9 @@ export class MoodleWrapper implements LmsWrapper {
             id: module.id,
             name: module.name,
             isVisible: module.isVisible,
-            description: formatMoodleNames(module.description),
+            description: formatMoodleDescriptions(
+              formatMoodleNames(module.description),
+            ),
             moduleType: module.moduleType,
             type: module.type,
             url: module.url,
@@ -282,7 +304,9 @@ export class MoodleWrapper implements LmsWrapper {
       modules.push({
         id: courseModule.id,
         name: courseModule.description
-          ? formatMoodleDescriptions(courseModule.description)
+          ? formatMoodleNames(
+              formatMoodleDescriptions(courseModule.description),
+            )
           : formatMoodleNames(courseModule.name),
         type: this.getModuleType(courseModule.description),
         moduleType: courseModule.modname,
@@ -290,7 +314,7 @@ export class MoodleWrapper implements LmsWrapper {
 
         url: await this.getResourceUrl(courseModule),
         description: courseModule.description
-          ? courseModule.description
+          ? formatMoodleNames(courseModule.description)
           : formatMoodleNames(courseModule.name),
         indexPosition: 0,
         content: courseModule.contents
@@ -465,6 +489,14 @@ export class MoodleWrapper implements LmsWrapper {
             moodleCourseContentIcon[
               stringToCamelCase(courseContentResponse.name)
             ] ?? '/courseContent.svg',
+          thumbnail:
+            thumbnailResourceContent[
+              stringToCamelCase(courseContentResponse.name)
+            ] ?? null,
+          selectedThumbnail:
+            selectedThumbnailResourceContent[
+              stringToCamelCase(courseContentResponse.name)
+            ] ?? null,
           autoEvaluationTests: undefined,
           officialTests: undefined,
           isVisible: this.isVisible(courseContentResponse.visible),
@@ -576,6 +608,8 @@ export class MoodleWrapper implements LmsWrapper {
           isVisible: this.isVisible(contentResponse.visible),
           name: contentResponse.name,
           image: 'quiz.svg',
+          thumbnail: 'thumbnail.svg',
+          selectedThumbnail: 'thumbnail.svg',
           autoEvaluationTests: modules,
           officialTests: undefined,
         });
@@ -633,6 +667,8 @@ export class MoodleWrapper implements LmsWrapper {
           name: contentResponse.name,
           isVisible: this.isVisible(contentResponse.visible),
           image: 'quiz.svg',
+          thumbnail: 'thumbnail.svg',
+          selectedThumbnail: 'selectedThumbnail.svg',
           officialTests: modules,
           autoEvaluationTests: undefined,
         });
@@ -647,6 +683,13 @@ export class MoodleWrapper implements LmsWrapper {
           image:
             moodleCourseContentIcon[stringToCamelCase(contentResponse.name)] ??
             '/courseContent.svg',
+          thumbnail:
+            thumbnailResourceContent[stringToCamelCase(contentResponse.name)] ??
+            null,
+          selectedThumbnail:
+            selectedThumbnailResourceContent[
+              stringToCamelCase(contentResponse.name)
+            ] ?? null,
           autoEvaluationTests: undefined,
           officialTests: undefined,
           isVisible: this.isVisible(contentResponse.visible),
