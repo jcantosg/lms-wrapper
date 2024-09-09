@@ -73,6 +73,6 @@ docker run --rm \
   -e PGPASSWORD=$DB_PASSWORD \
   -v $(dirname $(realpath $DUMP_FILE)):/backups \
   postgres:$ENGINE_VERSION \
-  pg_restore -h $DB_HOST -U $DB_USERNAME -d $DB_USERNAME -c /backups/$(basename $DUMP_FILE)
+  pg_restore -h $DB_HOST -U $DB_USERNAME -d $DB_USERNAME --if-exists -c /backups/$(basename $DUMP_FILE)
 
 echo "Database restored"

@@ -68,6 +68,14 @@ CLOUDFLARE_SECRET_HEADER = "X-Universae-CloudFlare-Auth"
 
 CRM_IMPORTS_PATH_MOUNTDIR = "/var/lib/sftp"
 
+HEALTHCHECK_GRACE_PERIOD = Duration.seconds(60)
+HEALTHCHECK_HEALTHY_THR = 4
+HEALTHCHECK_INTERVAL = Duration.seconds(15)
+HEALTHCHECK_PATH_API = "/health"
+HEALTHCHECK_PATH_SFTP = "/web/admin/login"
+HEALTHCHECK_TIMEOUT = Duration.seconds(5)
+HEALTHCHECK_UNHEALTHY_THR = 2
+
 
 class APIStack(Stack):
     def __init__(
@@ -104,6 +112,8 @@ class APIStack(Stack):
         db_preferred_maintenance_window: str = None,
         db_preferred_backup_window: str = None,
         db_cloudwatch_logs_exports: list[str] = ["postgresql"],
+        db_read_replicas: int = 0,
+        db_read_replicas_instance_type: str = None,
         enable_monitoring: bool = False,
         sns_topic_arn: str = None,
         enable_cloudflare_auth_header: bool = False,
@@ -237,6 +247,52 @@ class APIStack(Stack):
 
         CfnOutput(self, "DatabaseSecretName", value=self.secret_db.secret_name)
 
+        for i in range(db_read_replicas):
+            db_read_replica = rds.DatabaseInstanceReadReplica(
+                self,
+                f"ReadReplica{i}",
+                source_database_instance=self.database_instance,
+                instance_type=ec2.InstanceType(db_read_replicas_instance_type),
+                vpc=self.vpc,
+                vpc_subnets=ec2.SubnetSelection(
+                    subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
+                ),
+                publicly_accessible=False,
+                storage_encrypted=True,
+                storage_type=rds.StorageType.GP3,
+                auto_minor_version_upgrade=True,
+                parameter_group=self.db_parameter_group,
+                preferred_maintenance_window=db_preferred_maintenance_window,
+                preferred_backup_window=db_preferred_backup_window,
+                cloudwatch_logs_exports=db_cloudwatch_logs_exports,
+                cloudwatch_logs_retention=logs.RetentionDays.ONE_MONTH,
+                deletion_protection=False,
+                removal_policy=RemovalPolicy.DESTROY,
+                ca_certificate=rds.CaCertificate.RDS_CA_RDS2048_G1,
+            )
+
+            db_read_replica.connections.allow_default_port_from(
+                bastion_security_group, "Bastion access to RDS"
+            )
+            for cidr in VPN_CIDRS:
+                db_read_replica.connections.allow_default_port_from(
+                    ec2.Peer.ipv4(cidr), "VPN access to RDS"
+                )
+
+            NagSuppressions.add_resource_suppressions(
+                construct=db_read_replica,
+                suppressions=[
+                    NagPackSuppression(
+                        id="AwsSolutions-RDS3",
+                        reason="Not necessary for read replicas",
+                    ),
+                    NagPackSuppression(
+                        id="AwsSolutions-RDS10",
+                        reason="Not necessary for read replicas",
+                    ),
+                ],
+            )
+
         #########
         # Media #
         #########
@@ -266,7 +322,9 @@ class APIStack(Stack):
             self,
             "MediaCloudfrontDistribution",
             default_behavior=cloudfront.BehaviorOptions(
-                origin=cloudfront_origins.S3Origin(self.media_bucket),
+                origin=cloudfront_origins.S3BucketOrigin.with_origin_access_control(
+                    self.media_bucket
+                ),
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 response_headers_policy=cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
             ),
@@ -276,7 +334,8 @@ class APIStack(Stack):
             publish_additional_metrics=enable_monitoring,
         )
 
-        CfnOutput(self, "MediaBucketName", value=self.secret_db.secret_name)
+        CfnOutput(self, "MediaBucketName", value=self.media_bucket.bucket_name)
+        CfnOutput(self, "MediaDomainName", value=media_domain_name)
 
         #######
         # EFS #
@@ -541,6 +600,16 @@ class APIStack(Stack):
                     protocol=ecs.Protocol.TCP,
                 )
             ],
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD-SHELL",
+                    f"wget --no-verbose --tries=1 --spider http://localhost:{API_LISTEN_PORT}{HEALTHCHECK_PATH_API} || exit 1",
+                ],
+                interval=HEALTHCHECK_INTERVAL,
+                retries=HEALTHCHECK_UNHEALTHY_THR,
+                start_period=HEALTHCHECK_GRACE_PERIOD,
+                timeout=HEALTHCHECK_TIMEOUT,
+            ),
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.api_log_group
             ),
@@ -557,6 +626,17 @@ class APIStack(Stack):
             ],
             secrets=api_ecs_secrets,
             essential=True,
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD",
+                    "pgrep",
+                    "cron",
+                ],
+                interval=HEALTHCHECK_INTERVAL,
+                retries=HEALTHCHECK_UNHEALTHY_THR,
+                start_period=HEALTHCHECK_GRACE_PERIOD,
+                timeout=HEALTHCHECK_TIMEOUT,
+            ),
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.cron_log_group
             ),
@@ -580,6 +660,16 @@ class APIStack(Stack):
                     protocol=ecs.Protocol.TCP,
                 ),
             ],
+            health_check=ecs.HealthCheck(
+                command=[
+                    "CMD-SHELL",
+                    f"wget --no-verbose --tries=1 --spider http://localhost:{SFTP_ADMIN_LISTEN_PORT}{HEALTHCHECK_PATH_SFTP} || exit 1",
+                ],
+                interval=HEALTHCHECK_INTERVAL,
+                retries=HEALTHCHECK_UNHEALTHY_THR,
+                start_period=HEALTHCHECK_GRACE_PERIOD,
+                timeout=HEALTHCHECK_TIMEOUT,
+            ),
             logging=ecs.AwsLogDriver(
                 stream_prefix="fargate", log_group=self.sftp_log_group
             ),
@@ -615,7 +705,6 @@ class APIStack(Stack):
             desired_count=_api_desired_count,
             min_healthy_percent=100,
             max_healthy_percent=200,
-            health_check_grace_period=Duration.seconds(60),
             assign_public_ip=False,
             vpc_subnets=ec2.SubnetSelection(
                 subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
@@ -772,12 +861,12 @@ class APIStack(Stack):
             deregistration_delay=Duration.seconds(60),
             health_check=elbv2.HealthCheck(
                 enabled=True,
-                path="/health",
+                path=HEALTHCHECK_PATH_API,
                 healthy_http_codes="200",
-                healthy_threshold_count=4,
-                unhealthy_threshold_count=2,
-                interval=Duration.seconds(15),
-                timeout=Duration.seconds(5),
+                healthy_threshold_count=HEALTHCHECK_HEALTHY_THR,
+                unhealthy_threshold_count=HEALTHCHECK_UNHEALTHY_THR,
+                interval=HEALTHCHECK_INTERVAL,
+                timeout=HEALTHCHECK_TIMEOUT,
             ),
             vpc=self.vpc,
             target_type=elbv2.TargetType.IP,
@@ -790,12 +879,12 @@ class APIStack(Stack):
             deregistration_delay=Duration.seconds(60),
             health_check=elbv2.HealthCheck(
                 enabled=True,
-                path="/web/admin/login",
+                path=HEALTHCHECK_PATH_SFTP,
                 healthy_http_codes="200,302",
-                healthy_threshold_count=4,
-                unhealthy_threshold_count=2,
-                interval=Duration.seconds(15),
-                timeout=Duration.seconds(5),
+                healthy_threshold_count=HEALTHCHECK_HEALTHY_THR,
+                unhealthy_threshold_count=HEALTHCHECK_UNHEALTHY_THR,
+                interval=HEALTHCHECK_INTERVAL,
+                timeout=HEALTHCHECK_TIMEOUT,
             ),
             vpc=self.vpc,
             target_type=elbv2.TargetType.IP,

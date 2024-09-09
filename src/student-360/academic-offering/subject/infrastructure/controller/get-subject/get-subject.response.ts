@@ -38,6 +38,8 @@ interface GetSubjectResponseBody {
         name: string;
         image: string;
         isVisible: boolean;
+        thumbnail: string | null;
+        selectedThumbnail: string | null;
       }[];
       officialTests: {
         id: number;
@@ -98,9 +100,9 @@ export class GetSubjectResponse {
                 id: module.id,
                 name: module.name,
                 image: module.image,
-                isVisible: autoEvaluationTest
-                  ? autoEvaluationTest.isVisible
-                  : true,
+                selectedThumbnail: module.selectedThumbnail,
+                thumbnail: module.thumbnail,
+                isVisible: module.isVisible,
               };
             }),
           officialTests: subject

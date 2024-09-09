@@ -298,7 +298,7 @@ export class AdministrativeGroupPostgresRepository
     academicPeriodId: string,
     academicProgramId: string,
   ): Promise<AdministrativeGroup[]> {
-    return await this.repository.find({
+    const adminGroups = await this.repository.find({
       relations: {
         academicPeriod: true,
         academicProgram: true,
@@ -307,10 +307,13 @@ export class AdministrativeGroupPostgresRepository
         students: true,
       },
       where: {
-        students: { id: studentId },
         academicPeriod: { id: academicPeriodId },
         academicProgram: { id: academicProgramId },
       },
+    });
+
+    return adminGroups.filter((adminGroup) => {
+      return adminGroup.students.find((student) => student.id === studentId);
     });
   }
 }

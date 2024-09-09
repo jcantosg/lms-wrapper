@@ -171,7 +171,7 @@ export class ExcelJSFileParser implements ExcelFileParser {
     return {
       name: validationResult.value.nombre,
       surname1: validationResult.value.apellido_1,
-      surname2: validationResult.value.apellido_2,
+      surname2: validationResult.value.apellido_2 ?? '',
       personalEmail: validationResult.value.email_personal,
       documentType: getIdentityDocumentType(validationResult.value.NIF),
       documentNumber: validationResult.value.NIF,

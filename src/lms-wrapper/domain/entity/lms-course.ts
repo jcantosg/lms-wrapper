@@ -32,6 +32,8 @@ export interface LmsModule {
   name: string;
   image: string;
   isVisible: boolean;
+  thumbnail: string | null;
+  selectedThumbnail: string | null;
 }
 
 export interface LmsCourseValues {

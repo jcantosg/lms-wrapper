@@ -15,6 +15,7 @@ import { EditCommunicationHandler } from '#shared/application/communication/edit
 import { DeleteCommunicationHandler } from '#shared/application/communication/delete-communication/delete-communication.handler';
 import { SendCommunicationHandler } from '#shared/application/communication/send-communication/send-communication.handler';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 
 const createCommunicationHandler = {
   provide: CreateCommunicationHandler,
@@ -134,6 +135,7 @@ const sendCommunicationHandler = {
     studentGetter: StudentGetter,
     uuidService: UUIDGeneratorService,
     mailer: MailerService,
+    configService: ConfigService,
   ) =>
     new SendCommunicationHandler(
       communicationRepository,
@@ -146,6 +148,7 @@ const sendCommunicationHandler = {
       studentGetter,
       uuidService,
       mailer,
+      configService.getOrThrow('FROM_EMAIL_COMMUNICATIONS'),
     ),
   inject: [
     CommunicationRepository,
@@ -158,6 +161,7 @@ const sendCommunicationHandler = {
     StudentGetter,
     UUIDGeneratorService,
     MailerService,
+    ConfigService,
   ],
 };
 

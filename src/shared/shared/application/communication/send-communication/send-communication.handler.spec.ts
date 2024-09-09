@@ -121,6 +121,7 @@ describe('Send Communication Handler', () => {
       studentGetter,
       uuidGenerator,
       mailer,
+      'comunicados@universae.com',
     );
 
     saveSpy = jest.spyOn(repository, 'save');
@@ -220,7 +221,7 @@ describe('Send Communication Handler', () => {
             communication.message?.value.body ?? '',
           ),
         },
-        from: 'Universae no-reply@universae.com',
+        from: 'Universae comunicados@universae.com',
       }),
     );
   });

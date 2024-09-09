@@ -4,9 +4,12 @@
 #   - Cloudformation DescribeStacks
 #   - SecretsManager GetSecretValue
 
+SQL_CMD=""
+
 usage() {
-  echo "Usage: $0 -e <env>"
+  echo "Usage: $0 -e <env> -c <sql_cmd>"
   echo " <env>: dev|pre|pro"
+  echo " <sql_cmd>: An optional SQL command"
   exit 2
 }
 
@@ -16,10 +19,13 @@ get_stack_output_value() {
   aws cloudformation describe-stacks --stack-name "$stack_name" --query "Stacks[0].Outputs[?OutputKey=='$output_key'].OutputValue" | jq -r '.[0]'
 }
 
-while getopts "e:d:" opt; do
+while getopts "e:c:" opt; do
   case "${opt}" in
   e)
     ENV=${OPTARG}
+    ;;
+  c)
+    SQL_CMD=${OPTARG}
     ;;
   :)
     echo "Error: -${OPTARG} requires an argument."
@@ -52,4 +58,8 @@ DB_USERNAME=$(jq -r .username <<<"$db_secret_value")
 export PGPASSWORD=$(jq -r .password <<<"$db_secret_value")
 ENGINE_VERSION=$(aws rds describe-db-instances --db-instance-identifier $DB_INSTANCE_ID --query "DBInstances[0]" | jq -r .EngineVersion)
 
-exec docker run --rm -ti -e PGPASSWORD=$PGPASSWORD postgres:$ENGINE_VERSION psql -h $DB_HOST -U $DB_USERNAME -d $DB_NAME
+if [ -z "$SQL_CMD" ]; then
+  exec docker run --rm -ti -e PGPASSWORD=$PGPASSWORD postgres:$ENGINE_VERSION psql -h $DB_HOST -U $DB_USERNAME -d $DB_NAME
+else
+  docker run --rm -e PGPASSWORD=$PGPASSWORD postgres:$ENGINE_VERSION psql -h $DB_HOST -U $DB_USERNAME -d $DB_NAME -c "$SQL_CMD"
+fi

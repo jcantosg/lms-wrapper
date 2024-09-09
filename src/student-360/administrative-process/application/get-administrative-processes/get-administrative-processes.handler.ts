@@ -20,10 +20,12 @@ export class GetAllStudentAdministrativeProcessesHandler
         query.student.id,
       );
 
-    const administrativeProcesses = await this.repository.getByStudent(
-      query.student.id,
-    );
+    const administrativeProcesses = (
+      await this.repository.getByStudent(query.student.id)
+    ).filter((ap) => !ap.academicRecord);
+
     const academicRecordAdministrativeProcesses: AdministrativeProcess[] = [];
+
     for (const ar of academicRecords) {
       academicRecordAdministrativeProcesses.push(
         ...(await this.repository.getByAcademicRecord(ar.id)),

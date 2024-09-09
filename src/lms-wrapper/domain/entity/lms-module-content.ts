@@ -13,6 +13,7 @@ export interface LmsModuleContentBody {
     description: string;
     contents:
       | {
+          isVisible: boolean;
           id: number;
           name: string;
           url: string;
