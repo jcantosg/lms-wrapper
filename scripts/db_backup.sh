@@ -66,6 +66,6 @@ docker run \
   -e PGPASSWORD=$DB_PASSWORD \
   -v $OUTPUT_FOLDER:/backups \
   postgres:$ENGINE_VERSION \
-  pg_dump -h $DB_HOST -U $DB_USERNAME -d $DB_USERNAME -Fc -f /backups/$DUMP_NAME
+  pg_dump -h $DB_HOST -U $DB_USERNAME -d $DB_NAME -Fc -f /backups/$DUMP_NAME
 
 echo "Database backed up."

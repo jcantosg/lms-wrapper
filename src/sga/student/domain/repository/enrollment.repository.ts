@@ -23,6 +23,11 @@ export abstract class EnrollmentRepository {
     academicRecord: AcademicRecord,
   ): Promise<Enrollment[]>;
 
+  abstract getByAcademicRecordAndBlock(
+    academicRecord: AcademicRecord,
+    programBlock: ProgramBlock,
+  ): Promise<Enrollment[]>;
+
   abstract getByAdminUser(
     enrollmentId: string,
     adminUserBusinessUnits: string[],

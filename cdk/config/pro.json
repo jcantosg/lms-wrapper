@@ -19,7 +19,7 @@
     "alb_priority": 300,
     "cpu": 2048,
     "memory": 4096,
-    "min_tasks": 2,
+    "min_tasks": 8,
     "max_tasks": 32
   },
 
@@ -32,24 +32,24 @@
   "sftp": {
     "alb_host": "adm-sftp360.universae.com",
     "alb_priority": 301,
-    "cpu": 512,
-    "memory": 1024,
-    "min_tasks": 2,
-    "max_tasks": 8,
+    "cpu": 1024,
+    "memory": 2048,
+    "min_tasks": 1,
+    "max_tasks": 1,
     "allowed_cidrs": ["0.0.0.0/0"]
   },
 
   "db": {
-    "instance_type": "t4g.xlarge",
+    "instance_type": "m6g.4xlarge",
     "engine_full_version": "16.4",
     "allocated_storage": 50,
     "enable_performance_insights": true,
-    "multi_az": false,
+    "multi_az": true,
     "cloudwatch_logs_exports": ["postgresql", "upgrade"],
     "preferred_maintenance_window": "sun:03:30-sun:04:30",
     "preferred_backup_window": "02:30-03:30",
-    "read_replicas": 0,
-    "read_replicas_instance_type": "t4g.large"
+    "read_replicas": 1,
+    "read_replicas_instance_type": "t4g.medium"
   },
 
   "monitoring": {
