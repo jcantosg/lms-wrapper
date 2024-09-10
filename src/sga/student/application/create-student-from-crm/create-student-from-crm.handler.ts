@@ -34,6 +34,11 @@ import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-gr
 import { UUIDGeneratorService } from '#shared/domain/service/uuid-service';
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
+import { MailerService } from '@nestjs-modules/mailer';
+import {
+  parseAddress,
+  parseEmail,
+} from '#shared/domain/lib/business-unit-info-parser';
 
 export class CreateStudentFromCRMHandler implements CommandHandler {
   constructor(
@@ -56,6 +61,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
     private readonly eventDispatcher: EventDispatcher,
     private uuidService: UUIDGeneratorService,
     private readonly createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
+    private readonly mailer: MailerService,
   ) {}
 
   async handle(command: CreateStudentFromCRMCommand): Promise<CRMImport> {
@@ -346,6 +352,19 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         enrollments,
         administrativeGroups,
         internalGroups,
+      });
+
+      this.mailer.sendMail({
+        to: student.email,
+        template: './new-student-credentials',
+        subject: '',
+        context: {
+          studentName: student.name,
+          universaeEmail: student.universaeEmail,
+          password: data.password,
+          businessUnitEmail: parseEmail(newAcademicRecord.businessUnit),
+          businessUnitAddress: parseAddress(newAcademicRecord.businessUnit),
+        },
       });
 
       await this.createAdministrativeProcessHandler.handle(
