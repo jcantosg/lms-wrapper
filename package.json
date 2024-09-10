@@ -44,7 +44,8 @@
     "sga:student:import-excel-file-batch": "ts-node -r tsconfig-paths/register src/commands/student/import-crm-files-batch.command.ts",
     "lms:subject:get-lms-courses": "ts-node -r tsconfig-paths/register src/commands/subject/update-subjects-lms-course.command.ts",
     "sga:student:update-administrative-groups": "ts-node -r tsconfig-paths/register src/commands/student/update-administrative-groups.command.ts",
-    "sga:student:send-credentials": "ts-node -r tsconfig-paths/register src/commands/student/send-password-emails.command.ts"
+    "sga:student:send-credentials": "ts-node -r tsconfig-paths/register src/commands/student/send-password-emails.command.ts",
+    "sga:student:update-password": "ts-node -r tsconfig-paths/register src/commands/student/update-student-password.command.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.504.0",
