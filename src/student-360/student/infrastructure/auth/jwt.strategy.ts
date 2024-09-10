@@ -2,6 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { StudentGetter } from '#shared/domain/service/student-getter.service';
+import { StudentInactiveException } from '#shared/domain/exception/student-360/student-inactive.exception';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'student-jwt') {
@@ -17,6 +18,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'student-jwt') {
   }
 
   async validate(payload: any) {
-    return await this.studentGetter.get(payload.sub);
+    const student = await this.studentGetter.get(payload.sub);
+    if (!student.isActive) {
+      throw new StudentInactiveException();
+    }
+
+    return student;
   }
 }

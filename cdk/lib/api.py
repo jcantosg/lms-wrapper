@@ -37,6 +37,7 @@ from cdk_monitoring_constructs import (
 )
 from pepperize_cdk_ses_smtp_credentials import SesSmtpCredentials
 
+import boto3
 import json
 
 BASTION_SECURITY_GROUP_ID = "sg-072fa653d753959a1"
@@ -75,6 +76,26 @@ HEALTHCHECK_PATH_API = "/health"
 HEALTHCHECK_PATH_SFTP = "/web/admin/login"
 HEALTHCHECK_TIMEOUT = Duration.seconds(5)
 HEALTHCHECK_UNHEALTHY_THR = 2
+
+RDS_MEMORY_GB = {
+    # Burstable
+    "t4g.micro": 1,
+    "t4g.small": 2,
+    "t4g.medium": 4,
+    "t4g.large": 8,
+    "t4g.xlarge": 16,
+    "t4g.2xlarge": 32,
+    # Standard
+    "m6g.medium": 4,
+    "m6g.large": 8,
+    "m6g.xlarge": 16,
+    "m6g.2xlarge": 32,
+    "m6g.4xlarge": 64,
+    "m6g.8xlarge": 128,
+    "m6g.12xlarge": 192,
+    "m6g.16xlarge": 256,
+    "m6g.metal": 256,
+}
 
 
 class APIStack(Stack):
@@ -454,6 +475,7 @@ class APIStack(Stack):
             "SMTP_PORT": "587",
             "MEDIA_DOMAIN_NAME": media_domain_name,
             "CRM_IMPORTS_PATH": f"{CRM_IMPORTS_PATH_MOUNTDIR}/data/crm",
+            "NODE_OPTIONS": f"--max-old-space-size={round(api_memory * 0.7)}",
         }
 
         sftp_ecs_secrets = {
@@ -965,6 +987,10 @@ class APIStack(Stack):
             alarm_factory_defaults = None
 
         if enable_monitoring:
+
+            rds_memory_bytes = RDS_MEMORY_GB[db_instance_type] * 1024 * 1024 * 1024
+            rds_max_connections = min(5000, rds_memory_bytes / 9531392) * 0.7
+
             self.monitoring = MonitoringFacade(
                 self, self.stack_name, alarm_factory_defaults=alarm_factory_defaults
             )
@@ -1079,7 +1105,9 @@ class APIStack(Stack):
                     "5G": MinUsageCountThreshold(min_count=5 * 1000 * 1000 * 1000)
                 },
                 add_max_connection_count_alarm={
-                    "100": HighConnectionCountThreshold(max_connection_count=100)
+                    str(rds_max_connections): HighConnectionCountThreshold(
+                        max_connection_count=rds_max_connections
+                    )
                 },
             )
             self.monitoring.monitor_cloud_front_distribution(
