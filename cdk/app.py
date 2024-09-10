@@ -54,6 +54,7 @@ APIStack(
     db_multi_az=config_data["db"]["multi_az"],
     db_preferred_maintenance_window=config_data["db"]["preferred_maintenance_window"],
     db_preferred_backup_window=config_data["db"]["preferred_backup_window"],
+    db_parameters=config_data["db"]["parameters"],
     db_read_replicas=config_data["db"]["read_replicas"],
     db_read_replicas_instance_type=config_data["db"]["read_replicas_instance_type"],
     enable_monitoring=config_data["monitoring"]["enable"],

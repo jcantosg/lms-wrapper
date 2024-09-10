@@ -77,6 +77,8 @@ HEALTHCHECK_PATH_SFTP = "/web/admin/login"
 HEALTHCHECK_TIMEOUT = Duration.seconds(5)
 HEALTHCHECK_UNHEALTHY_THR = 2
 
+RDS_COMMON_PARAMETERS = {"rds.force_ssl": "0"}
+
 RDS_MEMORY_GB = {
     # Burstable
     "t4g.micro": 1,
@@ -135,6 +137,7 @@ class APIStack(Stack):
         db_cloudwatch_logs_exports: list[str] = ["postgresql"],
         db_read_replicas: int = 0,
         db_read_replicas_instance_type: str = None,
+        db_parameters: dict = {},
         enable_monitoring: bool = False,
         sns_topic_arn: str = None,
         enable_cloudflare_auth_header: bool = False,
@@ -208,7 +211,11 @@ class APIStack(Stack):
             self,
             "DatabaseParameterGroup",
             engine=db_engine,
-            parameters={"rds.force_ssl": "0"},
+            parameters={
+                k: v
+                for d in (RDS_COMMON_PARAMETERS, db_parameters)
+                for k, v in d.items()
+            },
         )
 
         self.secret_db = secrets.Secret(
