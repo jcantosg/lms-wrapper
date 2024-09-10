@@ -5,6 +5,7 @@ import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 import { AcademicProgram } from '#academic-offering/domain/entity/academic-program.entity';
 import { AcademicProgramWrongBlockNumberException } from '#shared/domain/exception/academic-offering/academic-program.wrong-block-number.exception';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
+import { PeriodBlockNotFoundException } from '#shared/domain/exception/academic-offering/period-block.not-found.exception';
 
 const MIN_BLOCK_NUMBER = 1;
 
@@ -181,5 +182,30 @@ export class AcademicPeriod extends BaseEntity {
     this._endDate = endDate;
     this._updatedBy = adminUser;
     this.updated();
+  }
+
+  public isLastBlock(periodBlock: PeriodBlock): boolean {
+    const sortedBlocks = this._periodBlocks.sort(
+      (a, b) => a.startDate.getTime() - b.startDate.getTime(),
+    );
+
+    return sortedBlocks[sortedBlocks.length - 1].id === periodBlock.id;
+  }
+
+  public getNextBlock(periodBlock: PeriodBlock): PeriodBlock {
+    const sortedBlocks = this._periodBlocks.sort(
+      (a, b) => a.startDate.getTime() - b.startDate.getTime(),
+    );
+    const current = sortedBlocks.find((pb) => pb.id === periodBlock.id);
+    if (!current) {
+      throw new PeriodBlockNotFoundException();
+    }
+    const index = sortedBlocks.indexOf(current) + 1;
+    const next = sortedBlocks[index];
+    if (!next) {
+      throw new PeriodBlockNotFoundException();
+    }
+
+    return next;
   }
 }

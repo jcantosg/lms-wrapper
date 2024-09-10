@@ -12,4 +12,5 @@ export class EnrollmentMockRepository implements EnrollmentRepository {
   getByMultipleSubjects = jest.fn();
   getByStudentsAndSubjects = jest.fn();
   exists = jest.fn();
+  getByAcademicRecordAndBlock = jest.fn();
 }

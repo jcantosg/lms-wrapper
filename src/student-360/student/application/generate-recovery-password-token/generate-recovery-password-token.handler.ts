@@ -19,9 +19,10 @@ export class GenerateRecoveryPasswordTokenHandler implements CommandHandler {
 
   async handle(command: GenerateRecoveryPasswordTokenCommand): Promise<void> {
     const student = await this.repository.getByPersonalEmail(command.email);
-    if (!student) {
+    if (!student || !student.isActive) {
       return;
     }
+
     const token = this.jwtTokenGenerator.generateToken(
       student.id,
       student.email,
