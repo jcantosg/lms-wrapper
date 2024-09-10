@@ -24,6 +24,10 @@ export class GetChatsStudentsHandler implements QueryHandler {
       new GetChatsStudentsCriteria(query),
     );
 
+    if (chatrooms.length === 0) {
+      return [];
+    }
+
     const studentIds = chatrooms.map((chatroom) => chatroom.student.id);
     const subjectIds = chatrooms.map(
       (chatroom) => chatroom.internalGroup.subject.id,
@@ -60,10 +64,7 @@ export class GetChatsStudentsHandler implements QueryHandler {
     enrollment: Enrollment,
   ): Promise<boolean> {
     const programBlock = enrollment.programBlock;
-    const academicRecord = await this.academicRecordGetter.get(
-      enrollment.academicRecord.id,
-    );
-    const academicPeriod = academicRecord.academicPeriod;
+    const academicPeriod = enrollment.academicRecord.academicPeriod;
     const blockRelation =
       await this.blockRelationRepository.getByProgramBlockAndAcademicPeriod(
         programBlock,
