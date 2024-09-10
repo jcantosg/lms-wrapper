@@ -27,6 +27,7 @@ async function bootstrap() {
         businessUnit: { code: 'MADRID' },
         status: AcademicRecordStatusEnum.VALID,
       },
+      isActive: true,
     },
     relations: { academicRecords: { businessUnit: true } },
   });
