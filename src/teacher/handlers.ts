@@ -10,9 +10,9 @@ import { GetSubjectsTeacherChatHandler } from '#/teacher/application/chat/get-su
 import { GetChatsStudentsHandler } from '#/teacher/application/chat/get-chats-students/get-chats-students.handler';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
-import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { EditChatroomHandler } from '#shared/application/edit-chatroom/edit-chatroom.handler';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
+import { GetUnreadChatsStudentsHandler } from '#/teacher/application/chat/get-unread-chats-students/get-unread-chats-students.handler';
 
 const createEdaeUserRefreshTokenHandler = {
   provide: CreateEdaeUserRefreshTokenHandler,
@@ -75,27 +75,29 @@ const getChatsStudentsHandler = {
   useFactory: (
     chatroomRepository: ChatroomRepository,
     enrollmentRepository: EnrollmentRepository,
-    academicRecordGetter: AcademicRecordGetter,
     blockRelationRepository: BlockRelationRepository,
   ): GetChatsStudentsHandler =>
     new GetChatsStudentsHandler(
       chatroomRepository,
       enrollmentRepository,
-      academicRecordGetter,
       blockRelationRepository,
     ),
-  inject: [
-    ChatroomRepository,
-    EnrollmentRepository,
-    AcademicRecordGetter,
-    BlockRelationRepository,
-  ],
+  inject: [ChatroomRepository, EnrollmentRepository, BlockRelationRepository],
 };
 
 const editChatroomHandler = {
   provide: EditChatroomHandler,
   useFactory: (chatroomRepository: ChatroomRepository): EditChatroomHandler =>
     new EditChatroomHandler(chatroomRepository),
+  inject: [ChatroomRepository],
+};
+
+const getUnreadChatsStudentsHandler = {
+  provide: GetUnreadChatsStudentsHandler,
+  useFactory: (
+    chatroomRepository: ChatroomRepository,
+  ): GetUnreadChatsStudentsHandler =>
+    new GetUnreadChatsStudentsHandler(chatroomRepository),
   inject: [ChatroomRepository],
 };
 
@@ -108,4 +110,5 @@ export const handlers = [
   getSubjectsTeacherChatHandler,
   getChatsStudentsHandler,
   editChatroomHandler,
+  getUnreadChatsStudentsHandler,
 ];
