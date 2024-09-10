@@ -161,6 +161,7 @@ export class EnrollmentPostgresRepository
       .leftJoinAndSelect('enrollment.subject', 'subject')
       .leftJoinAndSelect('enrollment.programBlock', 'programBlock')
       .leftJoinAndSelect('enrollment.academicRecord', 'academicRecord')
+      .leftJoinAndSelect('academicRecord.academicPeriod', 'academicPeriod')
       .leftJoinAndSelect('academicRecord.student', 'student')
       .where('student.id IN (:...studentIds)', { studentIds })
       .andWhere('subject.id IN (:...subjectIds)', { subjectIds })
