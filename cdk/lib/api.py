@@ -454,6 +454,7 @@ class APIStack(Stack):
             "SMTP_PORT": "587",
             "MEDIA_DOMAIN_NAME": media_domain_name,
             "CRM_IMPORTS_PATH": f"{CRM_IMPORTS_PATH_MOUNTDIR}/data/crm",
+            "NODE_OPTIONS": f"--max-old-space-size={round(api_memory * 0.7)}",
         }
 
         sftp_ecs_secrets = {
