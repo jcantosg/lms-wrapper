@@ -12,8 +12,8 @@ jobs:
   env:
    DATABASE_HOST: localhost
    DATABASE_PORT: 5432
-   DATABASE_NAME: universae
-   DATABASE_USER: universae
+   DATABASE_NAME: universae360
+   DATABASE_USER: universae360
    DATABASE_PASSWORD: easrevinu
    VERBOSE_MODE: false
    APP_STABLE_VERSION: 20.9.0

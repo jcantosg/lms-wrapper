@@ -3,6 +3,7 @@ import { Strategy } from 'passport-local';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { StudentCredentialsChecker } from '#/student-360/student/infrastructure/service/student-credentials-checker.service';
 import { Student } from '#shared/domain/entity/student.entity';
+import { StudentInactiveException } from '#shared/domain/exception/student-360/student-inactive.exception';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'student') {
@@ -18,6 +19,10 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'student') {
 
     if (!student) {
       throw new UnauthorizedException();
+    }
+
+    if (!student.isActive) {
+      throw new StudentInactiveException();
     }
 
     return student;

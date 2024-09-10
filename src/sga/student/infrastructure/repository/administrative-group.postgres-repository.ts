@@ -148,7 +148,7 @@ export class AdministrativeGroupPostgresRepository
       where: { id },
       relations: {
         businessUnit: true,
-        academicPeriod: true,
+        academicPeriod: { periodBlocks: true },
         academicProgram: true,
         programBlock: true,
         periodBlock: true,

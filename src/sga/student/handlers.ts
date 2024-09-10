@@ -65,6 +65,7 @@ import { GetSubjectCallScheduleHistoryHandler } from '#student/application/subje
 import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository/subject-call-schedule-history.repository';
 import { GetSubjectCallScheduleHistoryDetailHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry-detail/get-subject-call-schedule-hisotry-detail.handler';
 import { GetStudentsByProgramsAndGroupsHandler } from '#student/application/get-students-by-programs-and-groups/get-students-by-programs-and-groups.handler';
+import { MailerService } from '@nestjs-modules/mailer';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -215,6 +216,7 @@ const createStudentFromCRMHandler = {
     eventDispatcher: EventDispatcher,
     uuidService: UUIDGeneratorService,
     createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
+    mailer: MailerService,
   ): CreateStudentFromCRMHandler => {
     const adminEmail = configService.get<string>(
       'ADMIN_USER_EMAIL',
@@ -241,6 +243,7 @@ const createStudentFromCRMHandler = {
       eventDispatcher,
       uuidService,
       createAdministrativeProcessHandler,
+      mailer,
     );
   },
   inject: [
@@ -263,6 +266,7 @@ const createStudentFromCRMHandler = {
     EventDispatcher,
     UUIDGeneratorService,
     CreateAdministrativeProcessHandler,
+    MailerService,
   ],
 };
 

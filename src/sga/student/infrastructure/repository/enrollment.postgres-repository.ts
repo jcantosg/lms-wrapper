@@ -94,6 +94,35 @@ export class EnrollmentPostgresRepository
     });
   }
 
+  async getByAcademicRecordAndBlock(
+    academicRecord: AcademicRecord,
+    programBlock: ProgramBlock,
+  ): Promise<Enrollment[]> {
+    return await this.repository.find({
+      where: {
+        academicRecord: { id: academicRecord.id },
+        programBlock: { id: programBlock.id },
+      },
+      relations: {
+        calls: {
+          enrollment: {
+            subject: {
+              evaluationType: true,
+            },
+          },
+        },
+        subject: true,
+        academicRecord: { student: true },
+      },
+      order: {
+        calls: {
+          callNumber: 'DESC',
+          callDate: 'DESC',
+        },
+      },
+    });
+  }
+
   async getByStudentAndSubject(
     studentId: string,
     subjectId: string,

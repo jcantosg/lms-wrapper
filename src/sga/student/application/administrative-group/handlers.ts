@@ -19,6 +19,8 @@ import { MoveStudentFromAdministrativeGroupTransactionalService } from '#student
 import { AcademicRecordRepository } from '#student/domain/repository/academic-record.repository';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
+import { UpdateAdministrativeGroupHandler } from '#student/application/administrative-group/update-administrative-group/update-administrative-group.handler';
+import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -152,6 +154,25 @@ const moveStudentFromAdministrativeGroupHandler = {
   ],
 };
 
+const updateAdministrativeGroupHandler = {
+  provide: UpdateAdministrativeGroupHandler,
+  useFactory: (
+    administrativeGroupRepository: AdministrativeGroupRepository,
+    academicRecordRepository: AcademicRecordRepository,
+    enrollmentRepository: EnrollmentRepository,
+  ): UpdateAdministrativeGroupHandler =>
+    new UpdateAdministrativeGroupHandler(
+      administrativeGroupRepository,
+      academicRecordRepository,
+      enrollmentRepository,
+    ),
+  inject: [
+    AdministrativeGroupRepository,
+    AcademicRecordRepository,
+    EnrollmentRepository,
+  ],
+};
+
 export const administrativeGroupHandlers = [
   createAdministrativeGroupHandler,
   getAllAdministrativeGroupsHandler,
@@ -161,4 +182,5 @@ export const administrativeGroupHandlers = [
   removeEdaeUserFromAdministrativeGroupHandler,
   getAdministrativeGroupByAcademicProgramHandler,
   moveStudentFromAdministrativeGroupHandler,
+  updateAdministrativeGroupHandler,
 ];
