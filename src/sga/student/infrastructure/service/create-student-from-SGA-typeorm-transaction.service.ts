@@ -62,7 +62,6 @@ export class CreateStudentFromSGATyperomTransactionService extends CreateStudent
       entities.student.lmsStudent = lmsStudent;
 
       await queryRunner.manager.save(entities.student);
-
       await queryRunner.commitTransaction();
     } catch (error) {
       this.logger.error(error);
