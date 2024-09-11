@@ -100,22 +100,19 @@ const excelFileParser = {
   provide: ExcelFileParser,
   useFactory: (
     repository: CRMImportRepository,
-    provincesGetter: ProvinceGetter,
     countryGetter: CountryGetter,
-  ): ExcelJSFileParser =>
-    new ExcelJSFileParser(repository, provincesGetter, countryGetter),
-  inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
+  ): ExcelJSFileParser => new ExcelJSFileParser(repository, countryGetter),
+  inject: [CRMImportRepository, CountryGetter],
 };
 
 const excelFileParserBatch = {
   provide: ExcelFileParserBatch,
   useFactory: (
     repository: CRMImportRepository,
-    provincesGetter: ProvinceGetter,
     countryGetter: CountryGetter,
   ): ExcelJSFileParserBatch =>
-    new ExcelJSFileParserBatch(repository, provincesGetter, countryGetter),
-  inject: [CRMImportRepository, ProvinceGetter, CountryGetter],
+    new ExcelJSFileParserBatch(repository, countryGetter),
+  inject: [CRMImportRepository, CountryGetter],
 };
 
 const chatroomsByInternalGroupCreator = {

@@ -5,9 +5,6 @@ import Joi, { ObjectSchema } from 'joi';
 import * as Excel from 'exceljs';
 import { CRMImportRepository } from '#shared/domain/repository/crm-import.repository';
 import { CountryGetter } from '#shared/domain/service/country-getter.service';
-import { Country } from '#shared/domain/entity/country.entity';
-import { ProvinceNotFoundException } from '#shared/domain/exception/country/province-not-found.exception';
-import { ProvinceGetter } from '#shared/domain/service/province-getter.service';
 import {
   StudentGender,
   getAllStudentGenders,
@@ -53,10 +50,11 @@ export interface ImportData {
   leadId: string;
 }
 
+const PREFIX_PASSWORD = 'universae@';
+
 export class ExcelJSFileParserBatch implements ExcelFileParserBatch {
   constructor(
     private readonly crmImportRepository: CRMImportRepository,
-    private readonly provincesGetter: ProvinceGetter,
     private readonly countryGetter: CountryGetter,
   ) {}
 
@@ -115,9 +113,8 @@ export class ExcelJSFileParserBatch implements ExcelFileParserBatch {
       const importResultData: ImportData =
         this.parseValidationResult(validationResult);
 
-      let country: Country;
       try {
-        country = await this.countryGetter.getByName(importResultData.country);
+        await this.countryGetter.getByName(importResultData.country);
       } catch (e) {
         importResult.update(
           CRMImportStatus.PARSE_ERROR,
@@ -125,29 +122,6 @@ export class ExcelJSFileParserBatch implements ExcelFileParserBatch {
           null,
           importResultData,
           CRMImportErrorMessage.COUNTRY_NOT_FOUND,
-        );
-        await this.crmImportRepository.save(importResult);
-
-        importResults.imports.push(importResult);
-        continue;
-      }
-
-      try {
-        const provinces = await this.provincesGetter.getProvinces(country!);
-        if (
-          !provinces.find(
-            (province) => province.value === importResultData.province,
-          )
-        ) {
-          throw new ProvinceNotFoundException();
-        }
-      } catch (e) {
-        importResult.update(
-          CRMImportStatus.PARSE_ERROR,
-          null,
-          null,
-          importResultData,
-          CRMImportErrorMessage.PROVINCE_NOT_FOUND,
         );
         await this.crmImportRepository.save(importResult);
 
@@ -214,13 +188,13 @@ export class ExcelJSFileParserBatch implements ExcelFileParserBatch {
       documentType: getIdentityDocumentType(validationResult.value.NIF),
       documentNumber: validationResult.value.NIF,
       universaeEmail: validationResult.value.email_universae,
-      password: validationResult.value.password_alumno,
+      password: `${PREFIX_PASSWORD}${validationResult.value.NIF}`,
       phone: validationResult.value.Telefono,
       province: validationResult.value.provincia,
       city: validationResult.value.municipio,
       country: validationResult.value.country,
       cp: validationResult.value.cp,
-      gender: validationResult.value.sexo,
+      gender: this.parseGender(validationResult.value.sexo),
       birthDate: validationResult.value.birth_date,
       nuss: validationResult.value.nuss,
       defense: validationResult.value.defensa,
@@ -229,9 +203,33 @@ export class ExcelJSFileParserBatch implements ExcelFileParserBatch {
       virtualCampusCode: validationResult.value.sede_virtual,
       academicProgramCode: validationResult.value.programa_formativo,
       academicPeriodCode: validationResult.value.periodo,
-      modality: validationResult.value.modalidad,
+      modality: this.parseModality(validationResult.value.modalidad),
       leadId: validationResult.value.n_oportunidad,
     };
+  }
+
+  private parseGender(sexo: any): StudentGender {
+    switch (sexo) {
+      case 'H':
+        return StudentGender.MALE;
+      case 'M':
+        return StudentGender.FEMALE;
+      default:
+        return StudentGender.OTHER;
+    }
+  }
+
+  private parseModality(modality: any): AcademicRecordModalityEnum {
+    switch (modality) {
+      case 'Distancia':
+        return AcademicRecordModalityEnum.ELEARNING;
+      case 'Presencial':
+        return AcademicRecordModalityEnum.PRESENCIAL;
+      case 'Semipresencial':
+        return AcademicRecordModalityEnum.MIXED;
+      default:
+        return AcademicRecordModalityEnum.ELEARNING;
+    }
   }
 
   private getTotalRowCount(wb: Excel.Workbook): number {
