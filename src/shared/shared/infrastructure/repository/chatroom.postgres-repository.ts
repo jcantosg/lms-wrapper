@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { chatroomSchema } from '#shared/infrastructure/config/schema/chatroom.schema';
 import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { Criteria } from '#/sga/shared/domain/criteria/criteria';
 import { TypeOrmRepository } from '#/sga/shared/infrastructure/repository/type-orm-repository';
+import { EdaeUser } from '#edae-user/domain/entity/edae-user.entity';
 
 @Injectable()
 export class ChatroomPostgresRepository
@@ -50,6 +51,27 @@ export class ChatroomPostgresRepository
         student: {
           id: studentId,
         },
+      },
+      relations: {
+        internalGroup: {
+          subject: true,
+        },
+        teacher: true,
+        student: true,
+      },
+    });
+  }
+
+  async getByEdaeUserAndFBIds(
+    edaeUser: EdaeUser,
+    fbChatrommIds: string[],
+  ): Promise<Chatroom[]> {
+    return this.repository.find({
+      where: {
+        teacher: {
+          id: edaeUser.id,
+        },
+        chatroomId: In(fbChatrommIds),
       },
       relations: {
         internalGroup: {

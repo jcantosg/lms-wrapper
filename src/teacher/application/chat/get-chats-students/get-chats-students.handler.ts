@@ -6,7 +6,6 @@ import { Chatroom } from '#shared/domain/entity/chatroom.entity';
 import { Enrollment } from '#student/domain/entity/enrollment.entity';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { GetChatsStudentsCriteria } from '#/teacher/application/chat/get-chats-students/get-chats-students.criteria';
-import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
@@ -15,7 +14,6 @@ export class GetChatsStudentsHandler implements QueryHandler {
   constructor(
     private readonly chatroomRepository: ChatroomRepository,
     private readonly enrollmentRepository: EnrollmentRepository,
-    private readonly academicRecordGetter: AcademicRecordGetter,
     private readonly blockRelationRepository: BlockRelationRepository,
   ) {}
 
