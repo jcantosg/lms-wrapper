@@ -44,7 +44,6 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
     );
     academicRecord.academicProgram.programBlocks.push(specialityBlock);
     const programBlocks = academicRecord.academicProgram.programBlocks;
-
     await Promise.all(
       programBlocks.map(async (programBlock) => {
         const subjectPromises = programBlock.subjects.map(async (subject) => {
