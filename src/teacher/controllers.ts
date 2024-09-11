@@ -8,8 +8,10 @@ import { GetSubjectsTeacherChatController } from '#/teacher/infrastructure/contr
 import { GetChatsStudentsController } from '#/teacher/infrastructure/controller/get-chats-students/get-chats-students.controller';
 import { EditChatroomController } from '#/teacher/infrastructure/controller/edit-chatroom.controller';
 import { TeacherMeController } from '#/teacher/infrastructure/controller/me/teacher-me.controller';
+import { GetUnreadChatsStudentsController } from '#/teacher/infrastructure/controller/get-unread-chats-students/get-unread-chats-students.controller';
 
 export const edaeUserControllers = [
+  GetUnreadChatsStudentsController,
   EditChatroomController,
   LoginEdaeUserController,
   RefreshTokenEdaeUserController,

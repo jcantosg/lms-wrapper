@@ -240,6 +240,17 @@ export class AcademicRecordPostgresRepository
         student: {
           id: student.id,
         },
+        academicProgram: {
+          programBlocks: {
+            subjects: {
+              enrollments: {
+                academicRecord: {
+                  id: id,
+                },
+              },
+            },
+          },
+        },
       },
       relations: {
         academicProgram: {

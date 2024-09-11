@@ -3,11 +3,16 @@ import { GetEdaeUserUrlSessionKeyQuery } from '#lms-wrapper/application/lms-teac
 import { LmsTeacherRepository } from '#lms-wrapper/domain/repository/lms-teacher.repository';
 
 export class GetEdaeUserUrlSessionKeyHandler implements QueryHandler {
-  constructor(private readonly lmsTeacherRepository: LmsTeacherRepository) {}
+  constructor(
+    private readonly lmsTeacherRepository: LmsTeacherRepository,
+    private lmsTeacherUrl: string,
+  ) {}
 
   async handle(query: GetEdaeUserUrlSessionKeyQuery): Promise<string> {
-    return await this.lmsTeacherRepository.getUserSessionKeyUrl(
+    const urlSessionKey = await this.lmsTeacherRepository.getUserSessionKeyUrl(
       query.edaeUser.email,
     );
+
+    return `${urlSessionKey}${this.lmsTeacherUrl}`;
   }
 }

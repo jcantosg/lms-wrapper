@@ -73,10 +73,9 @@ export class AcademicRecordGetter {
         if (subject.enrollments.length > 0) {
           return subject.enrollments.some(
             (enrollment) =>
-              (enrollment.visibility === EnrollmentVisibilityEnum.YES ||
-                (enrollment.visibility === EnrollmentVisibilityEnum.PD &&
-                  programBlockStartDate <= new Date())) &&
-              enrollment.academicRecord.id === academicRecord.id,
+              enrollment.visibility === EnrollmentVisibilityEnum.YES ||
+              (enrollment.visibility === EnrollmentVisibilityEnum.PD &&
+                programBlockStartDate <= new Date()),
           );
         }
       });
