@@ -1,7 +1,6 @@
 import { GetChatsStudentsHandler } from '#/teacher/application/chat/get-chats-students/get-chats-students.handler';
 import { ChatroomRepository } from '#shared/domain/repository/chatroom.repository';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
-import { AcademicRecordGetter } from '#student/domain/service/academic-record-getter.service';
 import {
   getABlockRelation,
   getAChatroom,
@@ -18,7 +17,6 @@ import {
 } from '#test/entity-factory';
 import { GetChatsStudentsQuery } from '#/teacher/application/chat/get-chats-students/get-chats-students.query';
 import { ChatroomMockRepository } from '#test/mocks/shared/chatroom.mock-repository';
-import { getAnAcademicRecordGetterMock } from '#test/service-factory';
 import { EnrollmentMockRepository } from '#test/mocks/sga/student/enrollment.mock-repository';
 import { BlockRelationRepository } from '#academic-offering/domain/repository/block-relation.repository';
 import { BlockRelationMockRepository } from '#test/mocks/sga/academic-offering/block-relation.mock-repository';
@@ -27,12 +25,10 @@ let handler: GetChatsStudentsHandler;
 let chatroomRepository: ChatroomRepository;
 let enrollmentRepository: EnrollmentRepository;
 let blockRelationRepository: BlockRelationRepository;
-let academicRecordGetter: AcademicRecordGetter;
 
 let chatroomMatchingSpy: jest.SpyInstance;
 let enrollmentGetByStudentsAndSubjectsSpy: jest.SpyInstance;
 let getByProgramBlockAndAcademicPeriodSpy: jest.SpyInstance;
-let getAcademicRecordSpy: jest.SpyInstance;
 
 const academicRecord = getAnAcademicRecord();
 const student = getASGAStudent();
@@ -76,7 +72,6 @@ describe('GetChatsStudentsHandler', () => {
   beforeAll(() => {
     chatroomRepository = new ChatroomMockRepository();
     enrollmentRepository = new EnrollmentMockRepository();
-    academicRecordGetter = getAnAcademicRecordGetterMock();
     blockRelationRepository = new BlockRelationMockRepository();
 
     chatroomMatchingSpy = jest.spyOn(chatroomRepository, 'matching');
@@ -84,7 +79,6 @@ describe('GetChatsStudentsHandler', () => {
       enrollmentRepository,
       'getByStudentsAndSubjects',
     );
-    getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'get');
 
     getByProgramBlockAndAcademicPeriodSpy = jest.spyOn(
       blockRelationRepository,
@@ -94,7 +88,6 @@ describe('GetChatsStudentsHandler', () => {
     handler = new GetChatsStudentsHandler(
       chatroomRepository,
       enrollmentRepository,
-      academicRecordGetter,
       blockRelationRepository,
     );
   });
@@ -102,7 +95,6 @@ describe('GetChatsStudentsHandler', () => {
   it('should return visible chatrooms', async () => {
     chatroomMatchingSpy.mockResolvedValue([chatroom]);
     enrollmentGetByStudentsAndSubjectsSpy.mockResolvedValue([enrollment]);
-    getAcademicRecordSpy.mockResolvedValue(academicRecord);
     getByProgramBlockAndAcademicPeriodSpy.mockResolvedValue(blockRelation);
 
     const result = await handler.handle(query);
