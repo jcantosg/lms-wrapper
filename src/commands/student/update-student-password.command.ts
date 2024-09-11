@@ -20,11 +20,7 @@ async function bootstrap() {
       isActive: true,
     },
   });
-  const identityDocumentNumber = student.identityDocument
-    ?.identityDocumentNumber
-    ? student.identityDocument.identityDocumentNumber
-    : '1234';
-  const newPassword = `universae@${identityDocumentNumber}`;
+  const newPassword = `Universae.1234`;
   logger.verbose(`La nueva contraseña es ${newPassword}`);
   student.password = await passwordGenerator.encodePassword(newPassword);
   await studentRepository.save({
