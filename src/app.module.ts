@@ -75,6 +75,7 @@ const configModule = ConfigModule.forRoot({
     FB_AUTH_PROVIDER_X509_CERT_URL: Joi.string().required(),
     FB_CLIENT_X509_CERT_URL: Joi.string().required(),
     FB_UNIVERSE_DOMAIN: Joi.string().required(),
+    LMS_TEACHER_URL: Joi.string().required(),
   }),
 });
 
