@@ -66,6 +66,8 @@ import { SubjectCallScheduleHistoryRepository } from '#student/domain/repository
 import { GetSubjectCallScheduleHistoryDetailHandler } from '#student/application/subject-call/get-subject-call-schedule-hisotry-detail/get-subject-call-schedule-hisotry-detail.handler';
 import { GetStudentsByProgramsAndGroupsHandler } from '#student/application/get-students-by-programs-and-groups/get-students-by-programs-and-groups.handler';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UpdateStudentPasswordHandler } from '#student/application/update-password/update-student-password.handler';
+import { PasswordFormatChecker } from '#admin-user/domain/service/password-format-checker.service';
 
 const getAccessQualificationsHandler = {
   provide: GetAccessQualificationsHandler,
@@ -564,6 +566,31 @@ const getSubjectCallScheduleHistoryDetailHandler = {
   inject: [SubjectCallScheduleHistoryRepository],
 };
 
+const updateStudentPasswordHandler = {
+  provide: UpdateStudentPasswordHandler,
+  useFactory: (
+    repository: StudentRepository,
+    studentGetter: StudentGetter,
+    passwordEncoder: PasswordEncoder,
+    passwordChecker: PasswordFormatChecker,
+    eventDispatcher: EventDispatcher,
+  ): UpdateStudentPasswordHandler =>
+    new UpdateStudentPasswordHandler(
+      studentGetter,
+      repository,
+      passwordEncoder,
+      passwordChecker,
+      eventDispatcher,
+    ),
+  inject: [
+    StudentRepository,
+    StudentGetter,
+    PasswordEncoder,
+    PasswordFormatChecker,
+    EventDispatcher,
+  ],
+};
+
 export const handlers = [
   getAccessQualificationsHandler,
   createStudentHandler,
@@ -601,4 +628,5 @@ export const handlers = [
   createSubjectCallsBatchHandler,
   getSubjectCallScheduleHistoryHandler,
   getSubjectCallScheduleHistoryDetailHandler,
+  updateStudentPasswordHandler,
 ];
