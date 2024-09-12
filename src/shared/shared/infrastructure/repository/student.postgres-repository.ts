@@ -84,6 +84,7 @@ export class StudentPostgresRepository
       where: { id },
       relations: {
         academicRecords: {
+          businessUnit: true,
           academicProgram: {
             programBlocks: {
               subjects: true,
