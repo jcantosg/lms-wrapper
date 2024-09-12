@@ -56,7 +56,7 @@ export class UploadAdministrativeProcessController {
       files.forEach((file) => {
         uploadedFiles.push(
           new File(
-            'uploads/administrative-processes',
+            `uploads/administrative-processes/${req.user.id}`,
             `${file.originalname}`,
             file.buffer,
             file.mimetype,
