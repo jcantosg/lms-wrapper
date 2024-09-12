@@ -53,7 +53,7 @@ export class GetAllAdministrativeProcessesCriteria extends Criteria {
         GroupOperator.AND,
       ),
       new Filter(
-        'email',
+        'universaeEmail',
         query.email,
         FilterOperators.LIKE,
         GroupOperator.AND,
