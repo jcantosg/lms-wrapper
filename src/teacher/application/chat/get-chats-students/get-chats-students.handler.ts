@@ -49,7 +49,15 @@ export class GetChatsStudentsHandler implements QueryHandler {
             enrollment.subject.id === subject.id,
         );
 
-        if (enrollment && (await this.hasStudentAccessToChat(enrollment))) {
+        const internalGroupTeachersIds = chatroom.internalGroup.teachers.map(
+          (teacher) => teacher.id,
+        );
+
+        if (
+          enrollment &&
+          (await this.hasStudentAccessToChat(enrollment)) &&
+          internalGroupTeachersIds.includes(query.edaeUser.id)
+        ) {
           visibleChatrooms.push(chatroom);
         }
       }),
