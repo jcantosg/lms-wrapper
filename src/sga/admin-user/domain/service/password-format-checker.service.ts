@@ -3,7 +3,7 @@ import { InvalidFormatPasswordException } from '#shared/domain/exception/admin-u
 export class PasswordFormatChecker {
   check(password: string) {
     const regex = new RegExp(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#&()?[{}])([A-Za-z\d$@$!%*?&]|[^ ]){8,20}$/,
+      /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!¡¿?.,()/%$€])(?!.\\s).{8,20}$/,
     );
 
     if (!regex.test(password)) {

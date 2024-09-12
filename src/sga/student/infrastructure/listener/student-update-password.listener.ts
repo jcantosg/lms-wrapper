@@ -14,20 +14,20 @@ export class StudentUpdatePasswordListener {
   @OnEvent('student-password-updated')
   async sendCredentials(payload: StudentPasswordUpdatedEvent) {
     const student = payload.student;
-    const newAcademicRecord = student.academicRecords[0];
-    if (!newAcademicRecord) {
+    const firstAcademicRecord = student.academicRecords[0];
+    if (!firstAcademicRecord) {
       return;
     }
     this.mailer.sendMail({
       to: student.email,
       template: './new-student-credentials',
-      subject: '',
+      subject: 'Bienvenid@ a UNIVERSAE',
       context: {
         studentName: student.name,
         universaeEmail: student.universaeEmail,
         password: payload.newPassword,
-        businessUnitEmail: parseEmail(newAcademicRecord.businessUnit),
-        businessUnitAddress: parseAddress(newAcademicRecord.businessUnit),
+        businessUnitEmail: parseEmail(firstAcademicRecord.businessUnit),
+        businessUnitAddress: parseAddress(firstAcademicRecord.businessUnit),
       },
     });
   }
