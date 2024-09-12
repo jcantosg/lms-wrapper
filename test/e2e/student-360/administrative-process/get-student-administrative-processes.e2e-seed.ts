@@ -67,7 +67,7 @@ export class GetStudentAdministrativeProcessesE2eSeed implements E2eSeed {
   public static programBlockId = uuid();
   public static programBlockName = 'Bloque 1';
 
-  public static studentId = uuid();
+  public static studentId = '3b25d0f5-b906-4986-a8c0-89943bb53d1c';
   public static studentName = 'Juan';
   public static studentSurname = 'Ros';
   public static studentSurname2 = 'Lopez';
@@ -75,7 +75,7 @@ export class GetStudentAdministrativeProcessesE2eSeed implements E2eSeed {
   public static studentUniversaeEmail = 'juan.ros@universae.com';
   public static studentPassword = 'pass123';
 
-  public static newStudentId = uuid();
+  public static newStudentId = 'd70ec0c1-5a55-4a4a-b301-123eb6d80c6b';
   public static newStudentName = 'Pepe';
   public static newStudentSurname = 'Ros';
   public static newStudentSurname2 = 'Lopez';

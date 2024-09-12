@@ -10,6 +10,7 @@ const orderByFields = [
   'updatedAt',
   'type',
   'status',
+  'email',
 ];
 
 export const getAllAdministrativeProcessesSchema = createCollectionSchema(
@@ -21,6 +22,7 @@ export const getAllAdministrativeProcessesSchema = createCollectionSchema(
     updatedAt: Joi.date().optional(),
     type: Joi.valid(...getAllAdministrativeProcessTypes()).optional(),
     status: Joi.valid(...getAllAdministrativeProcessStatus()).optional(),
+    email: Joi.string().optional(),
     orderBy: Joi.string()
       .valid(...orderByFields)
       .default('updatedAt'),

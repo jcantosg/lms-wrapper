@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import {
   Body,
   Controller,
@@ -56,8 +57,8 @@ export class UploadAdministrativeProcessController {
       files.forEach((file) => {
         uploadedFiles.push(
           new File(
-            'uploads/administrative-processes',
-            `${file.originalname}`,
+            `uploads/administrative-processes/${req.user.id}`,
+            `${uuid()}-${body.type}-${file.originalname}`,
             file.buffer,
             file.mimetype,
           ),
