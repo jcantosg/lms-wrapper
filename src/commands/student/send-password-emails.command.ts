@@ -11,6 +11,7 @@ import {
 } from '#shared/domain/lib/business-unit-info-parser';
 import readline from 'readline';
 import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
+import { emails } from '#commands/student/emails-sent';
 
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -44,7 +45,7 @@ async function bootstrap() {
         return;
       }
 
-      const students: Student[] = await studentRepository.find({
+      const rawStudents: Student[] = await studentRepository.find({
         where: {
           academicRecords: {
             businessUnit: { code: response },
@@ -54,6 +55,8 @@ async function bootstrap() {
         },
         relations: { academicRecords: { businessUnit: true } },
       });
+
+      const students = rawStudents.filter((st) => !emails.includes(st.email));
 
       logger.verbose(`Enviando emails a ${students.length} alumnos...`);
 
@@ -67,29 +70,32 @@ async function bootstrap() {
         }
         if (student.academicRecords.length === 0) {
           logger.error(
-            `Error con el alumno ${student.id}: Ningún expediente activo en 'MADRID' para este estudiante.`,
+            `Error con el alumno ${student.id}: Ningún expediente activo en ${response} para este estudiante.`,
           );
           continue;
         }
 
-        await mailer.sendMail({
-          to: student.email,
-          template: './new-student-credentials',
-          subject: 'Bienvenid@ a UNIVERSAE',
-          context: {
-            studentName: student.name,
-            universaeEmail: student.universaeEmail,
-            password: `universae@${student.identityDocument.identityDocumentNumber}`,
-            businessUnitEmail: parseEmail(
-              student.academicRecords[0].businessUnit,
-            ),
-            businessUnitAddress: parseAddress(
-              student.academicRecords[0].businessUnit,
-            ),
-          },
-        });
-
-        logger.verbose(`Credenciales enviadas a ${student.email}`);
+        try {
+          await mailer.sendMail({
+            to: student.email,
+            template: './new-student-credentials',
+            subject: 'Bienvenid@ a UNIVERSAE',
+            context: {
+              studentName: student.name,
+              universaeEmail: student.universaeEmail,
+              password: `universae@${student.identityDocument.identityDocumentNumber}`,
+              businessUnitEmail: parseEmail(
+                student.academicRecords[0].businessUnit,
+              ),
+              businessUnitAddress: parseAddress(
+                student.academicRecords[0].businessUnit,
+              ),
+            },
+          });
+          logger.verbose(`Credenciales enviadas a ${student.email}`);
+        } catch (e) {
+          logger.error(`error sending credentials to ${student.email}`);
+        }
 
         if (sleeper === 10) {
           await sleep(1000);
