@@ -32,10 +32,12 @@ import { EditAdministrativeProcessController } from '#student/infrastructure/con
 import { GetSubjectCallScheduleHistoryController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history.controller';
 import { GetSubjectCallScheduleHistoryDetailController } from '#student/infrastructure/controller/subject-call/get-subject-call-schedule-history-detail.controller';
 import { GetStudentsByProgramsAndGroupsController } from '#student/infrastructure/controller/get-students-by-programs-and-groups/get-students-by-programs-and-groups.controller';
+import { UpdateStudentPasswordController } from '#student/infrastructure/controller/update-student-password.controller';
 
 export const controllers = [
   GetAccessQualificationsController,
   CreateStudentController,
+  UpdateStudentPasswordController,
   EditStudentController,
   GetStudentsController,
   SearchStudentsController,

@@ -629,4 +629,10 @@ export class Student extends BaseEntity {
 
     return yo >= 18;
   }
+
+  public updatePassword(passwordEncoded: string, adminUser: AdminUser) {
+    this.password = passwordEncoded;
+    this.updatedAt = new Date();
+    this.updatedBy = adminUser;
+  }
 }

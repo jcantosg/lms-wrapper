@@ -357,7 +357,7 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
       this.mailer.sendMail({
         to: student.email,
         template: './new-student-credentials',
-        subject: '',
+        subject: 'Bienvenid@ a UNIVERSAE',
         context: {
           studentName: student.name,
           universaeEmail: student.universaeEmail,

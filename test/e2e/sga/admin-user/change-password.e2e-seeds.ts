@@ -13,8 +13,8 @@ export class ChangePasswordE2eSeed implements E2eSeed {
   public static adminUserPassword = 'ThePass&123';
   public static adminUserRoles = [AdminUserRoles.SECRETARIA];
 
-  public static invalidCurrentPassword = 'pass';
-  public static newPassword = 'TheNewPass&123';
+  public static invalidCurrentPassword = 'TheOldPass.123';
+  public static newPassword = 'TheNewPass.123';
   public static invalidNewPassword = 'pass';
 
   private adminUser: AdminUser;

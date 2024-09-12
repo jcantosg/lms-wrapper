@@ -18,6 +18,7 @@ import { GetStudentUrlSessionKeyHandler } from '#lms-wrapper/application/lms-stu
 import { GetLmsCourseWithQuizzesHandler } from '#lms-wrapper/application/get-lms-course-with-quizzes/get-lms-course-with-quizzes.handler';
 import { GetEdaeUserUrlSessionKeyHandler } from '#lms-wrapper/application/lms-teacher/get-url-session-key/get-edae-user-url-session-key.handler';
 import { LmsTeacherRepository } from '#lms-wrapper/domain/repository/lms-teacher.repository';
+import { ConfigService } from '@nestjs/config';
 
 const getLmsCoursesHandler = {
   provide: GetLmsCoursesHandler,
@@ -131,9 +132,13 @@ const getEdaeUrlSessionKeyHandler = {
   provide: GetEdaeUserUrlSessionKeyHandler,
   useFactory: (
     repository: LmsTeacherRepository,
+    configService: ConfigService,
   ): GetEdaeUserUrlSessionKeyHandler =>
-    new GetEdaeUserUrlSessionKeyHandler(repository),
-  inject: [LmsTeacherRepository],
+    new GetEdaeUserUrlSessionKeyHandler(
+      repository,
+      configService.getOrThrow('LMS_TEACHER_URL'),
+    ),
+  inject: [LmsTeacherRepository, ConfigService],
 };
 
 export const handlers = [

@@ -32,6 +32,19 @@ import { BlockRelation } from '#academic-offering/domain/entity/block-relation.e
 import { blockRelationSchema } from '#academic-offering/infrastructure/config/schema/block-relation.schema';
 import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 import { periodBlockSchema } from '#academic-offering/infrastructure/config/schema/period-block.schema';
+import { Enrollment } from '#student/domain/entity/enrollment.entity';
+import { enrollmentSchema } from '#student/infrastructure/config/schema/enrollment.schema';
+import { Subject } from '#academic-offering/domain/entity/subject.entity';
+import { subjectSchema } from '#academic-offering/infrastructure/config/schema/subject.schema';
+import { SubjectModality } from '#academic-offering/domain/enum/subject-modality.enum';
+import { SubjectType } from '#academic-offering/domain/enum/subject-type.enum';
+import { EnrollmentVisibilityEnum } from '#student/domain/enum/enrollment/enrollment-visibility.enum';
+import { EnrollmentTypeEnum } from '#student/domain/enum/enrollment/enrollment-type.enum';
+import { EvaluationType } from '#academic-offering/domain/entity/evaluation-type.entity';
+import { evaluationTypeSchema } from '#academic-offering/infrastructure/config/schema/evaluation-type.schema';
+import { LmsStudent } from '#lms-wrapper/domain/entity/lms-student';
+import { LmsCourse } from '#lms-wrapper/domain/entity/lms-course';
+import { LmsCourseCategoryEnum } from '#lms-wrapper/domain/enum/lms-course-category.enum';
 
 export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
   public static superAdminUserEmail = 'superadmin@email.com';
@@ -91,6 +104,7 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
   public static academicRecordIsModular = false;
 
   private static blockRelationId = uuid();
+  private static enrollmentId = uuid();
 
   private superAdminUser: AdminUser;
   private adminUserSecretaria: AdminUser;
@@ -106,6 +120,8 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
   private student: Student;
   private title: Title;
   private academicRecord: AcademicRecord;
+  private subject: Subject;
+  private enrollment: Enrollment;
 
   private academicPeriodRepository: Repository<AcademicPeriod>;
   private academicProgramRepository: Repository<AcademicProgram>;
@@ -118,6 +134,9 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
   private blockRelationRepository: Repository<BlockRelation>;
   private studentRepository: Repository<Student>;
   private academicRecordRepository: Repository<AcademicRecord>;
+  private enrollmentRepository: Repository<Enrollment>;
+  private subjectRepository: Repository<Subject>;
+  private evaluationTypeRepository: Repository<EvaluationType>;
 
   constructor(private readonly datasource: DataSource) {
     this.academicPeriodRepository =
@@ -137,6 +156,10 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
     this.blockRelationRepository =
       datasource.getRepository(blockRelationSchema);
     this.periodBlockRepository = datasource.getRepository(periodBlockSchema);
+    this.enrollmentRepository = datasource.getRepository(enrollmentSchema);
+    this.subjectRepository = datasource.getRepository(subjectSchema);
+    this.evaluationTypeRepository =
+      datasource.getRepository(evaluationTypeSchema);
   }
 
   async arrange(): Promise<void> {
@@ -248,6 +271,37 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
       this.academicProgram,
       this.superAdminUser,
     );
+    const evaluationType = await this.evaluationTypeRepository.findOneOrFail({
+      where: {
+        name: 'Proyecto',
+      },
+    });
+    this.subject = Subject.create(
+      uuid(),
+      null,
+      'Prueba',
+      'PRO1',
+      null,
+      40,
+      SubjectModality.ELEARNING,
+      evaluationType,
+      SubjectType.ELECTIVE,
+      this.businessUnit,
+      true,
+      true,
+      this.superAdminUser,
+      null,
+    );
+    this.subject.lmsCourse = new LmsCourse({
+      id: 1675,
+      categoryId: LmsCourseCategoryEnum.E_LEARNING,
+      shortname: 'BAR-INSM10',
+      name: 'Formación y Orientación Laboral',
+      progress: 0,
+      modules: [],
+    });
+    await this.subjectRepository.save(this.subject);
+    this.programBlock.addSubject(this.subject, this.superAdminUser);
 
     await this.programBlockRepository.save(this.programBlock);
     this.academicProgram.programBlocks = [this.programBlock];
@@ -271,7 +325,14 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
       await passwordEncoder.encodePassword(
         GetStudentAcademicRecordDetailE2eSeed.studentPassword,
       ),
-      null,
+      new LmsStudent({
+        id: 12453,
+        username: 'borja.postigo',
+        firstName: 'Borja',
+        lastName: 'Postigo',
+        email: 'borja@secture.com',
+        password: '123',
+      }),
     );
     await this.studentRepository.save(this.student);
 
@@ -286,10 +347,24 @@ export class GetStudentAcademicRecordDetailE2eSeed implements E2eSeed {
       GetStudentAcademicRecordDetailE2eSeed.academicRecordIsModular,
       this.superAdminUser,
     );
+
     await this.academicRecordRepository.save(this.academicRecord);
+
+    this.enrollment = Enrollment.create(
+      GetStudentAcademicRecordDetailE2eSeed.enrollmentId,
+      this.subject,
+      this.academicRecord,
+      EnrollmentVisibilityEnum.YES,
+      EnrollmentTypeEnum.CV,
+      this.programBlock,
+      this.superAdminUser,
+    );
+    await this.enrollmentRepository.save(this.enrollment);
   }
 
   async clear(): Promise<void> {
+    await this.enrollmentRepository.delete(this.enrollment.id);
+    await this.subjectRepository.delete(this.subject.id);
     await this.academicRecordRepository.delete(
       GetStudentAcademicRecordDetailE2eSeed.academicRecordId,
     );
