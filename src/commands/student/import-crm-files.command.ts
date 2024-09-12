@@ -11,6 +11,7 @@ import { zohoExcelImportSchema } from '#shared/infrastructure/config/validation-
 import { CRMImport } from '#shared/domain/entity/crm-import.entity';
 import { CRMImportStatus } from '#shared/domain/enum/crm-import-status.enum';
 import { MailerService } from '@nestjs-modules/mailer';
+import Mail from 'nodemailer/lib/mailer';
 
 function filterFileType(fileNames: string[], fileType: string): string[] {
   return fileNames.filter((name) => {
@@ -77,6 +78,21 @@ async function bootstrap() {
         `Error while importing file ${response.fileName}: ${response.errorMessage}`,
       );
 
+      const failedFile = files.find(
+        (file) => file.fileName === response.fileName,
+      );
+      const attachments: Mail.Attachment[] = [];
+
+      if (failedFile) {
+        attachments.push({
+          filename: response.fileName,
+          content: failedFile!.content.toString('base64'),
+          contentTransferEncoding: 'base64',
+          contentType:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+      }
+
       mailer.sendMail({
         to: [
           'jefatura@universae.com',
@@ -90,6 +106,7 @@ async function bootstrap() {
           fileName: response.fileName,
           errorMessage: response.errorMessage,
         },
+        attachments,
       });
       moveImportedFile(filesPath, response.fileName, 'failed');
     } else {

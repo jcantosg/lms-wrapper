@@ -53,6 +53,7 @@ const blockRelation = getABlockRelation(periodBlock, programBlock);
 internalGroup.subject = subject;
 chatroom.internalGroup = internalGroup;
 chatroom.student = student;
+chatroom.internalGroup.teachers = [teacher];
 
 programBlock.subjects = [subject];
 

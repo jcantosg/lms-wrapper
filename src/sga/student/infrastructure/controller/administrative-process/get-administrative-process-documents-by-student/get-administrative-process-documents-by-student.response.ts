@@ -2,6 +2,7 @@ import { AdministrativeProcessTypeEnum } from '#student/domain/enum/administrati
 import { AdministrativeProcessStatusEnum } from '#student/domain/enum/administrative-process-status.enum';
 import { AdministrativeProcess } from '#student/domain/entity/administrative-process.entity';
 import { formatDate } from '#shared/domain/service/date-formatter.service';
+import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 
 export interface AdministrativeProcessDocumentResponse {
   id: string;
@@ -17,7 +18,7 @@ export interface AdministrativeProcessDocumentResponse {
 
 export interface AdministrativeProcessAccessDocumentResponse {
   titleName: string;
-  administrativeProcessDocuments: AdministrativeProcessDocumentResponse;
+  administrativeProcessDocuments: AdministrativeProcessDocumentResponse | null;
   academicRecognition: AdministrativeProcessDocumentResponse | null;
   resignation: AdministrativeProcessDocumentResponse | null;
 }
@@ -40,6 +41,17 @@ export class GetStudentAdministrativeProcessDocumentsResponse {
       administrativeProcesses.find(
         (ap) => ap.type === AdministrativeProcessTypeEnum.IDENTITY_DOCUMENTS,
       ) ?? null;
+
+    const academicRecords = administrativeProcesses
+      .map((ap) => ap.academicRecord)
+      .filter((ac) => ac && ac !== null)
+      .reduce((accumulator: AcademicRecord[], current: AcademicRecord) => {
+        if (!accumulator.find((ap) => ap.id === current.id)) {
+          accumulator.push(current);
+        }
+
+        return accumulator;
+      }, []);
 
     const access = administrativeProcesses.filter(
       (ap) => ap.type === AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS,
@@ -78,28 +90,33 @@ export class GetStudentAdministrativeProcessDocumentsResponse {
             })),
           }
         : identity,
-      accessDocuments: access.map((ac) => {
+      accessDocuments: academicRecords.map((academicRecord) => {
+        const accessDocument = access.find(
+          (ad) => ad.academicRecord!.id === academicRecord!.id,
+        );
         const ar = academicRecognitions.find(
-          (ar) => ar.academicRecord!.id === ac.academicRecord!.id,
+          (ar) => ar.academicRecord!.id === academicRecord!.id,
         );
         const resignation = resignations.find(
           (resignation) =>
-            resignation.academicRecord!.id === ac.academicRecord!.id,
+            resignation.academicRecord!.id === academicRecord!.id,
         );
 
         return {
-          titleName: ac.academicRecord!.academicProgram.title.name,
-          administrativeProcessDocuments: {
-            id: ac.id,
-            createdAt: formatDate(ac.createdAt),
-            updatedAt: formatDate(ac.updatedAt),
-            status: ac.status,
-            files: ac.files.map((file) => ({
-              url: file.value.url,
-              name: file.value.name,
-              size: `${file.value.size}MB`,
-            })),
-          },
+          titleName: academicRecord!.academicProgram.title.name,
+          administrativeProcessDocuments: accessDocument
+            ? {
+                id: accessDocument.id,
+                createdAt: formatDate(accessDocument.createdAt),
+                updatedAt: formatDate(accessDocument.updatedAt),
+                status: accessDocument.status,
+                files: accessDocument.files.map((file) => ({
+                  url: file.value.url,
+                  name: file.value.name,
+                  size: `${file.value.size}MB`,
+                })),
+              }
+            : null,
           academicRecognition: ar
             ? {
                 id: ar.id,
