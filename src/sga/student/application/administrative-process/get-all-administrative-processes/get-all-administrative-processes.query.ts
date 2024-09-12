@@ -21,6 +21,7 @@ export class GetAllAdministrativeProcessesQuery
     public readonly updatedAt?: string,
     public readonly type?: AdministrativeProcessTypeEnum,
     public readonly status?: AdministrativeProcessStatusEnum,
+    public readonly email?: string,
   ) {
     super(page, limit, orderBy, orderType);
   }

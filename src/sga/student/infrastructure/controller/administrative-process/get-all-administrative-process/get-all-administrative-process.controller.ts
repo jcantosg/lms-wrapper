@@ -32,6 +32,7 @@ type GetAllAdministrativeProcessesQueryParams = {
   updatedAt?: string;
   type?: AdministrativeProcessTypeEnum;
   status?: AdministrativeProcessStatusEnum;
+  email?: string;
 };
 
 @Controller('administrative-process')
@@ -61,8 +62,8 @@ export class GetAllAdministrativeProcessesController {
       queryParams.updatedAt,
       queryParams.type,
       queryParams.status,
+      queryParams.email,
     );
-
     const response = await this.handler.handle(query);
 
     return GetAllAdministrativeProcessesResponse.create(
