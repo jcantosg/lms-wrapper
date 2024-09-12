@@ -11,6 +11,7 @@ export interface GetAdministrativeProcessResponse {
     surname: string;
     surname2: string | undefined;
     avatar: string | null;
+    universaeEmail: string;
   };
   businessUnit: {
     id: string | null;
@@ -57,6 +58,9 @@ export class GetAllAdministrativeProcessesResponse {
               avatar: administrativeProcess.student
                 ? administrativeProcess.student.avatar
                 : administrativeProcess.academicRecord!.student.avatar,
+              universaeEmail: administrativeProcess.student
+                ? administrativeProcess.student.universaeEmail
+                : administrativeProcess.academicRecord!.student.universaeEmail,
             },
             businessUnit: {
               id: administrativeProcess.businessUnit
