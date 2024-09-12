@@ -52,6 +52,13 @@ export class GetAllAdministrativeProcessesCriteria extends Criteria {
         FilterOperators.EQUALS,
         GroupOperator.AND,
       ),
+      new Filter(
+        'email',
+        query.email,
+        FilterOperators.LIKE,
+        GroupOperator.AND,
+        'student',
+      ),
     ].filter((filter) => filter.value !== undefined);
   }
 }
