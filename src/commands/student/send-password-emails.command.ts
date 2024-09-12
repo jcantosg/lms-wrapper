@@ -9,6 +9,8 @@ import {
   parseAddress,
   parseEmail,
 } from '#shared/domain/lib/business-unit-info-parser';
+import readline from 'readline';
+import { BusinessUnit } from '#business-unit/domain/entity/business-unit.entity';
 
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,63 +20,89 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const mailer = await app.resolve(MailerService);
   const studentRepository = datasource.getRepository(Student);
+  const businessUnitRepository = datasource.getRepository(BusinessUnit);
   const logger = new Logger('Send New Students Password by Email');
   app.useLogger(logger);
 
-  const students: Student[] = await studentRepository.find({
-    where: {
-      academicRecords: {
-        businessUnit: { code: 'MADRID' },
-        status: AcademicRecordStatusEnum.VALID,
-      },
-      isActive: true,
-    },
-    relations: { academicRecords: { businessUnit: true } },
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
   });
 
-  logger.verbose(`Enviando emails a ${students.length} alumnos...`);
+  rl.question(
+    'Introduzca el código de la unidad de negocio: ',
+    async function (response) {
+      if (
+        !(await businessUnitRepository.exist({
+          where: { code: response },
+        }))
+      ) {
+        logger.verbose('La unidad de negocio no existe.');
+        rl.close();
+        await app.close();
 
-  let sleeper: number = 0;
-  for (const student of students) {
-    if (!student.identityDocument) {
-      logger.error(
-        `Error con el alumno ${student.id}: Documento de identidad inválido.`,
-      );
-      continue;
-    }
-    if (student.academicRecords.length === 0) {
-      logger.error(
-        `Error con el alumno ${student.id}: Ningún expediente activo en 'MADRID' para este estudiante.`,
-      );
-      continue;
-    }
+        return;
+      }
 
-    await mailer.sendMail({
-      to: student.email,
-      template: './new-student-credentials',
-      subject: 'Bienvenid@ a UNIVERSAE',
-      context: {
-        studentName: student.name,
-        universaeEmail: student.universaeEmail,
-        password: `universae@${student.identityDocument.identityDocumentNumber}`,
-        businessUnitEmail: parseEmail(student.academicRecords[0].businessUnit),
-        businessUnitAddress: parseAddress(
-          student.academicRecords[0].businessUnit,
-        ),
-      },
-    });
+      const students: Student[] = await studentRepository.find({
+        where: {
+          academicRecords: {
+            businessUnit: { code: response },
+            status: AcademicRecordStatusEnum.VALID,
+          },
+          isActive: true,
+        },
+        relations: { academicRecords: { businessUnit: true } },
+      });
 
-    logger.verbose(`Credenciales enviadas a ${student.email}`);
+      logger.verbose(`Enviando emails a ${students.length} alumnos...`);
 
-    if (sleeper === 10) {
-      await sleep(1000);
-      sleeper = 0;
-    }
-    sleeper++;
-  }
-  logger.verbose(`Todos los emails enviados.`);
+      let sleeper: number = 0;
+      for (const student of students) {
+        if (!student.identityDocument) {
+          logger.error(
+            `Error con el alumno ${student.id}: Documento de identidad inválido.`,
+          );
+          continue;
+        }
+        if (student.academicRecords.length === 0) {
+          logger.error(
+            `Error con el alumno ${student.id}: Ningún expediente activo en 'MADRID' para este estudiante.`,
+          );
+          continue;
+        }
 
-  await app.close();
+        await mailer.sendMail({
+          to: student.email,
+          template: './new-student-credentials',
+          subject: 'Bienvenid@ a UNIVERSAE',
+          context: {
+            studentName: student.name,
+            universaeEmail: student.universaeEmail,
+            password: `universae@${student.identityDocument.identityDocumentNumber}`,
+            businessUnitEmail: parseEmail(
+              student.academicRecords[0].businessUnit,
+            ),
+            businessUnitAddress: parseAddress(
+              student.academicRecords[0].businessUnit,
+            ),
+          },
+        });
+
+        logger.verbose(`Credenciales enviadas a ${student.email}`);
+
+        if (sleeper === 10) {
+          await sleep(1000);
+          sleeper = 0;
+        }
+        sleeper++;
+      }
+      logger.verbose(`Todos los emails enviados.`);
+
+      rl.close();
+      await app.close();
+    },
+  );
 }
 
 bootstrap();
