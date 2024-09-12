@@ -132,6 +132,10 @@ export class ChatroomPostgresRepository
       'internalGroup.academicProgram',
       'academicProgram',
     );
+    queryBuilder.leftJoinAndSelect(
+      'internalGroup.teachers',
+      'internalGroup_teachers',
+    );
     queryBuilder.leftJoinAndSelect('academicProgram.title', 'chatroom_title');
     queryBuilder.leftJoinAndSelect(
       'academicProgram.businessUnit',

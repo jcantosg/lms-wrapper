@@ -51,6 +51,12 @@ describe('eda-360/student-chat (GET)', () => {
   it('should return all student teacher chats', async () => {
     const response = await supertest(httpServer)
       .get(path)
+      .query({
+        businessUnitId: ChatsE2eSeed.businessUnitId,
+        academicPeriodId: ChatsE2eSeed.academicPeriodId,
+        titleId: ChatsE2eSeed.titleId,
+        subjectId: ChatsE2eSeed.subjectId,
+      })
       .auth(studentToken, { type: 'bearer' })
       .expect(200);
 
