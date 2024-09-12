@@ -37,17 +37,19 @@ export class EditAdministrativeProcessHandler implements CommandHandler {
             ap.type === AdministrativeProcessTypeEnum.IDENTITY_DOCUMENTS &&
             ap.status === AdministrativeProcessStatusEnum.VALIDATED,
         ) &&
-        studentAdminProcesses.find(
-          (ap) =>
-            ap.type === AdministrativeProcessTypeEnum.PHOTO &&
-            ap.status === AdministrativeProcessStatusEnum.VALIDATED,
-        ) &&
-        studentAdminProcesses.find(
+        (studentAdminProcesses.find(
           (ap) =>
             ap.type === AdministrativeProcessTypeEnum.ACCESS_DOCUMENTS &&
             ap.status === AdministrativeProcessStatusEnum.VALIDATED &&
             ap.academicRecord!.id === academicRecordProcess.academicRecord!.id,
-        )
+        ) ||
+          studentAdminProcesses.find(
+            (ap) =>
+              ap.type === AdministrativeProcessTypeEnum.ACADEMIC_RECOGNITION &&
+              ap.status === AdministrativeProcessStatusEnum.VALIDATED &&
+              ap.academicRecord!.id ===
+                academicRecordProcess.academicRecord!.id,
+          ))
       ) {
         academicRecordProcess.update(AdministrativeProcessStatusEnum.VALIDATED);
         await this.administrativeProcessRepository.save(academicRecordProcess);
