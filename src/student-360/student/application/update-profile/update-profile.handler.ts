@@ -45,7 +45,7 @@ export class UpdateProfileHandler implements CommandHandler {
       : student.citizenship;
     const newContactCountry = command.contactCountry
       ? await this.countryGetter.get(command.contactCountry)
-      : null;
+      : student.contactCountry ?? null;
 
     const password = command.newPassword
       ? await this.passwordEncoder.encodePassword(command.newPassword)
