@@ -136,6 +136,26 @@ export class TypeOrmRepository<T extends ObjectLiteral> {
             groupOperator,
           );
           break;
+        case FilterOperators.CONCAT:
+          const field1Path = this.getFieldPath(
+            filter,
+            aliasQuery,
+            filter.value,
+          );
+          const field2Path = this.getFieldPath(
+            { ...filter, field: filter.field2! },
+            aliasQuery,
+            filter.value,
+          );
+
+          this.addWhereCondition(
+            queryBuilder,
+            `unaccent(LOWER(CONCAT(COALESCE(${field1Path}, ''), ' ', COALESCE(${field2Path}, '')))) LIKE unaccent(LOWER('%${filter.value}%'))`,
+            parameter,
+            groupOperator,
+          );
+          break;
+
         default:
           this.addWhereCondition(
             queryBuilder,

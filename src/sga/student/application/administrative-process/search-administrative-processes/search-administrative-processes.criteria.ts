@@ -22,9 +22,11 @@ export class SearchAdministrativeProcessesCriteria extends Criteria {
       new Filter(
         'name',
         query.text,
-        FilterOperators.LIKE,
+        FilterOperators.CONCAT,
         GroupOperator.OR,
         'student',
+        null,
+        'surname',
       ),
     ].filter((filter) => filter.value !== undefined);
   }

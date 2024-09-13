@@ -30,9 +30,11 @@ export class GetCommunicationsCriteria extends Criteria {
       new Filter(
         'name',
         query.sentBy,
-        FilterOperators.LIKE,
+        FilterOperators.CONCAT,
         GroupOperator.AND,
         'sentBy',
+        null,
+        'surname',
       ),
       new Filter(
         'id',
