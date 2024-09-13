@@ -30,7 +30,7 @@ export class GetInternalGroupsCriteria extends Criteria {
       new Filter(
         'id',
         query.businessUnit,
-        FilterOperators.LIKE,
+        FilterOperators.EQUALS,
         GroupOperator.AND,
         'business_unit',
       ),

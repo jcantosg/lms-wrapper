@@ -24,7 +24,7 @@ export class GetStudentAcademicRecordHandler implements QueryHandler {
         query.student,
       );
     const blockZero = academicRecord.academicProgram.programBlocks.find(
-      (programBlock: ProgramBlock) => programBlock.name === 'Bloque 0',
+      (programBlock: ProgramBlock) => programBlock.name.trimEnd().endsWith('0'),
     );
     if (!blockZero) {
       throw new AcademicRecordBlockZeroNotFoundException();

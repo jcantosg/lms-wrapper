@@ -49,7 +49,7 @@ export class GetStudentsCriteria extends Criteria {
       new Filter(
         'name',
         query.businessUnit,
-        FilterOperators.LIKE,
+        FilterOperators.EQUALS,
         GroupOperator.AND,
         'academic_record_business_unit',
       ),

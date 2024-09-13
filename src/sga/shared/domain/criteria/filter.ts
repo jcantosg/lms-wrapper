@@ -8,6 +8,7 @@ export enum FilterOperators {
   IS_CONTAINED = '<@',
   COUNT = 'COUNT',
   JSON_VALUE = '->>',
+  CONCAT = 'CONCAT',
 }
 
 export enum GroupOperator {
@@ -22,6 +23,7 @@ export class Filter {
     public readonly operator: FilterOperators,
     public readonly groupOperator: GroupOperator,
     public readonly relationPath?: string,
-    public readonly relationObject?: string,
+    public readonly relationObject?: string | null,
+    public readonly field2?: string,
   ) {}
 }
