@@ -25,17 +25,8 @@ export class ChatroomsByInternalGroupCreator {
 
     for (const teacher of teachers) {
       for (const student of students) {
-        const isChatroomAlreadyCreated =
-          await this.chatroomRepository.existsByStudentAndTeacherAndInternalGroup(
-            student.id,
-            teacher.id,
-            internalGroupId,
-          );
-
-        if (!isChatroomAlreadyCreated) {
-          const id = this.uuidGenerator.generate();
-          chatrooms.push(Chatroom.create(id, internalGroup, student, teacher));
-        }
+        const id = this.uuidGenerator.generate();
+        chatrooms.push(Chatroom.create(id, internalGroup, student, teacher));
       }
     }
 
