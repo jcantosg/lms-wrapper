@@ -46,6 +46,7 @@ export class GetChatsStudentsResponse {
         id: chatroom.internalGroup.subject.id,
         name: chatroom.internalGroup.subject.name,
         code: chatroom.internalGroup.subject.code,
+        academicProgramCode: chatroom.internalGroup.academicProgram.code,
       },
       internalGroup: {
         id: chatroom.internalGroup.id,
