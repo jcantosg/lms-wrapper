@@ -33,16 +33,13 @@ export class ChatroomPostgresRepository
   }
 
   async saveBatch(chatrooms: Chatroom[]): Promise<void> {
-    await this.repository.save(
-      chatrooms.map((chatroom) => ({
-        id: chatroom.id,
-        student: chatroom.student,
-        teacher: chatroom.teacher,
-        internalGroup: chatroom.internalGroup,
-        createdAt: chatroom.createdAt,
-        updatedAt: chatroom.updatedAt,
-      })),
-    );
+    await this.repository
+      .createQueryBuilder()
+      .insert()
+      .into(Chatroom)
+      .values(chatrooms)
+      .orIgnore()
+      .execute();
   }
 
   async getByStudent(studentId: string): Promise<Chatroom[]> {
