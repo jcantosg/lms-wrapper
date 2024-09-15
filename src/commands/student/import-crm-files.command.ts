@@ -99,6 +99,7 @@ async function bootstrap() {
           'alvaro.lombardo@universae.com',
           'soporte360@universae.com ',
           'juan.ros@universae.com',
+          'josel.cantos@universae.com',
         ],
         template: './import-failed',
         subject: 'Importación de alumno fallida',
