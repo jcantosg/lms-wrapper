@@ -44,7 +44,7 @@ export class GetSubjectHandler implements QueryHandler {
       new GetLmsCourseWithQuizzesQuery(
         subject.lmsCourse.value.id,
         query.student.lmsStudent!.value.id,
-        subject.isZeroBlockSubject(),
+        subject.isSpecialitySubject(),
       ),
     );
 
