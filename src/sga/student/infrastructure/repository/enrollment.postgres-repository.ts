@@ -208,6 +208,10 @@ export class EnrollmentPostgresRepository
       'businessUnit',
     );
     queryBuilder.leftJoinAndSelect('academicRecord.student', 'student');
+    queryBuilder.leftJoinAndSelect(
+      'academicRecord.academicProgram',
+      'academicProgram',
+    );
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.subject`, 'subject');
     queryBuilder.leftJoinAndSelect(
       `${aliasQuery}.programBlock`,
@@ -255,6 +259,7 @@ export class EnrollmentPostgresRepository
         relations: {
           academicRecord: {
             student: true,
+            academicProgram: true,
           },
         },
       });

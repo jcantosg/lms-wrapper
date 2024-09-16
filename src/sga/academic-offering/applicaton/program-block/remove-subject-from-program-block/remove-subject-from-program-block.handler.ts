@@ -21,6 +21,7 @@ export class RemoveSubjectFromProgramBlockHandler implements CommandHandler {
       command.programBlockId,
       command.adminUser,
     );
+
     for (const subjectId of command.subjectIds) {
       const subject = await this.subjectGetter.getByAdminUser(
         subjectId,
@@ -36,7 +37,13 @@ export class RemoveSubjectFromProgramBlockHandler implements CommandHandler {
         command.adminUser.roles.includes(AdminUserRoles.SUPERADMIN),
       );
 
-      if (enrollments.length > 0) {
+      const enrollmentsOfAcadProgram = enrollments.filter(
+        (enrollment) =>
+          enrollment.academicRecord.academicProgram.id ===
+          programBlock.academicProgram.id,
+      );
+
+      if (enrollmentsOfAcadProgram.length > 0) {
         throw new SubjectHasEnrollmentsException();
       }
 
