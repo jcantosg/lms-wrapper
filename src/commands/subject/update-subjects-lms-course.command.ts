@@ -66,7 +66,7 @@ async function bootstrap() {
 
     subject.lmsCourse = await lmsCourseRepository.getByName(
       searchCode,
-      subject.isZeroBlockSubject(),
+      subject.isSpecialitySubject(),
     );
 
     if (subject.lmsCourse) {
@@ -92,7 +92,7 @@ async function bootstrap() {
       logger.log(`${index} Created LMS course for subject ${subject.code}`);
       subject.lmsCourse = await lmsCourseRepository.getByName(
         searchCode,
-        subject.isZeroBlockSubject(),
+        subject.isSpecialitySubject(),
       );
 
       await subjectRepository.save({
