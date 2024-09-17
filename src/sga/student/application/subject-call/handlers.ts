@@ -5,15 +5,17 @@ import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.s
 import { AddSubjectCallHandler } from '#student/application/subject-call/add-subject-call/add-subject-call.handler';
 import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 import { RemoveSubjectCallHandler } from '#student/application/subject-call/remove-subject-call/remove-subject-call.handler';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 
 const editSubjectCallHandler = {
   provide: EditSubjectCallHandler,
   useFactory: (
     repository: SubjectCallRepository,
     subjectCallGetter: SubjectCallGetter,
+    eventDispatcher: EventDispatcher,
   ): EditSubjectCallHandler =>
-    new EditSubjectCallHandler(repository, subjectCallGetter),
-  inject: [SubjectCallRepository, SubjectCallGetter],
+    new EditSubjectCallHandler(repository, subjectCallGetter, eventDispatcher),
+  inject: [SubjectCallRepository, SubjectCallGetter, EventDispatcher],
 };
 
 const addSubjectCallHandler = {

@@ -21,6 +21,8 @@ import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.serv
 import { UpdateInternalGroupsService } from '#student/domain/service/update-internal-groups.service';
 import { UpdateAdministrativeGroupHandler } from '#student/application/administrative-group/update-administrative-group/update-administrative-group.handler';
 import { EnrollmentRepository } from '#student/domain/repository/enrollment.repository';
+import { PromoteStudentHandler } from '#student/application/administrative-group/promote-student/promote-student.handler';
+import { StudentGetter } from '#shared/domain/service/student-getter.service';
 
 const createAdministrativeGroupHandler = {
   provide: CreateAdministrativeGroupHandler,
@@ -173,6 +175,28 @@ const updateAdministrativeGroupHandler = {
   ],
 };
 
+const promoteStudentHandler = {
+  provide: PromoteStudentHandler,
+  useFactory: (
+    administrativeGroupRepository: AdministrativeGroupRepository,
+    academicRecordRepository: AcademicRecordRepository,
+    enrollmentRepository: EnrollmentRepository,
+    studentGetter: StudentGetter,
+  ): PromoteStudentHandler =>
+    new PromoteStudentHandler(
+      administrativeGroupRepository,
+      academicRecordRepository,
+      enrollmentRepository,
+      studentGetter,
+    ),
+  inject: [
+    AdministrativeGroupRepository,
+    AcademicRecordRepository,
+    EnrollmentRepository,
+    StudentGetter,
+  ],
+};
+
 export const administrativeGroupHandlers = [
   createAdministrativeGroupHandler,
   getAllAdministrativeGroupsHandler,
@@ -183,4 +207,5 @@ export const administrativeGroupHandlers = [
   getAdministrativeGroupByAcademicProgramHandler,
   moveStudentFromAdministrativeGroupHandler,
   updateAdministrativeGroupHandler,
+  promoteStudentHandler,
 ];

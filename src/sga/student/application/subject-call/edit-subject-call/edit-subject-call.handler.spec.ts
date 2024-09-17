@@ -14,13 +14,17 @@ import { SubjectCallMockRepository } from '#test/mocks/sga/academic-offering/sub
 import { getASubjectCallGetterMock } from '#test/service-factory';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-service';
 
 let handler: EditSubjectCallHandler;
 let repository: SubjectCallRepository;
 let subjectCallGetter: SubjectCallGetter;
+let eventDispatcher: EventDispatcher;
 
 let saveSpy: jest.SpyInstance;
 let getByAdminUserSpy: jest.SpyInstance;
+let dispatchEventSpy: jest.SpyInstance;
 
 const subjectCall = getATakenSubjectCall();
 subjectCall.enrollment = getAnEnrollment();
@@ -41,8 +45,14 @@ describe('Edit Subject Call Handler', () => {
     subjectCallGetter = getASubjectCallGetterMock();
     getByAdminUserSpy = jest.spyOn(subjectCallGetter, 'getByAdminUser');
     saveSpy = jest.spyOn(repository, 'save');
+    eventDispatcher = new EventDispatcherMock();
+    dispatchEventSpy = jest.spyOn(eventDispatcher, 'dispatch');
 
-    handler = new EditSubjectCallHandler(repository, subjectCallGetter);
+    handler = new EditSubjectCallHandler(
+      repository,
+      subjectCallGetter,
+      eventDispatcher,
+    );
   });
 
   it('should throw an error if the academic record is cancelled', async () => {
@@ -69,5 +79,6 @@ describe('Edit Subject Call Handler', () => {
         finalGrade: command.finalGrade,
       }),
     );
+    expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
   });
 });
