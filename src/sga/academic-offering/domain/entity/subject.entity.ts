@@ -317,7 +317,11 @@ export class Subject extends BaseEntity {
     this.lmsCourse = lmsCourse;
   }
 
-  public isZeroBlockSubject(): boolean {
-    return this.type === SubjectType.SPECIALTY || !this.isRegulated;
+  public isSpecialitySubject(): boolean {
+    return (
+      this.type === SubjectType.SPECIALTY ||
+      !this.isRegulated ||
+      this.evaluationType?.name === 'Proyecto'
+    );
   }
 }

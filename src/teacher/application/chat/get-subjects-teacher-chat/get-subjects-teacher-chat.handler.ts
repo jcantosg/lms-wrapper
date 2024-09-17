@@ -13,7 +13,11 @@ export class GetSubjectsTeacherChatHandler implements QueryHandler {
     );
 
     const subjects = internalGroups
-      .filter((group) => group.academicProgram.title.id === query.titleId)
+      .filter(
+        (group) =>
+          group.academicProgram.title.id === query.titleId &&
+          group.academicPeriod.id === query.academicPeriodId,
+      )
       .map((group) => group.subject);
 
     return this.getUniqueSubjects(subjects);

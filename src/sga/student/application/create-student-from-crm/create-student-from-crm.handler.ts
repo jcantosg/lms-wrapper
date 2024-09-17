@@ -354,19 +354,6 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         internalGroups,
       });
 
-      this.mailer.sendMail({
-        to: student.email,
-        template: './new-student-credentials',
-        subject: 'Bienvenid@ a UNIVERSAE',
-        context: {
-          studentName: student.name,
-          universaeEmail: student.universaeEmail,
-          password: data.password,
-          businessUnitEmail: parseEmail(newAcademicRecord.businessUnit),
-          businessUnitAddress: parseAddress(newAcademicRecord.businessUnit),
-        },
-      });
-
       await this.createAdministrativeProcessHandler.handle(
         new CreateAdministrativeProcessCommand(
           this.uuidService.generate(),
@@ -380,6 +367,19 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         await this.eventDispatcher.dispatch(
           new InternalGroupMemberAddedEvent(group),
         );
+      });
+
+      this.mailer.sendMail({
+        to: student.email,
+        template: './new-student-credentials',
+        subject: 'Bienvenid@ a UNIVERSAE',
+        context: {
+          studentName: student.name,
+          universaeEmail: student.universaeEmail,
+          password: data.password,
+          businessUnitEmail: parseEmail(newAcademicRecord.businessUnit),
+          businessUnitAddress: parseAddress(newAcademicRecord.businessUnit),
+        },
       });
     }
 

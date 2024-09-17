@@ -71,7 +71,7 @@ export class EditSubjectHandler implements CommandHandler {
         lmsCourse = await this.lmsCourseHandler.handle(
           new GetLMSCourseQuery(
             command.lmsCourseId,
-            subject.isZeroBlockSubject(),
+            subject.isSpecialitySubject(),
           ),
         );
       } else {
@@ -85,7 +85,7 @@ export class EditSubjectHandler implements CommandHandler {
         lmsCourse = await this.getLmsCourseByNameHandler.handle(
           new GetLMSCourseByNameQuery(
             command.code,
-            subject.isZeroBlockSubject(),
+            subject.isSpecialitySubject(),
           ),
         );
       }
