@@ -37,6 +37,7 @@ from pepperize_cdk_ses_smtp_credentials import SesSmtpCredentials
 import json
 
 BASTION_SECURITY_GROUP_ID = "sg-072fa653d753959a1"
+METABASE_SECURITY_GROUP_ID = "sg-0636e2d025591e95a"
 VPN_CIDRS = ["10.90.0.0/21"]  # Users
 
 API_LISTEN_PORT = 3000
@@ -195,6 +196,11 @@ class APIStack(Stack):
             "BastionSecurityGroup",
             security_group_id=BASTION_SECURITY_GROUP_ID,
         )
+        metabase_security_group = ec2.SecurityGroup.from_security_group_id(
+            self,
+            "MetabaseSecurityGroup",
+            security_group_id=METABASE_SECURITY_GROUP_ID,
+        )
 
         media_certificate = acm.Certificate.from_certificate_arn(
             self, "MediaCertificate", certificate_arn=media_certificate_arn
@@ -307,6 +313,9 @@ class APIStack(Stack):
 
             db_read_replica.connections.allow_default_port_from(
                 bastion_security_group, "Bastion access to RDS"
+            )
+            db_read_replica.connections.allow_default_port_from(
+                metabase_security_group, "Metabase access to RDS"
             )
             for cidr in VPN_CIDRS:
                 db_read_replica.connections.allow_default_port_from(
