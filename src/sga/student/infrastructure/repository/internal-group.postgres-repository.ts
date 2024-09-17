@@ -259,23 +259,30 @@ export class InternalGroupPostgresRepository
   }
 
   async getAllByTeacher(teacherId: string): Promise<InternalGroup[]> {
-    return await this.repository.find({
-      where: {
-        teachers: {
-          id: teacherId,
-        },
-      },
-      relations: {
-        defaultTeacher: true,
-        academicPeriod: true,
-        academicProgram: {
-          title: true,
-        },
-        subject: true,
-        students: true,
-        businessUnit: true,
-      },
-    });
+    return await this.repository
+      .createQueryBuilder('internalGroup')
+      .leftJoinAndSelect('internalGroup.academicPeriod', 'academicPeriod')
+      .leftJoinAndSelect('internalGroup.academicProgram', 'academicProgram')
+      .leftJoinAndSelect('academicProgram.title', 'title')
+      .leftJoinAndSelect('internalGroup.subject', 'subject')
+      .leftJoinAndSelect(`internalGroup.teachers`, 'teachers')
+      .leftJoinAndSelect('internalGroup.businessUnit', 'businessUnit')
+      .where('teachers.id = :teacherId', { teacherId })
+      .select([
+        'internalGroup.id',
+        'academicPeriod.id',
+        'academicPeriod.code',
+        'academicPeriod.name',
+        'academicProgram.id',
+        'title.id',
+        'title.name',
+        'subject.id',
+        'subject.code',
+        'subject.name',
+        'businessUnit.id',
+        'businessUnit.name',
+      ])
+      .getMany();
   }
 
   async getByBusinessUnitsAndPeriodsAndPrograms(
