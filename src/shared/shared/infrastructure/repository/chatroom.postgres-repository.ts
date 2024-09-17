@@ -73,6 +73,7 @@ export class ChatroomPostgresRepository
       relations: {
         internalGroup: {
           subject: true,
+          academicProgram: true,
         },
         teacher: true,
         student: true,

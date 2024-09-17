@@ -300,8 +300,12 @@ export class AdministrativeGroupPostgresRepository
   ): Promise<AdministrativeGroup[]> {
     const adminGroups = await this.repository.find({
       relations: {
-        academicPeriod: true,
-        academicProgram: true,
+        academicPeriod: {
+          periodBlocks: true,
+        },
+        academicProgram: {
+          programBlocks: true,
+        },
         periodBlock: true,
         programBlock: true,
         students: true,

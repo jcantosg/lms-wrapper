@@ -12,39 +12,41 @@ export class GetAllStudentAdministrativeProcessesHandler
     private readonly academicRecordRepository: AcademicRecordRepository,
   ) {}
 
-  async handle(
-    query: GetAllStudentAdministrativeProcessesQuery,
-  ): Promise<AdministrativeProcess[]> {
-    const academicRecords =
-      await this.academicRecordRepository.getStudentOwnAcademicRecords(
+  async handle(query: GetAllStudentAdministrativeProcessesQuery): Promise<{
+    administrativeProcesses: AdministrativeProcess[];
+    academicPeriodEnding: Date | null;
+  }> {
+    const [academicRecords, administrativeProcesses] = await Promise.all([
+      this.academicRecordRepository.getStudentOwnAcademicRecords(
         query.student.id,
-      );
+      ),
+      this.repository.getByStudent(query.student.id),
+    ]);
 
-    const administrativeProcesses = (
-      await this.repository.getByStudent(query.student.id)
-    ).filter((ap) => !ap.academicRecord);
-
-    const academicRecordAdministrativeProcesses: AdministrativeProcess[] = [];
-
-    for (const ar of academicRecords) {
-      academicRecordAdministrativeProcesses.push(
-        ...(await this.repository.getByAcademicRecord(ar.id)),
-      );
-    }
-    administrativeProcesses.push(...academicRecordAdministrativeProcesses);
-
-    return administrativeProcesses.reduce(
-      (
-        accumulator: AdministrativeProcess[],
-        current: AdministrativeProcess,
-      ) => {
-        if (!accumulator.find((ap) => ap.id === current.id)) {
-          accumulator.push(current);
-        }
-
-        return accumulator;
-      },
-      [],
+    const academicRecordAdministrativeProcesses = await Promise.all(
+      academicRecords.map((ar) => this.repository.getByAcademicRecord(ar.id)),
     );
+
+    const allAdministrativeProcesses = [
+      ...administrativeProcesses.filter((ap) => !ap.academicRecord),
+      ...academicRecordAdministrativeProcesses.flat(),
+    ];
+
+    const uniqueAdministrativeProcesses = Array.from(
+      new Map(allAdministrativeProcesses.map((ap) => [ap.id, ap])).values(),
+    );
+
+    const academicPeriodEnding = academicRecords
+      .map((record) => new Date(record.academicPeriod.endDate))
+      .reduce(
+        (earliest: Date, current: Date) =>
+          earliest && earliest < current ? earliest : current,
+        null,
+      );
+
+    return {
+      administrativeProcesses: uniqueAdministrativeProcesses,
+      academicPeriodEnding,
+    };
   }
 }

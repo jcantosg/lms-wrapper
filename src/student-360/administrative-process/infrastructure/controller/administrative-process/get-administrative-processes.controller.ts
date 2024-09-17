@@ -21,8 +21,10 @@ export class GetAllStudentAdministrativeProcessesController {
   ): Promise<AdministrativeProcessResponseBody> {
     const query = new GetAllStudentAdministrativeProcessesQuery(req.user);
 
-    const response = await this.handler.handle(query);
+    const { administrativeProcesses } = await this.handler.handle(query);
 
-    return GetAllStudentAdministrativeProcessesResponse.create(response);
+    return GetAllStudentAdministrativeProcessesResponse.create(
+      administrativeProcesses,
+    );
   }
 }
