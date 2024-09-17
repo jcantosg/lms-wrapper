@@ -7,11 +7,12 @@ import {
   MemoryHealthIndicator,
   HealthCheckResult,
 } from '@nestjs/terminus';
+import * as os from 'os';
 
 @Controller('health')
 export class HealthController {
-  private readonly MEMORY_HEAP_THRESHOLD = 900 * 1024 * 1024;
-  private readonly RSS_MEMORY_THRESHOLD = 900 * 1024 * 1024;
+  private readonly MEMORY_HEAP_THRESHOLD = 0.9;
+  private readonly RSS_MEMORY_THRESHOLD = 0.9;
   private readonly DISK_THRESHOLD_PERCENT = 0.9;
 
   constructor(
@@ -67,11 +68,12 @@ export class HealthController {
   }
 
   async checkMemoryHealth(): Promise<HealthCheckResult> {
+    const totalMemory = os.totalmem(); // Get total system memory in bytes
     let memoryCheck;
     try {
       memoryCheck = await this.health.check([
-        () => this.memory.checkHeap('memory_heap', this.MEMORY_HEAP_THRESHOLD),
-        () => this.memory.checkRSS('RSS', this.RSS_MEMORY_THRESHOLD),
+        () => this.memory.checkHeap('memory_heap', totalMemory * this.MEMORY_HEAP_THRESHOLD),
+        () => this.memory.checkRSS('RSS', totalMemory * this.RSS_MEMORY_THRESHOLD),
       ]);
     } catch (error) {
       memoryCheck = error.response;
