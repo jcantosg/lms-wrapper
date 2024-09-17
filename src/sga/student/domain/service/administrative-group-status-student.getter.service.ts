@@ -17,13 +17,18 @@ export class AdministrativeGroupStatusStudentGetter {
     academicRecord: AcademicRecord,
     administrativeGroup: AdministrativeGroup,
   ): Promise<StudentAdministrativeGroupStatusEnum> {
-    const subjectsToCheck =
+    const subjectsToCheck = (
       await this.subjectUpToBlockGetter.getSubjectsUpToBlock(
         administrativeGroup.programBlock.id,
-      );
+      )
+    ).filter((subject) => subject.evaluationType?.name !== 'No Evaluable');
 
-    const enrollments =
-      await this.enrollmentRepository.getByAcademicRecord(academicRecord);
+    const enrollments = (
+      await this.enrollmentRepository.getByAcademicRecord(academicRecord)
+    ).filter(
+      (enrollment) =>
+        enrollment.subject.evaluationType?.name !== 'No Evaluable',
+    );
 
     if (enrollments.length === 0 || subjectsToCheck.length === 0) {
       return StudentAdministrativeGroupStatusEnum.PENDING;

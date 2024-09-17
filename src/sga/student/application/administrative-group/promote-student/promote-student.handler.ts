@@ -12,6 +12,7 @@ import { PromoteStudentCommand } from '#student/application/administrative-group
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
+import { PeriodBlock } from '#academic-offering/domain/entity/period-block.entity';
 
 export class PromoteStudentHandler implements CommandHandler {
   constructor(
@@ -77,23 +78,30 @@ export class PromoteStudentHandler implements CommandHandler {
       throw new AdministrativeGroupNotFoundException();
     }
 
-    const nextGroup =
-      await this.administrativeGroupRepository.getByAcademicPeriodAndProgramAndBlock(
-        group.academicPeriod.id,
-        group.academicProgram.id,
-        group.academicPeriod.getNextBlock(group.periodBlock).name,
-      );
+    let nextBlock: PeriodBlock | null;
+    try {
+      nextBlock = group.academicPeriod.getNextBlock(group.periodBlock);
+    } catch (error) {
+      nextBlock = null;
+    }
 
-    if (!nextGroup) {
+    if (!nextBlock) {
       await this.finishAcademicRecord(academicRecord, adminUser);
 
       return;
     }
 
+    const nextGroup =
+      await this.administrativeGroupRepository.getByAcademicPeriodAndProgramAndBlock(
+        group.academicPeriod.id,
+        group.academicProgram.id,
+        nextBlock.name,
+      );
+
     await this.administrativeGroupRepository.moveStudents(
       [student],
       group,
-      nextGroup,
+      nextGroup!,
     );
   }
 
@@ -101,8 +109,12 @@ export class PromoteStudentHandler implements CommandHandler {
     academicRecord: AcademicRecord,
     adminUser: AdminUser,
   ): Promise<void> {
-    const enrollments =
-      await this.enrollmentRepository.getByAcademicRecord(academicRecord);
+    const enrollments = (
+      await this.enrollmentRepository.getByAcademicRecord(academicRecord)
+    ).filter(
+      (enrollment) =>
+        enrollment.subject.evaluationType?.name !== 'No Evaluable',
+    );
 
     const enrollmentPassed: Enrollment[] = [];
     for (const enrollment of enrollments) {

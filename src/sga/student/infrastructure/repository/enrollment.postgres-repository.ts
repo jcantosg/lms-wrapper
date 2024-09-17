@@ -82,7 +82,9 @@ export class EnrollmentPostgresRepository
             },
           },
         },
-        subject: true,
+        subject: {
+          evaluationType: true,
+        },
         academicRecord: { student: true },
       },
       order: {
