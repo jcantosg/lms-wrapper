@@ -120,7 +120,9 @@ export class AcademicRecordPostgresRepository
       relations: {
         businessUnit: true,
         student: true,
-        academicPeriod: true,
+        academicPeriod: {
+          periodBlocks: true,
+        },
         initialAcademicPeriod: true,
         academicProgram: {
           title: true,

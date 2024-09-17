@@ -20,6 +20,7 @@ export class SubjectCallPostgresRepository
     const queryBuilder = this.repository.createQueryBuilder(aliasQuery);
 
     queryBuilder.leftJoinAndSelect(`${aliasQuery}.enrollment`, 'enrollment');
+    queryBuilder.leftJoinAndSelect('enrollment.programBlock', 'programBlock');
     queryBuilder.leftJoinAndSelect(
       'enrollment.academicRecord',
       'academicRecord',
@@ -28,6 +29,7 @@ export class SubjectCallPostgresRepository
       'academicRecord.businessUnit',
       'businessUnit',
     );
+    queryBuilder.leftJoinAndSelect('academicRecord.student', 'student');
 
     return queryBuilder;
   }
@@ -84,7 +86,9 @@ export class SubjectCallPostgresRepository
         enrollment: {
           academicRecord: {
             businessUnit: true,
+            student: true,
           },
+          programBlock: true,
         },
       },
       where: { id },
