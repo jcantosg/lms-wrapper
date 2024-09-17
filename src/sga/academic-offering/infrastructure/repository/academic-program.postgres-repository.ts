@@ -95,6 +95,7 @@ export class AcademicProgramPostgresRepository
         programBlocks: {
           subjects: {
             defaultTeacher: true,
+            evaluationType: true,
           },
         },
         academicPeriods: true,

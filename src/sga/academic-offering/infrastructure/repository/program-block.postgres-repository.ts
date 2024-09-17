@@ -35,7 +35,9 @@ export class ProgramBlockPostgresRepository
         academicProgram: {
           businessUnit: true,
         },
-        subjects: true,
+        subjects: {
+          evaluationType: true,
+        },
       },
     });
   }
