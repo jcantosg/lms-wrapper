@@ -15,6 +15,7 @@ export class SubjectCallPassedListener {
         payload.academicRecord.id,
         payload.student.id,
         payload.programBlock,
+        payload.adminUser,
       ),
     );
   }
