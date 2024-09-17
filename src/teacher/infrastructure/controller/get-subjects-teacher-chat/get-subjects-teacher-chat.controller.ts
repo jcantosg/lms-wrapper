@@ -16,6 +16,7 @@ import { GetSubjectsTeacherChatResponse } from '#/teacher/infrastructure/control
 
 type GetSubjectsTeacherChatQueryParams = {
   titleId: string;
+  academicPeriodId: string;
 };
 
 @Controller('edae-360')
@@ -34,6 +35,7 @@ export class GetSubjectsTeacherChatController {
     const query = new GetSubjectsTeacherChatQuery(
       req.user,
       queryParams.titleId,
+      queryParams.academicPeriodId,
     );
 
     const response = await this.handler.handle(query);

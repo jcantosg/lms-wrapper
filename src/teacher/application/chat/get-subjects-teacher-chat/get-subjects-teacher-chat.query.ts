@@ -5,5 +5,6 @@ export class GetSubjectsTeacherChatQuery implements Query {
   constructor(
     public readonly edaeUser: EdaeUser,
     public readonly titleId: string,
+    public readonly academicPeriodId: string,
   ) {}
 }
