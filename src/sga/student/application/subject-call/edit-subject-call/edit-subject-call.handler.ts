@@ -43,6 +43,7 @@ export class EditSubjectCallHandler implements CommandHandler {
           subjectCall.enrollment.programBlock,
           subjectCall.enrollment.academicRecord,
           subjectCall.enrollment.academicRecord.student,
+          command.adminUser,
         ),
       );
     }

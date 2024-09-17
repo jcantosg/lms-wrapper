@@ -11,6 +11,7 @@ import { StudentGetter } from '#shared/domain/service/student-getter.service';
 import { PromoteStudentCommand } from '#student/application/administrative-group/promote-student/promote-student.command';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 
 export class PromoteStudentHandler implements CommandHandler {
   constructor(
@@ -51,6 +52,7 @@ export class PromoteStudentHandler implements CommandHandler {
           student,
           academicRecord,
           command.programBlock,
+          command.adminUser,
         );
       }
     }
@@ -60,6 +62,7 @@ export class PromoteStudentHandler implements CommandHandler {
     student: Student,
     academicRecord: AcademicRecord,
     programBlock: ProgramBlock,
+    adminUser: AdminUser,
   ): Promise<void> {
     const groups =
       await this.administrativeGroupRepository.getByStudentAndAcademicPeriodAndAcademicProgram(
@@ -82,6 +85,8 @@ export class PromoteStudentHandler implements CommandHandler {
       );
 
     if (!nextGroup) {
+      await this.finishAcademicRecord(academicRecord, adminUser);
+
       return;
     }
 
@@ -90,5 +95,28 @@ export class PromoteStudentHandler implements CommandHandler {
       group,
       nextGroup,
     );
+  }
+
+  async finishAcademicRecord(
+    academicRecord: AcademicRecord,
+    adminUser: AdminUser,
+  ): Promise<void> {
+    const enrollments =
+      await this.enrollmentRepository.getByAcademicRecord(academicRecord);
+
+    const enrollmentPassed: Enrollment[] = [];
+    for (const enrollment of enrollments) {
+      if (
+        enrollment.calls.find(
+          (call) => call.status === SubjectCallStatusEnum.PASSED,
+        )
+      ) {
+        enrollmentPassed.push(enrollment);
+      }
+    }
+    if (enrollmentPassed.length === enrollments.length) {
+      academicRecord.updateStatus(AcademicRecordStatusEnum.FINISHED, adminUser);
+      await this.academicRecordRepository.save(academicRecord);
+    }
   }
 }

@@ -2,6 +2,7 @@ import { ApplicationEvent } from '#shared/domain/event/application.event';
 import { Student } from '#shared/domain/entity/student.entity';
 import { AcademicRecord } from '#student/domain/entity/academic-record.entity';
 import { ProgramBlock } from '#academic-offering/domain/entity/program-block.entity';
+import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
 
 export class SubjectCallPassedEvent implements ApplicationEvent {
   name: string = 'subject-call-passed';
@@ -10,5 +11,6 @@ export class SubjectCallPassedEvent implements ApplicationEvent {
     readonly programBlock: ProgramBlock,
     readonly academicRecord: AcademicRecord,
     readonly student: Student,
+    readonly adminUser: AdminUser,
   ) {}
 }
