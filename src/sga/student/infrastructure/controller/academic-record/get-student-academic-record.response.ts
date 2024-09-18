@@ -42,6 +42,16 @@ export class GetStudentAcademicRecordResponse {
         name: ar.record.academicPeriod.name,
         code: ar.record.academicPeriod.code,
       },
+      businessUnit: {
+        id: ar.record.businessUnit.id,
+        name: ar.record.businessUnit.name,
+        code: ar.record.businessUnit.code,
+      },
+      virtualCampus: {
+        id: ar.record.virtualCampus.id,
+        name: ar.record.virtualCampus.name,
+        code: ar.record.virtualCampus.code,
+      },
       status: ar.record.status,
       administrativeProcessStatus: ar.administrativeProcess
         ? ar.administrativeProcess.status
