@@ -56,6 +56,16 @@ describe('/academic-record/:id (GET)', () => {
           name: GetStudentAcademicRecordE2eSeed.academicPeriodName,
           code: GetStudentAcademicRecordE2eSeed.academicPeriodCode,
         },
+        businessUnit: {
+          id: GetStudentAcademicRecordE2eSeed.businessUnitId,
+          name: GetStudentAcademicRecordE2eSeed.businessUnitName,
+          code: GetStudentAcademicRecordE2eSeed.businessUnitCode,
+        },
+        virtualCampus: {
+          id: GetStudentAcademicRecordE2eSeed.virtualCampusId,
+          name: GetStudentAcademicRecordE2eSeed.virtualCampusName,
+          code: GetStudentAcademicRecordE2eSeed.virtualCampusCode,
+        },
         status: AcademicRecordStatusEnum.VALID,
         administrativeProcessStatus:
           AdministrativeProcessStatusEnum.PENDING_DOCUMENTS,
