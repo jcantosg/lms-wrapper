@@ -86,10 +86,7 @@ async function bootstrap() {
       if (failedFile) {
         attachments.push({
           filename: response.fileName,
-          content: failedFile!.content.toString('base64'),
-          contentTransferEncoding: 'base64',
-          contentType:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          content: failedFile!.content,
         });
       }
 
