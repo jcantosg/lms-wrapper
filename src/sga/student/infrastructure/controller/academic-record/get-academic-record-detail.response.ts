@@ -38,6 +38,7 @@ interface AcademicRecordDetailResponse {
   status: AcademicRecordStatusEnum;
   block: number | null;
   leadId: string | null;
+  totalHoursCompleted: number;
 }
 
 export class GetAcademicRecordDetailResponse {
@@ -82,6 +83,7 @@ export class GetAcademicRecordDetailResponse {
         ? record.administrativeGroup.periodBlock.blockNumber()
         : null,
       leadId: record.academicRecord.leadId,
+      totalHoursCompleted: record.totalHoursCompleted,
     };
   }
 }
