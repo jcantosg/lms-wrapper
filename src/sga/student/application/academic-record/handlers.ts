@@ -100,14 +100,17 @@ const getAcademicRecordDetailHandler = {
   useFactory: (
     academicRecordGetter: AcademicRecordGetter,
     studentAdministrativeGroupByAcademicRecordGetter: StudentAdministrativeGroupByAcademicRecordGetter,
+    enrollmentGetter: EnrollmentGetter,
   ): GetAcademicRecordDetailHandler =>
     new GetAcademicRecordDetailHandler(
       academicRecordGetter,
       studentAdministrativeGroupByAcademicRecordGetter,
+      enrollmentGetter,
     ),
   inject: [
     AcademicRecordGetter,
     StudentAdministrativeGroupByAcademicRecordGetter,
+    EnrollmentGetter,
   ],
 };
 

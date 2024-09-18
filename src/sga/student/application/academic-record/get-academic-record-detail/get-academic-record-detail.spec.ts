@@ -8,6 +8,7 @@ import {
 } from '#test/entity-factory';
 import {
   getAnAcademicRecordGetterMock,
+  getAnEnrollmentGetterMock,
   getAStudentAdministrativeGroupByAcademicRecordGetterMock,
 } from '#test/service-factory';
 import { AdminUser } from '#admin-user/domain/entity/admin-user.entity';
@@ -19,12 +20,14 @@ import {
   IdentityDocumentType,
 } from '#/sga/shared/domain/value-object/identity-document';
 import { StudentAdministrativeGroupByAcademicRecordGetter } from '#student/domain/service/student-administrative-group-by-academic-record.getter.service';
+import { EnrollmentGetter } from '#student/domain/service/enrollment-getter.service';
 
 let handler: GetAcademicRecordDetailHandler;
 let academicRecordGetter: AcademicRecordGetter;
 let studentAdministrativeGroupByAcademicRecordGetter: StudentAdministrativeGroupByAcademicRecordGetter;
 let getAcademicRecordSpy: jest.SpyInstance;
 let getAdministrativeGroupSpy: jest.SpyInstance;
+let enrollmentGetter: EnrollmentGetter;
 
 const mockCountry = Country.create(
   'countryId',
@@ -68,15 +71,19 @@ describe('GetAcademicRecordDetailHandler', () => {
     academicRecordGetter = getAnAcademicRecordGetterMock();
     studentAdministrativeGroupByAcademicRecordGetter =
       getAStudentAdministrativeGroupByAcademicRecordGetterMock();
+    enrollmentGetter = getAnEnrollmentGetterMock();
+
     handler = new GetAcademicRecordDetailHandler(
       academicRecordGetter,
       studentAdministrativeGroupByAcademicRecordGetter,
+      enrollmentGetter,
     );
     getAcademicRecordSpy = jest.spyOn(academicRecordGetter, 'getByAdminUser');
     getAdministrativeGroupSpy = jest.spyOn(
       studentAdministrativeGroupByAcademicRecordGetter,
       'get',
     );
+    jest.spyOn(enrollmentGetter, 'getByAcademicRecord').mockResolvedValue([]);
   });
 
   it('should return an academic record', async () => {
@@ -97,6 +104,7 @@ describe('GetAcademicRecordDetailHandler', () => {
     expect(result).toEqual({
       academicRecord,
       administrativeGroup,
+      totalHoursCompleted: 0,
     });
   });
 

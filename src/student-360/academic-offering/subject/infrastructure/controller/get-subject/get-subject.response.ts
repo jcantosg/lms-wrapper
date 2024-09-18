@@ -122,8 +122,12 @@ export class GetSubjectResponse {
                 id: autoEvaluationTest.id,
                 name: autoEvaluationTest.name,
                 isVisible: autoEvaluationTest.isVisible,
-                modules: autoEvaluationTest.autoEvaluationTests!.map(
+                modules: autoEvaluationTest.autoEvaluationTests!.flatMap(
                   (module) => {
+                    if (module.content.length === 0) {
+                      return [];
+                    }
+
                     return {
                       id: module.content[0].id,
                       name: module.content[0].name,
