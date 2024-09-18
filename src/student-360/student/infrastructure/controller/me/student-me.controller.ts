@@ -15,7 +15,8 @@ export class StudentMeController {
   @UseGuards(StudentJwtAuthGuard)
   async getMe(@Request() req: StudentAuthRequest): Promise<StudentMeResponse> {
     const query = new GetAllStudentAdministrativeProcessesQuery(req.user);
-    const administrativeProcesses = await this.handler.handle(query);
+    const { administrativeProcesses, academicPeriodEnding } =
+      await this.handler.handle(query);
 
     return StudentMeResponse.create(
       req.user,
@@ -25,6 +26,7 @@ export class StudentMeController {
           ap.status === AdministrativeProcessStatusEnum.PENDING_VALIDATION ||
           ap.status === AdministrativeProcessStatusEnum.REJECTED,
       ),
+      academicPeriodEnding,
     );
   }
 }

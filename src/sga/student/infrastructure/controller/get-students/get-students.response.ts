@@ -20,6 +20,7 @@ export interface GetStudentResponse {
     code: string;
   }[];
   isDefense: boolean;
+  createdAt: Date;
 }
 
 export class GetStudentsResponse {
@@ -54,6 +55,7 @@ export class GetStudentsResponse {
             },
           ),
           isDefense: student.isDefense,
+          createdAt: student.createdAt,
         };
       }),
     };

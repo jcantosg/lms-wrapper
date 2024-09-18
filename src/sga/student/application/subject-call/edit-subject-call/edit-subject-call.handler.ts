@@ -4,11 +4,15 @@ import { SubjectCallRepository } from '#student/domain/repository/subject-call.r
 import { SubjectCallGetter } from '#student/domain/service/subject-call.getter.service';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { SubjectCallStatusEnum } from '#student/domain/enum/enrollment/subject-call-status.enum';
+import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
+import { SubjectCallPassedEvent } from '#student/domain/event/subject-call/subject-call-passed.event';
 
 export class EditSubjectCallHandler implements CommandHandler {
   constructor(
     private readonly repository: SubjectCallRepository,
     private readonly subjectCallGetter: SubjectCallGetter,
+    private readonly eventDispatcher: EventDispatcher,
   ) {}
 
   async handle(command: EditSubjectCallCommand): Promise<void> {
@@ -32,5 +36,16 @@ export class EditSubjectCallHandler implements CommandHandler {
     );
 
     await this.repository.save(subjectCall);
+
+    if (subjectCall.status === SubjectCallStatusEnum.PASSED) {
+      this.eventDispatcher.dispatch(
+        new SubjectCallPassedEvent(
+          subjectCall.enrollment.programBlock,
+          subjectCall.enrollment.academicRecord,
+          subjectCall.enrollment.academicRecord.student,
+          command.adminUser,
+        ),
+      );
+    }
   }
 }

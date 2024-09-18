@@ -49,12 +49,14 @@ interface StudentMeResponseBody {
   isDefense: boolean;
   isAdult: boolean;
   hasAdministrativeProcessesPending: boolean;
+  academicPeriodEnding: Date | null;
 }
 
 export class StudentMeResponse {
   static create(
     student: Student,
     hasAdministrativeProcessesPending: boolean,
+    academicPeriodEnding: Date | null,
   ): StudentMeResponseBody {
     return {
       id: student.id,
@@ -108,6 +110,7 @@ export class StudentMeResponse {
       isDefense: student.isDefense,
       isAdult: student.isAdult(),
       hasAdministrativeProcessesPending,
+      academicPeriodEnding,
     };
   }
 }

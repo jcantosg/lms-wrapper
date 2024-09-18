@@ -7,7 +7,7 @@ export const zohoExcelImportSchema: Joi.ObjectSchema = Joi.object({
   email_personal: Joi.string().required(),
   NIF: Joi.string().required().allow('', null),
   email_universae: Joi.string().required(),
-  password_alumno: Joi.string().required(),
+  password_alumno: Joi.string().allow('', null),
   Telefono: Joi.string().required().allow('', null),
   provincia: Joi.string().required().allow('', null),
   municipio: Joi.string().required().allow('', null),
