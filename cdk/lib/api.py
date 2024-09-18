@@ -28,19 +28,16 @@ from cdk_monitoring_constructs import (
     AlarmFactoryDefaults,
     CustomMetricGroup,
     GraphWidgetType,
-    HighConnectionCountThreshold,
-    MinUsageCountThreshold,
     MonitoringFacade,
     SnsAlarmActionStrategy,
-    UnhealthyTaskCountThreshold,
-    UsageThreshold,
+    ErrorRateThreshold,
 )
 from pepperize_cdk_ses_smtp_credentials import SesSmtpCredentials
 
-import boto3
 import json
 
 BASTION_SECURITY_GROUP_ID = "sg-072fa653d753959a1"
+METABASE_SECURITY_GROUP_ID = "sg-0636e2d025591e95a"
 VPN_CIDRS = ["10.90.0.0/21"]  # Users
 
 API_LISTEN_PORT = 3000
@@ -87,7 +84,7 @@ RDS_MEMORY_GB = {
     "t4g.large": 8,
     "t4g.xlarge": 16,
     "t4g.2xlarge": 32,
-    # Standard
+    # Standard m6g
     "m6g.medium": 4,
     "m6g.large": 8,
     "m6g.xlarge": 16,
@@ -97,6 +94,16 @@ RDS_MEMORY_GB = {
     "m6g.12xlarge": 192,
     "m6g.16xlarge": 256,
     "m6g.metal": 256,
+    # Standard m7g
+    "m7g.medium": 4,
+    "m7g.large": 8,
+    "m7g.xlarge": 16,
+    "m7g.2xlarge": 32,
+    "m7g.4xlarge": 64,
+    "m7g.8xlarge": 128,
+    "m7g.12xlarge": 192,
+    "m7g.16xlarge": 256,
+    "m7g.metal": 256,
 }
 
 
@@ -188,6 +195,11 @@ class APIStack(Stack):
             self,
             "BastionSecurityGroup",
             security_group_id=BASTION_SECURITY_GROUP_ID,
+        )
+        metabase_security_group = ec2.SecurityGroup.from_security_group_id(
+            self,
+            "MetabaseSecurityGroup",
+            security_group_id=METABASE_SECURITY_GROUP_ID,
         )
 
         media_certificate = acm.Certificate.from_certificate_arn(
@@ -301,6 +313,9 @@ class APIStack(Stack):
 
             db_read_replica.connections.allow_default_port_from(
                 bastion_security_group, "Bastion access to RDS"
+            )
+            db_read_replica.connections.allow_default_port_from(
+                metabase_security_group, "Metabase access to RDS"
             )
             for cidr in VPN_CIDRS:
                 db_read_replica.connections.allow_default_port_from(
@@ -994,62 +1009,56 @@ class APIStack(Stack):
             alarm_factory_defaults = None
 
         if enable_monitoring:
-
-            rds_memory_bytes = RDS_MEMORY_GB[db_instance_type] * 1024 * 1024 * 1024
-            rds_max_connections = min(5000, rds_memory_bytes / 9531392) * 0.7
-
             self.monitoring = MonitoringFacade(
                 self, self.stack_name, alarm_factory_defaults=alarm_factory_defaults
             )
 
-            api_alb_services_alarm_factory = self.monitoring.create_alarm_factory(
-                alarm_name_prefix="APILoadBalancer",
+            # ALB
+            alb_services_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="LoadBalancer",
             )
-
-            api_response_time_alarm = api_alb_services_alarm_factory.add_alarm(
+            alb_response_time_alarm = alb_services_alarm_factory.add_alarm(
                 alarm_description="Response Time",
                 alarm_name_suffix="TargetResponseTime",
                 metric=self.api_target_group.metrics.target_response_time(),
                 comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
-                threshold=5,
+                threshold=0.5,
                 treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
                 datapoints_to_alarm=3,
                 evaluation_periods=3,
             )
-            api_alb_services_alarm_factory.add_alarm(
-                alarm_description="HTTP 5xx Errors",
-                alarm_name_suffix="HTTP-5xx",
-                metric=self.api_target_group.metrics.http_code_target(
-                    code=elbv2.HttpCodeTarget.TARGET_5XX_COUNT
-                ),
+            alb_unhealthy_hosts_alarm = alb_services_alarm_factory.add_alarm(
+                alarm_description="Unhealthy Tasks",
+                alarm_name_suffix="UnHealthyHostCount",
+                metric=self.api_target_group.metrics.unhealthy_host_count(),
                 comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
                 threshold=0,
                 treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
                 datapoints_to_alarm=3,
                 evaluation_periods=3,
             )
-
+            alb_http_5xx_alarm = alb_services_alarm_factory.add_alarm(
+                alarm_description="HTTP 5xx Errors",
+                alarm_name_suffix="HTTP-5xx",
+                metric=self.api_target_group.metrics.http_code_target(
+                    code=elbv2.HttpCodeTarget.TARGET_5XX_COUNT
+                ),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=50,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
             self.monitoring.monitor_custom(
-                alarm_friendly_name="API Load Balancer",
-                human_readable_name="API Load Balancer",
+                alarm_friendly_name="Load Balancer",
+                human_readable_name="Load Balancer",
                 metric_groups=[
-                    CustomMetricGroup(
-                        title="Health",
-                        metrics=[
-                            self.api_target_group.metrics.healthy_host_count(
-                                label="Healthy", color=cloudwatch.Color.BLUE
-                            ),
-                            self.api_target_group.metrics.unhealthy_host_count(
-                                label="Unhealthy", color=cloudwatch.Color.RED
-                            ),
-                        ],
-                        graph_widget_type=GraphWidgetType.STACKED_AREA,
-                    ),
                     CustomMetricGroup(
                         title="Latency",
                         metrics=[self.api_target_group.metrics.target_response_time()],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
                         graph_widget_axis=cloudwatch.YAxisProps(min=0),
-                        horizontal_annotations=[api_response_time_alarm.annotation],
+                        horizontal_annotations=[alb_response_time_alarm.annotation],
                     ),
                     CustomMetricGroup(
                         title="Target Response Codes",
@@ -1079,47 +1088,443 @@ class APIStack(Stack):
                     ),
                 ],
             )
-            self.monitoring.monitor_fargate_application_load_balancer(
-                fargate_service=self.api_service,
-                min_auto_scaling_task_count=api_min_tasks,
-                max_auto_scaling_task_count=api_max_tasks,
-                application_load_balancer=self.alb,
-                application_target_group=self.api_target_group,
-                add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
-                add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
-                add_unhealthy_task_count_alarm={
-                    "0": UnhealthyTaskCountThreshold(max_unhealthy_tasks=0),
-                },
+
+            # Fargate: API
+            api_service_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="API",
             )
-            self.monitoring.monitor_simple_fargate_service(
-                fargate_service=self.cron_service,
-                add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
-                add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
+            api_service_cpu_alarm = api_service_alarm_factory.add_alarm(
+                alarm_description="CPU",
+                alarm_name_suffix="CPU",
+                metric=self.api_service.metric_cpu_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=75,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
             )
-            self.monitoring.monitor_fargate_network_load_balancer(
-                fargate_service=self.sftp_service,
-                min_auto_scaling_task_count=sftp_min_tasks,
-                max_auto_scaling_task_count=sftp_max_tasks,
-                network_load_balancer=self.sftpd_nlb,
-                network_target_group=self.sftpd_target_group,
-                add_cpu_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
-                add_memory_usage_alarm={"85": UsageThreshold(max_usage_percent=85)},
+            api_service_memory_alarm = api_service_alarm_factory.add_alarm(
+                alarm_description="Memory",
+                alarm_name_suffix="Memory",
+                metric=self.api_service.metric_memory_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=85,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
             )
-            self.monitoring.monitor_rds_instance(
-                instance=self.database_instance,
-                add_cpu_usage_alarm={"75": UsageThreshold(max_usage_percent=75)},
-                add_free_storage_space_alarm={
-                    "5G": MinUsageCountThreshold(min_count=5 * 1000 * 1000 * 1000)
-                },
-                add_max_connection_count_alarm={
-                    str(rds_max_connections): HighConnectionCountThreshold(
-                        max_connection_count=rds_max_connections
-                    )
-                },
+            self.monitoring.monitor_custom(
+                alarm_friendly_name="API",
+                human_readable_name="API",
+                metric_groups=[
+                    CustomMetricGroup(
+                        title="CPU",
+                        metrics=[
+                            self.api_service.metric_cpu_utilization(
+                                label="MIN",
+                                statistic="Minimum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                            self.api_service.metric_cpu_utilization(
+                                label="AVG",
+                                statistic="Average",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            self.api_service.metric_cpu_utilization(
+                                label="MAX",
+                                statistic="Maximum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[api_service_cpu_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Memory",
+                        metrics=[
+                            self.api_service.metric_memory_utilization(
+                                label="MIN",
+                                statistic="Minimum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                            self.api_service.metric_memory_utilization(
+                                label="AVG",
+                                statistic="Average",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            self.api_service.metric_memory_utilization(
+                                label="MAX",
+                                statistic="Maximum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[api_service_memory_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Health",
+                        metrics=[
+                            self.api_target_group.metrics.unhealthy_host_count(
+                                label="Unhealthy",
+                                color=cloudwatch.Color.RED,
+                                statistic="Maximum",
+                            ),
+                            self.api_target_group.metrics.healthy_host_count(
+                                label="Healthy",
+                                color=cloudwatch.Color.BLUE,
+                                statistic="Minimum",
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        horizontal_annotations=[
+                            # alb_unhealthy_hosts_alarm.annotation,
+                            cloudwatch.HorizontalAnnotation(
+                                label="Min",
+                                value=api_min_tasks,
+                                color=cloudwatch.Color.GREY,
+                            ),
+                            cloudwatch.HorizontalAnnotation(
+                                label="Max",
+                                value=api_max_tasks,
+                                color=cloudwatch.Color.GREY,
+                            ),
+                        ],
+                    ),
+                ],
             )
+
+            # Fargate: Cron
+            cron_service_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="Cron",
+            )
+            cron_service_cpu_alarm = cron_service_alarm_factory.add_alarm(
+                alarm_description="CPU",
+                alarm_name_suffix="CPU",
+                metric=self.cron_service.metric_cpu_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=75,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            cron_service_memory_alarm = cron_service_alarm_factory.add_alarm(
+                alarm_description="Memory",
+                alarm_name_suffix="Memory",
+                metric=self.cron_service.metric_memory_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=85,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            self.monitoring.monitor_custom(
+                alarm_friendly_name="Cron",
+                human_readable_name="Cron",
+                metric_groups=[
+                    CustomMetricGroup(
+                        title="CPU",
+                        metrics=[
+                            self.cron_service.metric_cpu_utilization(
+                                label="MIN",
+                                statistic="Minimum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                            self.cron_service.metric_cpu_utilization(
+                                label="AVG",
+                                statistic="Average",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            self.cron_service.metric_cpu_utilization(
+                                label="MAX",
+                                statistic="Maximum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[cron_service_cpu_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Memory",
+                        metrics=[
+                            self.cron_service.metric_memory_utilization(
+                                label="MIN",
+                                statistic="Minimum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                            self.cron_service.metric_memory_utilization(
+                                label="AVG",
+                                statistic="Average",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            self.cron_service.metric_memory_utilization(
+                                label="MAX",
+                                statistic="Maximum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[cron_service_memory_alarm.annotation],
+                    ),
+                ],
+            )
+
+            # Fargate: Moodle
+            sftp_service_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="Moodle",
+            )
+            sftp_service_cpu_alarm = sftp_service_alarm_factory.add_alarm(
+                alarm_description="CPU",
+                alarm_name_suffix="CPU",
+                metric=self.sftp_service.metric_cpu_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=75,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            sftp_service_memory_alarm = sftp_service_alarm_factory.add_alarm(
+                alarm_description="Memory",
+                alarm_name_suffix="Memory",
+                metric=self.sftp_service.metric_memory_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=85,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            self.monitoring.monitor_custom(
+                alarm_friendly_name="SFTP",
+                human_readable_name="SFTP",
+                metric_groups=[
+                    CustomMetricGroup(
+                        title="SFTP",
+                        metrics=[
+                            self.sftp_service.metric_cpu_utilization(
+                                label="MIN",
+                                statistic="Minimum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                            self.sftp_service.metric_cpu_utilization(
+                                label="AVG",
+                                statistic="Average",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            self.sftp_service.metric_cpu_utilization(
+                                label="MAX",
+                                statistic="Maximum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[sftp_service_cpu_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Memory",
+                        metrics=[
+                            self.sftp_service.metric_memory_utilization(
+                                label="MIN",
+                                statistic="Minimum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                            self.sftp_service.metric_memory_utilization(
+                                label="AVG",
+                                statistic="Average",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            self.sftp_service.metric_memory_utilization(
+                                label="MAX",
+                                statistic="Maximum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[sftp_service_memory_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Health",
+                        metrics=[
+                            self.sftp_target_group.metrics.unhealthy_host_count(
+                                label="Unhealthy",
+                                color=cloudwatch.Color.RED,
+                                statistic="Maximum",
+                            ),
+                            self.sftp_target_group.metrics.healthy_host_count(
+                                label="Healthy",
+                                color=cloudwatch.Color.BLUE,
+                                statistic="Minimum",
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        horizontal_annotations=[
+                            # alb_unhealthy_hosts_alarm.annotation,
+                            cloudwatch.HorizontalAnnotation(
+                                label="Min",
+                                value=sftp_min_tasks,
+                                color=cloudwatch.Color.GREY,
+                            ),
+                            cloudwatch.HorizontalAnnotation(
+                                label="Max",
+                                value=sftp_max_tasks,
+                                color=cloudwatch.Color.GREY,
+                            ),
+                        ],
+                    ),
+                ],
+            )
+
+            # RDS
+            rds_memory_bytes = RDS_MEMORY_GB[db_instance_type] * 1024 * 1024 * 1024
+            rds_max_connections = min(5000, rds_memory_bytes / 9531392) * 0.7
+            database_alarm_factory = self.monitoring.create_alarm_factory(
+                alarm_name_prefix="Database",
+            )
+            database_cpu_alarm = database_alarm_factory.add_alarm(
+                alarm_description="CPU",
+                alarm_name_suffix="CPU",
+                metric=self.database_instance.metric_cpu_utilization(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=80,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            database_memory_alarm = database_alarm_factory.add_alarm(
+                alarm_description="Freeable Memory",
+                alarm_name_suffix="FreeableMemory",
+                metric=self.database_instance.metric_freeable_memory(),
+                comparison_operator=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+                threshold=rds_memory_bytes * 0.1,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            database_storage_alarm = database_alarm_factory.add_alarm(
+                alarm_description="Storage",
+                alarm_name_suffix="FreeStorageSpace",
+                metric=self.database_instance.metric_free_storage_space(),
+                comparison_operator=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+                threshold=db_allocated_storage * 0.2 * 1000 * 1000 * 1000,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            database_connections_alarm = database_alarm_factory.add_alarm(
+                alarm_description="Connections",
+                alarm_name_suffix="Connections",
+                metric=self.database_instance.metric_database_connections(),
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                threshold=rds_max_connections * 0.7,
+                treat_missing_data=cloudwatch.TreatMissingData.MISSING,
+                datapoints_to_alarm=3,
+                evaluation_periods=3,
+            )
+            self.monitoring.monitor_custom(
+                alarm_friendly_name="Database",
+                human_readable_name="Database",
+                metric_groups=[
+                    CustomMetricGroup(
+                        title="CPU",
+                        metrics=[self.database_instance.metric_cpu_utilization()],
+                        graph_widget_type=GraphWidgetType.LINE,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[database_cpu_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="Memory",
+                        metrics=[self.database_instance.metric_freeable_memory()],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        horizontal_annotations=[
+                            database_memory_alarm.annotation,
+                            cloudwatch.HorizontalAnnotation(
+                                label="Total",
+                                color=cloudwatch.Color.GREY,
+                                value=rds_memory_bytes,
+                            ),
+                        ],
+                    ),
+                    CustomMetricGroup(
+                        title="Storage",
+                        metrics=[self.database_instance.metric_free_storage_space()],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        horizontal_annotations=[
+                            database_storage_alarm.annotation,
+                            cloudwatch.HorizontalAnnotation(
+                                label="Total",
+                                color=cloudwatch.Color.GREY,
+                                value=db_allocated_storage * 1000 * 1000 * 1000,
+                            ),
+                        ],
+                    ),
+                    CustomMetricGroup(
+                        title="Connections",
+                        metrics=[self.database_instance.metric_database_connections()],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        horizontal_annotations=[
+                            database_connections_alarm.annotation,
+                            cloudwatch.HorizontalAnnotation(
+                                label=f"Max for db.{db_instance_type}",
+                                color=cloudwatch.Color.GREY,
+                                value=rds_max_connections,
+                            ),
+                        ],
+                    ),
+                    CustomMetricGroup(
+                        title="IOPS",
+                        metrics=[
+                            self.database_instance.metric_read_iops(),
+                            self.database_instance.metric_write_iops(),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        horizontal_annotations=[
+                            cloudwatch.HorizontalAnnotation(
+                                label="GP3 Baseline",
+                                color=cloudwatch.Color.GREY,
+                                value=3000,
+                            ),
+                        ],
+                    ),
+                    CustomMetricGroup(
+                        title="Network",
+                        metrics=[
+                            self.database_instance.metric(
+                                metric_name="NetworkReceiveThroughput",
+                                statistic="Average",
+                            ),
+                            self.database_instance.metric(
+                                metric_name="NetworkTransmitThroughput",
+                                statistic="Average",
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                    ),
+                ],
+            )
+
+            # Media
             self.monitoring.monitor_cloud_front_distribution(
                 distribution=self.media_cloudfront_distribution,
                 additional_metrics_enabled=True,
+                region="us-east-1",
                 # add_error4xx_rate={
                 #     "GreaterThan10Percent": ErrorRateThreshold(max_error_rate=10)
                 # },
@@ -1129,10 +1534,10 @@ class APIStack(Stack):
             )
             self.monitoring.monitor_s3_bucket(bucket=self.media_bucket)
 
+            # EFS
             efs_services_alarm_factory = self.monitoring.create_alarm_factory(
                 alarm_name_prefix="EFS",
             )
-
             efs_burst_credit_balance_alarm = efs_services_alarm_factory.add_alarm(
                 alarm_description="Burst Credit Balance",
                 alarm_name_suffix="BurstCreditBalance",
@@ -1175,13 +1580,12 @@ class APIStack(Stack):
                     statistic="Average",
                 ),
                 comparison_operator=cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-                threshold=25,
+                threshold=20 * 1000 * 1000,
                 datapoints_to_alarm=3,
                 evaluation_periods=3,
                 period=Duration.seconds(300),
                 treat_missing_data=cloudwatch.TreatMissingData.MISSING,
             )
-
             self.monitoring.monitor_custom(
                 alarm_friendly_name="EFS Filesystem",
                 human_readable_name="EFS Filesystem",
@@ -1201,20 +1605,7 @@ class APIStack(Stack):
                         horizontal_annotations=[
                             efs_burst_credit_balance_alarm.annotation
                         ],
-                    ),
-                    CustomMetricGroup(
-                        title="PercentIOLimit",
-                        metrics=[
-                            cloudwatch.Metric(
-                                metric_name="PercentIOLimit",
-                                namespace="AWS/EFS",
-                                dimensions_map={
-                                    "FileSystemId": self.efs_filesystem.file_system_id
-                                },
-                                statistic="Average",
-                            )
-                        ],
-                        horizontal_annotations=[efs_percent_io_limit_alarm.annotation],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
                     ),
                     CustomMetricGroup(
                         title="PermittedThroughput",
@@ -1228,9 +1619,114 @@ class APIStack(Stack):
                                 statistic="Average",
                             )
                         ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
                         horizontal_annotations=[
                             efs_permitted_throughput_alarm.annotation
                         ],
+                    ),
+                    CustomMetricGroup(
+                        title="PercentIOLimit",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="PercentIOLimit",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Average",
+                            )
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                        graph_widget_axis=cloudwatch.YAxisProps(
+                            min=0, max=100, show_units=True
+                        ),
+                        horizontal_annotations=[efs_percent_io_limit_alarm.annotation],
+                    ),
+                    CustomMetricGroup(
+                        title="ClientConnections",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="ClientConnections",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Sum",
+                            )
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                    ),
+                    CustomMetricGroup(
+                        title="Throughput",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="DataReadIOBytes",
+                                label="Read",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Sum",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            cloudwatch.Metric(
+                                metric_name="DataWriteIOBytes",
+                                label="Write",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Sum",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                            cloudwatch.Metric(
+                                metric_name="MetadataIOBytes",
+                                label="Metadata",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="Sum",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
+                    ),
+                    CustomMetricGroup(
+                        title="IOPS",
+                        metrics=[
+                            cloudwatch.Metric(
+                                metric_name="DataReadIOBytes",
+                                label="Read",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="SampleCount",
+                                color=cloudwatch.Color.BLUE,
+                            ),
+                            cloudwatch.Metric(
+                                metric_name="DataWriteIOBytes",
+                                label="Write",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="SampleCount",
+                                color=cloudwatch.Color.ORANGE,
+                            ),
+                            cloudwatch.Metric(
+                                metric_name="MetadataIOBytes",
+                                label="Metadata",
+                                namespace="AWS/EFS",
+                                dimensions_map={
+                                    "FileSystemId": self.efs_filesystem.file_system_id
+                                },
+                                statistic="SampleCount",
+                                color=cloudwatch.Color.GREEN,
+                            ),
+                        ],
+                        graph_widget_type=GraphWidgetType.STACKED_AREA,
                     ),
                 ],
             )
