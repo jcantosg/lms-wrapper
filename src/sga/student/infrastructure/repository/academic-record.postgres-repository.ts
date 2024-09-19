@@ -139,9 +139,7 @@ export class AcademicRecordPostgresRepository
     return await this.repository.find({
       where: {
         student: { id },
-        status:
-          Not(AcademicRecordStatusEnum.CANCELLED) ||
-          Not(AcademicRecordStatusEnum.CANCELLED_TRANSFER),
+        status: AcademicRecordStatusEnum.VALID,
       },
       relations: {
         businessUnit: true,
