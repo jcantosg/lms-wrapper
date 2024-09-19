@@ -19,7 +19,6 @@ import { InternalGroupMockRepository } from '#test/mocks/sga/student/internal-gr
 import { InternalGroupNotFoundException } from '#shared/domain/exception/internal-group/internal-group.not-found.exception';
 import { RemoveTeacherFromInternalGroupHandler } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.handler';
 import { RemoveTeacherFromInternalGroupCommand } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.command';
-import { CantRemoveDefaultTeacherException } from '#shared/domain/exception/internal-group/cant-remove-default-teacher.exception';
 
 let handler: RemoveTeacherFromInternalGroupHandler;
 let repository: InternalGroupRepository;
@@ -86,22 +85,6 @@ describe('Remove Teacher from Internal Group Handler', () => {
 
     await expect(handler.handle(command)).rejects.toThrow(
       EdaeUserNotFoundException,
-    );
-  });
-
-  it('should throw a cant remove default teacher exception', async () => {
-    internalGroupGetByAdminUserSpy.mockImplementation(() =>
-      Promise.resolve(internalGroup),
-    );
-    edaeUserGetByAdminUserSpy.mockImplementation(() =>
-      Promise.resolve(edaeUser),
-    );
-
-    edaeUser.addBusinessUnit(internalGroup.businessUnit);
-    internalGroup.defaultTeacher = edaeUser;
-
-    await expect(handler.handle(command)).rejects.toThrow(
-      CantRemoveDefaultTeacherException,
     );
   });
 

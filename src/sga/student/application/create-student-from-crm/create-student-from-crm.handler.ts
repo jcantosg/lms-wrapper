@@ -194,7 +194,6 @@ export class CreateStudentFromCRMHandler implements CommandHandler {
         !academicRecords.some(
           (ar) =>
             ar.businessUnit.id === businessUnit.id &&
-            ar.virtualCampus.id === virtualCampus.id &&
             ar.academicPeriod.id === academicPeriod.id &&
             ar.academicProgram.id === academicProgram.id &&
             [

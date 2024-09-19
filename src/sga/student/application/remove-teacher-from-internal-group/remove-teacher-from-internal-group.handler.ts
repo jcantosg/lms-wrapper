@@ -6,7 +6,6 @@ import { InternalGroup } from '#student/domain/entity/internal-group.entity';
 import { InternalGroupRepository } from '#student/domain/repository/internal-group.repository';
 import { InternalGroupGetter } from '#student/domain/service/internal-group.getter.service';
 import { RemoveTeacherFromInternalGroupCommand } from '#student/application/remove-teacher-from-internal-group/remove-teacher-from-internal-group.command';
-import { CantRemoveDefaultTeacherException } from '#shared/domain/exception/internal-group/cant-remove-default-teacher.exception';
 
 export class RemoveTeacherFromInternalGroupHandler implements CommandHandler {
   constructor(
@@ -34,13 +33,6 @@ export class RemoveTeacherFromInternalGroupHandler implements CommandHandler {
         .includes(internalGroup.businessUnit.id)
     ) {
       throw new EdaeUserNotFoundException();
-    }
-
-    if (
-      internalGroup.defaultTeacher &&
-      internalGroup.defaultTeacher.id === edaeUser.id
-    ) {
-      throw new CantRemoveDefaultTeacherException();
     }
 
     internalGroup.removeTeacher(edaeUser);

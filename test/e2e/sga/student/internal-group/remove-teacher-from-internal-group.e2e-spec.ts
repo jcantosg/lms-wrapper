@@ -95,20 +95,6 @@ describe('/internal-group/{id}/remove-teacher (PUT)', () => {
     expect(response.body.message).toEqual('sga.edae-user.not-found');
   });
 
-  it('should return 409 cant remove default teacher', async () => {
-    const response = await supertest(httpServer)
-      .put(path)
-      .auth(superAdminAccessToken, { type: 'bearer' })
-      .send({
-        teacherId: GetAllInternalGroupsE2eSeed.defaultEdaeUserId,
-      })
-      .expect(409);
-
-    expect(response.body.message).toEqual(
-      'sga.internal-group.cant-remove-default-teacher',
-    );
-  });
-
   it('should remove a teacher from the internal group', async () => {
     internalGroupRepository = datasource.getRepository(internalGroupSchema);
     edaeUserRepository = datasource.getRepository(edaeUserSchema);
