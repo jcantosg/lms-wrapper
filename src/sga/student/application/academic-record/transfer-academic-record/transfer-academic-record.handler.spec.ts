@@ -54,8 +54,11 @@ import { EventDispatcherMock } from '#test/mocks/shared/event-dispatcher.mock-se
 import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
 import { AcademicRecordStatusEnum } from '#student/domain/enum/academic-record-status.enum';
 import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
+import { AdministrativeProcessMockRepository } from '#test/mocks/sga/student/administrative-process.mock-repository';
 
 let handler: TransferAcademicRecordHandler;
+let adminProcessRepository: AdministrativeProcessRepository;
 let businessUnitGetter: BusinessUnitGetter;
 let virtualCampusGetter: VirtualCampusGetter;
 let academicPeriodGetter: AcademicPeriodGetter;
@@ -83,6 +86,7 @@ let executeTransactionSpy: jest.SpyInstance;
 let updateInternalGroupsSpy: jest.SpyInstance;
 let updateAdministrativeGroupsSpy: jest.SpyInstance;
 let createAdministrativeProcessSpy: jest.SpyInstance;
+let getByAcademicRecordSpy: jest.SpyInstance;
 
 const oldAcademicRecord = getAnAcademicRecord();
 const newAcademicRecord = getAnAcademicRecord();
@@ -123,6 +127,7 @@ const command = new TransferAcademicRecordCommand(
 
 describe('Transfer Academic Record Handler', () => {
   beforeAll(() => {
+    adminProcessRepository = new AdministrativeProcessMockRepository();
     businessUnitGetter = getBusinessUnitGetterMock();
     virtualCampusGetter = getVirtualCampusGetterMock();
     academicPeriodGetter = getAnAcademicPeriodGetterMock();
@@ -161,6 +166,10 @@ describe('Transfer Academic Record Handler', () => {
       createAdministrativeProcessHandler,
       'handle',
     );
+    getByAcademicRecordSpy = jest.spyOn(
+      adminProcessRepository,
+      'getByAcademicRecord',
+    );
 
     handler = new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -176,7 +185,7 @@ describe('Transfer Academic Record Handler', () => {
       updateInternalGroupsService,
       updateAdministrativeGroupsService,
       eventDispatcher,
-      createAdministrativeProcessHandler,
+      adminProcessRepository,
     );
   });
 
@@ -294,6 +303,7 @@ describe('Transfer Academic Record Handler', () => {
     updateInternalGroupsSpy.mockImplementation(() => Promise.resolve([]));
     updateAdministrativeGroupsSpy.mockImplementation(() => Promise.resolve([]));
     createAdministrativeProcessSpy.mockImplementation(() => Promise.resolve());
+    getByAcademicRecordSpy.mockImplementation(() => Promise.resolve([]));
 
     const academicRecordTransfer = AcademicRecordTransfer.create(
       uuid(),

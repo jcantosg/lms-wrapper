@@ -148,7 +148,7 @@ const transferAcademicRecordHandler = {
     updateInternalGroupsService: UpdateInternalGroupsService,
     updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     eventDispatcher: EventDispatcher,
-    createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
+    administrativeProcessRepository: AdministrativeProcessRepository,
   ): TransferAcademicRecordHandler =>
     new TransferAcademicRecordHandler(
       businessUnitGetter,
@@ -164,7 +164,7 @@ const transferAcademicRecordHandler = {
       updateInternalGroupsService,
       updateAdministrativeGroupsService,
       eventDispatcher,
-      createAdministrativeProcessHandler,
+      administrativeProcessRepository,
     ),
   inject: [
     BusinessUnitGetter,
@@ -180,7 +180,7 @@ const transferAcademicRecordHandler = {
     UpdateInternalGroupsService,
     UpdateAdministrativeGroupsService,
     EventDispatcher,
-    CreateAdministrativeProcessHandler,
+    AdministrativeProcessRepository,
   ],
 };
 

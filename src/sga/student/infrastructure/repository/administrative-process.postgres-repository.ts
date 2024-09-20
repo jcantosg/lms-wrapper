@@ -138,4 +138,17 @@ export class AdministrativeProcessPostgresRepository
       .applyPagination(criteria, queryBuilder)
       .getMany(queryBuilder);
   }
+
+  async saveBatch(
+    administrativeProcesses: AdministrativeProcess[],
+  ): Promise<void> {
+    for (const administrativeProcess of administrativeProcesses) {
+      await this.repository.save({
+        id: administrativeProcess.id,
+        academicRecord: administrativeProcess.academicRecord,
+        businessUnit: administrativeProcess.businessUnit,
+        updatedAt: new Date(),
+      });
+    }
+  }
 }

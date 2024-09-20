@@ -9,4 +9,5 @@ export class AdministrativeProcessMockRepository
   matching = jest.fn();
   getByStudent = jest.fn();
   getByAcademicRecord = jest.fn();
+  saveBatch = jest.fn();
 }

@@ -19,4 +19,7 @@ export abstract class AdministrativeProcessRepository {
     adminUserBusinessUnits: BusinessUnit[],
     isSuperAdmin: boolean,
   ): Promise<AdministrativeProcess[]>;
+  abstract saveBatch(
+    administrativeProcesses: AdministrativeProcess[],
+  ): Promise<void>;
 }

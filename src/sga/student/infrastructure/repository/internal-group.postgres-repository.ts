@@ -213,6 +213,7 @@ export class InternalGroupPostgresRepository
       },
       relations: {
         defaultTeacher: true,
+        teachers: true,
         subject: true,
         students: true,
       },

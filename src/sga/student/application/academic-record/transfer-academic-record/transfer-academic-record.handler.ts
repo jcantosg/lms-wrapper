@@ -23,9 +23,8 @@ import { UpdateInternalGroupsService } from '#student/domain/service/update-inte
 import { UpdateAdministrativeGroupsService } from '#student/domain/service/update-administrative-groups.service';
 import { EventDispatcher } from '#shared/domain/event/event-dispatcher.service';
 import { InternalGroupMemberAddedEvent } from '#student/domain/event/internal-group/internal-group-member-added.event';
-import { CreateAdministrativeProcessHandler } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.handler';
-import { CreateAdministrativeProcessCommand } from '#student/application/administrative-process/create-administrative-process/create-administrative-process.command';
 import { AcademicRecordCancelledException } from '#shared/domain/exception/sga-student/academic-record-cancelled.exception';
+import { AdministrativeProcessRepository } from '#student/domain/repository/administrative-process.repository';
 
 export class TransferAcademicRecordHandler implements CommandHandler {
   constructor(
@@ -42,7 +41,7 @@ export class TransferAcademicRecordHandler implements CommandHandler {
     private readonly updateInternalGroupsService: UpdateInternalGroupsService,
     private readonly updateAdministrativeGroupsService: UpdateAdministrativeGroupsService,
     private readonly eventDispatcher: EventDispatcher,
-    private readonly createAdministrativeProcessHandler: CreateAdministrativeProcessHandler,
+    private readonly administrativeProcessRepository: AdministrativeProcessRepository,
   ) {}
 
   async handle(command: TransferAcademicRecordCommand) {
@@ -180,13 +179,18 @@ export class TransferAcademicRecordHandler implements CommandHandler {
       administrativeGroups,
     });
 
-    await this.createAdministrativeProcessHandler.handle(
-      new CreateAdministrativeProcessCommand(
-        this.uuidService.generate(),
-        newAcademicRecord.id,
-        newAcademicRecord.student.id,
-        command.adminUser,
-      ),
+    const administrativeProcesses =
+      await this.administrativeProcessRepository.getByAcademicRecord(
+        oldAcademicRecord.id,
+      );
+
+    for (const adminProcess of administrativeProcesses) {
+      adminProcess.businessUnit = businessUnit;
+      adminProcess.academicRecord = newAcademicRecord;
+    }
+
+    await this.administrativeProcessRepository.saveBatch(
+      administrativeProcesses,
     );
 
     internalGroups.map(async (group) => {

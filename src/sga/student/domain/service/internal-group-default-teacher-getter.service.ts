@@ -10,6 +10,6 @@ export class InternalGroupDefaultTeacherGetter {
       subjectId,
     );
 
-    return internalGroup ? internalGroup.defaultTeacher : null;
+    return internalGroup?.teachers?.[0] || null;
   }
 }
