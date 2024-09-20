@@ -96,10 +96,6 @@ export class CreateEnrollmentHandler implements CommandHandler {
         if (internalGroup) {
           internalGroup.updatedBy = command.user;
           internalGroup.updatedAt = new Date();
-
-          await this.eventDispatcher.dispatch(
-            new InternalGroupMemberAddedEvent(internalGroup),
-          );
         }
 
         await this.transactionalService.execute({
@@ -108,6 +104,12 @@ export class CreateEnrollmentHandler implements CommandHandler {
           internalGroup,
           student: academicRecord.student,
         });
+
+        if (internalGroup) {
+          await this.eventDispatcher.dispatch(
+            new InternalGroupMemberAddedEvent(internalGroup),
+          );
+        }
       }
     }
   }
